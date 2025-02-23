@@ -35,6 +35,11 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${INCLUDE_FILES}
+        include/Weapon.hpp
+        include/Talent.hpp
+        include/Skill.hpp
+        include/StatusEffect.hpp
+        include/Character.hpp
 )
 
 if(MSVC)
