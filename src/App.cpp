@@ -1,5 +1,7 @@
 #include "App.hpp"
 
+#include <utility>
+
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -8,12 +10,34 @@
 void App::Start() {
     LOG_TRACE("Start");
     m_CurrentState = State::UPDATE;
+	m_CurrentScene->Start();
 }
 
 void App::Update() {
-    
+
     //TODO: do your things here and delete this line <3
-    
+
+	//場景切換 - 主菜單、游戲局内畫面
+	Scene::SceneType type = m_CurrentScene->Change();
+	if (type != Scene::SceneType::Null)
+	{
+		m_CurrentScene->Exit(); //退出舊場景
+		switch (type)
+		{
+		case Scene::SceneType::Game:
+			m_CurrentScene = std::make_shared<GameScene>();
+			break;
+		case Scene::SceneType::Menu:
+			m_CurrentScene = std::make_shared<MenuScene>();
+			break;
+		default:
+			break;
+		}
+		m_CurrentScene->Start(); //載入新場景
+	}
+
+	m_CurrentScene->Update(); //場景更新
+
     /*
      * Do not touch the code below as they serve the purpose for
      * closing the window.
@@ -27,3 +51,13 @@ void App::Update() {
 void App::End() { // NOLINT(this method will mutate members in the future)
     LOG_TRACE("End");
 }
+
+void App::SetCurrentScene(std::shared_ptr<Scene> nextScene)
+{
+	m_CurrentScene = nextScene;
+}
+
+
+
+
+

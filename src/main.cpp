@@ -4,7 +4,8 @@
 
 int main(int, char**) {
     auto context = Core::Context::GetInstance();
-    App app;
+	App app;
+	app.SetCurrentScene(std::make_shared<MenuScene>());
 
     while (!context->GetExit()) {
         switch (app.GetCurrentState()) {
