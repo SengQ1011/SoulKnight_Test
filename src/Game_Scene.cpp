@@ -13,6 +13,14 @@ void GameScene::Start()
 	LOG_DEBUG("Entering Game Scene");
 }
 
+void GameScene::Input()
+{
+	if (Util::Input::IsKeyDown(Util::Keycode::H))
+	{
+		LOG_DEBUG("GameScene input \'H\' successfully detected");
+	}
+}
+
 void GameScene::Update()
 {
 	LOG_DEBUG("Game Scene is running...");

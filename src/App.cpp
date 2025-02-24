@@ -28,7 +28,7 @@ void App::Update() {
 			m_CurrentScene = std::make_shared<GameScene>();
 			break;
 		case Scene::SceneType::Menu:
-			m_CurrentScene = std::make_shared<MenuScene>();
+			m_CurrentScene = std::make_shared<MainMenuScene>();
 			break;
 		default:
 			break;
@@ -36,6 +36,7 @@ void App::Update() {
 		m_CurrentScene->Start(); //載入新場景
 	}
 
+	m_CurrentScene->Input();
 	m_CurrentScene->Update(); //場景更新
 
     /*
@@ -50,6 +51,7 @@ void App::Update() {
 
 void App::End() { // NOLINT(this method will mutate members in the future)
     LOG_TRACE("End");
+	m_CurrentScene->Exit();
 }
 
 void App::SetCurrentScene(std::shared_ptr<Scene> nextScene)

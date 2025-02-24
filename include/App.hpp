@@ -1,10 +1,10 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "pch.hpp" // IWYU pragma: export
-#include "Scene.hpp"
-#include "Menu_Scene.hpp"
 #include "Game_Scene.hpp"
+#include "MainMenu_Scene.hpp"
+#include "Scene.hpp"
+#include "pch.hpp" // IWYU pragma: export
 
 class App {
 public:
