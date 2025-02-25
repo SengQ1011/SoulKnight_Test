@@ -28,6 +28,8 @@ void MainMenuScene::Start()
 	m_Text->Init( 20, 2, glm::vec2(-11,300) );
 	m_Version->Init( 20, 2, glm::vec2(-451,300) );
 
+	m_BGM->Play();
+
 	m_Root.AddChild(m_Background);
 	m_Root.AddChild(m_RedShawl);
 	m_Root.AddChild(m_Title);
@@ -42,19 +44,20 @@ void MainMenuScene::Update()
 
 void MainMenuScene::Input()
 {
-
 }
 
 void MainMenuScene::Exit()
 {
 	LOG_DEBUG("Main Menu exited");
+	//m_BGM->Pause();
 }
 
 Scene::SceneType MainMenuScene::Change()
 {
-	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB) || Util::Input::IsKeyUp(Util::Keycode::RETURN) || Util::Input::IsKeyUp(Util::Keycode::SPACE))
+	if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB) || Util::Input::IsKeyDown(Util::Keycode::RETURN) || Util::Input::IsKeyDown(Util::Keycode::SPACE))
 	{
 		LOG_DEBUG("Change Game Scene");
+		m_ClickSound->Play();
 		return Scene::SceneType::Game;
 	}
 	return Scene::SceneType::Null;
