@@ -11,6 +11,7 @@ int main(int, char**) {
 
 	// bool isMaximized = false;
 	// SDL_Event event;
+
 	// if (event.type == SDL_WINDOWEVENT)
 	// {
 	// 	switch (event.window.event)

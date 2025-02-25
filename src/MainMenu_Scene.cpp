@@ -4,10 +4,12 @@
 
 #include "MainMenu_Scene.hpp"
 
+#include "Tool.hpp"
+#include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include "Util/Image.hpp"
+#include "config.hpp"
 
 void MainMenuScene::Start()
 {
@@ -15,23 +17,33 @@ void MainMenuScene::Start()
 	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
 	m_Background->SetZIndex(0);
 
+	m_Title->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/Title.png"));
+	m_Title->SetZIndex(2);
+	m_Title->SetPivot({234,-221.5});
+
+	m_RedShawl->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/RedShawl.png"));
+	m_RedShawl->SetZIndex(1);
+	m_RedShawl->SetPivot({-237,-22});
+
+	m_Text->Init( 20, 2, glm::vec2(-11,300) );
+	m_Version->Init( 20, 2, glm::vec2(-451,300) );
+
 	m_Root.AddChild(m_Background);
+	m_Root.AddChild(m_RedShawl);
+	m_Root.AddChild(m_Title);
+	m_Root.AddChild(m_Version);
+	m_Root.AddChild(m_Text);
 }
 
 void MainMenuScene::Update()
 {
-	LOG_DEBUG("Main Menu is running...");
 	m_Root.Update();
 }
 
 void MainMenuScene::Input()
 {
-	if (Util::Input::IsKeyDown(Util::Keycode::H))
-	{
-		LOG_DEBUG("MainMenu input \'H\' successfully detected");
-	}
-}
 
+}
 
 void MainMenuScene::Exit()
 {
@@ -40,7 +52,7 @@ void MainMenuScene::Exit()
 
 Scene::SceneType MainMenuScene::Change()
 {
-	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
+	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB) || Util::Input::IsKeyUp(Util::Keycode::RETURN) || Util::Input::IsKeyUp(Util::Keycode::SPACE))
 	{
 		LOG_DEBUG("Change Game Scene");
 		return Scene::SceneType::Game;
