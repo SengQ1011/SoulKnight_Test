@@ -3,6 +3,7 @@ set(SRC_FILES
 
     MainMenu_Scene.cpp
     Game_Scene.cpp
+    Lobby_Scene.cpp
 
     Button_UI.cpp
     TextObject_UI.cpp
@@ -16,6 +17,7 @@ set(INCLUDE_FILES
     Scene.hpp
     MainMenu_Scene.hpp
     Game_Scene.hpp
+    Lobby_Scene.hpp
 
     Button_UI.hpp
     TextObject_UI.hpp

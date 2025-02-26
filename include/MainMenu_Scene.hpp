@@ -27,7 +27,7 @@ public:
 	void Exit() override;
 	SceneType Change() override;
 
-private:
+protected:
 	std::shared_ptr<Util::GameObject> m_Background = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Title = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_RedShawl = std::make_shared<Util::GameObject>();

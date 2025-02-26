@@ -12,6 +12,7 @@ public:
 	{
 		Null,
 		Menu,
+		Lobby,
 		Game,
 	};
 
@@ -24,7 +25,7 @@ public:
 	virtual void Exit() = 0;
 	virtual SceneType Change() = 0; // 換場景設置
 
-private:
+protected:
 };
 
 #endif //SCENE_H

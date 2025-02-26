@@ -20,7 +20,7 @@ public:
 	void Exit() override;
 	SceneType Change() override;
 
-private:
+protected:
 };
 
 #endif //GAME_SCENE_HPP

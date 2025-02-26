@@ -56,9 +56,9 @@ Scene::SceneType MainMenuScene::Change()
 {
 	if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB) || Util::Input::IsKeyDown(Util::Keycode::RETURN) || Util::Input::IsKeyDown(Util::Keycode::SPACE))
 	{
-		LOG_DEBUG("Change Game Scene");
+		LOG_DEBUG("Change Lobby Scene");
 		m_ClickSound->Play();
-		return Scene::SceneType::Game;
+		return Scene::SceneType::Lobby;
 	}
 	return Scene::SceneType::Null;
 }
