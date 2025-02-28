@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "Test_Scene.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -26,6 +27,9 @@ void App::Update() {
 		{
 		case Scene::SceneType::Menu:
 			m_CurrentScene = std::make_shared<MainMenuScene>();
+			break;
+		case Scene::SceneType::Test:
+			m_CurrentScene = std::make_shared<TestScene>();
 			break;
 		case Scene::SceneType::Lobby:
 			m_CurrentScene = std::make_shared<LobbyScene>();

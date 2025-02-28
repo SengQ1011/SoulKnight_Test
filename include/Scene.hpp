@@ -5,6 +5,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "Util/Time.hpp"
+
 class Scene {
 public:
 
@@ -12,6 +14,7 @@ public:
 	{
 		Null,
 		Menu,
+		Test,
 		Lobby,
 		Game,
 	};

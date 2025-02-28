@@ -1,6 +1,9 @@
 set(SRC_FILES
     App.cpp
+    Beacon.cpp
+    Camera.cpp
 
+    Test_Scene.cpp
     MainMenu_Scene.cpp
     Game_Scene.cpp
     Lobby_Scene.cpp
@@ -13,7 +16,10 @@ set(SRC_FILES
 
 set(INCLUDE_FILES
     App.hpp
+    Beacon.hpp
+    Camera.hpp
 
+    Test_Scene.hpp
     Scene.hpp
     MainMenu_Scene.hpp
     Game_Scene.hpp
@@ -22,6 +28,7 @@ set(INCLUDE_FILES
     Button_UI.hpp
     TextObject_UI.hpp
 
+    Motion.hpp
     Tool.hpp
 )
 
