@@ -21,11 +21,8 @@ public:
 	void MoveCamera(const glm::vec2& displacement);
 	void ZoomCamera(float zoomLevel);
 	void RotateCamera(float degree);
-	void ResetOffset();
 
-	[[nodiscard]] Util::Transform GetOffset() const { return m_Offset;}
-	[[nodiscard]] Util::Transform GetTransform() const { return m_Transform;}
-
+	[[nodiscard]] Util::Transform GetCameraWorldCoord() const { return m_CameraWorldCoord;}
 
 	void AddChild(const std::shared_ptr<nGameObject> &child);
 
@@ -36,8 +33,7 @@ public:
 	void Update();
 
 protected:
-	Util::Transform m_Offset;
-	Util::Transform m_Transform;
+	Util::Transform m_CameraWorldCoord;
 private:
 	std::vector<std::shared_ptr<nGameObject>> m_Children;
 };

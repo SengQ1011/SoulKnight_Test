@@ -13,18 +13,19 @@ void TestScene::Start()
 	m_Tile->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
 	m_Tile->SetZIndex(0);
 
-	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
+	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
+	//m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
 	m_Background->SetZIndex(1);
 
 	m_Title->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/Title.png"));
 	m_Title->SetZIndex(5);
-	m_Title->SetPivot({0,0});
+	// m_Title->SetPivot({0,0});
 	// m_Title->m_Transform.translation = glm::vec2(-234.0f,221.5f);
-	m_Title->m_Offset = glm::vec2(-234,221.5);
+	m_Title->m_WorldCoord = glm::vec2(-234,221.5);
 
-	m_RedShawl->SetDrawable(std::make_shared<Util::Image>(RE SOURCE_DIR"/MainMenu/RedShawl.png"));
-	m_RedShawl->SetZIndex(4);
-	m_RedShawl->m_Offset = glm::vec2(237,22);
+	// m_RedShawl->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/RedShawl.png"));
+	// m_RedShawl->SetZIndex(4);
+	// m_RedShawl->m_Offset = glm::vec2(237,22);
 
 	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
 	m_Character->SetZIndex(10);
@@ -33,9 +34,9 @@ void TestScene::Start()
 	m_Version->Init( 20, 2, glm::vec2(-451,300) );
 
 	m_Root.AddChild(m_Background);
-	m_Root.AddChild(m_Tile);
-	m_Root.AddChild(m_RedShawl);
-	m_Root.AddChild(m_Title);
+	// m_Root.AddChild(m_Tile);
+	// m_Root.AddChild(m_RedShawl);
+	// m_Root.AddChild(m_Title);
 	// m_Root.AddChild(m_Version);
 	// m_Root.AddChild(m_Text);
 	m_Root.AddChild(m_Character);
@@ -81,19 +82,18 @@ void TestScene::Update()
 		// LOG_DEBUG("m_RedShawl {} ! {}",m_RedShawl->GetTransform(),m_RedShawl->GetPivot());
 		// LOG_DEBUG("m_Text {} ! {}",m_Text->GetTransform(),m_Text->GetPivot());
 		LOG_DEBUG("m_Background1 {} ! {}",m_Background->GetTransform(),m_Background->GetPivot());
-		LOG_DEBUG("m_Background2 {} ! {}", m_Background->GetOffset(), m_Background->GetWorldCoord());
-		LOG_DEBUG("m_RedShawl1 {} ! {}",m_RedShawl->GetTransform(),m_RedShawl->GetPivot());
-		LOG_DEBUG("m_RedShawl2 {} ! {}", m_RedShawl->GetOffset(), m_RedShawl->GetWorldCoord());
+		LOG_DEBUG("m_Background2 {}", m_Background->GetWorldCoord());
+		// LOG_DEBUG("m_RedShawl1 {} ! {}",m_RedShawl->GetTransform(),m_RedShawl->GetPivot());
+		// LOG_DEBUG("m_RedShawl2 {} ! {}", m_RedShawl->GetOffset(), m_RedShawl->GetWorldCoord());
 		LOG_DEBUG("m_Character {} ! {}",m_Character->GetTransform(),m_Character->GetPivot());
-		LOG_DEBUG("m_Character {} ! {}",m_Character->GetOffset(),m_Character->GetWorldCoord());
-		LOG_DEBUG("m_Camera1 {}",m_Camera.GetTransform());
-		LOG_DEBUG("m_Camera2 {}",m_Camera.GetOffset());
+		LOG_DEBUG("m_Character {}",m_Character->GetWorldCoord());
+		LOG_DEBUG("m_Camera1 {}",m_Camera.GetCameraWorldCoord());
 		LOG_DEBUG("");
 	}
 
 	if (direction.x != 0 || direction.y != 0)
 	{
-		m_Character->m_Offset += direction * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(direction.x * direction.x + direction.y * direction.y);
+		m_Character->m_WorldCoord += direction * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(direction.x * direction.x + direction.y * direction.y);
 		m_Camera.MoveCamera(direction);
 	}
 

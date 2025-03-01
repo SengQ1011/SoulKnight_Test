@@ -6,35 +6,25 @@
 
 Camera::Camera(const std::vector<std::shared_ptr<nGameObject>> &children) : m_Children(children)
 {
-	m_Offset.translation = {0.0f,0.0f};
-	m_Offset.rotation = 0.0f;
-	m_Offset.scale = {0.0f,0.0f};
-	m_Transform.translation = {0.0f,0.0f};
-	m_Transform.rotation = 0.0f;
-	m_Transform.scale = {1.0f,1.0f};
+	m_CameraWorldCoord.translation = {0.0f,0.0f};
+	m_CameraWorldCoord.rotation = 0.0f;
+	m_CameraWorldCoord.scale = {1.0f,1.0f};
 }
 
 void Camera::MoveCamera(const glm::vec2 &displacement)
 {
-	m_Offset.translation = displacement * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
+	//加位移變化量
+	m_CameraWorldCoord.translation += displacement * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
 }
 
 void Camera::ZoomCamera(const float zoomLevel)
 {
-	m_Offset.scale = glm::vec2(1.0f,1.0f) * zoomLevel * Util::Time::GetDeltaTimeMs() / 1000.0f;
-	// m_Offset.translation -= m_Transform.translation * m_Offset.scale.x;
+	m_CameraWorldCoord.scale += glm::vec2(1.0f,1.0f) * zoomLevel * Util::Time::GetDeltaTimeMs() / 1000.0f;
 }
 
 void Camera::RotateCamera(const float degree)
 {
-	m_Offset.rotation = degree * Util::Time::GetDeltaTimeMs() / 1000;
-}
-
-void Camera::ResetOffset()
-{
-	m_Offset.translation = {0.0f,0.0f};
-	m_Offset.scale = {0.0f,0.0f};
-	m_Offset.rotation = 0.0f;
+	m_CameraWorldCoord.rotation -= degree * Util::Time::GetDeltaTimeMs() / 1000;
 }
 
 void Camera::AddChild(const std::shared_ptr<nGameObject> &child) {
@@ -54,25 +44,13 @@ void Camera::AddChildren(
 
 //感覺可以優化 在渲染前一次性修改
 void Camera::Update() {
-	m_Transform.translation += m_Offset.translation;
-	m_Transform.scale += m_Offset.scale;
-	m_Transform.rotation -= m_Offset.rotation;
 	for (const auto &child:m_Children)
 	{
-		//child->m_Transform.scale = {1.26f, 1.26f}; //熒幕放大
-		//child->SetPivot((child->m_Offset == glm::vec2(0))? child->m_Offset : -child->m_Offset);//成功 - 跟著鏡頭縮放旋轉
-		child->SetPivot(-child->m_Offset);//成功 - 跟著鏡頭縮放旋轉
-		child->m_Offset -= m_Offset.translation;
-
-		//渲染的變換矩陣的迭代
-		child->m_Transform.scale += m_Offset.scale;
-		child->m_Transform.rotation += m_Offset.rotation;
-		child->m_Transform.translation = child->GetPivot() + child->m_Offset;
-		child->m_WorldCoord = m_Transform.translation - child->GetPivot();
-
+		//變更坐標軸
+		child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉
+		child->m_Transform.scale = m_CameraWorldCoord.scale;
+		child->m_Transform.rotation = m_CameraWorldCoord.rotation;
 	}
-
-	ResetOffset();
 }
 
 
