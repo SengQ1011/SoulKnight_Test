@@ -63,7 +63,7 @@ void App::End() { // NOLINT(this method will mutate members in the future)
 
 void App::SetCurrentScene(std::shared_ptr<Scene> nextScene)
 {
-	m_CurrentScene = nextScene;
+	m_CurrentScene = std::move(nextScene);
 }
 
 

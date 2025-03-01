@@ -15,12 +15,14 @@ set(SRC_FILES
 )
 
 set(INCLUDE_FILES
+    Override/nGameObject.hpp
+
     App.hpp
     Beacon.hpp
     Camera.hpp
 
-    Test_Scene.hpp
     Scene.hpp
+    Test_Scene.hpp
     MainMenu_Scene.hpp
     Game_Scene.hpp
     Lobby_Scene.hpp

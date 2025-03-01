@@ -5,15 +5,17 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "pch.hpp"
-#include "Util/Transform.hpp"
-#include "Util/Time.hpp"
 #include "Util/GameObject.hpp"
+#include "Util/Image.hpp"
+#include "Util/Time.hpp"
+#include "Util/Transform.hpp"
+#include "pch.hpp"
+#include "Override/nGameObject.hpp"
 
 class Camera
 {
 public:
-	explicit Camera(const std::vector<std::shared_ptr<Util::GameObject>> &children = {});
+	explicit Camera(const std::vector<std::shared_ptr<nGameObject>> &children = {});
 	~Camera() = default;
 
 	void MoveCamera(const glm::vec2& displacement);
@@ -22,19 +24,22 @@ public:
 	void ResetOffset();
 
 	[[nodiscard]] Util::Transform GetOffset() const { return m_Offset;}
+	[[nodiscard]] Util::Transform GetTransform() const { return m_Transform;}
 
-	void AddChild(const std::shared_ptr<Util::GameObject> &child);
 
-	void AddChildren(const std::vector<std::shared_ptr<Util::GameObject>> &children);
+	void AddChild(const std::shared_ptr<nGameObject> &child);
 
-	void RemoveChild(std::shared_ptr<Util::GameObject> child);
+	void AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
+
+	void RemoveChild(std::shared_ptr<nGameObject> child);
 
 	void Update();
 
 protected:
 	Util::Transform m_Offset;
+	Util::Transform m_Transform;
 private:
-	std::vector<std::shared_ptr<Util::GameObject>> m_Children;
+	std::vector<std::shared_ptr<nGameObject>> m_Children;
 };
 
 #endif //CAMERA_HPP
