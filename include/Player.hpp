@@ -13,9 +13,9 @@
 class Player : public Character {
 public:
 	// 構造函數：初始化玩家屬性
-	Player(const std::string& ImagePath, int maxHp, double speed, int aimRange, double radius,
+	Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, double radius,
 		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage,
-		   Weapon* primaryWeapon = nullptr, Weapon* secondaryWeapon = nullptr, const Skill& skill);
+		   Weapon* primaryWeapon = nullptr, Weapon* secondaryWeapon = nullptr, Skill& skill);
 
 	// 屬性
 	int maxArmor;         // 護甲上限
@@ -29,7 +29,8 @@ public:
 	void switchWeapon();						// 切換武器
 	void changeWeapon();						// 更換新的武器
 	void addTalent(const Talent& talent);		// 添加天賦
-	void useSkill(Skill& skill);			// 施放技能
+	void useSkill(Skill& skill);				// 施放技能
+	void move(double deltaTime) override;		// 移動
 
 private:
 	double criticalRate;	// 暴擊率（0-1）

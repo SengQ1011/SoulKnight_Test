@@ -9,7 +9,7 @@
 class Character : public Util::GameObject {
 public:
 	// 建構子+指定角色的圖片(explicit：防止單參數構造函數進行隱式轉換)
-	explicit Character(const std::string& ImagePath, int maxHp, double speed, int aimRange, double collisionRadius);
+	explicit Character(const std::string& ImagePath, int maxHp, float moveSpeed, int aimRange, double collisionRadius);
 	// delete function--> 禁止 Character 被複製或移動,確保遊戲角色的唯一性
 	Character(const Character&) = delete;
 	Character(Character&&) = delete;
@@ -36,6 +36,8 @@ public:
 	void takeDamage(int dmg);
 	// 使用當前武器攻擊敵人
 	virtual void attack(Character& target) = 0;
+	// 移動方法
+	virtual void move(double DeltaTime) = 0;
 
 protected:
 	double moveSpeed;		// 每秒移動的格數

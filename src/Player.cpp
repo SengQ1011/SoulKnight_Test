@@ -3,10 +3,12 @@
 //
 
 #include "Player.hpp"
+#include "Util/Input.hpp"
+#include "Util/Keycode.hpp"
 
-Player::Player(const std::string& ImagePath, int maxHp, double speed, int aimRange, double radius,
+Player::Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, double radius,
 			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage,
-			   Weapon* primaryWeapon, Weapon* secondaryWeapon, const Skill& skill)
+			   Weapon* primaryWeapon, Weapon* secondaryWeapon, Skill& skill)
 	: Character(ImagePath, maxHp, speed, aimRange, radius), maxArmor(maxArmor), maxEnergy(maxEnergy),
 	  criticalRate(criticalRate), handBladeDamage(handBladeDamage), primaryWeapon(primaryWeapon), secondaryWeapon(secondaryWeapon),
 	  currentArmor(maxArmor), currentEnergy(maxEnergy), skill(skill) {
@@ -45,3 +47,18 @@ void Player::useSkill(Skill& skill) {
 	}
 }
 
+void Player::move(double deltaTime) {
+	// 假設有方法來讀取鍵盤按鍵，下面是一些簡單的邏輯
+	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
+		m_Transform.translation.y += moveSpeed * deltaTime;
+	}
+	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {
+		m_Transform.translation.y -= moveSpeed * deltaTime;
+	}
+	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
+		m_Transform.translation.x -= moveSpeed * deltaTime;
+	}
+	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
+		m_Transform.translation.x += moveSpeed * deltaTime;
+	}
+}

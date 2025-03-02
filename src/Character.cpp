@@ -4,7 +4,7 @@
 #include "Character.hpp"
 #include "Util/Image.hpp"
 
-Character::Character(const std::string& ImagePath, int maxHp, double speed, int aimRange, double radius)
+Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, double radius)
 	: m_ImagePath(ImagePath), maxHealth(maxHp), currentHealth(maxHp),
 	  moveSpeed(speed), aimRange(aimRange), collisionRadius(radius) {
 	SetImage(ImagePath);
