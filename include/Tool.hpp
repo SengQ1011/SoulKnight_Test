@@ -38,6 +38,7 @@ namespace Tool
 	 */
 	glm::vec2 GetMouseCoord();
 
+
 }
 
 #endif //TOOL_HPP

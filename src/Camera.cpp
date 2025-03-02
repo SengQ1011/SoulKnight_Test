@@ -4,7 +4,9 @@
 
 #include "Camera.hpp"
 
-Camera::Camera(const std::vector<std::shared_ptr<nGameObject>> &children) : m_Children(children)
+Camera::Camera(
+	const std::vector<std::shared_ptr<nGameObject>> &pivotChildren
+	) : m_RelativePivotChildren(pivotChildren)
 {
 	m_CameraWorldCoord.translation = {0.0f,0.0f};
 	m_CameraWorldCoord.rotation = 0.0f;
@@ -22,35 +24,36 @@ void Camera::ZoomCamera(const float zoomLevel)
 	m_CameraWorldCoord.scale += glm::vec2(1.0f,1.0f) * zoomLevel * Util::Time::GetDeltaTimeMs() / 1000.0f;
 }
 
-void Camera::RotateCamera(const float degree)
+void Camera::RotateCamera(const float radian) // radian 是PI， degree是°
 {
-	m_CameraWorldCoord.rotation -= degree * Util::Time::GetDeltaTimeMs() / 1000;
+	m_CameraWorldCoord.rotation -= radian * Util::Time::GetDeltaTimeMs() / 1000;
 }
 
-void Camera::AddChild(const std::shared_ptr<nGameObject> &child) {
-	m_Children.push_back(child);
+void Camera::AddRelativePivotChild(const std::shared_ptr<nGameObject> &child) {
+	m_RelativePivotChildren.push_back(child);
 }
 
-void Camera::RemoveChild(std::shared_ptr<nGameObject> child) {
-	m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child),
-									 m_Children.end());
+void Camera::RemoveRelativePivotChild(std::shared_ptr<nGameObject> child) {
+	m_RelativePivotChildren.erase(std::remove(m_RelativePivotChildren.begin(), m_RelativePivotChildren.end(), child),
+									 m_RelativePivotChildren.end());
 }
 
-void Camera::AddChildren(
+void Camera::AddRelativePivotChildren(
 		const std::vector<std::shared_ptr<nGameObject>> &children) {
-	m_Children.reserve(m_Children.size() + children.size());
-	m_Children.insert(m_Children.end(), children.begin(), children.end());
+	m_RelativePivotChildren.reserve(m_RelativePivotChildren.size() + children.size());
+	m_RelativePivotChildren.insert(m_RelativePivotChildren.end(), children.begin(), children.end());
 }
 
 //感覺可以優化 在渲染前一次性修改
 void Camera::Update() {
-	for (const auto &child:m_Children)
+	for (const auto &child:m_RelativePivotChildren)
 	{
 		//變更坐標軸
 		child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉
 		child->m_Transform.scale = m_CameraWorldCoord.scale;
 		child->m_Transform.rotation = m_CameraWorldCoord.rotation;
 	}
+
 }
 
 

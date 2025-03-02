@@ -5,17 +5,18 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include "Beacon.hpp"
+#include "Override/nGameObject.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Time.hpp"
 #include "Util/Transform.hpp"
 #include "pch.hpp"
-#include "Override/nGameObject.hpp"
 
 class Camera
 {
 public:
-	explicit Camera(const std::vector<std::shared_ptr<nGameObject>> &children = {});
+	explicit Camera(const std::vector<std::shared_ptr<nGameObject>> &pivotChildren = {});
 	~Camera() = default;
 
 	void MoveCamera(const glm::vec2& displacement);
@@ -24,18 +25,17 @@ public:
 
 	[[nodiscard]] Util::Transform GetCameraWorldCoord() const { return m_CameraWorldCoord;}
 
-	void AddChild(const std::shared_ptr<nGameObject> &child);
-
-	void AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
-
-	void RemoveChild(std::shared_ptr<nGameObject> child);
+	void AddRelativePivotChild(const std::shared_ptr<nGameObject> &child);
+	void AddRelativePivotChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
+	void RemoveRelativePivotChild(std::shared_ptr<nGameObject> child);
 
 	void Update();
 
 protected:
 	Util::Transform m_CameraWorldCoord;
+	Beacon m_Beacon;
 private:
-	std::vector<std::shared_ptr<nGameObject>> m_Children;
+	std::vector<std::shared_ptr<nGameObject>> m_RelativePivotChildren;
 };
 
 #endif //CAMERA_HPP

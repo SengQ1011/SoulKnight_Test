@@ -2,52 +2,44 @@
 // Created by QuzzS on 2025/2/28.
 //
 #include "Test_Scene.hpp"
+#include "Cursor.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
+
 void TestScene::Start()
 {
 	LOG_DEBUG("Entering Test Scene");
-	m_Tile->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
-	m_Tile->SetZIndex(0);
 
 	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
 	//m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
 	m_Background->SetZIndex(1);
 
-	m_Title->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/Title.png"));
-	m_Title->SetZIndex(5);
-	// m_Title->SetPivot({0,0});
-	// m_Title->m_Transform.translation = glm::vec2(-234.0f,221.5f);
-	m_Title->m_WorldCoord = glm::vec2(-234,221.5);
-
-	// m_RedShawl->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/RedShawl.png"));
-	// m_RedShawl->SetZIndex(4);
-	// m_RedShawl->m_Offset = glm::vec2(237,22);
-
 	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
 	m_Character->SetZIndex(10);
 
-	m_Text->Init( 20, 2, glm::vec2(-11,300) );
-	m_Version->Init( 20, 2, glm::vec2(-451,300) );
+	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
+	m_Enemy->SetZIndex(11);
+	m_Enemy->m_WorldCoord = {16*2,16*2};
+
+	m_Weapon->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/weapons_19.png"));
+	m_Weapon->SetZIndex(12);
+	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord;
+
+	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
 
 	m_Root.AddChild(m_Background);
-	// m_Root.AddChild(m_Tile);
-	// m_Root.AddChild(m_RedShawl);
-	// m_Root.AddChild(m_Title);
-	// m_Root.AddChild(m_Version);
-	// m_Root.AddChild(m_Text);
 	m_Root.AddChild(m_Character);
+	m_Root.AddChild(m_Enemy);
+	m_Root.AddChild(m_Weapon);
 
-	m_Camera.AddChild(m_Background);
-	// m_Camera.AddChild(m_Tile);
-	m_Camera.AddChild(m_RedShawl);
-	m_Camera.AddChild(m_Title);
-	// m_Camera.AddChild(m_Version);
-	// m_Camera.AddChild(m_Text);
-	m_Camera.AddChild(m_Character);
+	m_Camera.AddRelativePivotChild(m_Background);
+	m_Camera.AddRelativePivotChild(m_Character);
+	m_Camera.AddRelativePivotChild(m_Enemy);
+
+	m_Camera.AddRelativePivotChild(m_Weapon);
 }
 
 void TestScene::Input()
@@ -57,6 +49,14 @@ void TestScene::Input()
 void TestScene::Update()
 {
 	//LOG_DEBUG("Test Scene is running...");
+	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
+	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord;
+	m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord());
+
+	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_RB))
+	{
+		LOG_DEBUG("cursor {} {} {}", m_Character->GetWorldCoord(), Cursor::GetCursorWorldCoord(), m_Beacon.GetBeaconWorldCoord());
+	}
 	m_Camera.Update();
 
 	glm::vec2 direction = {0.0f,0.0f};
@@ -71,9 +71,11 @@ void TestScene::Update()
 	if (Util::Input::IsKeyPressed(Util::Keycode::PAGEUP)) {m_Camera.RotateCamera(1);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::PAGEDOWN)) {m_Camera.RotateCamera(-1);}
 
+
+
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
-		glm::vec2 cursor = Tool::GetMouseCoord();
+		glm::vec2 cursor = Cursor::GetCursorWorldCoord();
 		LOG_DEBUG("cursor{}", cursor);
 	}
 
