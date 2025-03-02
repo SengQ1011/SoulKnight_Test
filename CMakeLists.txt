@@ -40,6 +40,9 @@ add_executable(${PROJECT_NAME}
         include/Skill.hpp
         include/StatusEffect.hpp
         include/Character.hpp
+        include/Player.hpp
+        src/Character.cpp
+        src/Player.cpp
 )
 
 if(MSVC)

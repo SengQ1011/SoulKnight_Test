@@ -3,53 +3,51 @@
 
 #include <string>
 #include <vector>
-#include "Weapon.hpp"
-#include "Talent.hpp"
-#include "Skill.hpp"
 #include "StatusEffect.hpp"
+#include "Util/GameObject.hpp"
 
-class Character {
+class Character : public Util::GameObject {
 public:
+	// 建構子+指定角色的圖片(explicit：防止單參數構造函數進行隱式轉換)
+	explicit Character(const std::string& ImagePath, int maxHp, double speed, int aimRange, double collisionRadius);
+	// delete function--> 禁止 Character 被複製或移動,確保遊戲角色的唯一性
+	Character(const Character&) = delete;
+	Character(Character&&) = delete;
+	Character& operator=(const Character&) = delete;
+	Character& operator=(Character&&) = delete;
+
 	// 屬性
 	int maxHealth;        // 生命上限
 	int currentHealth;    // 當前生命值
-	int maxArmor;         // 護甲上限
-	int currentArmor;     // 當前護甲值
-	int maxEnergy;        // 能量上限
-	int currentEnergy;    // 當前能量值
+	std::vector<StatusEffect> activeEffects;	// 狀態異常
+
+
+	// 回傳角色當前的位置
+	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Transform.translation; }
+	// 確認角色是否可見
+	[[nodiscard]] bool GetVisibility() const { return m_Visible; }
+	// 設定圖片與位置
+	void SetImage(const std::string& ImagePath);
+	// 設定角色的新位置
+	void SetPosition(const glm::vec2& Position) { m_Transform.translation = Position; }
+	// 是否發生碰撞
+	[[nodiscard]] bool CheckCollides(const std::shared_ptr<Character>& other) const;
+	// 承受傷害(扣除生命值)
+	void takeDamage(int dmg);
+	// 使用當前武器攻擊敵人
+	virtual void attack(Character& target) = 0;
+
+protected:
+	double moveSpeed;		// 每秒移動的格數
+	int aimRange;			// 自動瞄準範圍
+	double collisionRadius; // 碰撞箱大小
 
 private:
-	double critRate;      // 暴擊率（0-1）
-	int handBladeDamage;  // 手刀傷害
-	double moveSpeed;     // 每秒移動的格數
-	int aimRange;         // 自動瞄準範圍
-	double collisionRadius; // 碰撞箱大小
-	Skill skill;          // 角色技能
+	std::string m_ImagePath;
 
-	// 狀態異常
-	std::vector<StatusEffect> activeEffects;
-
-	// 武器系統+天賦系統
-	Weapon* primaryWeapon = nullptr;   // 主要武器
-	Weapon* secondaryWeapon = nullptr; // 副武器
-	std::vector<Talent> talents;       // 天賦系統
-
-	// 建構子
-	Character(int hp, int armor, int energy, double crit, int handBladeDamage,
-			  double speed, int aim, double radius, Skill skill,
-			  Weapon* primaryWeapon = nullptr, Weapon* secondaryWeapon = nullptr);
-
-	// 方法
-	void takeDamage(int dmg);					// 承受傷害
-	void recoverArmor();						// 自動回復護甲
-	void useEnergy(int amount);					// 消耗能量
-	bool checkCollision(Character& other);		// 碰撞檢測
-	void attack(Character& target);				// 使用當前武器攻擊敵人
-	void switchWeapon();						// 切換武器
+	void ResetPosition() { m_Transform.translation = {0, 0}; }
 	void applyStatusEffect(const StatusEffect& effect); // 添加狀態異常
-	void updateStatusEffects(double deltaTime); // 更新狀態異常
-	void addTalent(const Talent& talent);		// 添加天賦
-	void useSkill(Skill skill);					// 施放技能
+	void updateStatusEffects(double deltaTime);			// 更新狀態異常
 };
 
 #endif // CHARACTER_HPP

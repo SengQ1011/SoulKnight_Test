@@ -5,4 +5,7 @@
 #ifndef TALENT_HPP
 #define TALENT_HPP
 
+class Talent {
+
+};
 #endif //TALENT_HPP
