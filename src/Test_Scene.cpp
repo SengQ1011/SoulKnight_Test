@@ -65,11 +65,11 @@ void TestScene::Update()
 	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {direction += glm::vec2(1.0f,0.0f);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {direction += glm::vec2(-1.0f,0.0f);}
 
-	if (Util::Input::IsKeyPressed(Util::Keycode::HOME)) {m_Camera.ZoomCamera(1);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::END)) {m_Camera.ZoomCamera(-1);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
 
-	if (Util::Input::IsKeyPressed(Util::Keycode::PAGEUP)) {m_Camera.RotateCamera(1);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::PAGEDOWN)) {m_Camera.RotateCamera(-1);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::O)) {m_Camera.RotateCamera(1);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::L)) {m_Camera.RotateCamera(-1);}
 
 
 

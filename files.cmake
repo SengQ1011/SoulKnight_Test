@@ -4,6 +4,9 @@ set(SRC_FILES
     Camera.cpp
     Cursor.cpp
 
+    Character.cpp
+    Player.cpp
+
     Test_Scene.cpp
     MainMenu_Scene.cpp
     Game_Scene.cpp
@@ -18,6 +21,13 @@ set(SRC_FILES
 set(INCLUDE_FILES
     Override/nGameObject.hpp
     Override/nContext.hpp
+
+    Weapon.hpp
+    Talent.hpp
+    Skill.hpp
+    StatusEffect.hpp
+    Character.hpp
+    Player.hpp
 
     App.hpp
     Beacon.hpp

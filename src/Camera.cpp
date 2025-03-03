@@ -52,6 +52,7 @@ void Camera::Update() {
 		child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉
 		child->m_Transform.scale = m_CameraWorldCoord.scale;
 		child->m_Transform.rotation = m_CameraWorldCoord.rotation;
+
 	}
 
 }

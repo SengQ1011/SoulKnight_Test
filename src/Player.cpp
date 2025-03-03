@@ -7,11 +7,11 @@
 #include "Util/Keycode.hpp"
 
 Player::Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, double radius,
-			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage,
-			   Weapon* primaryWeapon, Weapon* secondaryWeapon, Skill& skill)
+			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill& skill,
+			   Weapon* primaryWeapon, Weapon* secondaryWeapon)
 	: Character(ImagePath, maxHp, speed, aimRange, radius), maxArmor(maxArmor), maxEnergy(maxEnergy),
 	  criticalRate(criticalRate), handBladeDamage(handBladeDamage), primaryWeapon(primaryWeapon), secondaryWeapon(secondaryWeapon),
-	  currentArmor(maxArmor), currentEnergy(maxEnergy), skill(skill) {
+	  skill(skill), currentArmor(maxArmor), currentEnergy(maxEnergy) {
 	// 可以在這裡做一些初始化
 }
 
