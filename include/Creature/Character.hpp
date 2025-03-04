@@ -1,9 +1,13 @@
+//
+// Created by QuzzS on 2025/3/4.
+//
+
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
 #include <string>
 #include <vector>
-#include "StatusEffect.hpp"
+#include "GameMechanism/StatusEffect.hpp"
 #include "Util/GameObject.hpp"
 
 class Character : public Util::GameObject {
@@ -52,4 +56,4 @@ private:
 	void updateStatusEffects(double deltaTime);			// 更新狀態異常
 };
 
-#endif // CHARACTER_HPP
+#endif //CHARACTER_HPP

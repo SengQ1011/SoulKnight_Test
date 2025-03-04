@@ -1,10 +1,10 @@
 #include "App.hpp"
-#include "MainMenu_Scene.hpp"
+#include "Scene/MainMenu_Scene.hpp"
 
 #include <iostream>
 #include "Core/Context.hpp"
 
-#include "Test_Scene.hpp"
+#include "Scene/Test_Scene.hpp"
 
 int main(int, char**) {
     auto context = Core::Context::GetInstance();

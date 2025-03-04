@@ -1,12 +1,13 @@
 //
-// Created by QuzzS on 2025/2/23.
+// Created by QuzzS on 2025/3/4.
 //
 
 #ifndef GAME_SCENE_HPP
 #define GAME_SCENE_HPP
 
+
 #include "App.hpp"
-#include "Scene.hpp"
+#include "Scene/Scene.hpp"
 
 class GameScene : public Scene
 {

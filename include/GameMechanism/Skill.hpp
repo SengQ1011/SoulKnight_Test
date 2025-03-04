@@ -1,6 +1,7 @@
 //
-// Created by tjx20 on 2/23/2025.
+// Created by QuzzS on 2025/3/4.
 //
+
 #ifndef SKILL_HPP
 #define SKILL_HPP
 
@@ -69,4 +70,4 @@ private:
 	SkillFunction effect;  // 技能效果的函數指針
 };
 
-#endif // SKILL_HPP
+#endif //SKILL_HPP

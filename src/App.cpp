@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "Test_Scene.hpp"
+#include "Scene/Test_Scene.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"

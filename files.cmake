@@ -4,13 +4,13 @@ set(SRC_FILES
     Camera.cpp
     Cursor.cpp
 
-    Character.cpp
-    Player.cpp
+    Scene/Test_Scene.cpp
+    Scene/MainMenu_Scene.cpp
+    Scene/Game_Scene.cpp
+    Scene/Lobby_Scene.cpp
 
-    Test_Scene.cpp
-    MainMenu_Scene.cpp
-    Game_Scene.cpp
-    Lobby_Scene.cpp
+    Creature/Character.cpp
+    Creature/Player.cpp
 
     Button_UI.cpp
     TextObject_UI.cpp
@@ -22,23 +22,25 @@ set(INCLUDE_FILES
     Override/nGameObject.hpp
     Override/nContext.hpp
 
-    Weapon.hpp
-    Talent.hpp
-    Skill.hpp
-    StatusEffect.hpp
-    Character.hpp
-    Player.hpp
+    Scene/Scene.hpp
+    Scene/Test_Scene.hpp
+    Scene/MainMenu_Scene.hpp
+    Scene/Game_Scene.hpp
+    Scene/Lobby_Scene.hpp
+
+    Weapon/Weapon.hpp
+
+    Creature/Character.hpp
+    Creature/Player.hpp
+
+    GameMechanism/Talent.hpp
+    GameMechanism/Skill.hpp
+    GameMechanism/StatusEffect.hpp
 
     App.hpp
     Beacon.hpp
     Camera.hpp
     Cursor.hpp
-
-    Scene.hpp
-    Test_Scene.hpp
-    MainMenu_Scene.hpp
-    Game_Scene.hpp
-    Lobby_Scene.hpp
 
     Button_UI.hpp
     TextObject_UI.hpp

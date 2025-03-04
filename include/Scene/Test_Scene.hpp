@@ -1,5 +1,5 @@
 //
-// Created by QuzzS on 2025/2/28.
+// Created by QuzzS on 2025/3/4.
 //
 
 #ifndef TEST_SCENE_HPP
@@ -7,7 +7,7 @@
 
 
 #include "App.hpp"
-#include "Scene.hpp"
+#include "Scene/Scene.hpp"
 #include "Camera.hpp"
 #include "Override/nGameObject.hpp"
 

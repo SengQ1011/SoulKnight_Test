@@ -13,10 +13,24 @@ Camera::Camera(
 	m_CameraWorldCoord.scale = {1.0f,1.0f};
 }
 
-void Camera::MoveCamera(const glm::vec2 &displacement)
+// void Camera::MoveCamera(const glm::vec2 &displacement)
+// {
+// 	//加位移變化量
+// 	m_CameraWorldCoord.translation += displacement * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
+// }
+
+void Camera::MoveCamera(const glm::vec2 &beaconCoord)
 {
 	//加位移變化量
-	m_CameraWorldCoord.translation += displacement * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
+	glm::vec2 UnitVector = beaconCoord / std::sqrt(beaconCoord.x * beaconCoord.x + beaconCoord.y * beaconCoord.y);
+	m_CameraWorldCoord.translation += UnitVector * Util::Time::GetDeltaTimeMs() / 5.0f;
+	// TODO:限制範圍 應該要圓形的 可能需要變數 範圍還沒限制到
+	const float u = beaconCoord.x * std::sqrt(1 - beaconCoord.y * beaconCoord.y / 2);
+	const float v = beaconCoord.y * std::sqrt(1 - beaconCoord.x * beaconCoord.x / 2);
+	// if (m_CameraWorldCoord.translation.x > beaconCoord.x + u) {m_CameraWorldCoord.translation.x = beaconCoord.x + u;}
+	// if (m_CameraWorldCoord.translation.y > beaconCoord.y + v) {m_CameraWorldCoord.translation.y = beaconCoord.y + v;}
+	// if (m_CameraWorldCoord.translation.x < beaconCoord.x + u) {m_CameraWorldCoord.translation.x = beaconCoord.x + u;}
+	// if (m_CameraWorldCoord.translation.y < beaconCoord.y + v) {m_CameraWorldCoord.translation.y = beaconCoord.y + v;}
 }
 
 void Camera::ZoomCamera(const float zoomLevel)
@@ -49,7 +63,8 @@ void Camera::Update() {
 	for (const auto &child:m_RelativePivotChildren)
 	{
 		//變更坐標軸
-		child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉
+		// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
+		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 		child->m_Transform.scale = m_CameraWorldCoord.scale;
 		child->m_Transform.rotation = m_CameraWorldCoord.rotation;
 

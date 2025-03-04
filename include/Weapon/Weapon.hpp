@@ -1,9 +1,9 @@
 //
-// Created by tjx20 on 2/23/2025.
+// Created by QuzzS on 2025/3/4.
 //
 
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef WEAPON_HPP
+#define WEAPON_HPP
 
 class Weapon {
 public:
@@ -15,4 +15,4 @@ public:
 	Weapon();
 };
 
-#endif //WEAPON_H
+#endif //WEAPON_HPP

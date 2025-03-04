@@ -1,7 +1,7 @@
 //
-// Created by QuzzS on 2025/2/28.
+// Created by QuzzS on 2025/3/4.
 //
-#include "Test_Scene.hpp"
+#include "Scene/Test_Scene.hpp"
 #include "Cursor.hpp"
 
 #include "Util/Input.hpp"
@@ -93,11 +93,12 @@ void TestScene::Update()
 		LOG_DEBUG("");
 	}
 
+	//TODO:F
 	if (direction.x != 0 || direction.y != 0)
 	{
 		m_Character->m_WorldCoord += direction * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		m_Camera.MoveCamera(direction);
 	}
+	// m_Camera.MoveCamera(m_Beacon.GetBeaconWorldCoord());
 
 	m_Root.Update();
 }

@@ -1,8 +1,8 @@
 //
-// Created by QuzzS on 2025/2/23.
+// Created by QuzzS on 2025/3/4.
 //
 
-#include "MainMenu_Scene.hpp"
+#include "Scene/MainMenu_Scene.hpp"
 
 #include "Tool.hpp"
 #include "Util/Image.hpp"
@@ -62,8 +62,4 @@ Scene::SceneType MainMenuScene::Change()
 	}
 	return Scene::SceneType::Null;
 }
-
-
-
-
 

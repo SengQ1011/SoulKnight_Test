@@ -1,14 +1,14 @@
 //
-// Created by tjx20 on 3/2/2025.
+// Created by QuzzS on 2025/3/4.
 //
 
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
-#include "Character.hpp"
-#include "Skill.hpp"
-#include "Talent.hpp"
-#include "Weapon.hpp"
-#include "Skill.hpp"
+
+#include "Creature/Character.hpp"
+#include "GameMechanism/Skill.hpp"
+#include "GameMechanism/Talent.hpp"
+#include "Weapon/Weapon.hpp"
 
 class Player : public Character {
 public:
@@ -42,4 +42,5 @@ private:
 	Weapon* secondaryWeapon = nullptr; // 副武器
 	std::vector<Talent> talents;       // 天賦系統
 };
+
 #endif //PLAYER_HPP

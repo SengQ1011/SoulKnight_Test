@@ -1,10 +1,10 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "Scene.hpp"
-#include "Lobby_Scene.hpp"
-#include "Game_Scene.hpp"
-#include "MainMenu_Scene.hpp"
+#include "Scene/Scene.hpp"
+#include "Scene/Lobby_Scene.hpp"
+#include "Scene/Game_Scene.hpp"
+#include "Scene/MainMenu_Scene.hpp"
 
 #include "pch.hpp" // IWYU pragma: export
 

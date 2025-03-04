@@ -1,12 +1,12 @@
 //
-// Created by QuzzS on 2025/2/26.
+// Created by QuzzS on 2025/3/4.
 //
 
 #ifndef LOBBY_SCENE_HPP
 #define LOBBY_SCENE_HPP
 
 #include "App.hpp"
-#include "Scene.hpp"
+#include "Scene/Scene.hpp"
 
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"

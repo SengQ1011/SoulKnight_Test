@@ -1,13 +1,14 @@
 //
-// Created by QuzzS on 2025/2/23.
+// Created by QuzzS on 2025/3/4.
 //
 
-#ifndef MENU_SCENE_HPP
-#define MENU_SCENE_HPP
+#ifndef MAINMENU_SCENE_HPP
+#define MAINMENU_SCENE_HPP
+
 
 #include "App.hpp"
 #include "Button_UI.hpp"
-#include "Scene.hpp"
+#include "Scene/Scene.hpp"
 
 #include "TextObject_UI.hpp"
 #include "Util/BGM.hpp"
@@ -41,4 +42,4 @@ protected:
 	Util::Renderer m_Root;
 };
 
-#endif //MENU_SCENE_HPP
+#endif //MAINMENU_SCENE_HPP

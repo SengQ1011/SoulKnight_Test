@@ -1,7 +1,7 @@
 //
-// Created by tjx20 on 3/2/2025.
+// Created by QuzzS on 2025/3/4.
 //
-#include "Character.hpp"
+#include "Creature/Character.hpp"
 #include "Util/Image.hpp"
 
 Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, double radius)
@@ -15,4 +15,3 @@ void Character::SetImage(const std::string& ImagePath) {
 	m_ImagePath = ImagePath;
 	m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
-

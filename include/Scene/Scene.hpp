@@ -1,9 +1,9 @@
 //
-// Created by QuzzS on 2025/2/23.
+// Created by QuzzS on 2025/3/4.
 //
 
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef SCENE_HPP
+#define SCENE_HPP
 
 #include "Util/Time.hpp"
 
@@ -31,4 +31,4 @@ public:
 protected:
 };
 
-#endif //SCENE_H
+#endif //SCENE_HPP
