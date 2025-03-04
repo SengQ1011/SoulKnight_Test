@@ -2,7 +2,8 @@
 
 #include <utility>
 
-#include "Scene/Test_Scene.hpp"
+#include "Scene/Test_Scene_KC.hpp"
+#include "Scene/Test_Scene_JX.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -28,8 +29,11 @@ void App::Update() {
 		case Scene::SceneType::Menu:
 			m_CurrentScene = std::make_shared<MainMenuScene>();
 			break;
-		case Scene::SceneType::Test:
-			m_CurrentScene = std::make_shared<TestScene>();
+		case Scene::SceneType::Test_KC:
+			m_CurrentScene = std::make_shared<TestScene_KC>();
+			break;
+		case Scene::SceneType::Test_JX:
+			m_CurrentScene = std::make_shared<TestScene_JX>();
 			break;
 		case Scene::SceneType::Lobby:
 			m_CurrentScene = std::make_shared<LobbyScene>();

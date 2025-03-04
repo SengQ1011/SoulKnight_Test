@@ -1,17 +1,17 @@
 //
 // Created by QuzzS on 2025/3/4.
 //
-#include "Scene/Test_Scene.hpp"
 #include "Cursor.hpp"
+#include "Scene/Test_Scene_KC.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
 
-void TestScene::Start()
+void TestScene_KC::Start()
 {
-	LOG_DEBUG("Entering Test Scene");
+	LOG_DEBUG("Entering KC Test Scene");
 
 	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
 	//m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
@@ -42,11 +42,11 @@ void TestScene::Start()
 	m_Camera.AddRelativePivotChild(m_Weapon);
 }
 
-void TestScene::Input()
+void TestScene_KC::Input()
 {
 }
 
-void TestScene::Update()
+void TestScene_KC::Update()
 {
 	//LOG_DEBUG("Test Scene is running...");
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
@@ -59,11 +59,11 @@ void TestScene::Update()
 	}
 	m_Camera.Update();
 
-	glm::vec2 direction = {0.0f,0.0f};
-	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {direction += glm::vec2(0.0f,1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {direction += glm::vec2(0.0f,-1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {direction += glm::vec2(1.0f,0.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {direction += glm::vec2(-1.0f,0.0f);}
+	glm::vec2 speed = {0.0f,0.0f};
+	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {speed += glm::vec2(0.0f,1.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {speed += glm::vec2(0.0f,-1.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {speed += glm::vec2(1.0f,0.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {speed += glm::vec2(-1.0f,0.0f);}
 
 	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
@@ -94,21 +94,23 @@ void TestScene::Update()
 	}
 
 	//TODO:F
-	if (direction.x != 0 || direction.y != 0)
+	if (speed != glm::vec2(0.0f)) //檢查非零向量 才能進行向量標準化 length(speed) != 0模長非零，因爲normalize = speed / length(speed)
 	{
-		m_Character->m_WorldCoord += direction * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(direction.x * direction.x + direction.y * direction.y);
+		const float ratio = 0.2f;
+		const glm::vec2 deltaDisplacement = normalize(speed) * ratio * Util::Time::GetDeltaTimeMs(); //normalize為防止斜向走速度是根號2
+		m_Character->m_WorldCoord += deltaDisplacement;
+		m_Camera.MoveCamera(deltaDisplacement);
 	}
-	// m_Camera.MoveCamera(m_Beacon.GetBeaconWorldCoord());
 
 	m_Root.Update();
 }
 
-void TestScene::Exit()
+void TestScene_KC::Exit()
 {
-	LOG_DEBUG("Test Scene exited");
+	LOG_DEBUG("KC Test Scene exited");
 }
 
-Scene::SceneType TestScene::Change()
+Scene::SceneType TestScene_KC::Change()
 {
 	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
 	{

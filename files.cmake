@@ -4,7 +4,8 @@ set(SRC_FILES
     Camera.cpp
     Cursor.cpp
 
-    Scene/Test_Scene.cpp
+    Scene/Test_Scene_KC.cpp
+    Scene/Test_Scene_JX.cpp
     Scene/MainMenu_Scene.cpp
     Scene/Game_Scene.cpp
     Scene/Lobby_Scene.cpp
@@ -23,7 +24,8 @@ set(INCLUDE_FILES
     Override/nContext.hpp
 
     Scene/Scene.hpp
-    Scene/Test_Scene.hpp
+    Scene/Test_Scene_KC.hpp
+    Scene/Test_Scene_JX.hpp
     Scene/MainMenu_Scene.hpp
     Scene/Game_Scene.hpp
     Scene/Lobby_Scene.hpp

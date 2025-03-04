@@ -14,7 +14,8 @@ public:
 	{
 		Null,
 		Menu,
-		Test,
+		Test_KC,
+		Test_JX,
 		Lobby,
 		Game,
 	};
@@ -23,7 +24,7 @@ public:
 	virtual ~Scene() = default;
 
 	virtual void Start() = 0;
-	virtual void Input() = 0;
+	virtual void Input() = 0; //專門處理玩家輸入 TODO:需要一個内部狀態變量 - 將Input的data傳去Update
 	virtual void Update() = 0;
 	virtual void Exit() = 0;
 	virtual SceneType Change() = 0; // 換場景設置

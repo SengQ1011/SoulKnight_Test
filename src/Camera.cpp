@@ -19,14 +19,12 @@ Camera::Camera(
 // 	m_CameraWorldCoord.translation += displacement * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
 // }
 
-void Camera::MoveCamera(const glm::vec2 &beaconCoord)
+void Camera::MoveCamera(const glm::vec2 &deltaDisplacement)
 {
-	//加位移變化量
-	glm::vec2 UnitVector = beaconCoord / std::sqrt(beaconCoord.x * beaconCoord.x + beaconCoord.y * beaconCoord.y);
-	m_CameraWorldCoord.translation += UnitVector * Util::Time::GetDeltaTimeMs() / 5.0f;
+	m_CameraWorldCoord.translation += deltaDisplacement;
 	// TODO:限制範圍 應該要圓形的 可能需要變數 範圍還沒限制到
-	const float u = beaconCoord.x * std::sqrt(1 - beaconCoord.y * beaconCoord.y / 2);
-	const float v = beaconCoord.y * std::sqrt(1 - beaconCoord.x * beaconCoord.x / 2);
+	// const float u = beaconCoord.x * std::sqrt(1 - beaconCoord.y * beaconCoord.y / 2);
+	// const float v = beaconCoord.y * std::sqrt(1 - beaconCoord.x * beaconCoord.x / 2);
 	// if (m_CameraWorldCoord.translation.x > beaconCoord.x + u) {m_CameraWorldCoord.translation.x = beaconCoord.x + u;}
 	// if (m_CameraWorldCoord.translation.y > beaconCoord.y + v) {m_CameraWorldCoord.translation.y = beaconCoord.y + v;}
 	// if (m_CameraWorldCoord.translation.x < beaconCoord.x + u) {m_CameraWorldCoord.translation.x = beaconCoord.x + u;}

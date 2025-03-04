@@ -11,11 +11,11 @@
 #include "Camera.hpp"
 #include "Override/nGameObject.hpp"
 
-class TestScene : public Scene
+class TestScene_KC : public Scene
 {
 public:
-	TestScene() = default;
-	~TestScene() override = default;
+	TestScene_KC() = default;
+	~TestScene_KC() override = default;
 
 	void Start() override;
 	void Input() override;

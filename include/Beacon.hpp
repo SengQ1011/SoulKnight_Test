@@ -18,6 +18,7 @@ public:
 	{
 		//等比分點
 		m_WorldCoord = (ReferenceObjectCoord * 4.0f + ReferenceOriginCoord * 3.0f) / 7.0f; //靠近referenceObjectCoord，遠離referenceOriginCoord
+
 		//TODO: 限制範圍 可能需要變數 範圍還沒限制到
 		// const glm::vec2 offSet = ReferenceObjectCoord - ReferenceOriginCoord;
 		// if (m_WorldCoord.x > ReferenceOriginCoord.x + u) {m_WorldCoord.x = ReferenceOriginCoord.x + u;}
