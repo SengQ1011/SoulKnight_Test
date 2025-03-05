@@ -3,20 +3,16 @@
 //
 
 #include "Creature/Player.hpp"
-#include "Util/Input.hpp"
-#include "Util/Keycode.hpp"
 
-Player::Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, double radius,
-			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill& skill,
-			   Weapon* primaryWeapon, Weapon* secondaryWeapon)
-	: Character(ImagePath, maxHp, speed, aimRange, radius), maxArmor(maxArmor), maxEnergy(maxEnergy),
-	  criticalRate(criticalRate), handBladeDamage(handBladeDamage), primaryWeapon(primaryWeapon), secondaryWeapon(secondaryWeapon),
-	  skill(skill), currentArmor(maxArmor), currentEnergy(maxEnergy) {
-	// 可以在這裡做一些初始化
-}
+Player::Player(const std::string& ImagePath, int maxHp, int currentHp, float speed, int aimRange, double radius,
+			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill& skill, Weapon* initialWeapon)
+	: Character(ImagePath, maxHp, currentHp, speed, aimRange, radius, initialWeapon), m_maxArmor(maxArmor), m_maxEnergy(maxEnergy),
+	  m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), skill(skill), m_currentArmor(maxArmor), m_currentEnergy(maxEnergy) {}
 
-void Player::attack(Character& target) {
-	// 實現玩家的攻擊邏輯
+void Player::attack() {
+	if (currentWeapon) {
+		//currentWeapon->use();
+	}
 }
 
 void Player::recoverArmor() {
@@ -27,13 +23,15 @@ void Player::useEnergy(int amount) {
 	// 消耗能量的邏輯
 }
 
-void Player::switchWeapon() {
-	// 切換武器的邏輯
+void Player::AddWeapon(Weapon* weapon) {
+	if (m_Weapons.size() < 2) { // 限制最多兩把武器
+		return Character::AddWeapon(weapon);
+	}
+	else{
+		// 更換當前的武器
+	}
 }
 
-void Player::changeWeapon() {
-	// 更換武器的邏輯
-}
 
 void Player::addTalent(const Talent& talent) {
 	talents.push_back(talent);
@@ -47,18 +45,7 @@ void Player::useSkill(Skill& skill) {
 	}
 }
 
-void Player::move(double deltaTime) {
-	// 假設有方法來讀取鍵盤按鍵，下面是一些簡單的邏輯
-	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
-		m_Transform.translation.y += moveSpeed * deltaTime;
-	}
-	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {
-		m_Transform.translation.y -= moveSpeed * deltaTime;
-	}
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-		m_Transform.translation.x -= moveSpeed * deltaTime;
-	}
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-		m_Transform.translation.x += moveSpeed * deltaTime;
-	}
+void Player::move() {
+
 }
+

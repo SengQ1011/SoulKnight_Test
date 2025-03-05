@@ -35,6 +35,8 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${INCLUDE_FILES}
+        include/Creature/Enemy.hpp
+        src/Creature/Enemy.cpp
 )
 
 if(MSVC)

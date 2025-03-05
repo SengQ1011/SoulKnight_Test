@@ -17,6 +17,7 @@ set(SRC_FILES
     Scene/Result_Scene.cpp
 
     Creature/Character.cpp
+    Creature/Enemy.cpp
     Creature/Player.cpp
 
     Tool.cpp
@@ -41,6 +42,7 @@ set(INCLUDE_FILES
     Weapon/Weapon.hpp
 
     Creature/Character.hpp
+    Creature/Enemy.hpp
     Creature/Player.hpp
 
     GameMechanism/Talent.hpp

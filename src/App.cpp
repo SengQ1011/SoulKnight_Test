@@ -91,8 +91,3 @@ void App::SetCurrentScene(std::shared_ptr<Scene> nextScene)
 {
 	m_CurrentScene = std::move(nextScene);
 }
-
-
-
-
-

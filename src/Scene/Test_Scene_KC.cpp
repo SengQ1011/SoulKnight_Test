@@ -89,7 +89,6 @@ void TestScene_KC::Update()
 	if (Util::Input::IsKeyPressed(Util::Keycode::L)) {m_Camera.RotateCamera(-1);}
 
 
-
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
 		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x);

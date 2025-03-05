@@ -67,8 +67,13 @@ void TestScene_JX::Update()
 	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {speed += glm::vec2(-1.0f,0.0f);}
 
 	//Camera Zoom In=I /Out=K
-	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::I))
+	{
+		m_Camera.ZoomCamera(1);
+		LOG_DEBUG("scale{}", m_Camera.GetCameraWorldCoord().scale);
+	}
 	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
+
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
