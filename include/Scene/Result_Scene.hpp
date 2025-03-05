@@ -2,18 +2,18 @@
 // Created by QuzzS on 2025/3/4.
 //
 
-#ifndef GAME_SCENE_HPP
-#define GAME_SCENE_HPP
+#ifndef RESULT_SCENE_HPP
+#define RESULT_SCENE_HPP
 
 
 #include "App.hpp"
 #include "Scene/Scene.hpp"
 
-class GameScene : public Scene
+class ResultScene : public Scene
 {
 public:
-	GameScene() = default;
-	~GameScene() override = default;
+	ResultScene() = default;
+	~ResultScene() override = default;
 
 	void Start() override;
 	void Input() override;
@@ -24,4 +24,4 @@ public:
 protected:
 };
 
-#endif //GAME_SCENE_HPP
+#endif //RESULT_SCENE_HPP

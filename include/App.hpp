@@ -2,9 +2,12 @@
 #define APP_HPP
 
 #include "Scene/Scene.hpp"
-#include "Scene/Lobby_Scene.hpp"
-#include "Scene/Game_Scene.hpp"
 #include "Scene/MainMenu_Scene.hpp"
+#include "Scene/Lobby_Scene.hpp"
+#include "Scene/DungeonLoading_Scene.hpp"
+#include "Scene/Dungeon_Scene.hpp"
+#include "Scene/Complete_Scene.hpp"
+#include "Scene/Result_Scene.hpp"
 
 #include "pch.hpp" // IWYU pragma: export
 
@@ -33,6 +36,8 @@ private:
 private:
     State m_CurrentState = State::START;
 	std::shared_ptr<Scene> m_CurrentScene;
+	std::shared_ptr<Scene> m_PreLoadScene;
+	//TODO: Dungeon預加載指標
 };
 
 #endif

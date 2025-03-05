@@ -2,36 +2,37 @@
 // Created by QuzzS on 2025/3/4.
 //
 
-#include "Scene/Game_Scene.hpp"
+
+#include "Scene/Dungeon_Scene.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
-void GameScene::Start()
+void DungeonScene::Start()
 {
 	LOG_DEBUG("Entering Game Scene");
 }
 
-void GameScene::Input()
+void DungeonScene::Input()
 {
 	if (Util::Input::IsKeyDown(Util::Keycode::H))
 	{
-		LOG_DEBUG("GameScene input \'H\' successfully detected");
+		LOG_DEBUG("DungeonScene input \'H\' successfully detected");
 	}
 }
 
-void GameScene::Update()
+void DungeonScene::Update()
 {
 	LOG_DEBUG("Game Scene is running...");
 }
 
-void GameScene::Exit()
+void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
 }
 
-Scene::SceneType GameScene::Change()
+Scene::SceneType DungeonScene::Change()
 {
 	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
 	{

@@ -33,9 +33,9 @@ glm::vec2 Cursor::GetCursorWindowCoord()
 	return m_WindowCoord;
 }
 
-glm::vec2 Cursor::GetCursorWorldCoord()
+glm::vec2 Cursor::GetCursorWorldCoord(const float scale)
 {
-	return GetCursorWindowCoord() + m_WindowOriginWorldCoord;
+	return GetCursorWindowCoord() / scale + m_WindowOriginWorldCoord;
 }
 
 

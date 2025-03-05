@@ -11,8 +11,8 @@ int main(int, char**) {
     auto context = Core::Context::GetInstance();
 	context->SetWindowIcon(RESOURCE_DIR "/pet00icon.png");
 	App app;
-	app.SetCurrentScene(std::make_shared<TestScene_JX>());
-	// app.SetCurrentScene(std::make_shared<TestScene_KC>());
+	// app.SetCurrentScene(std::make_shared<TestScene_JX>());
+	app.SetCurrentScene(std::make_shared<TestScene_KC>());
 
     while (!context->GetExit()) {
         switch (app.GetCurrentState()) {

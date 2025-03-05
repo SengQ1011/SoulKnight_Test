@@ -7,8 +7,11 @@ set(SRC_FILES
     Scene/Test_Scene_KC.cpp
     Scene/Test_Scene_JX.cpp
     Scene/MainMenu_Scene.cpp
-    Scene/Game_Scene.cpp
     Scene/Lobby_Scene.cpp
+    Scene/DungeonLoading_Scene.cpp
+    Scene/Dungeon_Scene.cpp
+    Scene/Complete_Scene.cpp
+    Scene/Result_Scene.cpp
 
     Creature/Character.cpp
     Creature/Player.cpp
@@ -27,8 +30,11 @@ set(INCLUDE_FILES
     Scene/Test_Scene_KC.hpp
     Scene/Test_Scene_JX.hpp
     Scene/MainMenu_Scene.hpp
-    Scene/Game_Scene.hpp
     Scene/Lobby_Scene.hpp
+    Scene/DungeonLoading_Scene.hpp
+    Scene/Dungeon_Scene.hpp
+    Scene/Complete_Scene.hpp
+    Scene/Result_Scene.hpp
 
     Weapon/Weapon.hpp
 

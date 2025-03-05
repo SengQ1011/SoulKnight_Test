@@ -17,7 +17,10 @@ public:
 		Test_KC,
 		Test_JX,
 		Lobby,
-		Game,
+		DungeonLoad,
+		Dungeon,
+		Complete,
+		Result,
 	};
 
 	Scene() = default;

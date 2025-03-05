@@ -19,7 +19,7 @@ public:
 
 	static glm::vec2 GetCursorWindowCoord();
 
-	static glm::vec2 GetCursorWorldCoord();
+	static glm::vec2 GetCursorWorldCoord(float scale);
 
 protected:
 	inline static glm::vec2 m_WindowCoord = {0, 0};

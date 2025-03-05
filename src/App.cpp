@@ -19,7 +19,7 @@ void App::Update() {
 
     //TODO: do your things here and delete this line <3
 
-	//場景切換 - 主菜單、游戲局内畫面 TODO 這裏應該搬去Scene的Change裏面實作， 然後每次呼叫判斷？有才換 沒就skip
+	//場景切換 - 主菜單、游戲局内畫面
 	Scene::SceneType type = m_CurrentScene->Change();
 	if (type != Scene::SceneType::Null)
 	{
@@ -38,13 +38,34 @@ void App::Update() {
 		case Scene::SceneType::Lobby:
 			m_CurrentScene = std::make_shared<LobbyScene>();
 			break;
-		case Scene::SceneType::Game:
-			m_CurrentScene = std::make_shared<GameScene>();
+		case Scene::SceneType::DungeonLoad:
+			m_CurrentScene = std::make_shared<DungeonLoadingScene>(); //關卡加載初始化后要先渲染一次畫面，方便關卡預先初始化
+			m_PreLoadScene = std::make_shared<DungeonScene>();
+			break;
+		case Scene::SceneType::Dungeon:
+			m_CurrentScene = m_PreLoadScene;
+			m_PreLoadScene = nullptr;
+			break;
+		case Scene::SceneType::Complete:
+			m_CurrentScene = std::make_shared<CompleteScene>();
+			break;
+		case Scene::SceneType::Result:
+			m_CurrentScene = std::make_shared<ResultScene>();
 			break;
 		default:
 			break;
 		}
-		m_CurrentScene->Start(); //載入新場景
+
+		//載入新場景 初始化
+		if (type == Scene::SceneType::DungeonLoad)
+		{
+			m_CurrentScene->Start();
+			m_PreLoadScene->Start();
+		}
+		else if (type != Scene::SceneType::Dungeon)
+		{
+			m_CurrentScene->Start();
+		}
 	}
 
 	m_CurrentScene->Input();
@@ -63,6 +84,7 @@ void App::Update() {
 void App::End() { // NOLINT(this method will mutate members in the future)
     LOG_TRACE("End");
 	m_CurrentScene->Exit();
+	m_CurrentScene = nullptr;
 }
 
 void App::SetCurrentScene(std::shared_ptr<Scene> nextScene)

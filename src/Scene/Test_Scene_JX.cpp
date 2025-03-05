@@ -72,7 +72,7 @@ void TestScene_JX::Update()
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
-		glm::vec2 cursor = Cursor::GetCursorWorldCoord();
+		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x);
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
 

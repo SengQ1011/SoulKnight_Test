@@ -51,11 +51,11 @@ void TestScene_KC::Update()
 	//LOG_DEBUG("Test Scene is running...");
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
 	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord;
-	m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord());
+	m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x));
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_RB))
 	{
-		LOG_DEBUG("cursor {} {} {}", m_Character->GetWorldCoord(), Cursor::GetCursorWorldCoord(), m_Beacon.GetBeaconWorldCoord());
+		LOG_DEBUG("cursor {} {} {}", m_Character->GetWorldCoord(), Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x), m_Beacon.GetBeaconWorldCoord());
 	}
 	m_Camera.Update();
 
@@ -75,18 +75,14 @@ void TestScene_KC::Update()
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
-		glm::vec2 cursor = Cursor::GetCursorWorldCoord();
+		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x);
 		LOG_DEBUG("cursor{}", cursor);
 	}
 
 	if (Util::Input::IsKeyUp(Util::Keycode::Y))
 	{
-		// LOG_DEBUG("m_RedShawl {} ! {}",m_RedShawl->GetTransform(),m_RedShawl->GetPivot());
-		// LOG_DEBUG("m_Text {} ! {}",m_Text->GetTransform(),m_Text->GetPivot());
 		LOG_DEBUG("m_Background1 {} ! {}",m_Background->GetTransform(),m_Background->GetPivot());
 		LOG_DEBUG("m_Background2 {}", m_Background->GetWorldCoord());
-		// LOG_DEBUG("m_RedShawl1 {} ! {}",m_RedShawl->GetTransform(),m_RedShawl->GetPivot());
-		// LOG_DEBUG("m_RedShawl2 {} ! {}", m_RedShawl->GetOffset(), m_RedShawl->GetWorldCoord());
 		LOG_DEBUG("m_Character {} ! {}",m_Character->GetTransform(),m_Character->GetPivot());
 		LOG_DEBUG("m_Character {}",m_Character->GetWorldCoord());
 		LOG_DEBUG("m_Camera1 {}",m_Camera.GetCameraWorldCoord());
