@@ -1,4 +1,7 @@
 set(SRC_FILES
+    Override/reverseImage.cpp
+    Override/reverseAnimation.cpp
+
     App.cpp
     Beacon.cpp
     Camera.cpp
@@ -16,14 +19,13 @@ set(SRC_FILES
     Creature/Character.cpp
     Creature/Player.cpp
 
-    Button_UI.cpp
-    TextObject_UI.cpp
-
     Tool.cpp
 )
 
 set(INCLUDE_FILES
     Override/nGameObject.hpp
+    Override/reverseImage.hpp
+    Override/reverseAnimation.hpp
     Override/nContext.hpp
 
     Scene/Scene.hpp
@@ -49,9 +51,6 @@ set(INCLUDE_FILES
     Beacon.hpp
     Camera.hpp
     Cursor.hpp
-
-    Button_UI.hpp
-    TextObject_UI.hpp
 
     Motion.hpp
     Tool.hpp

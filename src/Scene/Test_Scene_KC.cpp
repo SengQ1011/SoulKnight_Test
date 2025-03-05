@@ -1,8 +1,9 @@
 //
 // Created by QuzzS on 2025/3/4.
 //
-#include "Cursor.hpp"
 #include "Scene/Test_Scene_KC.hpp"
+#include "Cursor.hpp"
+#include "Override/reverseImage.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -17,7 +18,9 @@ void TestScene_KC::Start()
 	//m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
 	m_Background->SetZIndex(1);
 
-	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
+	m_Character->SetHorizontalMirrorDrawable(
+		std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"),
+		std::make_shared<Util::reverseImage>(RESOURCE_DIR"/pet00icon.png"));
 	m_Character->SetZIndex(10);
 
 	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
@@ -48,7 +51,7 @@ void TestScene_KC::Input()
 
 void TestScene_KC::Update()
 {
-	//LOG_DEBUG("Test Scene is running...");
+	//LOG_DEBUG("Test Scene is running...")
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
 	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord;
 	m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x));
@@ -62,8 +65,22 @@ void TestScene_KC::Update()
 	glm::vec2 speed = {0.0f,0.0f};
 	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {speed += glm::vec2(0.0f,1.0f);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {speed += glm::vec2(0.0f,-1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {speed += glm::vec2(1.0f,0.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {speed += glm::vec2(-1.0f,0.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::D))
+	{
+		speed += glm::vec2(1.0f,0.0f);
+		if(m_Character->GetImageDirection() == nGameObject::GameObjectDirection::Reverse)
+		{
+			m_Character->ChangeDrawableDirection();
+		}
+	}
+	if (Util::Input::IsKeyPressed(Util::Keycode::A))
+	{
+		speed += glm::vec2(-1.0f,0.0f);
+		if(m_Character->GetImageDirection() == nGameObject::GameObjectDirection::Forward)
+		{
+			m_Character->ChangeDrawableDirection();
+		}
+	}
 
 	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}

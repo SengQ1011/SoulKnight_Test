@@ -25,16 +25,16 @@ void MainMenuScene::Start()
 	m_RedShawl->SetZIndex(1);
 	m_RedShawl->SetPivot({-237,-22});
 
-	m_Text->Init( 20, 2, glm::vec2(-11,300) );
-	m_Version->Init( 20, 2, glm::vec2(-451,300) );
+	// m_Text->Init( 20, 2, glm::vec2(-11,300) );
+	// m_Version->Init( 20, 2, glm::vec2(-451,300) );
 
 	m_BGM->Play();
 
 	m_Root.AddChild(m_Background);
 	m_Root.AddChild(m_RedShawl);
 	m_Root.AddChild(m_Title);
-	m_Root.AddChild(m_Version);
-	m_Root.AddChild(m_Text);
+	// m_Root.AddChild(m_Version);
+	// m_Root.AddChild(m_Text);
 }
 
 void MainMenuScene::Update()
