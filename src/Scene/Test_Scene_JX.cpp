@@ -64,11 +64,15 @@ void TestScene_JX::Update()
 	glm::vec2 speed = {0.0f,0.0f}; //爲什麽是speed，因爲是單位Update的位移量，所以算是speed了，
 	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {speed += glm::vec2(0.0f,1.0f);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {speed += glm::vec2(0.0f,-1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {speed += glm::vec2(1.0f,0.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::D))
+	{
+		speed += glm::vec2(1.0f,0.0f);
+		m_Character->m_Transform.scale.x *= (m_Character->m_Transform.scale.x <= 0)? -1.0f : 1.0f;
+	}
 	if (Util::Input::IsKeyPressed(Util::Keycode::A))
 	{
 		speed += glm::vec2(-1.0f,0.0f);
-		m_Character->m_Transform.scale.x = -1.0f;       // 嘗試水平鏡像
+		m_Character->m_Transform.scale.x *= (m_Character->m_Transform.scale.x >= 0)? -1.0f : 1.0f;       // 嘗試水平鏡像
 		LOG_DEBUG("After--->scale = {}", m_Character->m_Transform.scale.x);
 	}
 

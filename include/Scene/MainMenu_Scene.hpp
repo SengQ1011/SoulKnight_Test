@@ -5,8 +5,6 @@
 #ifndef MAINMENU_SCENE_HPP
 #define MAINMENU_SCENE_HPP
 
-
-#include "App.hpp"
 #include "Override/nGameObject.hpp"
 #include "Scene/Scene.hpp"
 

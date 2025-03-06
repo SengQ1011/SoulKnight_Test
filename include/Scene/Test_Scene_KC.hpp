@@ -5,8 +5,7 @@
 #ifndef TEST_SCENE_HPP
 #define TEST_SCENE_HPP
 
-
-#include "App.hpp"
+#include "Util/Renderer.hpp"
 #include "Scene/Scene.hpp"
 #include "Camera.hpp"
 #include "Override/nGameObject.hpp"

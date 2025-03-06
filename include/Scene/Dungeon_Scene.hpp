@@ -5,8 +5,6 @@
 #ifndef DUNGEON_HPP
 #define DUNGEON_HPP
 
-
-#include "App.hpp"
 #include "Scene/Scene.hpp"
 
 class DungeonScene : public Scene

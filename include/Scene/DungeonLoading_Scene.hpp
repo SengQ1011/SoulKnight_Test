@@ -5,8 +5,6 @@
 #ifndef DUNGEONLOADING_HPP
 #define DUNGEONLOADING_HPP
 
-
-#include "App.hpp"
 #include "Scene/Scene.hpp"
 
 class DungeonLoadingScene : public Scene

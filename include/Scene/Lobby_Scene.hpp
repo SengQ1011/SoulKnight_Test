@@ -5,7 +5,6 @@
 #ifndef LOBBY_SCENE_HPP
 #define LOBBY_SCENE_HPP
 
-#include "App.hpp"
 #include "Scene/Scene.hpp"
 
 #include "Util/GameObject.hpp"

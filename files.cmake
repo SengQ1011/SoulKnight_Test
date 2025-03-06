@@ -7,6 +7,7 @@ set(SRC_FILES
     Camera.cpp
     Cursor.cpp
 
+    Scene/SceneManager.cpp
     Scene/Test_Scene_KC.cpp
     Scene/Test_Scene_JX.cpp
     Scene/MainMenu_Scene.cpp
@@ -28,6 +29,7 @@ set(INCLUDE_FILES
     Override/reverseImage.hpp
     Override/reverseAnimation.hpp
 
+    Scene/SceneManager.hpp
     Scene/Scene.hpp
     Scene/Test_Scene_KC.hpp
     Scene/Test_Scene_JX.hpp

@@ -68,7 +68,6 @@ void Camera::Update() {
 		child->m_Transform.scale = glm::vec2(
 	(child->m_Transform.scale.x < 0.0f ? -m_CameraWorldCoord.scale.x : m_CameraWorldCoord.scale.x),m_CameraWorldCoord.scale.y);
 
-
 		child->m_Transform.rotation = m_CameraWorldCoord.rotation;
 
 	}

@@ -5,8 +5,6 @@
 #ifndef RESULT_SCENE_HPP
 #define RESULT_SCENE_HPP
 
-
-#include "App.hpp"
 #include "Scene/Scene.hpp"
 
 class ResultScene : public Scene

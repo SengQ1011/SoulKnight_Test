@@ -5,8 +5,6 @@
 #ifndef COMPLETE_SCENE_HPP
 #define COMPLETE_SCENE_HPP
 
-
-#include "App.hpp"
 #include "Scene/Scene.hpp"
 
 class CompleteScene : public Scene
