@@ -27,7 +27,6 @@ set(INCLUDE_FILES
     Override/nGameObject.hpp
     Override/reverseImage.hpp
     Override/reverseAnimation.hpp
-    Override/nContext.hpp
 
     Scene/Scene.hpp
     Scene/Test_Scene_KC.hpp

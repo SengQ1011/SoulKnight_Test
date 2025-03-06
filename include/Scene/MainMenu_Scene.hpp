@@ -7,6 +7,7 @@
 
 
 #include "App.hpp"
+#include "Override/nGameObject.hpp"
 #include "Scene/Scene.hpp"
 
 #include "Util/SFX.hpp"
@@ -35,8 +36,8 @@ protected:
 	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
 	std::shared_ptr<Util::SFX> m_ClickSound = std::make_shared<Util::SFX>(RESOURCE_DIR"/UI/fx_btn1.wav");
 
-	// std::shared_ptr<TextObjectUI> m_Text = std::make_shared<TextObjectUI>(RESOURCE_DIR"/Font/zpix.ttf", "點擊開始OwOb" );
-	// std::shared_ptr<TextObjectUI> m_Version = std::make_shared<TextObjectUI>(RESOURCE_DIR"/Font/zpix.ttf", "版本號 v1.0.0" );
+	std::shared_ptr<Util::GameObject> m_Text = std::make_shared<Util::GameObject>();
+	std::shared_ptr<Util::GameObject> m_Version = std::make_shared<Util::GameObject>();
 
 	Util::Renderer m_Root;
 };

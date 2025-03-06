@@ -12,7 +12,7 @@ int main(int, char**) {
 	context->SetWindowIcon(RESOURCE_DIR "/pet00icon.png");
 	App app;
 	// app.SetCurrentScene(std::make_shared<TestScene_JX>());
-	app.SetCurrentScene(std::make_shared<TestScene_KC>());
+	app.SetCurrentScene(std::make_shared<MainMenuScene>());
 
     while (!context->GetExit()) {
         switch (app.GetCurrentState()) {

@@ -4,7 +4,6 @@
 
 #include "Cursor.hpp"
 #include "config.hpp"
-#include "Override/nContext.hpp"
 
 void Cursor::SetCursorToCenter()
 {

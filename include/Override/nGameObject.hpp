@@ -6,6 +6,7 @@
 #define NGAMEOBJECT_HPP
 
 #include "Util/GameObject.hpp"
+#include "Util/Logger.hpp"
 
 class nGameObject : public Util::GameObject
 {
