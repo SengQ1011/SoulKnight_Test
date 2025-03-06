@@ -5,10 +5,11 @@
 #ifndef TEST_SCENE_JX_HPP
 #define TEST_SCENE_JX_HPP
 
-#include "Util/Renderer.hpp"
-#include "Scene/Scene.hpp"
 #include "Camera.hpp"
+#include "Creature/Player.hpp"
 #include "Override/nGameObject.hpp"
+#include "Scene/Scene.hpp"
+#include "Util/Renderer.hpp"
 
 class TestScene_JX : public Scene
 {
@@ -25,7 +26,7 @@ public:
 protected:
 	std::shared_ptr<nGameObject> m_Background = std::make_shared<nGameObject>();
 
-	std::shared_ptr<nGameObject> m_Character = std::make_shared<nGameObject>();
+	std::shared_ptr<Player> m_Character = std::make_shared<Player>(RESOURCE_DIR"/knight_0_0.png", 10, 10, 2.0f, 10, 2.0f, 7, 200, 0.2f, 3, nullptr, nullptr);
 	std::shared_ptr<nGameObject> m_Enemy = std::make_shared<nGameObject>();
 	std::shared_ptr<nGameObject> m_Weapon = std::make_shared<nGameObject>();
 	Camera m_Camera;

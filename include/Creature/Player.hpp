@@ -13,7 +13,7 @@ class Player final: public Character {
 public:
 	// 構造函數：初始化玩家屬性
 	Player(const std::string& ImagePath, int maxHp, int currentHp, float speed, int aimRange, double radius,
-		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill& skill, Weapon* initialWeapon);
+		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill* skill, Weapon* initialWeapon);
 
 	// 屬性
 	int m_maxArmor;         // 護甲上限
@@ -27,14 +27,14 @@ public:
 
 	void addTalent(const Talent& talent);		// 添加天賦
 	void useSkill(Skill& skill);				// 施放技能
-	void move() override;		// 移動
+	void move(const glm::vec2 movement) override;		// 移動
 	void AddWeapon(Weapon* weapon) override; // 限制最多2把武器
 	void switchWeapon();						// 切換武器
 
 protected:
 	double m_criticalRate;	// 暴擊率（0-1）
 	int m_handBladeDamage;	// 手刀傷害
-	Skill skill;			// 角色技能
+	Skill* skill;			// 角色技能
 
 	// 天賦系統
 	std::vector<Talent> talents;       // 天賦系統

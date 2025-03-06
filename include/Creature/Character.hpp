@@ -8,10 +8,18 @@
 #include <string>
 #include <vector>
 #include "GameMechanism/StatusEffect.hpp"
-#include "Util/GameObject.hpp"
+#include "Override/nGameObject.hpp"
 #include "Weapon/Weapon.hpp"
 
-class Character : public Util::GameObject {
+enum class State
+{
+	STANDING,
+	MOVING,
+	ATTACK,
+	DEAD
+};
+
+class Character : public nGameObject {
 public:
 	// 建構子+指定角色的圖片(explicit：防止單參數構造函數進行隱式轉換)
 	explicit Character(const std::string& ImagePath, int maxHp, int currentHp,float moveSpeed, int aimRange, double collisionRadius, Weapon* initialWeapon);
@@ -22,7 +30,6 @@ public:
 	Character(Character&&) = delete;
 	Character& operator=(const Character&) = delete;
 	Character& operator=(Character&&) = delete;
-
 
 /*---------------------------------------（方法）----------------------------------------------*/
 	// 回傳角色當前的位置
@@ -37,7 +44,7 @@ public:
 	int GetMaxHp() const { return m_maxHp; }
 	// 回傳現在血量
 	int GetHp() const { return m_currentHp; }
-	std::vector<StatusEffect> GetActiveEffects() { return activeEffects; }
+	std::vector<StatusEffect> GetActiveEffects() { return m_StatusEffects; }
 
 	// 是否發生碰撞
 	[[nodiscard]] bool CheckCollides(const std::shared_ptr<Character>& other) const;
@@ -46,7 +53,7 @@ public:
 	// 使用當前武器攻擊敵人
 	virtual void attack() = 0;
 	// 移動方法
-	virtual void move() = 0;
+	virtual void move(const glm::vec2 movement) = 0;
 	// 判斷是否死亡
 	[[nodiscard]] bool isDead() const;
 	// 武器系統
@@ -70,10 +77,10 @@ private:
 	std::string m_ImagePath;
 	int m_maxHp;        // 生命上限
 	int m_currentHp;    // 當前生命值
-	std::vector<StatusEffect> activeEffects;	// 狀態異常
-
+	std::vector<StatusEffect> m_StatusEffects;	// 狀態異常
+	State m_state = State::STANDING;
+	
 	void ResetPosition() { m_Transform.translation = {0, 0}; }
-
 };
 
 #endif //CHARACTER_HPP

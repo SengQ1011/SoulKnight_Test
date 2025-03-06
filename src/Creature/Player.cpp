@@ -3,9 +3,10 @@
 //
 
 #include "Creature/Player.hpp"
+#include "Util/Time.hpp"
 
 Player::Player(const std::string& ImagePath, int maxHp, int currentHp, float speed, int aimRange, double radius,
-			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill& skill, Weapon* initialWeapon)
+			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill* skill, Weapon* initialWeapon)
 	: Character(ImagePath, maxHp, currentHp, speed, aimRange, radius, initialWeapon), m_maxArmor(maxArmor), m_maxEnergy(maxEnergy),
 	  m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), skill(skill), m_currentArmor(maxArmor), m_currentEnergy(maxEnergy) {}
 
@@ -45,7 +46,10 @@ void Player::useSkill(Skill& skill) {
 	}
 }
 
-void Player::move() {
-
+void Player::move(const glm::vec2 movement) {
+	if (movement.x < 0 && this->m_Transform.scale.x > 0) {this->m_Transform.scale.x *= -1.0f;}
+	// 向右移動（D）
+	else if (movement.x > 0 && this->m_Transform.scale.x < 0) {this->m_Transform.scale.x *= -1.0f;}
+	this->m_WorldCoord += movement;
 }
 
