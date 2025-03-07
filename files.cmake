@@ -1,7 +1,4 @@
 set(SRC_FILES
-    Override/reverseImage.cpp
-    Override/reverseAnimation.cpp
-
     App.cpp
     Beacon.cpp
     Camera.cpp
@@ -26,8 +23,6 @@ set(SRC_FILES
 
 set(INCLUDE_FILES
     Override/nGameObject.hpp
-    Override/reverseImage.hpp
-    Override/reverseAnimation.hpp
 
     Scene/SceneManager.hpp
     Scene/Scene.hpp
