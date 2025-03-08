@@ -14,6 +14,10 @@ set(SRC_FILES
     Scene/Complete_Scene.cpp
     Scene/Result_Scene.cpp
 
+    Room/Room.cpp
+
+    RoomObject/ObstacleObject.cpp
+
     Creature/Character.cpp
     Creature/Enemy.cpp
     Creature/Player.cpp
@@ -23,6 +27,7 @@ set(SRC_FILES
 
 set(INCLUDE_FILES
     Override/nGameObject.hpp
+    json.hpp
 
     Scene/SceneManager.hpp
     Scene/Scene.hpp
@@ -34,6 +39,11 @@ set(INCLUDE_FILES
     Scene/Dungeon_Scene.hpp
     Scene/Complete_Scene.hpp
     Scene/Result_Scene.hpp
+
+    Room/Room.hpp
+
+    RoomObject/RoomObject.hpp
+    RoomObject/ObstacleObject.hpp
 
     Weapon/Weapon.hpp
 

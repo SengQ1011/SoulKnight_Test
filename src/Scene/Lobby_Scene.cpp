@@ -11,7 +11,7 @@
 void LobbyScene::Start()
 {
 	LOG_DEBUG("Entering Game Scene");
-	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
+	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/LobbyFloor.png"));
 	m_Background->SetZIndex(0);
 
 	m_Root.AddChild(m_Background);

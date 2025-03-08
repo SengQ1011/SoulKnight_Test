@@ -13,9 +13,13 @@ void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene");
 
-	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
-	//m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
-	m_Background->SetZIndex(1);
+	m_Floor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/LobbyFloor.png"));
+	//m_Floor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
+	m_Floor->SetZIndex(2);
+
+	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
+	m_Wall->SetZIndex(1);
+	m_Wall->m_WorldCoord = glm::vec2(0,16*5);
 
 	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
 	m_Character->SetZIndex(10);
@@ -30,12 +34,14 @@ void TestScene_KC::Start()
 
 	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
 
-	m_Root.AddChild(m_Background);
+	// m_Root.AddChild(m_Floor);
+	m_Root.AddChild(m_Wall);
 	m_Root.AddChild(m_Character);
 	m_Root.AddChild(m_Enemy);
 	m_Root.AddChild(m_Weapon);
 
-	m_Camera.AddRelativePivotChild(m_Background);
+	m_Camera.AddRelativePivotChild(m_Floor);
+	m_Camera.AddRelativePivotChild(m_Wall);
 	m_Camera.AddRelativePivotChild(m_Character);
 	m_Camera.AddRelativePivotChild(m_Enemy);
 
@@ -80,8 +86,8 @@ void TestScene_KC::Update()
 
 	if (Util::Input::IsKeyUp(Util::Keycode::Y))
 	{
-		LOG_DEBUG("m_Background1 {} ! {}",m_Background->GetTransform(),m_Background->GetPivot());
-		LOG_DEBUG("m_Background2 {}", m_Background->GetWorldCoord());
+		LOG_DEBUG("m_Floor1 {} ! {}",m_Floor->GetTransform(),m_Floor->GetPivot());
+		LOG_DEBUG("m_Floor2 {}", m_Floor->GetWorldCoord());
 		LOG_DEBUG("m_Character {} ! {}",m_Character->GetTransform(),m_Character->GetPivot());
 		LOG_DEBUG("m_Character {}",m_Character->GetWorldCoord());
 		LOG_DEBUG("m_Camera1 {}",m_Camera.GetCameraWorldCoord());

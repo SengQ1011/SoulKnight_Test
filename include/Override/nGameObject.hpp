@@ -11,7 +11,12 @@
 class nGameObject : public Util::GameObject
 {
 public:
+	nGameObject() = default;
+
 	glm::vec2 m_WorldCoord = {0,0};
+
+	void virtual Start() = 0;
+	void virtual Update() = 0;
 
 	[[nodiscard]] glm::vec2 GetPivot() const { return m_Pivot;}
 

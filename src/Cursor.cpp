@@ -4,6 +4,7 @@
 
 #include "Cursor.hpp"
 #include "config.hpp"
+#include "Util/Input.hpp"
 
 void Cursor::SetCursorToCenter()
 {

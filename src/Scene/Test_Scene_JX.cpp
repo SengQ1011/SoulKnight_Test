@@ -14,7 +14,7 @@ void TestScene_JX::Start()
 {
 	LOG_DEBUG("Entering JX Test Scene");
 
-	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/T.png"));
+	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/LobbyFloor.png"));
 	m_Background->SetZIndex(1);
 
 	//設置貓咪圖片

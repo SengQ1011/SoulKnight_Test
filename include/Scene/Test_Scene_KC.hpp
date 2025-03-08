@@ -23,7 +23,8 @@ public:
 	SceneType Change() override;
 
 protected:
-	std::shared_ptr<nGameObject> m_Background = std::make_shared<nGameObject>();
+	std::shared_ptr<nGameObject> m_Floor = std::make_shared<nGameObject>();
+	std::shared_ptr<nGameObject> m_Wall = std::make_shared<nGameObject>();
 
 	std::shared_ptr<nGameObject> m_Character = std::make_shared<nGameObject>();
 	std::shared_ptr<nGameObject> m_Enemy = std::make_shared<nGameObject>();
