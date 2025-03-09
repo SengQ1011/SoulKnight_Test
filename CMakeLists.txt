@@ -37,6 +37,10 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
         include/Creature/Enemy.hpp
         src/Creature/Enemy.cpp
+        include/Tool/HItBox.hpp
+        include/Tool/CollisionBox.hpp
+        include/Tool/CollisionBox.hpp
+        include/Tool/CollisionBox.hpp
 )
 
 if(MSVC)

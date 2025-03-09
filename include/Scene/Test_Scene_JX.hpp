@@ -26,7 +26,7 @@ public:
 protected:
 	std::shared_ptr<nGameObject> m_Background = std::make_shared<nGameObject>();
 
-	std::shared_ptr<Player> m_Character = std::make_shared<Player>(RESOURCE_DIR"/knight_0_0.png", 10, 10, 2.0f, 10, 2.0f, 7, 200, 0.2f, 3, nullptr, nullptr);
+	std::shared_ptr<Player> m_Player = std::make_shared<Player>(RESOURCE_DIR"/knight_0_0.png", 7, 2.0f, 5, nullptr, nullptr, 6, 180, 0.2f, 3, nullptr);
 	std::shared_ptr<nGameObject> m_Enemy = std::make_shared<nGameObject>();
 	std::shared_ptr<nGameObject> m_Weapon = std::make_shared<nGameObject>();
 	Camera m_Camera;

@@ -21,25 +21,25 @@ void TestScene_JX::Start()
 	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
 	m_Enemy->SetZIndex(10);
 
-	m_Character->SetZIndex(11);
-	m_Character->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
-	m_Character->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
+	m_Player->SetZIndex(1);
+	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
+	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
 
 	m_Weapon->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/weapons_19.png"));
 	m_Weapon->SetZIndex(15);
-	m_Weapon->m_WorldCoord = m_Character->m_WorldCoord;
+	m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 
 	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
 	m_Root.AddChild(m_Background);
-	m_Root.AddChild(m_Character);
+	m_Root.AddChild(m_Player);
 	m_Root.AddChild(m_Enemy);
 	m_Root.AddChild(m_Weapon);
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	//例如UI，不加入就可以固定在熒幕上
 	m_Camera.AddRelativePivotChild(m_Background);
-	m_Camera.AddRelativePivotChild(m_Character);
+	m_Camera.AddRelativePivotChild(m_Player);
 	m_Camera.AddRelativePivotChild(m_Enemy);
 	m_Camera.AddRelativePivotChild(m_Weapon);
 }
@@ -55,7 +55,7 @@ void TestScene_JX::Update()
 {
 	//LOG_DEBUG("Test Scene is running...");
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
-	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord; //實時更新武器的世界坐標，讓武器跟著敵人
+	m_Weapon->m_WorldCoord = m_Player->m_WorldCoord; //實時更新武器的世界坐標，讓武器跟著敵人
 	m_Camera.Update(); //更新Camera大家庭成員的渲染坐標
 
 	// Input：位移量
@@ -64,15 +64,6 @@ void TestScene_JX::Update()
 	if (Util::Input::IsKeyPressed(Util::Keycode::S)) movement.y -= 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::A)) movement.x -= 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::D)) movement.x += 1.0f;
-	// {
-	// 	speed += glm::vec2(1.0f,0.0f);
-	// 	if(m_Character->m_Transform.scale.x < 0) {m_Character->m_Transform.scale.x *= -1.0f;}        // 水平鏡像
-	// }
-	// if (Util::Input::IsKeyPressed(Util::Keycode::A))
-	// {
-	// 	speed += glm::vec2(-1.0f,0.0f);
-	// 	if(m_Character->m_Transform.scale.x > 0) {m_Character->m_Transform.scale.x *= -1.0f;}        // 水平鏡像
-	// }
 
 	//Camera Zoom In=I /Out=K
 	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
@@ -90,7 +81,8 @@ void TestScene_JX::Update()
 	{
 		const float ratio = 0.2f;
 		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * Util::Time::GetDeltaTimeMs(); //normalize為防止斜向走速度是根號2
-		m_Character->move(deltaDisplacement);
+		m_Player->move(deltaDisplacement);
+		m_Weapon->m_Transform.scale = m_Player->m_Transform.scale;
 		m_Camera.MoveCamera(deltaDisplacement);
 	}
 	m_Root.Update();

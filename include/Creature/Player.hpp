@@ -12,8 +12,8 @@
 class Player final: public Character {
 public:
 	// 構造函數：初始化玩家屬性
-	Player(const std::string& ImagePath, int maxHp, int currentHp, float speed, int aimRange, double radius,
-		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill* skill, Weapon* initialWeapon);
+	Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, CollisionBox* radius, Weapon* initialWeapon,
+		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill* skill);
 
 	// 屬性
 	int m_maxArmor;         // 護甲上限

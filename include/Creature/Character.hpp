@@ -10,6 +10,7 @@
 #include "GameMechanism/StatusEffect.hpp"
 #include "Override/nGameObject.hpp"
 #include "Weapon/Weapon.hpp"
+#include "Tool/CollisionBox.hpp"
 
 enum class State
 {
@@ -22,7 +23,7 @@ enum class State
 class Character : public nGameObject {
 public:
 	// 建構子+指定角色的圖片(explicit：防止單參數構造函數進行隱式轉換)
-	explicit Character(const std::string& ImagePath, int maxHp, int currentHp,float moveSpeed, int aimRange, double collisionRadius, Weapon* initialWeapon);
+	explicit Character(const std::string& ImagePath, int maxHp,float moveSpeed, int aimRange, CollisionBox* collisionRadius, Weapon* initialWeapon);
 	~Character() override = default;
 
 	// delete function--> 禁止 Character 被複製或移動,確保遊戲角色的唯一性
@@ -36,15 +37,16 @@ public:
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Transform.translation; }
 	// 確認角色是否可見
 	[[nodiscard]] bool GetVisibility() const { return m_Visible; }
-	// 設定圖片與位置
-	void SetImage(const std::string& ImagePath);
-	// 設定角色的新位置
-	void SetPosition(const glm::vec2& Position) { m_Transform.translation = Position; }
 	// 回傳最大血量
 	int GetMaxHp() const { return m_maxHp; }
 	// 回傳現在血量
 	int GetHp() const { return m_currentHp; }
 	std::vector<StatusEffect> GetActiveEffects() { return m_StatusEffects; }
+
+	// 設定圖片與位置
+	void SetImage(const std::string& ImagePath);
+	// 設定角色的新位置
+	void SetPosition(const glm::vec2& Position) { m_Transform.translation = Position; }
 
 	// 是否發生碰撞
 	[[nodiscard]] bool CheckCollides(const std::shared_ptr<Character>& other) const;
@@ -65,9 +67,9 @@ public:
 
 protected:
 /*--------------------------------------（屬性）------------------------------------------------*/
-	double m_moveSpeed;		// 每秒移動的格數
+	float m_moveSpeed;		// 每秒移動的格數
 	int m_aimRange;			// 自動瞄準範圍
-	double m_collisionRadius; // 碰撞箱大小
+	CollisionBox* m_collisionRadius; // 碰撞箱大小
 	std::vector<Weapon*> m_Weapons;		// 每個角色都有武器
 	Weapon* currentWeapon = nullptr; // 目前裝備的武器
 
@@ -79,7 +81,7 @@ private:
 	int m_currentHp;    // 當前生命值
 	std::vector<StatusEffect> m_StatusEffects;	// 狀態異常
 	State m_state = State::STANDING;
-	
+
 	void ResetPosition() { m_Transform.translation = {0, 0}; }
 };
 
