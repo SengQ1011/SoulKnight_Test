@@ -6,7 +6,7 @@
 
 
 Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, CollisionBox* radius, Weapon* initialWeapon)
-	: m_ImagePath(ImagePath), m_maxHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionRadius(radius) {
+	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionRadius(radius) {
 	SetImage(ImagePath);
 	ResetPosition();
 	if (initialWeapon)

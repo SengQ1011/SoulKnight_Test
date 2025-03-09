@@ -5,4 +5,4 @@
 #include "Creature/Enemy.hpp"
 
 Enemy::Enemy(const std::string& ImagePath, int maxHp, float speed, int aimRange, CollisionBox* radius, Weapon* initialWeapon)
-	: Character(ImagePath, maxHp, speed, aimRange, radius, initialWeapon) {}
+	: Character(ImagePath, maxHp, speed, aimRange, radius, initialWeapon)  {}

@@ -18,14 +18,12 @@ void TestScene_JX::Start()
 	m_Background->SetZIndex(1);
 
 	//設置貓咪圖片
-	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
 	m_Enemy->SetZIndex(10);
 
 	m_Player->SetZIndex(1);
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
 	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
 
-	m_Weapon->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/weapons_19.png"));
 	m_Weapon->SetZIndex(15);
 	m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 

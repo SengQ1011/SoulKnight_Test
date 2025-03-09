@@ -33,6 +33,8 @@ public:
 	Character& operator=(Character&&) = delete;
 
 /*---------------------------------------（方法）----------------------------------------------*/
+	void Start() override;
+	void Update() override;
 	// 回傳角色當前的位置
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Transform.translation; }
 	// 確認角色是否可見

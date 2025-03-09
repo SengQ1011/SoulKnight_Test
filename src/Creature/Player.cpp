@@ -7,8 +7,8 @@
 
 Player::Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, CollisionBox* radius , Weapon* initialWeapon,
 			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, Skill* skill)
-	: Character(ImagePath, maxHp, speed, aimRange, radius, initialWeapon), m_maxArmor(maxArmor), m_maxEnergy(maxEnergy),
-	  m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), skill(skill) {}
+	: Character(ImagePath, maxHp, speed, aimRange, radius, initialWeapon), m_maxArmor(maxArmor), m_currentArmor(maxArmor),
+	m_maxEnergy(maxEnergy), m_currentEnergy(maxEnergy), m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), skill(skill) {}
 
 void Player::attack() {
 	if (currentWeapon) {
