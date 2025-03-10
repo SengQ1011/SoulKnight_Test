@@ -9,8 +9,15 @@
 #define ENEMY_HPP
 class Enemy : public Character {
 public:
-	Enemy(const std::string& ImagePath, int maxHp, float moveSpeed, int aimRange, CollisionBox* collisionRadius, Weapon* initialWeapon);
+	Enemy(const std::string& ImagePath, int maxHp, float moveSpeed, int aimRange, CollisionBox* collisionRadius, std::unique_ptr<Weapon>  initialWeapon);
 	~Enemy()override {};
+
+	void Start() override;
+	void Update() override;
+
+	void attack() override;
+	void move(const glm::vec2 movement) override;
+
 
 private:
 

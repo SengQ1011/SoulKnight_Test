@@ -15,8 +15,6 @@ public:
 	ObstacleObject() = default;
 	~ObstacleObject() override = default;
 
-	void Start() override;
-	void Update() override;
 protected:
 };
 

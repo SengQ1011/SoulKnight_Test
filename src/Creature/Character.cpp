@@ -5,21 +5,23 @@
 #include "Util/Image.hpp"
 
 
-Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, CollisionBox* radius, Weapon* initialWeapon)
-	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionRadius(radius) {
+Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, CollisionBox* radius, std::unique_ptr<Weapon> initialWeapon)
+	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionRadius(radius), currentWeapon(std::move(initialWeapon)) {
 	SetImage(ImagePath);
 	ResetPosition();
-	if (initialWeapon)
-	{
-		m_Weapons.push_back(initialWeapon);
-		currentWeapon = initialWeapon; // 預設裝備第一把武器
-	}
 }
 
 void Character::SetImage(const std::string& ImagePath) {
 	m_ImagePath = ImagePath;
 	m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
 }
+
+void Character::attack() {
+	if (currentWeapon) {
+		currentWeapon->attack();
+	}
+}
+
 
 void Character::takeDamage(int dmg) {
 	m_currentHp -= dmg;
@@ -31,23 +33,24 @@ void Character::takeDamage(int dmg) {
 	}
 }
 
-bool Character::isDead() const
-{
-	return m_currentHp <= 0;
-}
-
-void Character::AddWeapon(Weapon* weapon) {
-	m_Weapons.push_back(weapon);
-}
-
 void Character::RemoveWeapon(Weapon* weapon) {
-	// auto it = std::find(m_Weapons.begin(), m_Weapons.end(), weapon);
-	// if (it != m_Weapons.end()) {
-	// 	m_Weapons.erase(it);
-	// 	if (currentWeapon == weapon) currentWeapon = m_Weapons.empty() ? nullptr : m_Weapons[0];
-	// }
+	auto it = std::find_if(m_Weapons.begin(), m_Weapons.end(),
+		[weapon](const std::unique_ptr<Weapon>& w) { return w.get() == weapon; });
+
+	if (it != m_Weapons.end()) {
+		m_Weapons.erase(it);  // 根據指標刪除武器
+	}
 }
 
-Weapon* Character::GetCurrentWeapon() const {
-	return currentWeapon;
+void Character::AddWeapon(std::unique_ptr<Weapon> newWeapon) {
+	if (m_Weapons.empty()) {
+		// 注意： unique_ptr不能被複製==》需要 std::move()
+		m_Weapons.push_back(std::move(newWeapon));
+	}
+}
+
+
+bool Character::CheckCollides(const std::shared_ptr<Character> &other) const {
+
+	return false;
 }

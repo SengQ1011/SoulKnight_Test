@@ -35,12 +35,6 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${INCLUDE_FILES}
-        include/Creature/Enemy.hpp
-        src/Creature/Enemy.cpp
-        include/Tool/HItBox.hpp
-        include/Tool/CollisionBox.hpp
-        include/Tool/CollisionBox.hpp
-        include/Tool/CollisionBox.hpp
 )
 
 if(MSVC)
@@ -67,6 +61,7 @@ endif()
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${DEPENDENCY_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/PTSD/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/nlohmann)
 
 target_link_libraries(${PROJECT_NAME}
     SDL2::SDL2main

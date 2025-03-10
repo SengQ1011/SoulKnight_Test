@@ -4,6 +4,9 @@ set(SRC_FILES
     Camera.cpp
     Cursor.cpp
 
+    Weapon/Weapon.cpp
+    Weapon/WeaponFactory.cpp
+
     Scene/SceneManager.cpp
     Scene/Test_Scene_KC.cpp
     Scene/Test_Scene_JX.cpp
@@ -19,6 +22,7 @@ set(SRC_FILES
     RoomObject/ObstacleObject.cpp
 
     Creature/Character.cpp
+    Creature/CharacterFactory.cpp
     Creature/Enemy.cpp
     Creature/Player.cpp
 
@@ -27,7 +31,6 @@ set(SRC_FILES
 
 set(INCLUDE_FILES
     Override/nGameObject.hpp
-    json.hpp
 
     Scene/SceneManager.hpp
     Scene/Scene.hpp
@@ -46,8 +49,10 @@ set(INCLUDE_FILES
     RoomObject/ObstacleObject.hpp
 
     Weapon/Weapon.hpp
+    Weapon/WeaponFactory.hpp
 
     Creature/Character.hpp
+    Creature/CharacterFactory.hpp
     Creature/Enemy.hpp
     Creature/Player.hpp
 

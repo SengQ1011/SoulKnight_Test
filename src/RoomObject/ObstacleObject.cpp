@@ -4,8 +4,5 @@
 
 #include "RoomObject/ObstacleObject.hpp"
 
-void ObstacleObject::Start()
-{
 
-}
 

@@ -14,29 +14,32 @@ void TestScene_JX::Start()
 {
 	LOG_DEBUG("Entering JX Test Scene");
 
-	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/LobbyFloor.png"));
-	m_Background->SetZIndex(1);
+	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
+	m_Wall->SetZIndex(1);
+	m_Wall->m_WorldCoord = glm::vec2(0,16*5);
 
 	//設置貓咪圖片
 	m_Enemy->SetZIndex(10);
 
-	m_Player->SetZIndex(1);
+	m_Player->SetZIndex(12);
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
 	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
 
+	//m_Weapon->SetDrawable(std::make_shared<Util::Image>(m_Weapon->getImagePath()));
 	m_Weapon->SetZIndex(15);
 	m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 
 	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
-	m_Root.AddChild(m_Background);
+	m_Root.AddChild(m_Wall);
 	m_Root.AddChild(m_Player);
 	m_Root.AddChild(m_Enemy);
 	m_Root.AddChild(m_Weapon);
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	//例如UI，不加入就可以固定在熒幕上
-	m_Camera.AddRelativePivotChild(m_Background);
+	m_Camera.AddRelativePivotChild(m_Wall);
+
 	m_Camera.AddRelativePivotChild(m_Player);
 	m_Camera.AddRelativePivotChild(m_Enemy);
 	m_Camera.AddRelativePivotChild(m_Weapon);

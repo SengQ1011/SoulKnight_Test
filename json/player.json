@@ -1,0 +1,21 @@
+[
+    {
+        "name": "Knight",
+        "imagePath": "RESOURCE_DIR/knight_0_0.png",
+        "maxHp": 10,
+        "currentHp": 10,
+        "speed": 2.0,
+        "aimRange": 10,
+        "radius": 2.0,
+        "weapon": "Iron Sword",
+        "maxArmor": 7,
+        "maxEnergy": 200,
+        "criticalRate": 0.2,
+        "handBladeDamage": 3,
+        "skill": {
+            "name": "Shield Bash",
+            "cooldown": 5,
+            "damage": 8
+        }
+    }
+]
