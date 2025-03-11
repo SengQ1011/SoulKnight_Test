@@ -26,7 +26,10 @@ set(SRC_FILES
     Creature/Enemy.cpp
     Creature/Player.cpp
 
+    Tool/CollisionBox.hpp
+    Tool/HitBox.hpp
     Tool/Tool.cpp
+
 )
 
 set(INCLUDE_FILES
@@ -60,9 +63,9 @@ set(INCLUDE_FILES
     GameMechanism/Skill.hpp
     GameMechanism/StatusEffect.hpp
 
-    Tool/Tool.hpp
-    Tool/HitBox.hpp
     Tool/CollisionBox.hpp
+    Tool/HitBox.hpp
+    Tool/Tool.hpp
 
     App.hpp
     Beacon.hpp

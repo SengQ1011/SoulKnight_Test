@@ -19,17 +19,16 @@ enum class SkillType {
 class Skill {
 public:
 	std::string name;              // 技能名稱
-	double cooldownTime;           // 技能冷卻時間
-	double remainingCooldown;      // 剩餘冷卻時間
+	float cooldownTime;           // 技能冷卻時間
+	float remainingCooldown;      // 剩餘冷卻時間
 
 	using SkillFunction = std::function<void()>;
 
 	// 构造函数，初始化所有成员
-	explicit Skill(std::string  skillName= "Default Skill", double cooldown= 0.0, double remainingCooldown= 0.0)
-		: name(std::move(skillName)), cooldownTime(cooldown), remainingCooldown(remainingCooldown) {}
+	explicit Skill(std::string  skillName, float cooldown): name(std::move(skillName)), cooldownTime(cooldown) {}
 
 	// 建構子，初始化所有成员
-	explicit Skill(std::string skillName = "Default Skill", double cooldown = 0.0, double remainingCooldown = 0.0, SkillType skillType = SkillType::FULL_FIRE)
+	explicit Skill(std::string skillName = "Default Skill", float cooldown = 0.0, float remainingCooldown = 0.0, SkillType skillType = SkillType::FULL_FIRE)
 		: name(std::move(skillName)), cooldownTime(cooldown), remainingCooldown(remainingCooldown) {
 
 		// 根據 skillType 設定 effect 函數

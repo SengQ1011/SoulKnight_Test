@@ -35,6 +35,8 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${INCLUDE_FILES}
+        src/Tool/CollisionBox.cpp
+        src/Tool/HitBox.cpp
 )
 
 if(MSVC)

@@ -26,8 +26,8 @@ public:
 
 protected:
 	std::shared_ptr<nGameObject> m_Wall = std::make_shared<nGameObject>();
-	std::shared_ptr<Weapon> m_Weapon = std::make_shared<Weapon>(RESOURCE_DIR"/weapons_19.png", 10);
-	std::shared_ptr<Player> m_Player = std::make_shared<Player>(RESOURCE_DIR"/knight_0_0.png", 7, 2.0f, 5, nullptr, m_Weapon, 6, 180, 0.2f, 3, nullptr);
+	std::shared_ptr<Weapon> m_Weapon = std::make_shared<Weapon>(RESOURCE_DIR"/weapons_19.png", 10, 0, 1, 2);
+	std::shared_ptr<Player> m_Player = std::make_shared<Player>(RESOURCE_DIR"/knight_0_0.png", 7, 2.0f, 5, nullptr, nullptr, 6, 180, 0.2f, 3, nullptr);
 	std::shared_ptr<Enemy> m_Enemy = std::make_shared<Enemy>(RESOURCE_DIR"/Sprite/monster小怪/冰原/enemy31礦工/enemy31_0.png", 20, 1.0f, 10, nullptr, nullptr);
 
 	Camera m_Camera;

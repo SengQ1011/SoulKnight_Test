@@ -18,7 +18,7 @@
 class CharacterFactory {
 public:
 	// 根據角色配置文件創建角色
-	std::unique_ptr<Character> createCharacterFromJson(const std::string& characterJsonFilePath);
+	std::unique_ptr<Character> createCharacterFromJson(const std::string& type, const int id);
 
 private:
 	// 從 JSON 創建武器
