@@ -9,10 +9,10 @@
         "speed": 2.0,
         "aimRange": 10,
         "collisionBox": {
-            "x": 10.0,
-            "y": 10.0,
             "width": 2.0,
-            "height": 5.0
+            "height": 5.0,
+            "offsetX": 0,
+            "offsetY": -2.0
         },
         "weapon": "Iron Sword",
         "maxArmor": 7,

@@ -5,8 +5,8 @@
 #include "Util/Image.hpp"
 
 
-Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> radius, std::unique_ptr<Weapon> initialWeapon)
-	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionRadius(std::move(radius)), currentWeapon(std::move(initialWeapon)) {
+Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::unique_ptr<Weapon> initialWeapon)
+	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionBox(std::move(collisionBox)), currentWeapon(std::move(initialWeapon)) {
 	SetImage(ImagePath);
 	ResetPosition();
 }

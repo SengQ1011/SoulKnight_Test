@@ -64,8 +64,13 @@ std::unique_ptr<Character> CharacterFactory::createCharacterFromJson(const std::
             int maxHp = characterInfo["maxHp"];
             float moveSpeed = characterInfo["speed"];
             int aimRange = characterInfo["aimRange"];
-            float collisionWidth = characterInfo["collisionBox"]["width"];
-            float collisionHeight = characterInfo["collisionBox"]["height"];
+
+        	// **讀取碰撞箱資訊**
+        	float collisionWidth = characterInfo["collisionBox"]["width"];
+        	float collisionHeight = characterInfo["collisionBox"]["height"];
+        	float offsetX = characterInfo["collisionBox"]["offsetX"];
+        	float offsetY = characterInfo["collisionBox"]["offsetY"];
+        	auto collisionBox = std::make_unique<CollisionBox>(offsetX, offsetY, collisionWidth, collisionHeight);
 
             // 解析武器名稱並創建武器
             std::string weaponName = characterInfo["weapon"];
@@ -88,11 +93,11 @@ std::unique_ptr<Character> CharacterFactory::createCharacterFromJson(const std::
 
             // 根據 JSON 內容來決定創建 Player 或 Enemy
             if (type == "player") {
-                return std::make_unique<Player>(imagePath, maxHp, moveSpeed, aimRange, collisionWidth, collisionHeight, std::move(weapon),
+                return std::make_unique<Player>(imagePath, maxHp, moveSpeed, aimRange, std::move(collisionBox), std::move(weapon),
                                                 maxArmor, maxEnergy, criticalRate, handBladeDamage, skill);
             }
             else if (type == "enemy") {
-                return std::make_unique<Enemy>(imagePath, maxHp, moveSpeed, aimRange, collisionWidth, collisionHeight, std::move(weapon));
+                return std::make_unique<Enemy>(imagePath, maxHp, moveSpeed, aimRange, std::move(collisionBox), std::move(weapon));
             }
         }
     }

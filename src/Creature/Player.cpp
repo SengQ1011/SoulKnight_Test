@@ -8,9 +8,9 @@
 #include "Util/Time.hpp"
 #include "Util/Logger.hpp"
 
-Player::Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> radius , std::unique_ptr<Weapon>  initialWeapon,
+Player::Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox , std::unique_ptr<Weapon>  initialWeapon,
 			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, std::shared_ptr<Skill> skill)
-	: Character(ImagePath, maxHp, speed, aimRange, std::move(radius), std::move(initialWeapon)), m_maxArmor(maxArmor), m_currentArmor(maxArmor),
+	: Character(ImagePath, maxHp, speed, aimRange, std::move(collisionBox), std::move(initialWeapon)), m_maxArmor(maxArmor), m_currentArmor(maxArmor),
 	m_maxEnergy(maxEnergy), m_currentEnergy(maxEnergy), m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), skill(std::move(skill)) {}
 
 void Player::Start()

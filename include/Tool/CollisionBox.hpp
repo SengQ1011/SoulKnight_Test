@@ -7,14 +7,19 @@
 
 class CollisionBox {
 public:
-	CollisionBox(float x, float y, float width, float height);
+	CollisionBox(float width, float height, float offsetX, float offsetY);
 	~CollisionBox() = default;
 
 	bool CheckCollision(const CollisionBox& other) const;
 
-private:
-	float x, y, width, height;
-};
+	float GetX(float characterX) const { return characterX + m_offsetX; }
+	float GetY(float characterY) const { return characterY + m_offsetY; }
+	float GetWidth() const { return m_width; }
+	float GetHeight() const { return m_height; }
 
+private:
+	float m_width, m_height;
+	float m_offsetX, m_offsetY; // 碰撞箱相對於角色位置的偏移量
+};
 
 #endif //COLLISIONBOX_HPP

@@ -26,8 +26,8 @@ set(SRC_FILES
     Creature/Enemy.cpp
     Creature/Player.cpp
 
-    Tool/CollisionBox.hpp
-    Tool/HitBox.hpp
+    Tool/CollisionBox.cpp
+    Tool/HitBox.cpp
     Tool/Tool.cpp
 
 )
