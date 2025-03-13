@@ -12,7 +12,7 @@
 class Player final: public Character {
 public:
 	// 構造函數：初始化玩家屬性
-	Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::unique_ptr<Weapon> initialWeapon,
+	Player(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon> initialWeapon,
 		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, std::shared_ptr<Skill> skill);
 
 	void Start() override;
@@ -23,7 +23,7 @@ public:
 	void addTalent(const Talent& talent);		// 添加天賦
 	void useSkill(Skill& skill);				// 施放技能
 	void move(const glm::vec2 movement) override;		// 移動
-	void AddWeapon(std::unique_ptr<Weapon> weapon) override; // 限制最多2把武器
+	void AddWeapon(std::shared_ptr<Weapon> weapon) override; // 限制最多2把武器
 	void switchWeapon();						// 切換武器
 
 private:

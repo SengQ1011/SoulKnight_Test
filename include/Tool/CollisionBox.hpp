@@ -5,6 +5,8 @@
 #ifndef COLLISIONBOX_HPP
 #define COLLISIONBOX_HPP
 
+#include "Override/nGameObject.hpp"
+
 class CollisionBox {
 public:
 	CollisionBox(float width, float height, float offsetX, float offsetY);
@@ -16,6 +18,8 @@ public:
 	float GetY(float characterY) const { return characterY + m_offsetY; }
 	float GetWidth() const { return m_width; }
 	float GetHeight() const { return m_height; }
+
+	void SetCoordinate(glm::vec2 coordinate);
 
 private:
 	float m_width, m_height;

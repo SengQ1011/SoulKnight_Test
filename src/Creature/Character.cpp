@@ -5,10 +5,11 @@
 #include "Util/Image.hpp"
 
 
-Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::unique_ptr<Weapon> initialWeapon)
-	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionBox(std::move(collisionBox)), currentWeapon(std::move(initialWeapon)) {
+Character::Character(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon> initialWeapon)
+	: m_ImagePath(ImagePath), m_maxHp(maxHp),m_currentHp(maxHp), m_moveSpeed(speed), m_aimRange(aimRange), m_collisionBox(std::move(collisionBox)), m_currentWeapon(initialWeapon) {
 	SetImage(ImagePath);
 	ResetPosition();
+	AddWeapon(initialWeapon);
 }
 
 void Character::SetImage(const std::string& ImagePath) {
@@ -17,8 +18,8 @@ void Character::SetImage(const std::string& ImagePath) {
 }
 
 void Character::attack() {
-	if (currentWeapon) {
-		currentWeapon->attack();
+	if (m_currentWeapon) {
+		m_currentWeapon->attack();
 	}
 }
 
@@ -35,14 +36,14 @@ void Character::takeDamage(int dmg) {
 
 void Character::RemoveWeapon(Weapon* weapon) {
 	auto it = std::find_if(m_Weapons.begin(), m_Weapons.end(),
-		[weapon](const std::unique_ptr<Weapon>& w) { return w.get() == weapon; });
+		[weapon](std::shared_ptr<Weapon> w) { return w.get() == weapon; });
 
 	if (it != m_Weapons.end()) {
 		m_Weapons.erase(it);  // 根據指標刪除武器
 	}
 }
 
-void Character::AddWeapon(std::unique_ptr<Weapon> newWeapon) {
+void Character::AddWeapon(std::shared_ptr<Weapon> newWeapon) {
 	if (m_Weapons.empty()) {
 		// 注意： unique_ptr不能被複製==》需要 std::move()
 		m_Weapons.push_back(std::move(newWeapon));

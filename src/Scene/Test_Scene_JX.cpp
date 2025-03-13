@@ -8,12 +8,13 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include <iostream>
+#include <filesystem>
 
 
 void TestScene_JX::Start()
 {
 	LOG_DEBUG("Entering JX Test Scene");
-
 	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
 	m_Wall->SetZIndex(1);
 	m_Wall->m_WorldCoord = glm::vec2(0,16*5);
@@ -24,25 +25,25 @@ void TestScene_JX::Start()
 	m_Player->SetZIndex(12);
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
 	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
+	m_Player->Start();
 
-	//m_Weapon->SetDrawable(std::make_shared<Util::Image>(m_Weapon->getImagePath()));
-	m_Weapon->SetZIndex(15);
-	m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
-
-	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
+	// m_Weapon->SetZIndex(15);
+	// m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
 	m_Root.AddChild(m_Wall);
 	m_Root.AddChild(m_Player);
+	m_Root.AddChild(m_Player->GetCurrentWeapon());
 	m_Root.AddChild(m_Enemy);
-	m_Root.AddChild(m_Weapon);
+	// m_Root.AddChild(m_Weapon);
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	//例如UI，不加入就可以固定在熒幕上
 	m_Camera.AddRelativePivotChild(m_Wall);
-
 	m_Camera.AddRelativePivotChild(m_Player);
+	m_Camera.AddRelativePivotChild(m_Player->GetCurrentWeapon());
 	m_Camera.AddRelativePivotChild(m_Enemy);
-	m_Camera.AddRelativePivotChild(m_Weapon);
+	// m_Camera.AddRelativePivotChild(m_Weapon);
+	LOG_DEBUG("Starting--->Checked");
 }
 
 void TestScene_JX::Input()
@@ -56,16 +57,13 @@ void TestScene_JX::Update()
 {
 	//LOG_DEBUG("Test Scene is running...");
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
-	m_Weapon->m_WorldCoord = m_Player->m_WorldCoord; //實時更新武器的世界坐標，讓武器跟著敵人
 	m_Camera.Update(); //更新Camera大家庭成員的渲染坐標
-
 	// Input：位移量
 	glm::vec2 movement(0.0f, 0.0f);
 	if (Util::Input::IsKeyPressed(Util::Keycode::W))movement.y += 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::S)) movement.y -= 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::A)) movement.x -= 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::D)) movement.x += 1.0f;
-
 	//Camera Zoom In=I /Out=K
 	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
@@ -83,8 +81,9 @@ void TestScene_JX::Update()
 		const float ratio = 0.2f;
 		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * Util::Time::GetDeltaTimeMs(); //normalize為防止斜向走速度是根號2
 		m_Player->move(deltaDisplacement);
-		m_Weapon->m_Transform.scale = m_Player->m_Transform.scale;
+		// m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 		m_Camera.MoveCamera(deltaDisplacement);
+		m_Player->Update();
 	}
 	m_Root.Update();
 }

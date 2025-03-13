@@ -11,3 +11,6 @@ bool CollisionBox::CheckCollision(const CollisionBox &other) const {
 				 m_offsetY + m_height < other.m_offsetY || other.m_offsetY + other.m_height < m_offsetY);
 }
 
+void CollisionBox::SetCoordinate(glm::vec2 coordinate) {
+
+}

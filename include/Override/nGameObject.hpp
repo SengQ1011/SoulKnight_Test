@@ -18,6 +18,7 @@ public:
 	[[nodiscard]] glm::vec2 GetPivot() const { return m_Pivot;}
 
 	[[nodiscard]] glm::vec2 GetWorldCoord() const {return m_WorldCoord;}
+
 };
 
 #endif //NGAMEOBJECT_HPP

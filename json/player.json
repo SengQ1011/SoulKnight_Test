@@ -3,9 +3,9 @@
         "ID": 1,
         "type": "Player",
         "name": "Knight",
-        "imagePath": "RESOURCE_DIR/knight_0_0.png",
-        "maxHp": 10,
-        "currentHp": 10,
+        "imagePath": "/knight_0_0.png",
+        "maxHp": 7,
+        "currentHp": 7,
         "speed": 2.0,
         "aimRange": 10,
         "collisionBox": {
@@ -14,7 +14,7 @@
             "offsetX": 0,
             "offsetY": -2.0
         },
-        "weapon": "Iron Sword",
+        "weaponID": 1,
         "maxArmor": 7,
         "maxEnergy": 200,
         "criticalRate": 0.2,

@@ -71,7 +71,7 @@ set(INCLUDE_FILES
     Beacon.hpp
     Camera.hpp
     Cursor.hpp
-
+    Animation.hpp
     Motion.hpp
 )
 

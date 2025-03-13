@@ -18,11 +18,12 @@
 class CharacterFactory {
 public:
 	// 根據角色配置文件創建角色
-	std::unique_ptr<Character> createCharacterFromJson(const std::string& type, const int id);
+	std::shared_ptr<Player> createPlayer(const int id);
+	std::shared_ptr<Enemy> createEnemy(const int id);
 
-private:
+// private:
 	// 從 JSON 創建武器
-	std::unique_ptr<Weapon> createWeaponFromJson(const std::string& weaponName);
+	std::shared_ptr<Weapon> createWeapon(const int weaponID);
 	// 讀取 JSON 文件
 	nlohmann::json readJsonFile(const std::string& filePath);
 };

@@ -4,8 +4,8 @@
 
 #include "Creature/Enemy.hpp"
 
-Enemy::Enemy(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::unique_ptr<Weapon>  initialWeapon)
-	: Character(ImagePath, maxHp, speed, aimRange, std::move(collisionBox), std::move(initialWeapon))  {}
+Enemy::Enemy(const std::string& ImagePath, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon>  initialWeapon)
+	: Character(ImagePath, maxHp, speed, aimRange, std::move(collisionBox), initialWeapon)  {}
 
 void Enemy::Start()
 {

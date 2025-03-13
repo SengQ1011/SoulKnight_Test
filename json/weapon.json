@@ -1,0 +1,16 @@
+[
+  {
+    "ID": 1,
+    "type": "Pistol",
+    "name": "Old_worn_pistol",
+    "imagePath": "/weapons_19.png",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 5,
+    "dropLevel": 3,
+    "attackRange": 0,
+    "bulletSize": 1.0,
+    "attackSpeed": 3
+  }
+]
