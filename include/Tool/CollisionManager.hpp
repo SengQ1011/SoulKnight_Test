@@ -1,0 +1,8 @@
+//
+// Created by QuzzS on 2025/3/14.
+//
+
+#ifndef COLLISIONMANAGER_HPP
+#define COLLISIONMANAGER_HPP
+
+#endif //COLLISIONMANAGER_HPP
