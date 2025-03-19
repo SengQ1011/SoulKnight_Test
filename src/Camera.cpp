@@ -31,6 +31,8 @@ void Camera::MoveCamera(const glm::vec2 &deltaDisplacement)
 	// if (m_CameraWorldCoord.translation.y < beaconCoord.y + v) {m_CameraWorldCoord.translation.y = beaconCoord.y + v;}
 }
 
+void Camera::CameraFollowWith(const glm::vec2& target) { m_CameraWorldCoord.translation = target; }
+
 void Camera::ZoomCamera(const float zoomLevel)
 {
 	m_CameraWorldCoord.scale += glm::vec2(1.0f,1.0f) * zoomLevel * Util::Time::GetDeltaTimeMs() / 1000.0f;
@@ -45,9 +47,11 @@ void Camera::AddRelativePivotChild(const std::shared_ptr<nGameObject> &child) {
 	m_RelativePivotChildren.push_back(child);
 }
 
-void Camera::RemoveRelativePivotChild(std::shared_ptr<nGameObject> child) {
-	m_RelativePivotChildren.erase(std::remove(m_RelativePivotChildren.begin(), m_RelativePivotChildren.end(), child),
-									 m_RelativePivotChildren.end());
+void Camera::RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child) {
+	m_RelativePivotChildren.erase(
+		std::remove(m_RelativePivotChildren.begin(), m_RelativePivotChildren.end(), child),
+		m_RelativePivotChildren.end()
+	);
 }
 
 void Camera::AddRelativePivotChildren(
@@ -66,7 +70,6 @@ void Camera::Update() {
 		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 		child->m_Transform.scale = glm::vec2((child->m_Transform.scale.x < 0.0f ? -m_CameraWorldCoord.scale.x : m_CameraWorldCoord.scale.x)
 			,m_CameraWorldCoord.scale.y);
-		child->m_Transform.rotation = m_CameraWorldCoord.rotation;
 
 	}
 

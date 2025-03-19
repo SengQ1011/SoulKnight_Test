@@ -2,12 +2,16 @@ set(SRC_FILES
     App.cpp
     Beacon.cpp
     Camera.cpp
+    Component/CollisionComponent.cpp
+    Component/FollowerComponent.cpp
+    Component/MovementComponent.cpp
     Creature/Character.cpp
     Creature/CharacterFactory.cpp
     Creature/Enemy.cpp
     Creature/Player.cpp
     Cursor.cpp
     Room/Room.cpp
+    Room/RoomCollisionManager.cpp
     RoomObject/ObstacleObject.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
@@ -31,6 +35,10 @@ set(INCLUDE_FILES
     App.hpp
     Beacon.hpp
     Camera.hpp
+    Components/CollisionComponent.hpp
+    Components/Component.hpp
+    Components/FollowerComponent.hpp
+    Components/MovementComponent.hpp
     Creature/Character.hpp
     Creature/CharacterFactory.hpp
     Creature/Enemy.hpp
@@ -42,6 +50,7 @@ set(INCLUDE_FILES
     Motion.hpp
     Override/nGameObject.hpp
     Room/Room.hpp
+    Room/RoomCollisionManager.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp
     Scene/Complete_Scene.hpp
@@ -60,4 +69,8 @@ set(INCLUDE_FILES
     Tool/Tool.hpp
     Weapon/Weapon.hpp
     Weapon/WeaponFactory.hpp
+)
+
+set(INLINE_FILES
+    Override/nGameObject.inl
 )

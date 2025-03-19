@@ -2,6 +2,9 @@
 // Created by QuzzS on 2025/3/4.
 //
 #include "Scene/Test_Scene_KC.hpp"
+
+#include "Components/CollisionComponent.hpp"
+#include "Components/FollowerComponent.hpp"
 #include "Cursor.hpp"
 
 #include "Util/Input.hpp"
@@ -19,18 +22,34 @@ void TestScene_KC::Start()
 
 	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
 	m_Wall->SetZIndex(1);
-	m_Wall->m_WorldCoord = glm::vec2(0,16*5);
+	m_Wall->m_WorldCoord = glm::vec2(0, 16 * 5);
 
-	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
+	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
+	m_MoveComp = m_Character->AddComponent<MovementComponent>();
+	auto CollisionComp = m_Character->AddComponent<CollisionComponent>();
+	CollisionComp->SetCollisionLayer(CollisionLayers_Player);
+	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+	m_MoveComp->SetMaxSpeed(250.0f);
 	m_Character->SetZIndex(10);
+	m_RoomCollisionManager->RegisterNGameObject(m_Character);
 
-	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
+	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
+	auto MovementComp = m_Enemy->AddComponent<MovementComponent>();
+	MovementComp->SetMaxSpeed(250.0f);
+	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>();
+	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
+	CollisionComp2->SetCollisionMask(CollisionLayers_None);
 	m_Enemy->SetZIndex(11);
 	m_Enemy->m_WorldCoord = {16*2,16*2};
+	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
 
 	m_Weapon->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/weapons_19.png"));
+	auto FollowerComp = m_Weapon->AddComponent<FollowerComponent>();
+	FollowerComp->SetFollower(m_Character);
+	FollowerComp->IsTargetMouse(true);
+	FollowerComp->SetHandOffset(glm::vec2(m_Character->GetImageSize().x/7.0f,-m_Character->GetImageSize().x/4.0f));
+	FollowerComp->SetHoldingPosition(glm::vec2(m_Weapon->GetImageSize().x/2.0f,0));
 	m_Weapon->SetZIndex(12);
-	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord;
 
 	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
 
@@ -54,10 +73,10 @@ void TestScene_KC::Input()
 
 void TestScene_KC::Update()
 {
+
 	//LOG_DEBUG("Test Scene is running...")
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
-	m_Weapon->m_WorldCoord = m_Enemy->m_WorldCoord;
-	m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x));
+	// m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x));
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_RB))
 	{
@@ -65,11 +84,20 @@ void TestScene_KC::Update()
 	}
 	m_Camera.Update();
 
-	glm::vec2 speed = {0.0f,0.0f};
-	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {speed += glm::vec2(0.0f,1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {speed += glm::vec2(0.0f,-1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {speed += glm::vec2(1.0f,0.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {speed += glm::vec2(-1.0f,0.0f);}
+	glm::vec2 direction = {0.0f,0.0f};
+	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {direction += glm::vec2(0.0f,1.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {direction += glm::vec2(0.0f,-1.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {direction += glm::vec2(1.0f,0.0f);}
+	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {direction += glm::vec2(-1.0f,0.0f);}
+
+	if (glm::length(direction) > 0.01f)
+	{
+		direction = glm::normalize(direction);
+		LOG_DEBUG("Direction: ({}, {})", direction.x, direction.y);
+		m_Character->GetComponent<MovementComponent>()->SetAcceleration(direction);
+	}
+	m_Character->Update();
+	m_Weapon->Update();
 
 	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
 	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
@@ -94,15 +122,9 @@ void TestScene_KC::Update()
 		LOG_DEBUG("");
 	}
 
-	//TODO:F
-	if (speed != glm::vec2(0.0f)) //檢查非零向量 才能進行向量標準化 length(speed) != 0模長非零，因爲normalize = speed / length(speed)
-	{
-		const float ratio = 0.2f;
-		const glm::vec2 deltaDisplacement = normalize(speed) * ratio * Util::Time::GetDeltaTimeMs(); //normalize為防止斜向走速度是根號2
-		m_Character->m_WorldCoord += deltaDisplacement;
-		m_Camera.MoveCamera(deltaDisplacement);
-	}
+	m_Camera.CameraFollowWith( m_Character->m_WorldCoord);
 
+	m_RoomCollisionManager->UpdateCollision();
 	m_Root.Update();
 }
 

@@ -20,6 +20,7 @@ public:
 	~Camera() = default;
 
 	void MoveCamera(const glm::vec2& displacement);
+	void CameraFollowWith(const glm::vec2& target);
 	void ZoomCamera(float zoomLevel);
 	void RotateCamera(float degree);
 
@@ -27,7 +28,7 @@ public:
 
 	void AddRelativePivotChild(const std::shared_ptr<nGameObject> &child);
 	void AddRelativePivotChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
-	void RemoveRelativePivotChild(std::shared_ptr<nGameObject> child);
+	void RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child);
 
 	void Update();
 

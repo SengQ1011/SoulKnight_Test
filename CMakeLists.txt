@@ -25,16 +25,18 @@ FetchContent_MakeAvailable(ptsd)
 include(files.cmake)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
-#list(TRANSFORM SRC_FILES PREPEND ${SRC_DIR}/)
-#list(TRANSFORM INCLUDE_FILES PREPEND ${INCLUDE_DIR}/)
+list(TRANSFORM SRC_FILES PREPEND ${SRC_DIR}/)
+list(TRANSFORM INCLUDE_FILES PREPEND ${INCLUDE_DIR}/)
+list(TRANSFORM INLINE_FILES PREPEND ${INCLUDE_DIR}/)
 
-file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-file(GLOB_RECURSE INCLUDE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
+#file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+#file(GLOB_RECURSE INCLUDE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 
 add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${INCLUDE_FILES}
+    ${INLINE_FILES}
         include/Animation.hpp
 )
 
@@ -74,6 +76,7 @@ function(generate_files_cmake)
     # 搜索所有源文件和頭文件
     file(GLOB_RECURSE ALL_SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
     file(GLOB_RECURSE ALL_INCLUDE_FILES "${CMAKE_SOURCE_DIR}/include/*.hpp")
+    file(GLOB_RECURSE ALL_INLINE_FILES "${CMAKE_SOURCE_DIR}/include/*.inl")
 
     # 獲取相對路徑
     set(REL_SRC_FILES "")
@@ -88,25 +91,36 @@ function(generate_files_cmake)
         list(APPEND REL_INCLUDE_FILES ${REL_FILE})
     endforeach()
 
+    set(REL_INLINE_FILES "")
+    foreach(FILE ${ALL_INLINE_FILES})
+        file(RELATIVE_PATH REL_FILE "${CMAKE_SOURCE_DIR}/include" ${FILE})
+        list(APPEND REL_INLINE_FILES ${REL_FILE})
+    endforeach()
+
     # 排序文件列表以保持一致性
     list(SORT REL_SRC_FILES)
     list(SORT REL_INCLUDE_FILES)
+    list(SORT REL_INLINE_FILES)
+
+    # 生成新內容
+    set(NEW_CONTENT "set(SRC_FILES\n")
+    foreach(FILE ${REL_SRC_FILES})
+        string(APPEND NEW_CONTENT "    ${FILE}\n")
+    endforeach()
+    string(APPEND NEW_CONTENT ")\n\nset(INCLUDE_FILES\n")
+    foreach(FILE ${REL_INCLUDE_FILES})
+        string(APPEND NEW_CONTENT "    ${FILE}\n")
+    endforeach()
+    string(APPEND NEW_CONTENT ")\n\nset(INLINE_FILES\n")
+    foreach(FILE ${REL_INLINE_FILES})
+        string(APPEND NEW_CONTENT "    ${FILE}\n")
+    endforeach()
+    string(APPEND NEW_CONTENT ")\n")
 
     # 檢查是否需要更新 files.cmake
     set(NEED_UPDATE TRUE)
     if(EXISTS "${CMAKE_SOURCE_DIR}/files.cmake")
         file(READ "${CMAKE_SOURCE_DIR}/files.cmake" OLD_CONTENT)
-
-        # 生成新內容
-        set(NEW_CONTENT "set(SRC_FILES\n")
-        foreach(FILE ${REL_SRC_FILES})
-            string(APPEND NEW_CONTENT "    ${FILE}\n")
-        endforeach()
-        string(APPEND NEW_CONTENT ")\n\nset(INCLUDE_FILES\n")
-        foreach(FILE ${REL_INCLUDE_FILES})
-            string(APPEND NEW_CONTENT "    ${FILE}\n")
-        endforeach()
-        string(APPEND NEW_CONTENT ")\n")
 
         # 比較新舊內容
         if("${OLD_CONTENT}" STREQUAL "${NEW_CONTENT}")
@@ -116,21 +130,12 @@ function(generate_files_cmake)
 
     # 如果需要，更新 files.cmake
     if(NEED_UPDATE)
-        set(NEW_CONTENT "set(SRC_FILES\n")
-        foreach(FILE ${REL_SRC_FILES})
-            string(APPEND NEW_CONTENT "    ${FILE}\n")
-        endforeach()
-        string(APPEND NEW_CONTENT ")\n\nset(INCLUDE_FILES\n")
-        foreach(FILE ${REL_INCLUDE_FILES})
-            string(APPEND NEW_CONTENT "    ${FILE}\n")
-        endforeach()
-        string(APPEND NEW_CONTENT ")\n")
-
         file(WRITE "${CMAKE_SOURCE_DIR}/files.cmake" ${NEW_CONTENT})
         message(STATUS "已更新 files.cmake")
     else()
         message(STATUS "files.cmake 未變更，無需更新")
     endif()
+
 endfunction()
 
 generate_files_cmake()
