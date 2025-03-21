@@ -33,10 +33,6 @@ void Player::Update(float deltaTime) {
 		m_previousState = m_state;
 	}
 
-	// 更新当前动画
-	if (m_currentAnimation) {
-		m_currentAnimation->Update(deltaTime);
-	}
 	if (m_currentWeapon) {
 		//m_currentWeapon->m_WorldCoord = this->m_WorldCoord;  // 更新武器位置为玩家位置
 	}

@@ -23,7 +23,6 @@ public:
 
 	void Update(float deltaTime);
 
-	[[nodiscard]] const std::string& GetCurrentFrame() const { return m_AnimationPaths[m_CurrentFrame]; }
 	[[nodiscard]] bool IsLooping() const {
 		auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
 		return animation ? animation->GetLooping() : false;
@@ -44,7 +43,6 @@ public:
 
 private:
 	std::vector<std::string> m_AnimationPaths;  // 動畫幀列表
-	size_t m_CurrentFrame;                      // 當前幀索引
 	float m_ElapsedTime;                        // 累積時間
 };
 

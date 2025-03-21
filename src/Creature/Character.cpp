@@ -39,14 +39,6 @@ void Character::Update(float deltaTime) {
 		SetAnimation(m_state);
 		m_previousState = m_state;
 	}
-
-	// 更新動畫
-	if (m_currentAnimation) {
-		m_currentAnimation->Update(deltaTime);
-		LOG_DEBUG("Current animation updated");
-	} else {
-		LOG_ERROR("Current animation is NULL");
-	}
 }
 
 void Character::SetAnimation(State state) {

@@ -58,7 +58,6 @@ void TestScene_JX::Update()
 	float deltaTime = Util::Time::GetDeltaTimeMs();
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
 	m_Camera.Update(); //更新Camera大家庭成員的渲染坐標
-	LOG_DEBUG("{}",m_Player->GetCurrentFrame());
 
 	// Input：位移量
 	glm::vec2 movement(0.0f, 0.0f);

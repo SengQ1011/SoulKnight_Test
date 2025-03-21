@@ -11,6 +11,7 @@
 #include "Override/nGameObject.hpp"
 #include "Weapon/Weapon.hpp"
 #include "Tool/CollisionBox.hpp"
+#include "Components/Component.hpp"
 #include <memory>
 #include <unordered_map>
 #include "Util/Image.hpp"
@@ -56,15 +57,6 @@ public:
 	}
 	[[nodiscard]] std::shared_ptr<Weapon> GetCurrentWeapon() const { return m_currentWeapon; }// 武器系統
 	[[nodiscard]] std::shared_ptr<Animation> GetCurrentAnimation() const { return m_currentAnimation; }
-	[[nodiscard]] const std::string& GetCurrentFrame() const {
-		auto it = m_Animations.find(m_state);  // 查找当前状态对应的动画
-		if (it != m_Animations.end()) {
-			return it->second->GetCurrentFrame();  // 获取当前动画的当前帧
-		}
-		// 如果没有找到匹配的状态，可以返回默认帧或抛出异常
-		static std::string emptyFrame = "";
-		return emptyFrame;
-	}
 
 
 	/* ---Setter--- */
@@ -77,9 +69,12 @@ public:
 	virtual void move(glm::vec2 movement) = 0;	// 移動方法
 	void RemoveWeapon(Weapon* weapon);
 	virtual void AddWeapon(std::shared_ptr<Weapon> weapon);					// 讓子類別控制數量
-	// 狀態欄
 	void applyStatusEffect(const StatusEffect& effect); // 添加狀態異常
 	void updateStatusEffects(double deltaTime);			// 更新狀態異常
+	void AddComponent(std::shared_ptr<Component> component) {
+		m_Components.push_back(std::move(component));
+	}
+
 
 protected:
 	std::unordered_map<State, std::shared_ptr<Animation>> m_Animations;  // 狀態對應動畫
@@ -94,7 +89,7 @@ protected:
 	std::vector<std::shared_ptr<Weapon>> m_Weapons;		// 每個角色都有武器
 	std::shared_ptr<Weapon> m_currentWeapon;				// 目前裝備的武器
 	std::vector<StatusEffect> m_StatusEffects;	// 狀態異常
-
+	std::vector<std::shared_ptr<Component>> m_Components;
 
 private:
 	void ResetPosition() { m_Transform.translation = {0, 0}; }

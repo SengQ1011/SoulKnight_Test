@@ -33,7 +33,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseAnimations(const nloh
 
 std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 	// 讀取角色 JSON 資料
-	nlohmann::json characterData = readJsonFile("../json/player.json");
+	nlohmann::json characterData = readJsonFile("player.json");
 
 	// 在 JSON 陣列中搜尋符合名稱的角色
 	for (const auto& characterInfo : characterData) {
