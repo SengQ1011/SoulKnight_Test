@@ -19,30 +19,29 @@ void TestScene_JX::Start()
 	m_Wall->SetZIndex(1);
 	m_Wall->m_WorldCoord = glm::vec2(0,16*5);
 
-	//設置貓咪圖片
-	m_Enemy->SetZIndex(10);
+	//m_Enemy->SetZIndex(10);
 
 	m_Player->SetZIndex(12);
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
 	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
 	m_Player->Start();
+	m_Player->SetAnimation(State::STANDING);
+	if(m_Player->GetCurrentAnimation() == nullptr)
+	{
+		LOG_ERROR("Failed to start animation");
+	}
 
-	// m_Weapon->SetZIndex(15);
-	// m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
 	m_Root.AddChild(m_Wall);
 	m_Root.AddChild(m_Player);
-	m_Root.AddChild(m_Player->GetCurrentWeapon());
-	m_Root.AddChild(m_Enemy);
-	// m_Root.AddChild(m_Weapon);
+	//m_Root.AddChild(m_Enemy);
+
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	//例如UI，不加入就可以固定在熒幕上
 	m_Camera.AddRelativePivotChild(m_Wall);
 	m_Camera.AddRelativePivotChild(m_Player);
-	m_Camera.AddRelativePivotChild(m_Player->GetCurrentWeapon());
-	m_Camera.AddRelativePivotChild(m_Enemy);
-	// m_Camera.AddRelativePivotChild(m_Weapon);
+	//m_Camera.AddRelativePivotChild(m_Enemy);
 	LOG_DEBUG("Starting--->Checked");
 }
 
@@ -56,8 +55,11 @@ void TestScene_JX::Input()
 void TestScene_JX::Update()
 {
 	//LOG_DEBUG("Test Scene is running...");
+	float deltaTime = Util::Time::GetDeltaTimeMs();
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
 	m_Camera.Update(); //更新Camera大家庭成員的渲染坐標
+	LOG_DEBUG("{}",m_Player->GetCurrentFrame());
+
 	// Input：位移量
 	glm::vec2 movement(0.0f, 0.0f);
 	if (Util::Input::IsKeyPressed(Util::Keycode::W))movement.y += 1.0f;
@@ -79,12 +81,15 @@ void TestScene_JX::Update()
 	if (movement != glm::vec2(0.0f)) //檢查非零向量 才能進行向量標準化 length(speed) != 0模長非零，因爲normalize = speed / length(speed)
 	{
 		const float ratio = 0.2f;
-		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * Util::Time::GetDeltaTimeMs(); //normalize為防止斜向走速度是根號2
+		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * deltaTime; //normalize為防止斜向走速度是根號2
 		m_Player->move(deltaDisplacement);
 		// m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 		m_Camera.MoveCamera(deltaDisplacement);
-		m_Player->Update();
 	}
+	else {
+		m_Player->SetState(State::STANDING);
+	}
+	m_Player->Update(deltaTime);
 	m_Root.Update();
 }
 

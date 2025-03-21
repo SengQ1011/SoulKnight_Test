@@ -1,4 +1,5 @@
 set(SRC_FILES
+    Animation.cpp
     App.cpp
     Beacon.cpp
     Camera.cpp
@@ -6,10 +7,12 @@ set(SRC_FILES
     Component/FollowerComponent.cpp
     Component/MovementComponent.cpp
     Creature/Character.cpp
-    Creature/CharacterFactory.cpp
     Creature/Enemy.cpp
     Creature/Player.cpp
     Cursor.cpp
+    Factory/CharacterFactory.cpp
+    Factory/Factory.cpp
+    Factory/WeaponFactory.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     RoomObject/ObstacleObject.cpp
@@ -26,7 +29,6 @@ set(SRC_FILES
     Tool/HitBox.cpp
     Tool/Tool.cpp
     Weapon/Weapon.cpp
-    Weapon/WeaponFactory.cpp
     main.cpp
 )
 
@@ -40,10 +42,12 @@ set(INCLUDE_FILES
     Components/FollowerComponent.hpp
     Components/MovementComponent.hpp
     Creature/Character.hpp
-    Creature/CharacterFactory.hpp
     Creature/Enemy.hpp
     Creature/Player.hpp
     Cursor.hpp
+    Factory/CharacterFactory.hpp
+    Factory/Factory.hpp
+    Factory/WeaponFactory.hpp
     GameMechanism/Skill.hpp
     GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
@@ -68,7 +72,6 @@ set(INCLUDE_FILES
     Tool/HItBox.hpp
     Tool/Tool.hpp
     Weapon/Weapon.hpp
-    Weapon/WeaponFactory.hpp
 )
 
 set(INLINE_FILES

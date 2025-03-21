@@ -2,47 +2,33 @@
 // Created by tjx20 on 3/10/2025.
 //
 
-#include "Creature/CharacterFactory.hpp"
+#include "Factory/CharacterFactory.hpp"
 #include <memory>
 #include <fstream>
 #include "Util/Logger.hpp"
 
-nlohmann::json CharacterFactory::readJsonFile(const std::string& filePath) {
-    std::ifstream file(filePath);
-    if (!file.is_open()) {
-        LOG_DEBUG("Error: Unable to open file: {}",filePath);
-        return nlohmann::json();  // 如果文件打開失敗，返回空的 JSON 物件
-    }
+CharacterFactory::CharacterFactory() {  }
 
-    nlohmann::json jsonData;
-    file >> jsonData;
-    return jsonData;
+
+State stringToState(const std::string& stateStr) {
+	if (stateStr == "STANDING") return State::STANDING;
+	if (stateStr == "MOVING") return State::MOVING;
+	if (stateStr == "ATTACK") return State::ATTACK;
+	if (stateStr == "DEAD") return State::DEAD;
+	throw std::invalid_argument("Unknown state: " + stateStr);
 }
 
-std::shared_ptr<Weapon> CharacterFactory::createWeapon(const int weaponID) {
-    // 讀取武器配置文件
-    nlohmann::json weaponData = readJsonFile("../json/weapon.json");
-
-    // 根據武器名稱查找對應的武器資料
-    for (const auto& weapon : weaponData) {
-        if (weapon["ID"] == weaponID) {
-        	std::string imagePath = RESOURCE_DIR + weapon["imagePath"].get<std::string>();
-            std::string name = weapon["name"];
-            int damage = weapon["damage"];
-        	int energy = weapon["energy"];
-        	float criticalRate = weapon["criticalRate"];
-        	int offset = weapon["offset"];
-        	int dropLevel = weapon["dropLevel"];
-            float range = weapon["attackRange"];
-            float size = weapon["bulletSize"];
-            int attackSpeed = weapon["attackSpeed"];
-
-            // 創建並返回武器
-            return std::make_shared<Weapon>(imagePath, name, damage, energy, criticalRate, offset, dropLevel, range, size, attackSpeed);
-        }
-    }
-    LOG_DEBUG("Weapon not found: {}", weaponID);
-    return nullptr;  // 如果找不到對應的武器，返回 nullptr
+std::unordered_map<State, std::shared_ptr<Animation>> parseAnimations(const nlohmann::json& animationsJson) {
+	std::unordered_map<State, std::shared_ptr<Animation>> animations;
+	for (const auto& [key, value] : animationsJson.items()) {
+		State state = stringToState(key);
+		std::vector<std::string> frames;
+		for (const auto& frame : value) {
+			frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+		}
+		animations[state] = std::make_shared<Animation>(frames); // 使用 shared_ptr 包装 Animation
+	}
+	return animations;
 }
 
 std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
@@ -52,7 +38,7 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 	// 在 JSON 陣列中搜尋符合名稱的角色
 	for (const auto& characterInfo : characterData) {
 		if (characterInfo["ID"] == id) {
-			std::string imagePath = RESOURCE_DIR + characterInfo["imagePath"].get<std::string>();
+			auto animation = parseAnimations(characterInfo["animations"]);
 			int maxHp = characterInfo["maxHp"];
 			float moveSpeed = characterInfo["speed"];
 			int aimRange = characterInfo["aimRange"];
@@ -66,7 +52,7 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 
 			// 解析武器名稱並創建武器
 			int weaponID = characterInfo["weaponID"];
-			auto weapon = createWeapon(weaponID);
+			auto weapon = wf.createWeapon(weaponID);
 
 
 			int maxArmor = characterInfo["maxArmor"];
@@ -85,7 +71,7 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 			}
 
 			// 根據 JSON 內容來決定創建 Player
-			return std::make_shared<Player>(imagePath, maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon,
+			return std::make_shared<Player>(animation, maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon,
 												maxArmor, maxEnergy, criticalRate, handBladeDamage, skill);
 		}
 	}
@@ -100,7 +86,7 @@ std::shared_ptr<Enemy>CharacterFactory::createEnemy(const int id) {
     // 在 JSON 陣列中搜尋符合名稱的角色
     for (const auto& characterInfo : characterData) {
         if (characterInfo["id"] == id) {
-            std::string imagePath = RESOURCE_DIR + characterInfo["imagePath"].get<std::string>();
+        	auto animation = parseAnimations(characterInfo["animations"]);
             int maxHp = characterInfo["maxHp"];
             float moveSpeed = characterInfo["speed"];
             int aimRange = characterInfo["aimRange"];
@@ -114,10 +100,10 @@ std::shared_ptr<Enemy>CharacterFactory::createEnemy(const int id) {
 
             // 解析武器名稱並創建武器
             int weaponID = characterInfo["weaponID"];
-            auto weapon = createWeapon(weaponID);
+            auto weapon = wf.createWeapon(weaponID);
 
             // 根據 JSON 內容來決定創建 Enemy
-        	return std::make_shared<Enemy>(imagePath, maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon);
+        	return std::make_shared<Enemy>(animation, maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon);
         }
     }
 

@@ -38,6 +38,9 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         include/Animation.hpp
+        src/Factory/Factory.cpp
+        include/Factory/Factory.hpp
+        src/Animation.cpp
 )
 
 if(MSVC)
