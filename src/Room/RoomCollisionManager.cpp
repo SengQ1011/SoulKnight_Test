@@ -59,14 +59,6 @@ void RoomCollisionManager::UpdateCollision() const
 		}
 	}
 
-
-	if (Util::Input::IsKeyPressed(Util::Keycode::G))
-	{
-		for (const auto& m_n_game_object : collisionPairs)
-		{
-			LOG_DEBUG("See {} {}",m_n_game_object.first->GetName(), m_n_game_object.second->GetName());
-		}
-	}
 	for (const auto& pair: collisionPairs) // 處理碰撞對
 	{
 		auto objectA = pair.first;

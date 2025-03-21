@@ -5,6 +5,9 @@
 #ifndef TEST_SCENE_HPP
 #define TEST_SCENE_HPP
 
+#include "eventpp/callbacklist.h"
+#include "eventpp/eventdispatcher.h"
+
 #include "Camera.hpp"
 #include "Components/MovementComponent.hpp"
 #include "Override/nGameObject.hpp"
@@ -29,6 +32,8 @@ protected:
 	std::shared_ptr<nGameObject> m_Wall = std::make_shared<nGameObject>();
 	std::shared_ptr<MovementComponent> m_MoveComp;
 	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
+	std::shared_ptr<eventpp::EventDispatcher<int, void(const std::string&, bool)>> dispatcher_2
+	= std::make_shared<eventpp::EventDispatcher<int, void(const std::string&, bool)>>();
 
 	std::shared_ptr<nGameObject> m_Character = std::make_shared<nGameObject>();
 	std::shared_ptr<nGameObject> m_Enemy = std::make_shared<nGameObject>();

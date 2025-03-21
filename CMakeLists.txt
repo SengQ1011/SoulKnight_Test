@@ -19,8 +19,15 @@ FetchContent_Declare(
 
     SOURCE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/PTSD
 )
-
 FetchContent_MakeAvailable(ptsd)
+
+FetchContent_Declare(
+        eventpp
+        GIT_REPOSITORY https://github.com/wqking/eventpp
+        GIT_TAG        d2db8af2a46c79f8dc75759019fba487948e9442 # v0.1.3
+        SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/EVENTPP
+)
+FetchContent_MakeAvailable(eventpp)
 
 include(files.cmake)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
@@ -64,11 +71,13 @@ endif()
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${DEPENDENCY_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/PTSD/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/EVENTPP/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/nlohmann)
 
 target_link_libraries(${PROJECT_NAME}
     SDL2::SDL2main
     PTSD
+    eventpp
 )
 
 # 定義生成 files.cmake 的函數

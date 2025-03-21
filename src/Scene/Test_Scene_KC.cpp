@@ -5,7 +5,9 @@
 
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
+
 #include "Cursor.hpp"
+#include "pch.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -28,7 +30,7 @@ void TestScene_KC::Start()
 	m_MoveComp = m_Character->AddComponent<MovementComponent>();
 	auto CollisionComp = m_Character->AddComponent<CollisionComponent>();
 	CollisionComp->SetCollisionLayer(CollisionLayers_Player);
-	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+	CollisionComp->SetCollisionMask(CollisionLayers_None);
 	m_MoveComp->SetMaxSpeed(250.0f);
 	m_Character->SetZIndex(10);
 	m_RoomCollisionManager->RegisterNGameObject(m_Character);
@@ -38,7 +40,7 @@ void TestScene_KC::Start()
 	MovementComp->SetMaxSpeed(250.0f);
 	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>();
 	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
-	CollisionComp2->SetCollisionMask(CollisionLayers_None);
+	CollisionComp2->SetCollisionMask(CollisionLayers_Player);
 	m_Enemy->SetZIndex(11);
 	m_Enemy->m_WorldCoord = {16*2,16*2};
 	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
@@ -73,6 +75,31 @@ void TestScene_KC::Input()
 
 void TestScene_KC::Update()
 {
+	dispatcher_2->appendListener(1,[](const std::string& a, bool b)
+	{
+		LOG_DEBUG("Got Event1:{} {}",a, b);
+	});
+	dispatcher_2->appendListener(2,[](const std::string& a, bool b)
+	{
+		LOG_DEBUG("Got Event2:{} {}",a, b);
+	});
+	dispatcher_2->appendListener(3,[](const std::string& a, bool b)
+	{
+		LOG_DEBUG("Got Event3:{} {}",a, b);
+	});
+
+	if (Util::Input::IsKeyDown(Util::Keycode::NUM_1))
+	{
+		dispatcher_2->dispatch(1,"Hello World",true);
+	}
+	if (Util::Input::IsKeyDown(Util::Keycode::NUM_2))
+	{
+		dispatcher_2->dispatch(2,"I am ironMan",true);
+	}
+	if (Util::Input::IsKeyDown(Util::Keycode::NUM_3))
+	{
+		dispatcher_2->dispatch(3,"Nice 2 Meet U",false);
+	}
 
 	//LOG_DEBUG("Test Scene is running...")
 	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
