@@ -54,7 +54,6 @@ endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Resources")
-<<<<<<< Updated upstream
     target_compile_definitions(${PROJECT_NAME} PRIVATE JSON_DIR="${CMAKE_CURRENT_SOURCE_DIR}/json")
 else()
     message(FATAL_ERROR "relative RESOURCE_DIR is WIP, Please use `-DCMAKE_BUILD_TYPE=Debug` build for now.")
