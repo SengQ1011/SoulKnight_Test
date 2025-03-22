@@ -20,7 +20,8 @@ public:
 	Factory();
 	virtual ~Factory() = default;
 	// 讀取 JSON 文件
-	nlohmann::json readJsonFile(const std::string& filePath);
+	nlohmann::json readJsonFile(const std::string& fileName);
+	static std::shared_ptr<Component> createComponent(const nlohmann::json& json);
 };
 
 

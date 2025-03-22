@@ -10,7 +10,51 @@
 #include "pch.hpp"
 
 #include "Component.hpp"
+#include "json.hpp"
 #include "Override/nGameObject.hpp"
+
+enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子直接用uint8_t的運算子
+	CollisionLayers_None = 0,				//00000000
+	CollisionLayers_Player = 1 << 0,		//00000001 玩家層
+	CollisionLayers_Enemy = 1 << 1,			//00000010 敵人層
+	CollisionLayers_Player_Bullet = 1 << 2,	//00000100 玩家子彈層
+	CollisionLayers_Enemy_Bullet = 1 << 3,	//00001000 玩家子彈層
+	CollisionLayers_Pickup = 1 << 4,		//00010000 拾取物層
+	CollisionLayers_Terrain = 1 << 5,		//00100000 地形層
+};
+
+namespace StructComponents {
+	struct StructCollisionComponent {
+		std::string m_Name = "collisionComponent";
+		std::string m_Class = "collisionComponent";
+		std::array<float, 2> m_Size{};
+		std::array<float, 2> m_Offset{}; //左下角位置 = Object原點 + m_Offset
+		uint8_t m_CollisionLayer = CollisionLayers_None;
+		uint8_t m_CollisionMask = CollisionLayers_None;
+		bool m_IsTrigger = false;
+	};
+
+	inline void to_json(nlohmann::ordered_json &j, const StructCollisionComponent &c) {
+		j = nlohmann::ordered_json{
+	          {"Name", c.m_Name},
+			  {"Class", c.m_Class},
+			  {"Size", c.m_Size},
+			  {"Offset",c.m_Offset},
+			  {"CollisionLayer",c.m_CollisionLayer},
+			  {"CollisionMask",c.m_CollisionMask},
+			  {"IsTrigger",c.m_IsTrigger}};
+	}
+
+	inline void from_json(const nlohmann::ordered_json& j, StructCollisionComponent &c) {
+		j.at("Name").get_to(c.m_Name);
+		j.at("Class").get_to(c.m_Class);
+		j.at("Size").get_to(c.m_Size);
+		j.at("Offset").get_to(c.m_Offset);
+		j.at("CollisionLayer").get_to(c.m_CollisionLayer);
+		j.at("CollisionMask").get_to(c.m_CollisionMask);
+		j.at("IsTrigger").get_to(c.m_IsTrigger);
+	}
+}
 
 struct CollisionInfo
 {
@@ -53,26 +97,22 @@ struct Rect //AABB的矩形結構
 	[[nodiscard]] bool Intersects(const Rect& other) const;
 };
 
-enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子直接用uint8_t的運算子
-	CollisionLayers_None = 0,				//00000000
-	CollisionLayers_Player = 1 << 0,		//00000001 玩家層
-	CollisionLayers_Enemy = 1 << 1,			//00000010 敵人層
-	CollisionLayers_Player_Bullet = 1 << 2,	//00000100 玩家子彈層
-	CollisionLayers_Enemy_Bullet = 1 << 3,	//00001000 玩家子彈層
-	CollisionLayers_Pickup = 1 << 4,		//00010000 拾取物層
-	CollisionLayers_Terrain = 1 << 5,		//00100000 地形層
-};
-
 class CollisionComponent final : public Component {
 public:
 
-	explicit CollisionComponent(const glm::vec2& size = glm::vec2(0),
+	explicit CollisionComponent(const std::string& name = "collisionComponent", const glm::vec2& size = glm::vec2(0),
 					   const glm::vec2& offset = glm::vec2(0),
 					   const glm::uint8_t collisionLayer = CollisionLayers_None,
 					   const glm::uint8_t collisionMask = CollisionLayers_None,
 					   const bool isTrigger = false)
-		: m_Size(size), m_Offset(offset), m_CollisionLayer(collisionLayer),
+		: Component(name), m_Size(size), m_Offset(offset), m_CollisionLayer(collisionLayer),
 		  m_CollisionMask(collisionMask), m_IsTrigger(isTrigger) {}
+
+	explicit CollisionComponent(const StructComponents::StructCollisionComponent& data)
+		: Component(data.m_Name), m_Size(glm::vec2(data.m_Size[0], data.m_Size[1])),
+		  m_Offset(data.m_Offset[0], data.m_Offset[1]), m_CollisionLayer(data.m_CollisionLayer),
+		  m_CollisionMask(data.m_CollisionMask), m_IsTrigger(data.m_IsTrigger) {}
+
 	~CollisionComponent() override = default;
 
 	void Init() override;

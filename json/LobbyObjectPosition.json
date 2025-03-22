@@ -1,0 +1,288 @@
+{
+ "room_height": 30.0,
+ "room_width": 40.0,
+ "tile_height": 16.0,
+ "tile_width": 16.0,
+ "wall": [
+  {
+   "ID": "wall_lobby",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    0.0
+   ],
+   "Size": [
+    640.0,
+    480.0
+   ]
+  }
+ ],
+ "floor": [
+  {
+   "ID": "floor_lobby",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    -48.0
+   ],
+   "Size": [
+    576.0,
+    288.0
+   ]
+  }
+ ],
+ "object": [
+  {
+   "ID": "object_sofa",
+   "Class": "nGameObject",
+   "Position": [
+    99.0,
+    96.0
+   ],
+   "Size": [
+    70.0,
+    44.0
+   ]
+  },
+  {
+   "ID": "object_dungeonDoor",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    128.0
+   ],
+   "Size": [
+    71.0,
+    64.0
+   ]
+  },
+  {
+   "ID": "object_carpet",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    -48.0
+   ],
+   "Size": [
+    100.0,
+    71.0
+   ]
+  },
+  {
+   "ID": "object_questBoard",
+   "Class": "nGameObject",
+   "Position": [
+    99.0,
+    144.0
+   ],
+   "Size": [
+    54.0,
+    35.0
+   ]
+  },
+  {
+   "ID": "object_mailbox",
+   "Class": "nGameObject",
+   "Position": [
+    48.0,
+    96.0
+   ],
+   "Size": [
+    12.0,
+    34.0
+   ]
+  },
+  {
+   "ID": "object_chair",
+   "Class": "nGameObject",
+   "Position": [
+    36.0,
+    -48.0
+   ],
+   "Size": [
+    17.0,
+    23.0
+   ]
+  },
+  {
+   "ID": "object_chair",
+   "Class": "nGameObject",
+   "Position": [
+    -36.0,
+    -48.0
+   ],
+   "Size": [
+    17.0,
+    23.0
+   ]
+  },
+  {
+   "ID": "object_chair",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    -80.0
+   ],
+   "Size": [
+    17.0,
+    23.0
+   ]
+  },
+  {
+   "ID": "object_chair",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    -15.0
+   ],
+   "Size": [
+    17.0,
+    23.0
+   ]
+  },
+  {
+   "ID": "object_mahjongTable",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    -48.0
+   ],
+   "Size": [
+    50.0,
+    53.0
+   ]
+  },
+  {
+   "ID": "object_luckyCat_0",
+   "Class": "nGameObject",
+   "Position": [
+    152.0,
+    96.0
+   ],
+   "Size": [
+    25.0,
+    32.0
+   ]
+  },
+  {
+   "ID": "object_refrigerator_0",
+   "Class": "nGameObject",
+   "Position": [
+    189.0,
+    102.0
+   ],
+   "Size": [
+    25.0,
+    53.0
+   ]
+  },
+  {
+   "ID": "object_safeBox",
+   "Class": "nGameObject",
+   "Position": [
+    224.0,
+    89.0
+   ],
+   "Size": [
+    23.0,
+    31.0
+   ]
+  },
+  {
+   "ID": "object_questCounter",
+   "Class": "nGameObject",
+   "Position": [
+    199.0,
+    14.0
+   ],
+   "Size": [
+    50.0,
+    34.0
+   ]
+  },
+  {
+   "ID": "room_item_41",
+   "Class": "nGameObject",
+   "Position": [
+    197.0,
+    31.0
+   ],
+   "Size": [
+    20.0,
+    29.0
+   ]
+  },
+  {
+   "ID": "object_television",
+   "Class": "nGameObject",
+   "Position": [
+    211.0,
+    -103.0
+   ],
+   "Size": [
+    89.0,
+    113.0
+   ]
+  },
+  {
+   "ID": "object_book",
+   "Class": "nGameObject",
+   "Position": [
+    -146.0,
+    -143.0
+   ],
+   "Size": [
+    28.0,
+    40.0
+   ]
+  },
+  {
+   "ID": "object_garbageBin",
+   "Class": "nGameObject",
+   "Position": [
+    -262.0,
+    -161.0
+   ],
+   "Size": [
+    22.0,
+    31.0
+   ]
+  },
+  {
+   "ID": "object_plantPot_0",
+   "Class": "nGameObject",
+   "Position": [
+    -219.0,
+    -66.0
+   ],
+   "Size": [
+    11.0,
+    31.0
+   ]
+  },
+  {
+   "ID": "object_testTubes",
+   "Class": "nGameObject",
+   "Position": [
+    -36.0,
+    -17.0
+   ],
+   "Size": [
+    22.0,
+    36.0
+   ]
+  },
+  {
+   "ID": "object_gachapon",
+   "Class": "nGameObject",
+   "Position": [
+    -112.0,
+    106.0
+   ],
+   "Size": [
+    30.0,
+    58.0
+   ]
+  }
+ ]
+}

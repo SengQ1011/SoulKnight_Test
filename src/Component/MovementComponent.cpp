@@ -93,6 +93,7 @@ void MovementComponent::Update()
 void MovementComponent::HandleCollision(CollisionInfo &info)
 {
 	const auto owner = GetOwner();
+	if (owner) {m_Position = owner->m_WorldCoord;}
 	//TODO:我似乎已經在其他地方確認了，這裏還需要嗎？
 	if (info.GetObjectA() != owner && info.GetObjectB() != owner)
 	{

@@ -12,6 +12,7 @@ set(SRC_FILES
     Cursor.cpp
     Factory/CharacterFactory.cpp
     Factory/Factory.cpp
+    Factory/RoomFactory.cpp
     Factory/WeaponFactory.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
@@ -47,6 +48,7 @@ set(INCLUDE_FILES
     Cursor.hpp
     Factory/CharacterFactory.hpp
     Factory/Factory.hpp
+    Factory/RoomFactory.hpp
     Factory/WeaponFactory.hpp
     GameMechanism/Skill.hpp
     GameMechanism/StatusEffect.hpp
