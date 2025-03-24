@@ -9,7 +9,7 @@
 #define ENEMY_HPP
 class Enemy : public Character {
 public:
-	Enemy(std::unordered_map<State, std::shared_ptr<Animation>> m_Animations, int maxHp, float moveSpeed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon>  initialWeapon);
+	Enemy(int maxHp, float moveSpeed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon>  initialWeapon);
 	~Enemy()override {};
 
 	void Start() override;

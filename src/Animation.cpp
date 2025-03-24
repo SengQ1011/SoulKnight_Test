@@ -6,7 +6,7 @@
 #include "Util/Logger.hpp"
 
 Animation::Animation(std::vector<std::string> AnimationPaths)
-	: m_AnimationPaths(std::move(AnimationPaths)), m_ElapsedTime(0.0f) {
+	: m_AnimationPaths(std::move(AnimationPaths)) {
 	m_Drawable = std::make_shared<Util::Animation>(m_AnimationPaths, false, 500, false, 0);
 	this->SetZIndex(12);
 	SetLooping(true);

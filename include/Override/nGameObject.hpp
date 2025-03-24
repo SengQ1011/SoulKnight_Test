@@ -24,26 +24,26 @@ public:
 
 	// Components
 	template <typename T, typename... Args>
-	std::shared_ptr<T> AddComponent(Args &&...args);
+	std::shared_ptr<T> AddComponent(ComponentType type, Args &&...args);
 	template <typename T>
-	std::shared_ptr<T> GetComponent();
+	std::shared_ptr<T> GetComponent(ComponentType type);
 
 	virtual void Update()
 	{
 		if (!m_Active) return;
 
-		for (const auto &component : m_Components)
-		{
-			component->Update();
+		for (auto& [type, component] : m_Components) {
+			component->Update();  // 更新每個組件
 		}
 	}
 	void onCollision(const std::shared_ptr<nGameObject>& other, CollisionInfo& info)
 	{
 		LOG_DEBUG("Collision");
 		if (!m_Active) return;
-		for (const auto &component : m_Components)
-		{
-			component->HandleCollision(info);
+		for (const auto& pair : m_Components) {
+			// pair.first 是 ComponentType 键
+			// pair.second 是 std::shared_ptr<Component> 值
+			pair.second->HandleCollision(info);
 		}
 	}
 
@@ -60,7 +60,7 @@ public:
 protected:
 	std::string m_Name;
 	bool m_Active = true;
-	std::vector<std::shared_ptr<Component>> m_Components;
+	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
 
 private:
 	static int GetNextId()

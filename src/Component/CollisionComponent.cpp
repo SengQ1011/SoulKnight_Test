@@ -34,7 +34,7 @@ bool Rect::Intersects(const Rect &other) const {
 
 Rect CollisionComponent::GetBounds() const {
 	auto objectPosition = glm::vec2(0.0f);
-	auto owner = GetOwner();
+	auto owner = GetOwner<nGameObject>();
 	if (owner) {
 		objectPosition = owner->m_WorldCoord;
 	}
@@ -43,7 +43,7 @@ Rect CollisionComponent::GetBounds() const {
 
 void CollisionComponent::Init()
 {
-	auto owner = GetOwner();
+	auto owner = GetOwner<nGameObject>();
 	if (!owner) return;
 	m_Offset = -owner->GetImageSize() / 2.0f; //TODO:這裏可能需要用資料庫的資料
 	m_Size = owner->GetImageSize();
@@ -52,7 +52,7 @@ void CollisionComponent::Init()
 
 void CollisionComponent::Update()
 {
-	auto owner = GetOwner();
+	auto owner = GetOwner<nGameObject>();
 	if (!owner) return;
 	m_Offset = -owner->GetImageSize() / 2.0f;
 	m_Size = owner->GetImageSize();

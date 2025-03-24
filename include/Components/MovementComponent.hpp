@@ -14,13 +14,13 @@
 
 class MovementComponent final : public Component {
 public:
-	explicit MovementComponent(const std::string& name = "movementComponent",
+	explicit MovementComponent(const ComponentType type = ComponentType::MOVEMENT,
 							   const float& speedRatio = 1.0f,
 							   const float& maxSpeed = 100.0f,
 							   const glm::vec2& acceleration = glm::vec2(0.0f),
 							   const glm::vec2& velocity = glm::vec2(0.0f),
 							   const glm::vec2& position = glm::vec2(0.0f))
-		: Component(name), m_SpeedRatio(speedRatio), m_MaxSpeed(maxSpeed), m_Acceleration(acceleration),
+		: Component(type), m_SpeedRatio(speedRatio), m_MaxSpeed(maxSpeed), m_Acceleration(acceleration),
 		  m_Velocity(velocity), m_Position(position) {}
 
 	void Update() override;

@@ -13,14 +13,14 @@
 
 class FollowerComponent final : public Component { //目前暫時只有武器跟隨角色,還有根據指向位置旋轉（需要事件嗎？ 我想取得指向坐標而已）
 public:
-	explicit FollowerComponent(const std::string& name = "followerComponent",
+	explicit FollowerComponent(const ComponentType type = ComponentType::FOLLOWER,
 							   const glm::vec2& handOffset = glm::vec2(0, 0),
 							   const glm::vec2& holdingOffset = glm::vec2(0, 0),
 							   const float holdingRotation = 0.0f,
 							   const bool isTargetMouse = false,
 							   const std::shared_ptr<nGameObject>& follower = nullptr,
 							   const std::shared_ptr<nGameObject>& target = nullptr) :
-		Component(name), m_HandOffset(handOffset), m_HoldingOffset(holdingOffset),
+		Component(type), m_HandOffset(handOffset), m_HoldingOffset(holdingOffset),
 		m_HoldingRotation(holdingRotation), m_UseMousePosition(isTargetMouse),
 		m_Follower(follower),m_Target(target) {}
 

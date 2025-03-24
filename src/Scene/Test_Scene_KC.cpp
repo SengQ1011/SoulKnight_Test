@@ -27,8 +27,15 @@ void TestScene_KC::Start()
 	m_Wall->m_WorldCoord = glm::vec2(0, 16 * 5);
 
 	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
-	m_MoveComp = m_Character->AddComponent<MovementComponent>();
-	auto CollisionComp = m_Character->AddComponent<CollisionComponent>();
+	auto m_MoveComp = m_Character->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+	if (m_MoveComp) {
+		LOG_DEBUG("MovementComponent successfully added.");
+	} else {
+		LOG_DEBUG("Failed to add MovementComponent.");
+		return;
+	}
+
+	auto CollisionComp = m_Character->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 	CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 	CollisionComp->SetCollisionMask(CollisionLayers_None);
 	m_MoveComp->SetMaxSpeed(250.0f);
@@ -36,9 +43,9 @@ void TestScene_KC::Start()
 	m_RoomCollisionManager->RegisterNGameObject(m_Character);
 
 	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
-	auto MovementComp = m_Enemy->AddComponent<MovementComponent>();
+	auto MovementComp = m_Enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
 	MovementComp->SetMaxSpeed(250.0f);
-	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>();
+	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
 	CollisionComp2->SetCollisionMask(CollisionLayers_Player);
 	m_Enemy->SetZIndex(11);
@@ -46,7 +53,7 @@ void TestScene_KC::Start()
 	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
 
 	m_Weapon->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/weapons_19.png"));
-	auto FollowerComp = m_Weapon->AddComponent<FollowerComponent>();
+	auto FollowerComp = m_Weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 	FollowerComp->SetFollower(m_Character);
 	FollowerComp->IsTargetMouse(true);
 	FollowerComp->SetHandOffset(glm::vec2(m_Character->GetImageSize().x/7.0f,-m_Character->GetImageSize().x/4.0f));
@@ -67,6 +74,7 @@ void TestScene_KC::Start()
 	m_Camera.AddRelativePivotChild(m_Enemy);
 
 	m_Camera.AddRelativePivotChild(m_Weapon);
+	LOG_DEBUG("Init Finish");
 }
 
 void TestScene_KC::Input()
@@ -121,7 +129,7 @@ void TestScene_KC::Update()
 	{
 		direction = glm::normalize(direction);
 		LOG_DEBUG("Direction: ({}, {})", direction.x, direction.y);
-		m_Character->GetComponent<MovementComponent>()->SetAcceleration(direction);
+		m_Character->GetComponent<MovementComponent>(ComponentType::MOVEMENT)->SetAcceleration(direction);
 	}
 	m_Character->Update();
 	m_Weapon->Update();

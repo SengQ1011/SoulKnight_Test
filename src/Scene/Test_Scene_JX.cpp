@@ -25,7 +25,7 @@ void TestScene_JX::Start()
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
 	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
 	m_Player->Start();
-	m_Player->SetAnimation(State::STANDING);
+
 	if(m_Player->GetCurrentAnimation() == nullptr)
 	{
 		LOG_ERROR("Failed to start animation");
@@ -86,7 +86,7 @@ void TestScene_JX::Update()
 		m_Camera.MoveCamera(deltaDisplacement);
 	}
 	else {
-		m_Player->SetState(State::STANDING);
+		//m_Player->SetState(State::STANDING);
 	}
 	m_Player->Update(deltaTime);
 	m_Root.Update();

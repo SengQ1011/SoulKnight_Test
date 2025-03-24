@@ -8,13 +8,9 @@
 
 Factory::Factory() {}
 
-<<<<<<< Updated upstream
-nlohmann::json Factory::readJsonFile(const std::string& filePath) {
-	std::ifstream file(JSON_DIR "/" + filePath);
-=======
+
 nlohmann::json Factory::readJsonFile(const std::string& fileName) {
-	std::ifstream file(JSON_DIR+fileName);
->>>>>>> Stashed changes
+	std::ifstream file(JSON_DIR "/" + fileName);
 	if (!file.is_open()) {
 		LOG_DEBUG("Error: Unable to open file: {}",fileName);
 		return nlohmann::json();  // 如果文件打開失敗，返回空的 JSON 物件

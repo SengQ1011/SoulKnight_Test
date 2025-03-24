@@ -12,7 +12,7 @@
 
 void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
-	if (nGameObject && nGameObject->GetComponent<CollisionComponent>())
+	if (nGameObject && nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
 		LOG_DEBUG("Collision Manager Registered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
 		m_NGameObjects.push_back(nGameObject);
@@ -37,7 +37,7 @@ void RoomCollisionManager::UpdateCollision() const
 		auto objectA = m_NGameObjects[i];
 		if (!objectA->IsActive()) continue;
 
-		auto colliderA = objectA->GetComponent<CollisionComponent>();
+		auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		if (!colliderA) continue;
 
 		for (size_t j = i + 1; j < m_NGameObjects.size(); ++j)
@@ -45,7 +45,7 @@ void RoomCollisionManager::UpdateCollision() const
 			auto objectB = m_NGameObjects[j];
 			if (!objectB->IsActive()) continue;
 
-			auto colliderB = objectB->GetComponent<CollisionComponent>();
+			auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 			if (!colliderB) continue;
 
 			if (!colliderA->CanCollideWith(colliderB)) continue;
@@ -76,8 +76,8 @@ void RoomCollisionManager::UpdateCollision() const
 void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGameObject>& objectA,
 													 const std::shared_ptr<nGameObject>& objectB, CollisionInfo &info)
 {
-	auto colliderA = objectA->GetComponent<CollisionComponent>();
-	auto colliderB = objectB->GetComponent<CollisionComponent>();
+	auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 
 	if (!colliderA || !colliderB) return;
 
@@ -112,8 +112,8 @@ void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGame
 void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> &objectA,
 											 const std::shared_ptr<nGameObject> &objectB, CollisionInfo &info)
 {
-	const auto colliderA = objectA->GetComponent<CollisionComponent>();
-	const auto colliderB = objectB->GetComponent<CollisionComponent>();
+	const auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	const auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 
 	if ((colliderB->GetCollisionLayer() & colliderA->GetCollisionMask()) != 0) // !=運算符 優先於 &
 	{

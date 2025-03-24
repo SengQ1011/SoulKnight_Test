@@ -25,7 +25,7 @@ enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子�
 
 namespace StructComponents {
 	struct StructCollisionComponent {
-		std::string m_Name = "collisionComponent";
+		ComponentType m_Type = ComponentType::COLLISION;
 		std::string m_Class = "collisionComponent";
 		std::array<float, 2> m_Size{};
 		std::array<float, 2> m_Offset{}; //左下角位置 = Object原點 + m_Offset
@@ -36,7 +36,7 @@ namespace StructComponents {
 
 	inline void to_json(nlohmann::ordered_json &j, const StructCollisionComponent &c) {
 		j = nlohmann::ordered_json{
-	          {"Name", c.m_Name},
+	          {"Type", c.m_Type},
 			  {"Class", c.m_Class},
 			  {"Size", c.m_Size},
 			  {"Offset",c.m_Offset},
@@ -46,7 +46,7 @@ namespace StructComponents {
 	}
 
 	inline void from_json(const nlohmann::ordered_json& j, StructCollisionComponent &c) {
-		j.at("Name").get_to(c.m_Name);
+		j.at("Type").get_to(c.m_Type);
 		j.at("Class").get_to(c.m_Class);
 		j.at("Size").get_to(c.m_Size);
 		j.at("Offset").get_to(c.m_Offset);
@@ -100,16 +100,16 @@ struct Rect //AABB的矩形結構
 class CollisionComponent final : public Component {
 public:
 
-	explicit CollisionComponent(const std::string& name = "collisionComponent", const glm::vec2& size = glm::vec2(0),
+	explicit CollisionComponent(const ComponentType type = ComponentType::COLLISION, const glm::vec2& size = glm::vec2(0),
 					   const glm::vec2& offset = glm::vec2(0),
 					   const glm::uint8_t collisionLayer = CollisionLayers_None,
 					   const glm::uint8_t collisionMask = CollisionLayers_None,
 					   const bool isTrigger = false)
-		: Component(name), m_Size(size), m_Offset(offset), m_CollisionLayer(collisionLayer),
+		: Component(type), m_Size(size), m_Offset(offset), m_CollisionLayer(collisionLayer),
 		  m_CollisionMask(collisionMask), m_IsTrigger(isTrigger) {}
 
 	explicit CollisionComponent(const StructComponents::StructCollisionComponent& data)
-		: Component(data.m_Name), m_Size(glm::vec2(data.m_Size[0], data.m_Size[1])),
+		: Component(data.m_Type), m_Size(glm::vec2(data.m_Size[0], data.m_Size[1])),
 		  m_Offset(data.m_Offset[0], data.m_Offset[1]), m_CollisionLayer(data.m_CollisionLayer),
 		  m_CollisionMask(data.m_CollisionMask), m_IsTrigger(data.m_IsTrigger) {}
 

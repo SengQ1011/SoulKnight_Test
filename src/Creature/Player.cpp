@@ -8,9 +8,9 @@
 #include "Util/Time.hpp"
 #include "Util/Logger.hpp"
 
-Player::Player(const std::unordered_map<State, std::shared_ptr<Animation>> Animation, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox , std::shared_ptr<Weapon>  initialWeapon,
+Player::Player(int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox , std::shared_ptr<Weapon>  initialWeapon,
 			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, std::shared_ptr<Skill> skill)
-	: Character(Animation, maxHp, speed, aimRange, std::move(collisionBox), initialWeapon), m_maxArmor(maxArmor), m_currentArmor(maxArmor),
+	: Character(maxHp, speed, aimRange, std::move(collisionBox), initialWeapon), m_maxArmor(maxArmor), m_currentArmor(maxArmor),
 	m_maxEnergy(maxEnergy), m_currentEnergy(maxEnergy), m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), skill(std::move(skill)) {}
 
 void Player::Start() {
@@ -26,13 +26,14 @@ void Player::Start() {
 }
 
 void Player::Update(float deltaTime) {
-	// 根据当前状态切换动画
-	if (m_state != m_previousState) {
-		m_currentAnimation->PlayAnimation(false);
-		this->SetAnimation(m_state);
-		m_previousState = m_state;
-	}
 
+	// 根据当前状态切换动画
+	// if (m_state != m_previousState) {
+	// 	m_currentAnimation->PlayAnimation(false);
+	// 	this->SetAnimation(m_state);
+	// 	m_previousState = m_state;
+	// }
+	UpdateComponents(deltaTime);
 	if (m_currentWeapon) {
 		//m_currentWeapon->m_WorldCoord = this->m_WorldCoord;  // 更新武器位置为玩家位置
 	}
@@ -75,7 +76,7 @@ void Player::useSkill(Skill& skill) {
 }
 
 void Player::move(const glm::vec2 movement) {
-	m_state = State::MOVING;
+	//m_state = State::MOVING;
 	if ((movement.x < 0 && this->m_currentAnimation->m_Transform.scale.x > 0) ||
 		(movement.x > 0 && this->m_currentAnimation->m_Transform.scale.x < 0)) {
 		this->m_currentAnimation->m_Transform.scale.x *= -1.0f;

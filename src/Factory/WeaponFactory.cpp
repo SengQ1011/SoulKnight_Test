@@ -8,7 +8,7 @@
 
 std::shared_ptr<Weapon> WeaponFactory::createWeapon(const int weaponID) {
 	// 讀取武器配置文件
-	nlohmann::json weaponData = readJsonFile("../json/weapon.json");
+	nlohmann::json weaponData = readJsonFile("weapon.json");
 
 	// 根據武器名稱查找對應的武器資料
 	for (const auto& weapon : weaponData) {

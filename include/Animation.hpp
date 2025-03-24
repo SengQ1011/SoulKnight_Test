@@ -43,7 +43,6 @@ public:
 
 private:
 	std::vector<std::string> m_AnimationPaths;  // 動畫幀列表
-	float m_ElapsedTime;                        // 累積時間
 };
 
 #endif //ANIMATION_HPP

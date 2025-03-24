@@ -12,7 +12,7 @@
 void MovementComponent::Update()
 {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
-	const auto owner = GetOwner();
+	const auto owner = GetOwner<nGameObject>();
 	// 更新接觸狀態超時
 	if (m_ContactState.inContactX || m_ContactState.inContactY) {
 		m_ContactState.contactTime -= deltaTime;
@@ -92,7 +92,7 @@ void MovementComponent::Update()
 
 void MovementComponent::HandleCollision(CollisionInfo &info)
 {
-	const auto owner = GetOwner();
+	const auto owner = GetOwner<nGameObject>();
 	if (owner) {m_Position = owner->m_WorldCoord;}
 	//TODO:我似乎已經在其他地方確認了，這裏還需要嗎？
 	if (info.GetObjectA() != owner && info.GetObjectB() != owner)
@@ -102,7 +102,7 @@ void MovementComponent::HandleCollision(CollisionInfo &info)
 
 	const std::shared_ptr<nGameObject> other = (info.GetObjectA() == owner) ? info.GetObjectB() : info.GetObjectA();
 
-	if (const std::shared_ptr<CollisionComponent> otherCollider = other->GetComponent<CollisionComponent>();
+	if (const std::shared_ptr<CollisionComponent> otherCollider = other->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		otherCollider && otherCollider->IsTrigger())
 	{
 		return;

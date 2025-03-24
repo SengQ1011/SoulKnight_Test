@@ -12,7 +12,7 @@
 class Player final: public Character {
 public:
 	// 構造函數：初始化玩家屬性
-	Player(std::unordered_map<State, std::shared_ptr<Animation>> m_Animations, int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon> initialWeapon,
+	Player(int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon> initialWeapon,
 		   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, std::shared_ptr<Skill> skill);
 
 	void Start() override;

@@ -3,11 +3,13 @@
 //
 
 #include "Factory/CharacterFactory.hpp"
-#include <memory>
 #include <fstream>
+#include <memory>
+
+#include "Components/StateComponent.hpp"
 #include "Util/Logger.hpp"
 
-CharacterFactory::CharacterFactory() {  }
+CharacterFactory::CharacterFactory() {}
 
 
 State stringToState(const std::string& stateStr) {
@@ -38,7 +40,10 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 	// 在 JSON 陣列中搜尋符合名稱的角色
 	for (const auto& characterInfo : characterData) {
 		if (characterInfo["ID"] == id) {
+			//auto player = std::make_shared<Player>();
 			auto animation = parseAnimations(characterInfo["animations"]);
+			auto animationComponent = std::make_shared<AnimationComponent>(animation);
+			auto stateComponent = std::make_shared<StateComponent>();
 			int maxHp = characterInfo["maxHp"];
 			float moveSpeed = characterInfo["speed"];
 			int aimRange = characterInfo["aimRange"];
@@ -71,8 +76,11 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 			}
 
 			// 根據 JSON 內容來決定創建 Player
-			return std::make_shared<Player>(animation, maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon,
-												maxArmor, maxEnergy, criticalRate, handBladeDamage, skill);
+			auto player = std::make_shared<Player>(maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon,
+												   maxArmor, maxEnergy, criticalRate, handBladeDamage, skill);
+
+
+			return player;
 		}
 	}
 	LOG_DEBUG("{}'s ID not found: {}", id);
@@ -81,7 +89,7 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 
 std::shared_ptr<Enemy>CharacterFactory::createEnemy(const int id) {
     // 讀取角色 JSON 資料
-	nlohmann::json characterData = readJsonFile("../json/enemy.json");
+	nlohmann::json characterData = readJsonFile("enemy.json");
 
     // 在 JSON 陣列中搜尋符合名稱的角色
     for (const auto& characterInfo : characterData) {
@@ -103,7 +111,7 @@ std::shared_ptr<Enemy>CharacterFactory::createEnemy(const int id) {
             auto weapon = wf.createWeapon(weaponID);
 
             // 根據 JSON 內容來決定創建 Enemy
-        	return std::make_shared<Enemy>(animation, maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon);
+        	return std::make_shared<Enemy>(maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon);
         }
     }
 

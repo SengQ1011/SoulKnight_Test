@@ -3,9 +3,11 @@ set(SRC_FILES
     App.cpp
     Beacon.cpp
     Camera.cpp
+    Component/AnimationComponent.cpp
     Component/CollisionComponent.cpp
     Component/FollowerComponent.cpp
     Component/MovementComponent.cpp
+    Component/StateComponent.cpp
     Creature/Character.cpp
     Creature/Enemy.cpp
     Creature/Player.cpp
@@ -38,10 +40,14 @@ set(INCLUDE_FILES
     App.hpp
     Beacon.hpp
     Camera.hpp
+    Components/AiComponent.hpp
+    Components/AnimationComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
     Components/FollowerComponent.hpp
+    Components/HealthComponent.hpp
     Components/MovementComponent.hpp
+    Components/StateComponent.hpp
     Creature/Character.hpp
     Creature/Enemy.hpp
     Creature/Player.hpp
