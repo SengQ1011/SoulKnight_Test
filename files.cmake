@@ -6,6 +6,7 @@ set(SRC_FILES
     Component/AnimationComponent.cpp
     Component/CollisionComponent.cpp
     Component/FollowerComponent.cpp
+    Component/InputComponent.cpp
     Component/MovementComponent.cpp
     Component/StateComponent.cpp
     Creature/Character.cpp
@@ -16,6 +17,7 @@ set(SRC_FILES
     Factory/Factory.cpp
     Factory/RoomFactory.cpp
     Factory/WeaponFactory.cpp
+    InputManager.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     RoomObject/ObstacleObject.cpp
@@ -46,12 +48,14 @@ set(INCLUDE_FILES
     Components/Component.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
+    Components/InputComponent.hpp
     Components/MovementComponent.hpp
     Components/StateComponent.hpp
     Creature/Character.hpp
     Creature/Enemy.hpp
     Creature/Player.hpp
     Cursor.hpp
+    EnumTypes.hpp
     Factory/CharacterFactory.hpp
     Factory/Factory.hpp
     Factory/RoomFactory.hpp
@@ -59,7 +63,9 @@ set(INCLUDE_FILES
     GameMechanism/Skill.hpp
     GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
+    InputManager.hpp
     Motion.hpp
+    Observer.hpp
     Override/nGameObject.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp

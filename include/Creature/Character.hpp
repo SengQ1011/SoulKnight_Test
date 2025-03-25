@@ -48,9 +48,6 @@ public:
 							m_collisionBox->GetY(this->m_WorldCoord.y));
 	}
 	[[nodiscard]] std::shared_ptr<Weapon> GetCurrentWeapon() const { return m_currentWeapon; }// 武器系統
-	[[nodiscard]] std::shared_ptr<Animation> GetCurrentAnimation() const { return m_currentAnimation; }
-
-
 
 
 	/* ---Setter--- */
@@ -65,7 +62,6 @@ public:
 
 
 protected:
-	std::shared_ptr<Animation> m_currentAnimation;   // 当前播放的动画
 	int m_maxHp;        // 生命上限
 	int m_currentHp;    // 當前生命值
 	float m_moveSpeed;		// 每秒移動的格數

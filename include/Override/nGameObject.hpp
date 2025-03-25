@@ -9,7 +9,6 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Logger.hpp"
-
 #include "Components/Component.hpp"
 
 class nGameObject : public Util::GameObject, public std::enable_shared_from_this<nGameObject> //爲了讓Component可以指向nGameObject

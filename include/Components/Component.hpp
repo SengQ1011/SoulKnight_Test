@@ -12,17 +12,8 @@
 #include <string>
 #include <memory>
 #include "Util/Logger.hpp"
-
-enum class ComponentType
-{
-	AI,
-	ANIMATION,
-	COLLISION,
-	FOLLOWER,
-	HEALTH,
-	MOVEMENT,
-	STATE
-};
+#include "InputManager.hpp"
+#include "EnumTypes.hpp"
 
 struct CollisionInfo;
 class nGameObject;

@@ -23,11 +23,12 @@ public:
 		: Component(type), m_SpeedRatio(speedRatio), m_MaxSpeed(maxSpeed), m_Acceleration(acceleration),
 		  m_Velocity(velocity), m_Position(position) {}
 
+	void Init() override;
 	void Update() override;
 	void HandleCollision(CollisionInfo &info) override;
 
 	// Getters
-	[[nodiscard]] float SetSpeedRatio() const { return m_SpeedRatio; }
+	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
 	[[nodiscard]] float GetMaxSpeed() const { return m_MaxSpeed; }
 	[[nodiscard]] const glm::vec2& GetAcceleration() const { return m_Acceleration; }
 	[[nodiscard]] const glm::vec2& GetVelocity() const { return m_Velocity; }

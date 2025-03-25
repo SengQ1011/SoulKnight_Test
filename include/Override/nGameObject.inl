@@ -34,6 +34,7 @@ std::shared_ptr<T> nGameObject::GetComponent(ComponentType type)
 //			return castedComponent;
 //		}
 //	}
+	// unordermap搜索法：unordered_map.find()
 	auto it = m_Components.find(type);
 	if (it != m_Components.end()) {
 		return std::dynamic_pointer_cast<T>(it->second);

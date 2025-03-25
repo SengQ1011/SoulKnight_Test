@@ -7,8 +7,6 @@
 
 #include "Factory/Factory.hpp"
 #include "Factory/WeaponFactory.hpp"
-#include "Components/AnimationComponent.hpp"
-#include "Components/StateComponent.hpp"
 #include "Tool/CollisionBox.hpp"
 
 // 角色工廠：根據名稱創建角色

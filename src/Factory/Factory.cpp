@@ -4,7 +4,7 @@
 
 #include "Factory/Factory.hpp"
 
-#include "Components/CollisionComponent.hpp"
+#include "Util/Logger.hpp"
 
 Factory::Factory() {}
 

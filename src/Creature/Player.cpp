@@ -5,8 +5,10 @@
 #include <utility>
 
 #include "Creature/Player.hpp"
-#include "Util/Time.hpp"
+
+#include "Components/AnimationComponent.hpp"
 #include "Util/Logger.hpp"
+#include "Util/Time.hpp"
 
 Player::Player(int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox , std::shared_ptr<Weapon>  initialWeapon,
 			   int maxArmor, int maxEnergy, double criticalRate, int handBladeDamage, std::shared_ptr<Skill> skill)
@@ -15,9 +17,8 @@ Player::Player(int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBo
 
 void Player::Start() {
 	if (m_currentWeapon) {
-		m_currentWeapon->SetPivot(this->m_WorldCoord);
+		// m_currentWeapon->SetPivot(this->m_WorldCoord);
 		m_currentWeapon->SetZIndex(15);
-		//m_currentWeapon->m_WorldCoord = this->m_WorldCoord;  // 更新武器位置为玩家位置
 		LOG_DEBUG("have initWeapon");
 	}
 	else {
@@ -26,15 +27,9 @@ void Player::Start() {
 }
 
 void Player::Update(float deltaTime) {
-
-	// 根据当前状态切换动画
-	// if (m_state != m_previousState) {
-	// 	m_currentAnimation->PlayAnimation(false);
-	// 	this->SetAnimation(m_state);
-	// 	m_previousState = m_state;
-	// }
 	UpdateComponents(deltaTime);
 	if (m_currentWeapon) {
+		m_currentWeapon->Update();
 		//m_currentWeapon->m_WorldCoord = this->m_WorldCoord;  // 更新武器位置为玩家位置
 	}
 
@@ -77,9 +72,11 @@ void Player::useSkill(Skill& skill) {
 
 void Player::move(const glm::vec2 movement) {
 	//m_state = State::MOVING;
-	if ((movement.x < 0 && this->m_currentAnimation->m_Transform.scale.x > 0) ||
-		(movement.x > 0 && this->m_currentAnimation->m_Transform.scale.x < 0)) {
-		this->m_currentAnimation->m_Transform.scale.x *= -1.0f;
+
+	auto m_currentAnimation = this->GetComponent<AnimationComponent>(ComponentType::ANIMATION)->GetCurrentAnimation();
+	if ((movement.x < 0 && m_currentAnimation->m_Transform.scale.x > 0) ||
+		(movement.x > 0 && m_currentAnimation->m_Transform.scale.x < 0)) {
+		m_currentAnimation->m_Transform.scale.x *= -1.0f;
 		this->m_currentWeapon->m_Transform.scale.x *= -1.0f;
 	}
 	this->m_WorldCoord += (movement * this->m_moveSpeed);

@@ -8,7 +8,7 @@
 #include "Override/nGameObject.hpp"
 #include "Util/Image.hpp"
 
-class Weapon: public nGameObject{
+class Weapon: public nGameObject {
 public:
 	explicit Weapon(const std::string& ImagePath, const std::string name, int damage, int energy, float criticalRate, int offset, int dropLevel,  float attackRange, float size, int attackSpeed);
 	~Weapon() override = default;

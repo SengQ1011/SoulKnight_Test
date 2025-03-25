@@ -20,9 +20,9 @@ bool Animation::IfAnimationEnds() const {
 // 自动播放（内部控制更新频率）
 void Animation::PlayAnimation(bool play) {
 	auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
+	animation->SetInterval(1000.0f / 30.0f);
 	if (animation && animation->GetState() != Util::Animation::State::PLAY && play) {
 		animation->Play();  // 開始播放動畫
-		animation->SetInterval(1000.0f / 30.0f);
 	} else {
 		animation->Pause();
 	}

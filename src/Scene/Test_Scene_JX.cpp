@@ -10,10 +10,13 @@
 #include "Util/Logger.hpp"
 #include <iostream>
 #include <filesystem>
+#include "InputManager.hpp"
+#include "EnumTypes.hpp"
 
 
 void TestScene_JX::Start()
 {
+	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
 	LOG_DEBUG("Entering JX Test Scene");
 	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
 	m_Wall->SetZIndex(1);
@@ -25,12 +28,6 @@ void TestScene_JX::Start()
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
 	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
 	m_Player->Start();
-
-	if(m_Player->GetCurrentAnimation() == nullptr)
-	{
-		LOG_ERROR("Failed to start animation");
-	}
-
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
 	m_Root.AddChild(m_Wall);
@@ -60,8 +57,12 @@ void TestScene_JX::Update()
 	m_Camera.Update(); //更新Camera大家庭成員的渲染坐標
 
 	// Input：位移量
+	// if (Util::Input::IsKeyPressed(Util::Keycode::W)) inputManager->onKeyPressed('W');
+	// if (Util::Input::IsKeyPressed(Util::Keycode::S)) inputManager->onKeyPressed('S');
+	// if (Util::Input::IsKeyPressed(Util::Keycode::A)) inputManager->onKeyPressed('A');
+	// if (Util::Input::IsKeyPressed(Util::Keycode::D)) inputManager->onKeyPressed('D');
 	glm::vec2 movement(0.0f, 0.0f);
-	if (Util::Input::IsKeyPressed(Util::Keycode::W))movement.y += 1.0f;
+	if (Util::Input::IsKeyPressed(Util::Keycode::W)) movement.y += 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::S)) movement.y -= 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::A)) movement.x -= 1.0f;
 	if (Util::Input::IsKeyPressed(Util::Keycode::D)) movement.x += 1.0f;
@@ -81,12 +82,12 @@ void TestScene_JX::Update()
 	{
 		const float ratio = 0.2f;
 		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * deltaTime; //normalize為防止斜向走速度是根號2
+		m_Player->GetComponent<StateComponent>(ComponentType::STATE)->SetState(State::MOVING);
 		m_Player->move(deltaDisplacement);
-		// m_Weapon->m_WorldCoord = m_Player->m_WorldCoord;
 		m_Camera.MoveCamera(deltaDisplacement);
 	}
 	else {
-		//m_Player->SetState(State::STANDING);
+		m_Player->GetComponent<StateComponent>(ComponentType::STATE)->SetState(State::STANDING);
 	}
 	m_Player->Update(deltaTime);
 	m_Root.Update();

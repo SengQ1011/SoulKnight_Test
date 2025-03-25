@@ -5,12 +5,18 @@
 //MovementComponent.cpp
 
 #include "Components/MovementComponent.hpp"
-
 #include "Components/CollisionComponent.hpp"
 #include "Util/Time.hpp"
 
-void MovementComponent::Update()
-{
+void MovementComponent::Init() {
+	auto owner = GetOwner<nGameObject>();
+	if (owner) {
+
+	}
+}
+
+
+void MovementComponent::Update() {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	const auto owner = GetOwner<nGameObject>();
 	// 更新接觸狀態超時
@@ -95,8 +101,7 @@ void MovementComponent::HandleCollision(CollisionInfo &info)
 	const auto owner = GetOwner<nGameObject>();
 	if (owner) {m_Position = owner->m_WorldCoord;}
 	//TODO:我似乎已經在其他地方確認了，這裏還需要嗎？
-	if (info.GetObjectA() != owner && info.GetObjectB() != owner)
-	{
+	if (info.GetObjectA() != owner && info.GetObjectB() != owner) {
 		return;
 	}
 

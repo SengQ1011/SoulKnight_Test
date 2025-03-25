@@ -14,6 +14,7 @@ Character::Character(int maxHp, float speed, int aimRange, std::unique_ptr<Colli
 
 	if (m_currentWeapon) {
 		this->AddChild(m_currentWeapon);  // 確保武器加入角色
+		LOG_DEBUG("weapon follower");
 	}
 	LOG_DEBUG("Character has been initialized");
 }

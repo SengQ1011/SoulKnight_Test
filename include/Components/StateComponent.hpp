@@ -7,36 +7,28 @@
 
 #include "Components/Component.hpp"
 #include "GameMechanism/StatusEffect.hpp"
-
-enum class State
-{
-	STANDING,
-	MOVING,
-	ATTACK,
-	DEAD
-};
+#include "Components/AnimationComponent.hpp"
 
 class StateComponent final: public Component {
 public:
 	explicit StateComponent();
 	~StateComponent() override = default;
 
+	void Init() override;
 	void Update(){}
 
 	/* ---Getter--- */
-	State GetState()const { return m_currentState; }
-	State GetPrevState() { return m_prevState; }       // 上一个状态
+	State GetCurrentState()const { return m_currentState; }
 	std::vector<StatusEffect> GetActiveEffects() { return m_StatusEffects; }
 
 	/* ---Setter--- */
 	void SetState(State newState);
-	void SetPrevState(State State);
+
 	void applyStatusEffect(const StatusEffect& effect); // 添加狀態異常
 	void updateStatusEffects(double deltaTime);			// 更新狀態異常
 
 private:
 	State m_currentState;
-	State m_prevState;
 	std::vector<StatusEffect> m_StatusEffects;	// 狀態異常
 };
 

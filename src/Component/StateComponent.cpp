@@ -4,16 +4,27 @@
 
 #include "Components/StateComponent.hpp"
 
-StateComponent::StateComponent() {
+StateComponent::StateComponent() {}
+
+void StateComponent::Init() {
+	m_currentState = State::STANDING;
 	LOG_DEBUG("Creating State Component");
-	SetState(State::STANDING);
 }
 
 void StateComponent::SetState(State newState) {
-	//m_prevState = m_currentState; 切換動畫了才更新(animationComponent)
-	m_currentState = newState;
-}
-
-void StateComponent::SetPrevState(State State) {
-	m_prevState = m_currentState;
+	if (newState != m_currentState) {
+		LOG_DEBUG("Changing State to {}",std::to_string(static_cast<int>(newState)));
+		m_currentState = newState;
+		auto character = GetOwner<nGameObject>();
+		if (character) {
+			auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
+			auto m_currentAnimation = animationComponent->GetCurrentAnimation();
+			// 根据当前状态切换动画
+			if (m_currentAnimation) {
+				LOG_DEBUG("changing animation");
+				m_currentAnimation->PlayAnimation(false);
+				animationComponent->SetAnimation(m_currentState);
+			}
+		}
+	}
 }

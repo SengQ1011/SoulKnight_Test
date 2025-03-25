@@ -31,6 +31,8 @@ public:
 
 protected:
 	CharacterFactory factory;
+	std::shared_ptr<InputManager> inputManager = std::make_shared<InputManager>();
+
 	std::shared_ptr<Player> m_Player = factory.createPlayer(1);
 	std::shared_ptr<nGameObject> m_Wall = std::make_shared<nGameObject>();
 	//std::shared_ptr<Weapon> m_Weapon = std::make_shared<Weapon>(RESOURCE_DIR"/weapons_19.png", "Old_worn_pistol", 0, 1, 1,0,0,0,0,0);

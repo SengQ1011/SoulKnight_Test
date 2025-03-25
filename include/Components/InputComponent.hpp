@@ -1,0 +1,24 @@
+//
+// Created by tjx20 on 3/25/2025.
+//
+
+#ifndef INPUTCOMPONENT_HPP
+#define INPUTCOMPONENT_HPP
+
+#include "Components/Component.hpp"
+#include "Creature/Character.hpp"
+#include "Components/MovementComponent.hpp"
+#include "Observer.hpp"
+
+class InputComponent : public Component, public Observer{
+public:
+	explicit InputComponent();
+	~InputComponent() override = default;
+
+	void onInputReceived(const std::set<char>& keys) override;
+
+private:
+
+};
+
+#endif //INPUTCOMPONENT_HPP

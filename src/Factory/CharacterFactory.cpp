@@ -6,8 +6,7 @@
 #include <fstream>
 #include <memory>
 
-#include "Components/StateComponent.hpp"
-#include "Util/Logger.hpp"
+#include "Components/InputComponent.hpp"
 
 CharacterFactory::CharacterFactory() {}
 
@@ -42,8 +41,7 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 		if (characterInfo["ID"] == id) {
 			//auto player = std::make_shared<Player>();
 			auto animation = parseAnimations(characterInfo["animations"]);
-			auto animationComponent = std::make_shared<AnimationComponent>(animation);
-			auto stateComponent = std::make_shared<StateComponent>();
+
 			int maxHp = characterInfo["maxHp"];
 			float moveSpeed = characterInfo["speed"];
 			int aimRange = characterInfo["aimRange"];
@@ -58,7 +56,6 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 			// 解析武器名稱並創建武器
 			int weaponID = characterInfo["weaponID"];
 			auto weapon = wf.createWeapon(weaponID);
-
 
 			int maxArmor = characterInfo["maxArmor"];
 			int maxEnergy = characterInfo["maxEnergy"];
@@ -79,7 +76,15 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 			auto player = std::make_shared<Player>(maxHp, moveSpeed, aimRange, std::move(collisionBox), weapon,
 												   maxArmor, maxEnergy, criticalRate, handBladeDamage, skill);
 
-
+			auto animationComponent = player->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
+			auto stateComponent = player->AddComponent<StateComponent>(ComponentType::STATE);
+			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
+			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
+			FollowerComp->SetFollower(player);
+			FollowerComp->IsTargetMouse(true);
+			FollowerComp->SetHandOffset(glm::vec2(34/7.0f,-28/4.0f));
+			FollowerComp->SetHoldingPosition(glm::vec2(34/2.0f,0));
 			return player;
 		}
 	}

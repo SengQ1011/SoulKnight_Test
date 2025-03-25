@@ -5,19 +5,17 @@
 #ifndef ANIMATIONCOMPONENT_HPP
 #define ANIMATIONCOMPONENT_HPP
 
-#include "Components/Component.hpp"
-#include "Components/StateComponent.hpp"
-#include "Animation.hpp"
 #include <memory>
 #include <unordered_map>
+#include "Animation.hpp"
+#include "Components/Component.hpp"
 
 class AnimationComponent: public Component {
 public:
 	explicit AnimationComponent(std::unordered_map<State, std::shared_ptr<Animation>> animations);
 	~AnimationComponent() override = default;
 	void SetAnimation(State state);
-
-	void Update();
+	void Init() override;
 
 	[[nodiscard]] std::shared_ptr<Animation> GetCurrentAnimation() const { return m_currentAnimation; }
 

@@ -9,6 +9,14 @@
 #include "Creature/Enemy.hpp"
 #include "Creature/Player.hpp"
 #include "Weapon/Weapon.hpp"
+#include "Components/AiComponent.hpp"
+#include "Components/AnimationComponent.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/FollowerComponent.hpp"
+#include "Components/HealthComponent.hpp"
+#include "Components/InputComponent.hpp"
+#include "Components/MovementComponent.hpp"
+#include "Components/StateComponent.hpp"
 #include <json.hpp>
 #include <string>
 #include <iostream>
