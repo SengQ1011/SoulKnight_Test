@@ -11,6 +11,8 @@
 class InputManager {
 public:
 
+	void listenInput();
+
 	//----Getter-----
 	std::vector<std::shared_ptr<Observer>> GetListener() { return m_Observer; }
 	std::set<char> GetActiveKey() { return m_activeKeys; }

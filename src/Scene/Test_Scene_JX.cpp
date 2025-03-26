@@ -17,6 +17,7 @@
 void TestScene_JX::Start()
 {
 	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
+	inputManager->addObserver(m_Camera);
 	LOG_DEBUG("Entering JX Test Scene");
 	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
 	m_Wall->SetZIndex(1);
@@ -36,9 +37,12 @@ void TestScene_JX::Start()
 
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	//例如UI，不加入就可以固定在熒幕上
-	m_Camera.AddRelativePivotChild(m_Wall);
-	m_Camera.AddRelativePivotChild(m_Player);
+	m_Camera->AddRelativePivotChild(m_Wall);
+	m_Camera->AddRelativePivotChild(m_Player);
 	//m_Camera.AddRelativePivotChild(m_Enemy);
+
+	// Camera跟隨player
+	m_Camera->SetFollowTarget(m_Player);
 	LOG_DEBUG("Starting--->Checked");
 }
 
@@ -53,42 +57,22 @@ void TestScene_JX::Update()
 {
 	//LOG_DEBUG("Test Scene is running...");
 	float deltaTime = Util::Time::GetDeltaTimeMs();
-	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
-	m_Camera.Update(); //更新Camera大家庭成員的渲染坐標
+	Cursor::SetWindowOriginWorldCoord(m_Camera->GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
+	m_Camera->Update(); //更新Camera大家庭成員的渲染坐標
 
 	// Input：位移量
-	// if (Util::Input::IsKeyPressed(Util::Keycode::W)) inputManager->onKeyPressed('W');
-	// if (Util::Input::IsKeyPressed(Util::Keycode::S)) inputManager->onKeyPressed('S');
-	// if (Util::Input::IsKeyPressed(Util::Keycode::A)) inputManager->onKeyPressed('A');
-	// if (Util::Input::IsKeyPressed(Util::Keycode::D)) inputManager->onKeyPressed('D');
-	glm::vec2 movement(0.0f, 0.0f);
-	if (Util::Input::IsKeyPressed(Util::Keycode::W)) movement.y += 1.0f;
-	if (Util::Input::IsKeyPressed(Util::Keycode::S)) movement.y -= 1.0f;
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) movement.x -= 1.0f;
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) movement.x += 1.0f;
-	//Camera Zoom In=I /Out=K
-	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
+	inputManager->listenInput();
 
+	//Camera Zoom In=I /Out=K
+	//if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera->ZoomCamera(1);}
+	//if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera->ZoomCamera(-1);}
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
-		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x);
+		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera->GetCameraWorldCoord().scale.x);
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
 
-	//TODO:待優化 目前匀速
-	if (movement != glm::vec2(0.0f)) //檢查非零向量 才能進行向量標準化 length(speed) != 0模長非零，因爲normalize = speed / length(speed)
-	{
-		const float ratio = 0.2f;
-		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * deltaTime; //normalize為防止斜向走速度是根號2
-		m_Player->GetComponent<StateComponent>(ComponentType::STATE)->SetState(State::MOVING);
-		m_Player->move(deltaDisplacement);
-		m_Camera.MoveCamera(deltaDisplacement);
-	}
-	else {
-		m_Player->GetComponent<StateComponent>(ComponentType::STATE)->SetState(State::STANDING);
-	}
 	m_Player->Update(deltaTime);
 	m_Root.Update();
 }

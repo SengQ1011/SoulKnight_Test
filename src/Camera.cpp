@@ -13,6 +13,11 @@ Camera::Camera(
 	m_CameraWorldCoord.scale = {1.0f,1.0f};
 }
 
+void Camera::onInputReceived(const std::set<char>& keys) {
+	if (keys.count('I')) ZoomCamera(1);
+	if (keys.count('K')) ZoomCamera(-1);
+}
+
 // void Camera::MoveCamera(const glm::vec2 &displacement)
 // {
 // 	//加位移變化量
@@ -31,7 +36,11 @@ void Camera::MoveCamera(const glm::vec2 &deltaDisplacement)
 	// if (m_CameraWorldCoord.translation.y < beaconCoord.y + v) {m_CameraWorldCoord.translation.y = beaconCoord.y + v;}
 }
 
-void Camera::CameraFollowWith(const glm::vec2& target) { m_CameraWorldCoord.translation = target; }
+void Camera::SetFollowTarget(const std::shared_ptr<nGameObject> &target) {
+	m_FollowTarget = target;
+}
+
+
 
 void Camera::ZoomCamera(const float zoomLevel)
 {
@@ -62,6 +71,10 @@ void Camera::AddRelativePivotChildren(
 
 //感覺可以優化 在渲染前一次性修改
 void Camera::Update() {
+	if (auto target = m_FollowTarget.lock()) { \
+		m_CameraWorldCoord.translation = target->m_WorldCoord;
+	}
+
 	for (const auto &child:m_RelativePivotChildren)
 	{
 		//變更坐標軸
@@ -70,9 +83,7 @@ void Camera::Update() {
 		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 		child->m_Transform.scale = glm::vec2((child->m_Transform.scale.x < 0.0f ? -m_CameraWorldCoord.scale.x : m_CameraWorldCoord.scale.x)
 			,m_CameraWorldCoord.scale.y);
-
 	}
-
 }
 
 

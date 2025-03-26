@@ -55,6 +55,7 @@ public:
 	[[nodiscard]] glm::vec2 GetPivot() const { return m_Pivot;}
 	[[nodiscard]] glm::vec2 GetImageSize() const {return m_Drawable->GetSize();}
 	[[nodiscard]] glm::vec2 GetWorldCoord() const {return m_WorldCoord;}
+	std::shared_ptr<Core::Drawable> GetDrawable() const {return m_Drawable;}
 
 protected:
 	std::string m_Name;

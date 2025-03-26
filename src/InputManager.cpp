@@ -5,6 +5,18 @@
 #include "InputManager.hpp"
 #include "Util/Logger.hpp"
 
+void InputManager::listenInput() {
+	if (Util::Input::IsKeyPressed(Util::Keycode::W)) onKeyPressed('W');
+	else onKeyReleased('W');
+	if (Util::Input::IsKeyPressed(Util::Keycode::S)) onKeyPressed('S');
+	else onKeyReleased('S');
+	if (Util::Input::IsKeyPressed(Util::Keycode::A)) onKeyPressed('A');
+	else onKeyReleased('A');
+	if (Util::Input::IsKeyPressed(Util::Keycode::D)) onKeyPressed('D');
+	else onKeyReleased('D');
+}
+
+
 void InputManager::addObserver(const std::shared_ptr<Observer> &observer) {
 	if (observer) {
 		m_Observer.push_back(observer);

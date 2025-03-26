@@ -40,19 +40,12 @@ void MovementComponent::Update() {
 		}
 	}
 
-	if (m_ContactState.inContactY && std::abs(m_ContactState.contactNormal.y) > 0.01f) {
-		if (m_Acceleration.y * m_ContactState.contactNormal.y < 0) {
-			m_Acceleration.y = 0.0f;
-		} else {
-			m_ContactState.inContactY = false;
-		}
-	}
 
 	constexpr float accelerationFactor = 5000.0f;
 	if (owner) m_Position = owner->m_WorldCoord;
 
 	// 加速度受SpeedRatio影響 TODO:(速度buff是否要影響達到最大速度的時間？)
-	// m_Velocity += m_Acceleration * m_SpeedRatio * Util::Time::GetDeltaTimeMs();
+	m_Velocity += m_Acceleration * m_SpeedRatio * deltaTime;
 	m_Velocity += m_Acceleration * deltaTime * accelerationFactor;
 
 	//摩擦力
@@ -65,14 +58,6 @@ void MovementComponent::Update() {
 			const float newSpeed = std::max(0.0f, speedMagnitude - frictionMagnitude);
 			if (speedMagnitude > 0.01f) m_Velocity.x *= (newSpeed / speedMagnitude);
 			else m_Velocity.x = 0.0f; //速度太小，直接設零
-		}
-	}
-	if (m_Acceleration.y == 0.0f) //摩擦力啓動！
-	{
-		if (const float speedMagnitude = std::abs(m_Velocity.y); speedMagnitude > 0.0f) {
-			const float newSpeed = std::max(0.0f, speedMagnitude - frictionMagnitude);
-			if (speedMagnitude > 0.01f) m_Velocity.y *= (newSpeed / speedMagnitude);
-			else m_Velocity.y = 0.0f; //速度太小，直接設零
 		}
 	}
 

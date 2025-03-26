@@ -12,15 +12,17 @@
 #include "Util/Time.hpp"
 #include "Util/Transform.hpp"
 #include "pch.hpp"
+#include "Observer.hpp"
 
-class Camera
-{
+class Camera: public Observer {
 public:
 	explicit Camera(const std::vector<std::shared_ptr<nGameObject>> &pivotChildren = {});
 	~Camera() = default;
 
+	void onInputReceived(const std::set<char>& keys) override;
+
 	void MoveCamera(const glm::vec2& displacement);
-	void CameraFollowWith(const glm::vec2& target);
+	void SetFollowTarget(const std::shared_ptr<nGameObject>& target);
 	void ZoomCamera(float zoomLevel);
 	void RotateCamera(float degree);
 
@@ -36,6 +38,7 @@ protected:
 	Util::Transform m_CameraWorldCoord;
 	Beacon m_Beacon;
 private:
+	std::weak_ptr<nGameObject> m_FollowTarget;
 	std::vector<std::shared_ptr<nGameObject>> m_RelativePivotChildren;
 };
 

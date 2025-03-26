@@ -17,7 +17,6 @@ Player::Player(int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBo
 
 void Player::Start() {
 	if (m_currentWeapon) {
-		// m_currentWeapon->SetPivot(this->m_WorldCoord);
 		m_currentWeapon->SetZIndex(15);
 		LOG_DEBUG("have initWeapon");
 	}
@@ -28,10 +27,10 @@ void Player::Start() {
 
 void Player::Update(float deltaTime) {
 	UpdateComponents(deltaTime);
-	if (m_currentWeapon) {
-		m_currentWeapon->Update();
-		//m_currentWeapon->m_WorldCoord = this->m_WorldCoord;  // 更新武器位置为玩家位置
-	}
+	// if (m_currentWeapon) {
+	// 	m_currentWeapon->Update();
+	// 	//m_currentWeapon->m_WorldCoord = this->m_WorldCoord;  // 更新武器位置为玩家位置
+	// }
 
 	// 更新碰撞箱位置
 	if (m_collisionBox) {
@@ -72,7 +71,6 @@ void Player::useSkill(Skill& skill) {
 
 void Player::move(const glm::vec2 movement) {
 	//m_state = State::MOVING;
-
 	auto m_currentAnimation = this->GetComponent<AnimationComponent>(ComponentType::ANIMATION)->GetCurrentAnimation();
 	if ((movement.x < 0 && m_currentAnimation->m_Transform.scale.x > 0) ||
 		(movement.x > 0 && m_currentAnimation->m_Transform.scale.x < 0)) {

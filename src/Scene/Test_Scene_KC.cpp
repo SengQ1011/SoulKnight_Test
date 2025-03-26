@@ -157,7 +157,7 @@ void TestScene_KC::Update()
 		LOG_DEBUG("");
 	}
 
-	m_Camera.CameraFollowWith( m_Character->m_WorldCoord);
+	m_Camera.SetFollowTarget(m_Character);
 
 	m_RoomCollisionManager->UpdateCollision();
 	m_Root.Update();

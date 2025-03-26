@@ -54,7 +54,7 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 			auto collisionBox = std::make_unique<CollisionBox>(offsetX, offsetY, collisionWidth, collisionHeight);
 
 			// 解析武器名稱並創建武器
-			int weaponID = characterInfo["weaponID"];
+			const int weaponID = characterInfo["weaponID"];
 			auto weapon = wf.createWeapon(weaponID);
 
 			int maxArmor = characterInfo["maxArmor"];

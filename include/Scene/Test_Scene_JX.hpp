@@ -39,7 +39,7 @@ protected:
 	//std::shared_ptr<Enemy> m_Enemy = std::make_shared<Enemy>(RESOURCE_DIR"/Sprite/monster小怪/冰原/enemy31礦工/enemy31_0.png", 20, 1.0f, 10, nullptr, nullptr);
 	std::shared_ptr<nGameObject> a;
 
-	Camera m_Camera;
+	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
 
 	Util::Renderer m_Root;
 };
