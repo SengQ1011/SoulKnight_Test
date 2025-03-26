@@ -49,8 +49,7 @@ void AnimationComponent::SetAnimation(State state) {
 			m_currentAnimation->SetVisible(true);
 			m_currentAnimation->PlayAnimation(true);
 
-			// 新動畫加入 `Character`
-			//character->AddChild(m_currentAnimation);  // 使用 character 訪問 AddChild
+			// 新動畫設為 Character drawable
 			character->SetDrawable(m_currentAnimation->GetDrawable());
 			LOG_DEBUG("Switched animation to state " + std::to_string(static_cast<int>(state)));
 		}

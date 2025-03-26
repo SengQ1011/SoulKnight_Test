@@ -5,13 +5,15 @@
 #include "Cursor.hpp"
 #include "Scene/Test_Scene_JX.hpp"
 
+#include <filesystem>
+#include <iostream>
+#include "BulletManager.hpp"
+#include "Components/AttackComponent.hpp"
+#include "EnumTypes.hpp"
+#include "InputManager.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include <iostream>
-#include <filesystem>
-#include "InputManager.hpp"
-#include "EnumTypes.hpp"
 
 
 void TestScene_JX::Start()
@@ -27,18 +29,18 @@ void TestScene_JX::Start()
 
 	m_Player->SetZIndex(12);
 	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
-	m_Player->SetPivot(glm::vec2(0.5f, 0.5f)); // 設定為中心點
-	m_Player->Start();
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
 	m_Root.AddChild(m_Wall);
 	m_Root.AddChild(m_Player);
+	//m_Root.AddChild(m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCurrentWeapon());
 	//m_Root.AddChild(m_Enemy);
 
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	//例如UI，不加入就可以固定在熒幕上
 	m_Camera->AddRelativePivotChild(m_Wall);
 	m_Camera->AddRelativePivotChild(m_Player);
+	m_Camera->AddRelativePivotChild(m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCurrentWeapon());
 	//m_Camera.AddRelativePivotChild(m_Enemy);
 
 	// Camera跟隨player
@@ -55,6 +57,11 @@ void TestScene_JX::Input()
 
 void TestScene_JX::Update()
 {
+	const auto& Bullets = BulletManager::GetInstance().GetBullets();
+	for (const auto& bullet : Bullets) {
+		m_Root.RemoveChild(bullet);
+		m_Camera->RemoveRelativePivotChild(bullet);
+	}
 	//LOG_DEBUG("Test Scene is running...");
 	float deltaTime = Util::Time::GetDeltaTimeMs();
 	Cursor::SetWindowOriginWorldCoord(m_Camera->GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
@@ -64,16 +71,19 @@ void TestScene_JX::Update()
 	inputManager->listenInput();
 
 	//Camera Zoom In=I /Out=K
-	//if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera->ZoomCamera(1);}
-	//if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera->ZoomCamera(-1);}
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
 		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera->GetCameraWorldCoord().scale.x);
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
-
-	m_Player->Update(deltaTime);
+	BulletManager::GetInstance().Update();
+	const auto& activeBullets = BulletManager::GetInstance().GetBullets();
+	for (const auto& bullet : activeBullets) {
+		m_Root.AddChild(bullet);
+		m_Camera->AddRelativePivotChild(bullet);
+	}
+	m_Player->Update();
 	m_Root.Update();
 }
 

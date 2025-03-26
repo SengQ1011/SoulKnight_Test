@@ -6,15 +6,27 @@
 #include "Util/Logger.hpp"
 
 void InputManager::listenInput() {
-	if (Util::Input::IsKeyPressed(Util::Keycode::W)) onKeyPressed('W');
-	else onKeyReleased('W');
-	if (Util::Input::IsKeyPressed(Util::Keycode::S)) onKeyPressed('S');
-	else onKeyReleased('S');
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) onKeyPressed('A');
-	else onKeyReleased('A');
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) onKeyPressed('D');
-	else onKeyReleased('D');
+	static const std::array<std::pair<Util::Keycode, char>, 9> keys = {{
+		{Util::Keycode::W, 'W'},	// 上
+		{Util::Keycode::S, 'S'},	// 下
+		{Util::Keycode::A, 'A'},	// 左
+		{Util::Keycode::D, 'D'},	// 右
+		{Util::Keycode::E, 'E'},	// 開啓/打開
+		{Util::Keycode::J, 'J'},	// 攻擊
+		{Util::Keycode::U, 'U'},	// 切換武器
+		{Util::Keycode::I, 'I'},
+		{Util::Keycode::K, 'K'}
+	}};
+
+	for (const auto& [keycode, key] : keys) {
+		if (Util::Input::IsKeyPressed(keycode)) {
+			onKeyPressed(key);
+		} else {
+			onKeyReleased(key);
+		}
+	}
 }
+
 
 
 void InputManager::addObserver(const std::shared_ptr<Observer> &observer) {

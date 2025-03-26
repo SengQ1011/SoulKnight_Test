@@ -5,8 +5,11 @@
 #ifndef WEAPONFACTORY_HPP
 #define WEAPONFACTORY_HPP
 
-#include "Factory/Factory.hpp"
 #include <random>
+#include "Factory/Factory.hpp"
+#include "Weapon/GunWeapon.hpp"
+#include "Weapon/MeleeWeapon.hpp"
+#include "Weapon/Weapon.hpp"
 
 class WeaponFactory: public Factory {
 public:

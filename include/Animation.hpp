@@ -21,7 +21,6 @@ public:
 	Animation& operator=(const Animation&) = delete;
 
 
-	void Update(float deltaTime);
 
 	[[nodiscard]] bool IsLooping() const {
 		auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);

@@ -22,7 +22,7 @@ public:
 	float cooldownTime;           // 技能冷卻時間
 	float remainingCooldown;      // 剩餘冷卻時間
 
-	using SkillFunction = std::function<void()>;
+	using SkillFunction = std::function<void()>;  // 函數指針类型
 
 	// 构造函数，初始化所有成员
 	explicit Skill(std::string  skillName, float cooldown): name(std::move(skillName)), cooldownTime(cooldown) {}

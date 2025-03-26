@@ -38,9 +38,13 @@ void FollowerComponent::Update()
 	//TODO:當角色反轉，m_HandOffset.x會被影響， m_HoldingOffset不確定，可能要實驗
 	//Follower的手是m_Owner的世界坐標
 	//m_Owner的轉軸是m_Owner的世界坐標-它到握把的距離
-	owner->m_WorldCoord = m_Follower->m_WorldCoord + m_HandOffset;
-	owner->SetPivot(-m_HoldingOffset);
-	BaseTargetRotate(); //取得角度
-	owner->m_Transform.rotation = m_HoldingRotation;
+	if (owner)
+	{
+		owner->m_WorldCoord = m_Follower->m_WorldCoord + m_HandOffset;
+		owner->SetPivot(-m_HoldingOffset);
+		BaseTargetRotate(); //取得角度
+		owner->m_Transform.rotation = m_HoldingRotation;
+	}
+
 }
 

@@ -4,20 +4,10 @@
 
 #include "Creature/Enemy.hpp"
 
-Enemy::Enemy(int maxHp, float speed, int aimRange, std::unique_ptr<CollisionBox> collisionBox, std::shared_ptr<Weapon>  initialWeapon)
-	: Character(maxHp, speed, aimRange, std::move(collisionBox), initialWeapon)  {}
+Enemy::Enemy(int maxHp, float speed, std::unique_ptr<CollisionBox> collisionBox)
+	: Character(maxHp, speed, std::move(collisionBox))  {}
 
 void Enemy::Start()
 {
 
 }
-
-void Enemy::Update(float deltaTime)
-{
-
-}
-
-void Enemy::attack() {  }
-
-
-void Enemy::move(const glm::vec2 movement) {  }

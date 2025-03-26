@@ -8,6 +8,14 @@
 #include "Factory/Factory.hpp"
 #include "Factory/WeaponFactory.hpp"
 #include "Tool/CollisionBox.hpp"
+#include "Components/AiComponent.hpp"
+#include "Components/AnimationComponent.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/FollowerComponent.hpp"
+#include "Components/HealthComponent.hpp"
+#include "Components/InputComponent.hpp"
+#include "Components/MovementComponent.hpp"
+#include "Components/StateComponent.hpp"
 
 // 角色工廠：根據名稱創建角色
 class CharacterFactory: public Factory {

@@ -2,8 +2,10 @@ set(SRC_FILES
     Animation.cpp
     App.cpp
     Beacon.cpp
+    BulletManager.cpp
     Camera.cpp
     Component/AnimationComponent.cpp
+    Component/AttackComponent.cpp
     Component/CollisionComponent.cpp
     Component/FollowerComponent.cpp
     Component/InputComponent.cpp
@@ -33,6 +35,9 @@ set(SRC_FILES
     Tool/CollisionBox.cpp
     Tool/HitBox.cpp
     Tool/Tool.cpp
+    Weapon/Bullet.cpp
+    Weapon/GunWeapon.cpp
+    Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
     main.cpp
 )
@@ -41,9 +46,11 @@ set(INCLUDE_FILES
     Animation.hpp
     App.hpp
     Beacon.hpp
+    BulletManager.hpp
     Camera.hpp
     Components/AiComponent.hpp
     Components/AnimationComponent.hpp
+    Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
     Components/FollowerComponent.hpp
@@ -85,6 +92,9 @@ set(INCLUDE_FILES
     Tool/CollisionManager.hpp
     Tool/HItBox.hpp
     Tool/Tool.hpp
+    Weapon/Bullet.hpp
+    Weapon/GunWeapon.hpp
+    Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp
 )
 

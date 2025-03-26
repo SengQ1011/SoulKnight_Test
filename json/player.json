@@ -19,18 +19,17 @@
         "maxHp": 7,
         "currentHp": 7,
         "speed": 2.0,
-        "aimRange": 10,
         "collisionBox": {
             "width": 2.0,
             "height": 5.0,
             "offsetX": 0,
             "offsetY": -2.0
         },
-        "weaponID": 1,
+        "weaponID": 19,
         "maxArmor": 7,
         "maxEnergy": 200,
-        "criticalRate": 0.2,
-        "handBladeDamage": 3,
+        "handBladeDamage": 4,
+        "criticalRate": 0.05,
         "skill": {
             "name": "Shield Bash",
             "cooldown": 5,

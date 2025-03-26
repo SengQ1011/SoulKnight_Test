@@ -9,6 +9,7 @@ enum class ComponentType
 {
 	AI,
 	ANIMATION,
+	ATTACK,
 	COLLISION,
 	FOLLOWER,
 	HEALTH,
