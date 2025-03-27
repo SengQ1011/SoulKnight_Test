@@ -9,7 +9,7 @@
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 5,
-    "attackSpeed": 1.0,
+    "attackSpeed": 0.333,
     "bulletSize": 1.0,
     "dropLevel": 3
   }

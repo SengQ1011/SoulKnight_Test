@@ -37,6 +37,7 @@ void TestScene_JX::Start()
 	//m_Root.AddChild(m_Enemy);
 
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
+	// 只對需要跟隨鏡頭的物件（如玩家、地圖）呼叫
 	//例如UI，不加入就可以固定在熒幕上
 	m_Camera->AddRelativePivotChild(m_Wall);
 	m_Camera->AddRelativePivotChild(m_Player);
@@ -44,7 +45,7 @@ void TestScene_JX::Start()
 	//m_Camera.AddRelativePivotChild(m_Enemy);
 
 	// Camera跟隨player
-	m_Camera->SetFollowTarget(m_Player);
+	//m_Camera->SetFollowTarget(m_Player);
 	LOG_DEBUG("Starting--->Checked");
 }
 

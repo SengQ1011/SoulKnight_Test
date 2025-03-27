@@ -30,7 +30,7 @@ public:
 	void switchWeapon();
 
 	int calculateDamage();
-	void attack();		// 使用當前武器攻擊敵人
+	void TryAttack();		// 使用當前武器攻擊敵人
 
 private:
 	float m_aimRange;			// 自動瞄準範圍

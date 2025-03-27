@@ -21,14 +21,16 @@ public:
 	int GetDamage() const{ return m_damage; }
 	int GetEnergy() const { return m_energy; }
 	float GetCriticalRate() const { return m_criticalRate; }
-	float GetAttackSpeed() const { return m_attackSpeed; }
+	float GetAttackSpeed() const { return m_attackColdDown; }
 	int GetOffset() const { return m_offset; }
 
 	//----Setter----
 	void SetImage(const std::string& ImagePath);
+	void SetLastAttackTime(const float time) { lastAttackTime = time; }
 
+	void UpdateCooldown(float deltaTime);
 	int calculateDamage();
-	bool CanAttack(float deltaTime);
+	bool CanAttack();
 	virtual void attack(int damage) = 0;
 
 protected:
@@ -38,7 +40,7 @@ protected:
 	int m_damage;					// 武器傷害
 	int m_energy;					// 武器所需能量
 	float m_criticalRate;			// 武器暴擊率
-	float m_attackSpeed;			// 攻擊頻率
+	float m_attackColdDown;			// 攻擊頻率
 	int m_offset;					// 攻擊偏移量
 
 	float lastAttackTime = 0.0f;  // 上次攻擊的時間

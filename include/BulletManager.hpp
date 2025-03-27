@@ -6,6 +6,7 @@
 #define BULLETMANAGER_HPP
 
 #include "Weapon/Bullet.hpp"
+#include "Util/Time.hpp"
 
 class BulletManager {
 public:

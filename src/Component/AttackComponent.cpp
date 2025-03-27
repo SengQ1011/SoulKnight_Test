@@ -23,8 +23,10 @@ void AttackComponent::Init()
 
 void AttackComponent::Update()
 {
+	float deltaTime = Util::Time::GetDeltaTime();
 	// Weapon中的followerComponent更新
 	m_currentWeapon->Update();
+	m_currentWeapon->UpdateCooldown(deltaTime);
 }
 
 
@@ -79,8 +81,8 @@ int AttackComponent::calculateDamage()
 
 }
 
-void AttackComponent::attack() {
-	if (m_currentWeapon) {
+void AttackComponent::TryAttack() {
+	if (m_currentWeapon && m_currentWeapon->CanAttack()) {
 		auto damage = calculateDamage();
 		m_currentWeapon->attack(damage);
 	}

@@ -48,11 +48,12 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 	// 武器/攻擊attackComponent
 	if (attackComponent)
 	{
-		if (keys.count('J') && attackComponent->GetCurrentWeapon()->CanAttack(deltaTime))
-		{
-			LOG_DEBUG("Press Attack");
-			attackComponent->attack();
+		auto currentWeapon = attackComponent->GetCurrentWeapon();
+		if (keys.count('J')) {
+			attackComponent->TryAttack();
 		}
+		LOG_DEBUG("{} ==> {}",character->m_WorldCoord, currentWeapon->m_WorldCoord);
+
 		//if (keys.count('U')) attackComponent->switchWeapon();
 	}
 

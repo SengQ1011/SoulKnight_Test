@@ -3,6 +3,7 @@
 //
 
 #include "BulletManager.hpp"
+#include <execution>
 
 BulletManager& BulletManager::GetInstance() {
 	static BulletManager instance;
@@ -14,13 +15,14 @@ void BulletManager::spawnBullet(const std::string& bulletImagePath, const Util::
 }
 
 void BulletManager::Update() {
+	float deltaTime = Util::Time::GetDeltaTime();
 	if (bullets.empty()) return;
-	for (auto it = bullets.begin(); it != bullets.end();) {
-		(*it)->Update();
-		if ((*it)->isOutOfBounds()) {
-			it = bullets.erase(it);
-		} else {
-			++it;
-		}
-	}
+	// 並行更新
+    std::for_each(std::execution::par, bullets.begin(), bullets.end(),
+        [deltaTime](auto& bullet) { bullet->Update(deltaTime); });
+
+    // 移除越界子彈
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+        [](const auto& bullet) { return bullet->isOutOfBounds(); }),
+        bullets.end());
 }

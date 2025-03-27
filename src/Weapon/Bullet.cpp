@@ -3,27 +3,33 @@
 //
 
 #include "Weapon/Bullet.hpp"
+#include "Util/Time.hpp"
 
  Bullet::Bullet(const std::string& ImagePath,Util::Transform bulletTransform, glm::vec2 direction, float speed, int damage)
 	: m_imagePath(ImagePath), m_direction(direction), m_speed(speed), m_damage(damage)
  {
+ 	// 明確設定世界坐標（從傳入的 Transform 取得）
  	this->m_Transform = bulletTransform;
- 	this->m_Transform.scale = glm::vec2(0.5f, 0.5f);
- 	SetImage(m_imagePath);
+ 	this->m_WorldCoord = bulletTransform.translation;
+ 	// 其他初始化（縮放、圖片等）
+ 	this->m_Transform.scale = glm::vec2(0.7f, 0.7f);
+ 	SetImage(ImagePath);
  	this->SetZIndex(20);
  	LOG_DEBUG("Bullet is created");
  }
 
+
 bool Bullet::isOutOfBounds() const {
- 	return this->m_Transform.translation.x < -200.0f ||
- 		this->m_Transform.translation.x > 200.0f ||
- 			this->m_Transform.translation.y < -200.0f ||
- 				this->m_Transform.translation.y > 200.0f;
+ 	static const float BOUNDARY = 200.0f;
+ 	return abs(m_Transform.translation.x) > BOUNDARY ||
+			abs(m_Transform.translation.y) > BOUNDARY;
  }
-void Bullet::Update() {
+
+void Bullet::Update(float deltaTime) {
  	// 讓子彈按方向移動
- 	this->m_Transform.translation += m_direction * m_speed;
- }
+ 	this->m_WorldCoord += m_direction * m_speed * deltaTime;
+ 	this->m_Transform.translation = this->m_WorldCoord;
+}
 
 void Bullet::SetImage(const std::string& ImagePath) {
  	m_imagePath = ImagePath;

@@ -11,11 +11,14 @@ GunWeapon::GunWeapon(const std::string &ImagePath, const std::string& bulletImag
 
 
 void GunWeapon::attack(int damage) {
-	float bulletSpeed = 2.0f;
+	if(!CanAttack()) return;
 
+	lastAttackTime = m_attackColdDown;  // 重置冷卻
+
+	float bulletSpeed = 100.0f;
 	// 建立 Transform
 	Util::Transform bulletTransform;
-	bulletTransform.translation = this->m_Transform.translation;  // 設定為槍的位置
+	bulletTransform.translation = this->m_WorldCoord;  // 設定為槍的位置
 	bulletTransform.rotation = this->m_Transform.rotation;        // 設定為槍的角度
 
 	// 計算子彈方向（使用旋轉角度）

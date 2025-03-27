@@ -13,9 +13,10 @@ public:
 	Bullet(const std::string& imagePath,Util::Transform bulletTransform,glm::vec2 direction, float speed, int damage);
 	~Bullet() override= default;
 
-	void Update();
+	void Update(float deltaTime);
 	//----Getter----
-	int GetDamage() const;
+	glm::vec2 GetWorldPosition() const { return m_Transform.translation; }
+	int GetDamage() const {return m_damage;}
 	bool isOutOfBounds() const;
 
 	//----Setter----
