@@ -10,6 +10,7 @@
 
 #include "Camera.hpp"
 #include "Components/MovementComponent.hpp"
+#include "Factory/RoomObjectFactory.hpp"
 #include "Override/nGameObject.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/Scene.hpp"
@@ -28,19 +29,14 @@ public:
 	SceneType Change() override;
 
 protected:
-	std::shared_ptr<nGameObject> m_Floor = std::make_shared<nGameObject>();
-	std::shared_ptr<nGameObject> m_Wall = std::make_shared<nGameObject>();
-	std::shared_ptr<MovementComponent> m_MoveComp;
+	std::vector<std::shared_ptr<nGameObject>> m_RoomObject;
+	std::vector<std::shared_ptr<nGameObject>> m_WallCollider;
+	std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
 	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
-	std::shared_ptr<eventpp::EventDispatcher<int, void(const std::string&, bool)>> dispatcher_2
-	= std::make_shared<eventpp::EventDispatcher<int, void(const std::string&, bool)>>();
+	std::shared_ptr<nGameObject> m_Player = std::make_shared<nGameObject>();
 
-	std::shared_ptr<nGameObject> m_Character = std::make_shared<nGameObject>();
-	std::shared_ptr<nGameObject> m_Enemy = std::make_shared<nGameObject>();
-	std::shared_ptr<nGameObject> m_Weapon = std::make_shared<nGameObject>();
-	Camera m_Camera;
-	Beacon m_Beacon;
-
+	float roomHeight = 0;
+	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
 	Util::Renderer m_Root;
 };
 

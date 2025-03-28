@@ -28,7 +28,6 @@ void MovementComponent::Update() {
 			m_ContactState.inContactY = false;
 		}
 	}
-
 	// 根據接觸狀態限制加速度
 	if (m_ContactState.inContactX && std::abs(m_ContactState.contactNormal.x) > 0.01f) {
 		// 如果加速度方向與碰撞法線相反，則將該方向加速度歸零
@@ -39,8 +38,6 @@ void MovementComponent::Update() {
 			m_ContactState.inContactX = false;
 		}
 	}
-
-
 	constexpr float accelerationFactor = 5000.0f;
 	if (owner) m_Position = owner->m_WorldCoord;
 
@@ -71,7 +68,6 @@ void MovementComponent::Update() {
 		m_Velocity = glm::vec2(0.0f);
 		return;
 	}
-
 	//取得基礎速度的方向和大小
 	const glm::vec2 direction = glm::normalize(m_Velocity);
 	const float baseSpeed = glm::length(m_Velocity);
@@ -83,7 +79,6 @@ void MovementComponent::Update() {
 	m_Position += m_Velocity * deltaTime;
 
 	m_Acceleration = glm::vec2(0.0f); //重置當前加速度
-
 	if (owner) owner->m_WorldCoord = m_Position;
 }
 

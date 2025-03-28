@@ -10,7 +10,7 @@
 #include "nGameObject.hpp"
 
 template <typename T, typename... Args>
-std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args)
+std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args) //或許weak_ptr
 {
 	//確保T是Component子類別的安全判斷，如果不用樣板直接用Component，那每次使用Function就要手動ObjectCast了
 	static_assert(std::is_base_of_v<Component, T>, "T must derive from Component");
@@ -24,7 +24,7 @@ std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args)
 }
 
 template <typename T>
-std::shared_ptr<T> nGameObject::GetComponent(ComponentType type)
+std::shared_ptr<T> nGameObject::GetComponent(ComponentType type) //或許weak_ptr
 {
 //	static_assert(std::is_base_of_v<Component, T>, "T must derive from Component");
 //	for (auto &component : m_Components)

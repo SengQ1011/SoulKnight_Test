@@ -24,7 +24,8 @@ enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子�
 };
 
 namespace StructComponents {
-	struct StructCollisionComponent {
+	struct StructCollisionComponent
+	{
 		ComponentType m_Type = ComponentType::COLLISION;
 		std::string m_Class = "collisionComponent";
 		std::array<float, 2> m_Size{};
@@ -32,6 +33,16 @@ namespace StructComponents {
 		uint8_t m_CollisionLayer = CollisionLayers_None;
 		uint8_t m_CollisionMask = CollisionLayers_None;
 		bool m_IsTrigger = false;
+	};
+
+	inline std::unordered_map<std::string, CollisionLayers> m_String2CollisionLayer = {
+		{"None", CollisionLayers_None},
+		{"Player", CollisionLayers_Player},
+		{"Enemy", CollisionLayers_Enemy},
+		{"Player_Bullet", CollisionLayers_Player_Bullet},
+		{"Enemy_Bullet", CollisionLayers_Enemy_Bullet},
+		{"Pickup", CollisionLayers_Pickup},
+		{"Terrain", CollisionLayers_Terrain},
 	};
 
 	inline void to_json(nlohmann::ordered_json &j, const StructCollisionComponent &c) {
@@ -46,12 +57,16 @@ namespace StructComponents {
 	}
 
 	inline void from_json(const nlohmann::ordered_json& j, StructCollisionComponent &c) {
-		j.at("Type").get_to(c.m_Type);
 		j.at("Class").get_to(c.m_Class);
 		j.at("Size").get_to(c.m_Size);
 		j.at("Offset").get_to(c.m_Offset);
-		j.at("CollisionLayer").get_to(c.m_CollisionLayer);
-		j.at("CollisionMask").get_to(c.m_CollisionMask);
+
+		c.m_CollisionLayer = m_String2CollisionLayer.find(j.at("CollisionLayer").get<std::string>())->second;
+
+		for (const auto& it : j.at("CollisionMask"))
+		{
+			c.m_CollisionMask |= (m_String2CollisionLayer.find(it.get<std::string>())->second);
+		}
 		j.at("IsTrigger").get_to(c.m_IsTrigger);
 	}
 }
@@ -106,7 +121,10 @@ public:
 					   const glm::uint8_t collisionMask = CollisionLayers_None,
 					   const bool isTrigger = false)
 		: Component(type), m_Size(size), m_Offset(offset), m_CollisionLayer(collisionLayer),
-		  m_CollisionMask(collisionMask), m_IsTrigger(isTrigger) {}
+		  m_CollisionMask(collisionMask), m_IsTrigger(isTrigger)
+	{
+
+	}
 
 	explicit CollisionComponent(const StructComponents::StructCollisionComponent& data)
 		: Component(data.m_Type), m_Size(glm::vec2(data.m_Size[0], data.m_Size[1])),
@@ -124,11 +142,18 @@ public:
 	[[nodiscard]] Rect GetBounds() const;
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const {return m_CollisionLayer;}
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const {return m_CollisionMask;}
+	[[nodiscard]] std::shared_ptr<nGameObject> GetBlackBox() {return m_Object;}
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
 	void SetCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask = collisionMask; }
+	void SetOffset(const glm::vec2& offset) { m_Offset = offset; }
+	void SetSize(const glm::vec2& size) { m_Size = size; }
 	void SetTrigger(const bool isTrigger) {m_IsTrigger = isTrigger;}
+	void SetVisible(const bool isVisible)
+	{
+		m_Object->SetVisible(isVisible);
+	}
 	[[nodiscard]] bool IsTrigger() const {return m_IsTrigger;}
 
 private:
@@ -137,6 +162,7 @@ private:
 	glm::uint8_t m_CollisionLayer; //自身碰撞層
 	glm::uint8_t m_CollisionMask;  //可以和哪幾層碰撞
 	bool m_IsTrigger;
+	std::shared_ptr<nGameObject> m_Object = std::make_shared<nGameObject>();
 };
 
 #endif //COLLISIONCOMPONENT_HPP

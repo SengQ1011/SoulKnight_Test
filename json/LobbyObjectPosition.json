@@ -3,7 +3,7 @@
  "room_width": 40.0,
  "tile_height": 16.0,
  "tile_width": 16.0,
- "wall": [
+ "roomObject": [
   {
    "ID": "wall_lobby",
    "Class": "nGameObject",
@@ -15,9 +15,7 @@
     640.0,
     480.0
    ]
-  }
- ],
- "floor": [
+  },
   {
    "ID": "floor_lobby",
    "Class": "nGameObject",
@@ -29,9 +27,7 @@
     576.0,
     288.0
    ]
-  }
- ],
- "object": [
+  },
   {
    "ID": "object_sofa",
    "Class": "nGameObject",

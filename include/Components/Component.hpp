@@ -33,6 +33,8 @@ public:
 	template <typename T>
 	std::shared_ptr<T> GetOwner() const { return std::dynamic_pointer_cast<T>(m_Owner.lock());}
 
+	[[nodiscard]] ComponentType GetType() const { return m_type;}
+
 private:
 	std::weak_ptr<nGameObject> m_Owner; // 打破循環引用,只能用GetOwner取得std::shared_ptr
 	ComponentType m_type; // 區別Component 比如hitbox和collision_box 方便閲讀

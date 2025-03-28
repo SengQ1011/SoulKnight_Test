@@ -1,394 +1,316 @@
 {
- "room_object": {
-  "object_questCounter": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      47.0,
-      15.0
-     ],
-     "Offset": [
-      -23.0,
-      -14.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_questCounter.png"
-  },
-  "object_mahjongTable": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      50.0,
-      41.0
-     ],
-     "Offset": [
-      -25.0,
-      -24.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_mahjongTable.png"
-  },
-  "object_television": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      45.0,
-      32.0
-     ],
-     "Offset": [
-      -0.5,
-      -56.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_television.png"
-  },
-  "object_questBoard": {
-   "isAnimated": false,
-   "path": "/Lobby/object_questBoard.png"
-  },
-  "object_gachapon": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      30.0,
-      14.0
-     ],
-     "Offset": [
-      -15.0,
-      -25.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_gachapon.png"
-  },
-  "object_mailbox": {
-   "isAnimated": false,
-   "path": "/Lobby/object_mailbox.png"
-  },
-  "object_garbageBin": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      18.0,
-      12.0
-     ],
-     "Offset": [
-      -9.0,
-      -14.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_garbageBin.png"
-  },
-  "object_book": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      28.0,
-      17.0
-     ],
-     "Offset": [
-      -14.0,
-      -16.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_book.png"
-  },
-  "object_refrigerator_0": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      25.0,
-      17.0
-     ],
-     "Offset": [
-      -12.5,
-      -21.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_refrigerator_0.png"
-  },
-  "object_sofa": {
-   "isAnimated": false,
-   "path": "/Lobby/object_sofa.png"
-  },
-  "object_chair": {
-   "isAnimated": false,
-   "path": "/Lobby/object_chair.png"
-  },
-  "object_safeBox": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      21.0,
-      12.0
-     ],
-     "Offset": [
-      -10.5,
-      -8.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_safeBox.png"
-  },
-  "object_plantPot_0": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      11.0,
-      8.0
-     ],
-     "Offset": [
-      -5.5,
-      -13.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_plantPot_0.png"
-  },
-  "object_luckyCat_0": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      17.0,
-      17.0
-     ],
-     "Offset": [
-      -8.5,
-      -14.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_luckyCat_0.png"
-  },
-  "object_testTubes": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      19.0,
-      6.0
-     ],
-     "Offset": [
-      -10.0,
-      -15.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/object_testTubes.png"
-  },
-  "object_dungeonDoor": {
-   "isAnimated": false,
-   "path": "/Lobby/object_dungeonDoor.png"
-  },
-  "object_carpet": {
-   "isAnimated": false,
-   "path": "/Lobby/object_carpet.png"
-  }
+ "object_questCounter": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     47.0,
+     15.0
+    ],
+    "Offset": [
+     -23.0,
+     -14.0
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_questCounter.png"
  },
- "": {
-  "room_item_41": {
-   "isAnimated": false,
-   "components": [
-    {
-     "Name": "collision_box",
-     "Class": "CollisionComponent",
-     "Size": [
-      16.0,
-      16.0
-     ],
-     "Offset": [
-      -9.0,
-      -14.5
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ],
-   "path": "/Lobby/room_item_41.png"
-  },
-  "tiles_22": {
-   "isAnimated": false,
-   "path": "/Lobby/tiles_22.png"
-  },
-  "wall_corner": {
-   "isAnimated": false,
-   "path": "/Lobby/wall_corner.png"
-  }
+ "object_mahjongTable": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     50.0,
+     41.0
+    ],
+    "Offset": [
+     -25.0,
+     -24.5
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_mahjongTable.png"
  },
- "floor": {
-  "floor_lobby": {
-   "isAnimated": false,
-   "path": "/Lobby/floor_lobby.png"
-  }
+ "object_television": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     45.0,
+     32.0
+    ],
+    "Offset": [
+     -0.5,
+     -56.5
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player","Player_Bullet"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_television.png"
  },
- "wall": {
-  "wall_lobby": {
-   "isAnimated": false,
-   "path": "/Lobby/wall_lobby.png",
-   "components": [
-    {
-     "Name": "collision_wall1",
-     "Class": "CollisionComponent",
-     "Size": [
-      16.0,
-      384.0
-     ],
-     "Offset": [
-      -304.0,
-      -192.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    },
-    {
-     "Name": "collision_wall2",
-     "Class": "CollisionComponent",
-     "Size": [
-      256.0,
-      96.0
-     ],
-     "Offset": [
-      -288.0,
-      96.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    },
-    {
-     "Name": "collision_wall3",
-     "Class": "CollisionComponent",
-     "Size": [
-      64.0,
-      80.0
-     ],
-     "Offset": [
-      -32.0,
-      112.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    },
-    {
-     "Name": "collision_wall4",
-     "Class": "CollisionComponent",
-     "Size": [
-      256.0,
-      96.0
-     ],
-     "Offset": [
-      32.0,
-      96.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    },
-    {
-     "Name": "collision_wall5",
-     "Class": "CollisionComponent",
-     "Size": [
-      16.0,
-      384.0
-     ],
-     "Offset": [
-      288.0,
-      -192.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    },
-    {
-     "Name": "collision_wall6",
-     "Class": "CollisionComponent",
-     "Size": [
-      608.0,
-      16.0
-     ],
-     "Offset": [
-      -304.0,
-      -208.0
-     ],
-     "CollisionLayer": 0,
-     "CollisionMask": 0,
-     "IsTrigger": false
-    }
-   ]
-  }
+ "object_questBoard": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/object_questBoard.png"
+ },
+ "object_gachapon": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     30.0,
+     14.0
+    ],
+    "Offset": [
+     -15.0,
+     -25.0
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player","Player_Bullet"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_gachapon.png"
+ },
+ "object_mailbox": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/object_mailbox.png"
+ },
+ "object_garbageBin": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     18.0,
+     12.0
+    ],
+    "Offset": [
+     -9.0,
+     -14.5
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player","Player_Bullet"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_garbageBin.png"
+ },
+ "object_book": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     28.0,
+     17.0
+    ],
+    "Offset": [
+     -14.0,
+     -16.0
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_book.png"
+ },
+ "object_refrigerator_0": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     25.0,
+     17.0
+    ],
+    "Offset": [
+     -12.5,
+     -21.5
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player","Player_Bullet"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_refrigerator_0.png"
+ },
+ "object_sofa": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/object_sofa.png"
+ },
+ "object_chair": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/object_chair.png"
+ },
+ "object_safeBox": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     21.0,
+     12.0
+    ],
+    "Offset": [
+     -10.5,
+     -8.5
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_safeBox.png"
+ },
+ "object_plantPot_0": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     11.0,
+     8.0
+    ],
+    "Offset": [
+     -5.5,
+     -13.5
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_plantPot_0.png"
+ },
+ "room_item_41": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     16.0,
+     16.0
+    ],
+    "Offset": [
+     -9.0,
+     -14.5
+    ],
+    "CollisionLayer": "Player",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/room_item_41.png"
+ },
+ "object_luckyCat_0": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     17.0,
+     17.0
+    ],
+    "Offset": [
+     -8.5,
+     -14.0
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player","Player_Bullet"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_luckyCat_0.png"
+ },
+ "object_testTubes": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "components": [
+   {
+    "Name": "collision_box",
+    "Class": "CollisionComponent",
+    "Size": [
+     19.0,
+     6.0
+    ],
+    "Offset": [
+     -10.0,
+     -15.0
+    ],
+    "CollisionLayer": "Terrain",
+    "CollisionMask": ["Player"],
+    "IsTrigger": false
+   }
+  ],
+  "path": "/Lobby/object_testTubes.png"
+ },
+ "tiles_22": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/tiles_22.png"
+ },
+ "wall_corner": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/wall_corner.png"
+ },
+ "object_dungeonDoor": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/object_dungeonDoor.png"
+ },
+ "object_carpet": {
+  "isAnimated": false,
+  "ZIndex": 0,
+  "path": "/Lobby/object_carpet.png"
+ },
+ "floor_lobby": {
+  "isAnimated": false,
+  "ZIndex": 0,
+  "path": "/Lobby/floor_lobby.png"
+ },
+ "wall_lobby": {
+  "isAnimated": false,
+  "ZIndex": 1,
+  "path": "/Lobby/wall_lobby.png"
  }
 }

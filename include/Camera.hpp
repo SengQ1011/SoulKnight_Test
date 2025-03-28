@@ -26,17 +26,20 @@ public:
 	void ZoomCamera(float zoomLevel);
 	void RotateCamera(float degree);
 
-	[[nodiscard]] Util::Transform GetCameraWorldCoord() const { return m_CameraWorldCoord;}
-
 	void AddRelativePivotChild(const std::shared_ptr<nGameObject> &child);
 	void AddRelativePivotChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
 	void RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child);
 
 	void Update();
 
+	void SetMapSize(const float mapSize) {m_MapSize = mapSize;}
+	[[nodiscard]] float GetMapSize() const { return m_MapSize;}
+	[[nodiscard]] Util::Transform GetCameraWorldCoord() const { return m_CameraWorldCoord;}
+
 protected:
 	Util::Transform m_CameraWorldCoord;
 	Beacon m_Beacon;
+	float m_MapSize = 0.0f;
 private:
 	std::weak_ptr<nGameObject> m_FollowTarget;
 	std::vector<std::shared_ptr<nGameObject>> m_RelativePivotChildren;

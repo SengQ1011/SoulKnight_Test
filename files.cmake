@@ -18,6 +18,7 @@ set(SRC_FILES
     Factory/CharacterFactory.cpp
     Factory/Factory.cpp
     Factory/RoomFactory.cpp
+    Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
     InputManager.cpp
     Room/Room.cpp
@@ -66,6 +67,7 @@ set(INCLUDE_FILES
     Factory/CharacterFactory.hpp
     Factory/Factory.hpp
     Factory/RoomFactory.hpp
+    Factory/RoomObjectFactory.hpp
     Factory/WeaponFactory.hpp
     GameMechanism/Skill.hpp
     GameMechanism/StatusEffect.hpp

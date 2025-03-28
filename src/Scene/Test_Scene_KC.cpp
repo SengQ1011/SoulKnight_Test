@@ -17,64 +17,76 @@
 void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene");
-
-	m_Floor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/LobbyFloor.png"));
-	//m_Floor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
-	m_Floor->SetZIndex(2);
-
-	m_Wall->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/Lobby.png"));
-	m_Wall->SetZIndex(1);
-	m_Wall->m_WorldCoord = glm::vec2(0, 16 * 5);
-
-	m_Character->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
-	auto m_MoveComp = m_Character->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
-	if (m_MoveComp) {
-		LOG_DEBUG("MovementComponent successfully added.");
-	} else {
-		LOG_DEBUG("Failed to add MovementComponent.");
-		return;
+	std::ifstream file(JSON_DIR"/LobbyObjectPosition.json");
+	if (!file.is_open()) {
+		LOG_DEBUG("Error: Unable to open file: {}","LobbyObjectPosition");
 	}
 
-	auto CollisionComp = m_Character->AddComponent<CollisionComponent>(ComponentType::COLLISION);
-	CollisionComp->SetCollisionLayer(CollisionLayers_Player);
-	CollisionComp->SetCollisionMask(CollisionLayers_None);
-	m_MoveComp->SetMaxSpeed(250.0f);
-	m_Character->SetZIndex(10);
-	m_RoomCollisionManager->RegisterNGameObject(m_Character);
+	nlohmann::json jsonData;
+	file >> jsonData;
 
-	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/pet00icon.png"));
-	auto MovementComp = m_Enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
-	MovementComp->SetMaxSpeed(250.0f);
-	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
-	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
-	CollisionComp2->SetCollisionMask(CollisionLayers_Player);
-	m_Enemy->SetZIndex(11);
-	m_Enemy->m_WorldCoord = {16*2,16*2};
-	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
+	roomHeight = jsonData.at("room_height").get<float>() * jsonData.at("tile_height").get<float>();
+	m_Camera->SetMapSize(roomHeight);
 
-	m_Weapon->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/weapons_19.png"));
-	auto FollowerComp = m_Weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
-	FollowerComp->SetFollower(m_Character);
-	FollowerComp->IsTargetMouse(true);
-	FollowerComp->SetHandOffset(glm::vec2(m_Character->GetImageSize().x/7.0f,-m_Character->GetImageSize().x/4.0f));
-	FollowerComp->SetHoldingPosition(glm::vec2(m_Weapon->GetImageSize().x/2.0f,0));
-	m_Weapon->SetZIndex(12);
+	for (const auto &elem: jsonData["roomObject"])
+	{
+		m_RoomObject.emplace_back(m_Factory->createRoomObject(elem.at("ID").get<std::string>(), elem.at("Class").get<std::string>()));
+		const auto x = elem.at("Position")[0].get<float>();
+		const auto y = elem.at("Position")[1].get<float>();
+		const auto position = glm::vec2(x,y);
+		m_RoomObject.back()->SetWorldCoord(position);
+		LOG_DEBUG("{}",m_RoomObject.back()->GetWorldCoord());
+	}
 
-	// m_Beacon.SetReferenceObjectCoord(std::make_shared<glm::vec2>(Cursor::GetCursorWorldCoord()));
+	// 墻壁碰撞體
+	std::vector<glm::vec2> offset = {glm::vec2(-304.0f,-192.0f), glm::vec2(-288.0f,96.0f), glm::vec2(-32.0f,112.0f),
+									 glm::vec2(32.0f,96.0f), glm::vec2(288.0f,-192.0f), glm::vec2(-304.0f,-208.0f)};
 
-	// m_Root.AddChild(m_Floor);
-	m_Root.AddChild(m_Wall);
-	m_Root.AddChild(m_Character);
-	m_Root.AddChild(m_Enemy);
-	m_Root.AddChild(m_Weapon);
+	std::vector<glm::vec2> size = {glm::vec2(16.0f,384.0f), glm::vec2(256.0f,96.0f), glm::vec2(64.0f,80.0f),
+								   glm::vec2(256.0f,96.0f), glm::vec2(16.0f,384.0f), glm::vec2(608.0f,16.0f)};
 
-	m_Camera.AddRelativePivotChild(m_Floor);
-	m_Camera.AddRelativePivotChild(m_Wall);
-	m_Camera.AddRelativePivotChild(m_Character);
-	m_Camera.AddRelativePivotChild(m_Enemy);
+	for (int i = 0; i < offset.size(); i++)
+	{
+		auto wallCollider = std::make_shared<nGameObject>();
+		auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+		collisionComponent->SetOffset(offset[i]);
+		collisionComponent->SetSize(size[i]);
+		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
+		m_Root.AddChild(collisionComponent->GetBlackBox());
+		m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
+		m_WallCollider.emplace_back(wallCollider);
+	}
 
-	m_Camera.AddRelativePivotChild(m_Weapon);
-	LOG_DEBUG("Init Finish");
+	std::for_each(m_WallCollider.begin(), m_WallCollider.end(), [&](std::shared_ptr<nGameObject> obj){m_RoomCollisionManager->RegisterNGameObject(obj);});
+	for (const auto &elem: m_RoomObject)
+	{
+		if (elem == nullptr) continue;
+		if (elem->GetComponent<CollisionComponent>(ComponentType::COLLISION) != nullptr)
+		{
+			m_RoomCollisionManager->RegisterNGameObject(elem);
+			auto collisionComponent = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+			m_Root.AddChild(collisionComponent->GetBlackBox());
+			m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
+		}
+		m_Camera->AddRelativePivotChild(elem);
+		m_Root.AddChild(elem);
+	}
+
+	m_Player->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
+	m_Player->SetWorldCoord(glm::vec2(32));
+	auto collisionComponent = m_Player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+	collisionComponent->SetCollisionLayer(CollisionLayers_Player);
+	collisionComponent->SetCollisionMask(CollisionLayers_Terrain);
+	collisionComponent->SetOffset(glm::vec2(-4,-13));
+	collisionComponent->SetSize(glm::vec2(16,16));
+	m_Root.AddChild(collisionComponent->GetBlackBox());
+	m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
+	auto movementComponent = m_Player->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+	movementComponent->SetMaxSpeed(100);
+	movementComponent->SetSpeedRatio(0.9);
+	m_RoomCollisionManager->RegisterNGameObject(m_Player);
+	m_Camera->AddRelativePivotChild(m_Player);
+	m_Root.AddChild(m_Player);
 }
 
 void TestScene_KC::Input()
@@ -83,83 +95,33 @@ void TestScene_KC::Input()
 
 void TestScene_KC::Update()
 {
-	dispatcher_2->appendListener(1,[](const std::string& a, bool b)
-	{
-		LOG_DEBUG("Got Event1:{} {}",a, b);
-	});
-	dispatcher_2->appendListener(2,[](const std::string& a, bool b)
-	{
-		LOG_DEBUG("Got Event2:{} {}",a, b);
-	});
-	dispatcher_2->appendListener(3,[](const std::string& a, bool b)
-	{
-		LOG_DEBUG("Got Event3:{} {}",a, b);
-	});
+	// movement移動
+	float deltaTime = Util::Time::GetDeltaTimeMs();
+	glm::vec2 movement = glm::vec2(0, 0);
+	if (Util::Input::IsKeyPressed(Util::Keycode::W)) movement.y += 1;
+	if (Util::Input::IsKeyPressed(Util::Keycode::S)) movement.y -= 1;
+	if (Util::Input::IsKeyPressed(Util::Keycode::A)) movement.x -= 1;
+	if (Util::Input::IsKeyPressed(Util::Keycode::D)) movement.x += 1;
+	if (Util::Input::IsKeyPressed(Util::Keycode::I)) m_Camera->ZoomCamera(1);
+	if (Util::Input::IsKeyPressed(Util::Keycode::K)) m_Camera->ZoomCamera(-1);
 
-	if (Util::Input::IsKeyDown(Util::Keycode::NUM_1))
+	if (movement.x != 0.0f || movement.y != 0.0f)
 	{
-		dispatcher_2->dispatch(1,"Hello World",true);
+		const glm::vec2 deltaDisplacement = normalize(movement) * 10.0f * deltaTime; //normalize為防止斜向走速度是根號2
+		auto movementComponent = m_Player->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
+		if ((movement.x < 0 && m_Player->m_Transform.scale.x > 0) ||
+			(movement.x > 0 && m_Player->m_Transform.scale.x < 0))
+		{
+			m_Player->m_Transform.scale.x *= -1.0f;
+		}
+		m_Player->GetComponent<MovementComponent>(ComponentType::MOVEMENT)->SetAcceleration(deltaDisplacement);
 	}
-	if (Util::Input::IsKeyDown(Util::Keycode::NUM_2))
-	{
-		dispatcher_2->dispatch(2,"I am ironMan",true);
-	}
-	if (Util::Input::IsKeyDown(Util::Keycode::NUM_3))
-	{
-		dispatcher_2->dispatch(3,"Nice 2 Meet U",false);
-	}
-
-	//LOG_DEBUG("Test Scene is running...")
-	Cursor::SetWindowOriginWorldCoord(m_Camera.GetCameraWorldCoord().translation);
-	// m_Beacon.Update(m_Character->m_WorldCoord,Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x));
-
-	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_RB))
-	{
-		LOG_DEBUG("cursor {} {} {}", m_Character->GetWorldCoord(), Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x), m_Beacon.GetBeaconWorldCoord());
-	}
-	m_Camera.Update();
-
-	glm::vec2 direction = {0.0f,0.0f};
-	if (Util::Input::IsKeyPressed(Util::Keycode::W)) {direction += glm::vec2(0.0f,1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::S)) {direction += glm::vec2(0.0f,-1.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::D)) {direction += glm::vec2(1.0f,0.0f);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::A)) {direction += glm::vec2(-1.0f,0.0f);}
-
-	if (glm::length(direction) > 0.01f)
-	{
-		direction = glm::normalize(direction);
-		LOG_DEBUG("Direction: ({}, {})", direction.x, direction.y);
-		m_Character->GetComponent<MovementComponent>(ComponentType::MOVEMENT)->SetAcceleration(direction);
-	}
-	m_Character->Update();
-	m_Weapon->Update();
-
-	if (Util::Input::IsKeyPressed(Util::Keycode::I)) {m_Camera.ZoomCamera(1);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::K)) {m_Camera.ZoomCamera(-1);}
-
-	if (Util::Input::IsKeyPressed(Util::Keycode::O)) {m_Camera.RotateCamera(1);}
-	if (Util::Input::IsKeyPressed(Util::Keycode::L)) {m_Camera.RotateCamera(-1);}
-
-
-	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
-	{
-		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera.GetCameraWorldCoord().scale.x);
-		LOG_DEBUG("cursor{}", cursor);
-	}
-
-	if (Util::Input::IsKeyUp(Util::Keycode::Y))
-	{
-		LOG_DEBUG("m_Floor1 {} ! {}",m_Floor->GetTransform(),m_Floor->GetPivot());
-		LOG_DEBUG("m_Floor2 {}", m_Floor->GetWorldCoord());
-		LOG_DEBUG("m_Character {} ! {}",m_Character->GetTransform(),m_Character->GetPivot());
-		LOG_DEBUG("m_Character {}",m_Character->GetWorldCoord());
-		LOG_DEBUG("m_Camera1 {}",m_Camera.GetCameraWorldCoord());
-		LOG_DEBUG("");
-	}
-
-	m_Camera.SetFollowTarget(m_Character);
-
+	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
+	std::for_each(m_WallCollider.begin(), m_WallCollider.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
+	m_Player->Update();
+	m_Camera->SetFollowTarget(m_Player);
 	m_RoomCollisionManager->UpdateCollision();
+	m_Camera->Update();
 	m_Root.Update();
 }
 

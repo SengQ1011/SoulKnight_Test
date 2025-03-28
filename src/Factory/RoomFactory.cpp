@@ -9,8 +9,5 @@
 
 // std::shared_ptr<RoomFactory> RoomFactory::createRoom()
 // {
-// 	std::shared_ptr<Room> room = std::make_shared<Room>();
-// 	nlohmann::json data = readJsonFile(m_JSONName);
-//
 //
 // }

@@ -26,4 +26,11 @@ enum class State
 	DEAD
 };
 
+enum class ZIndexType
+{
+	FLOOR	= 0,	//  0 -  20
+	OBJECT	= 1,	// 20 -  80
+	UI		= 2,	// 80 - 100
+};
+
 #endif //ENUMTYPES_HPP

@@ -20,6 +20,7 @@ public:
 	~nGameObject() override = default;
 
 	glm::vec2 m_WorldCoord = {0,0};
+	glm::vec2 m_ScaleRatio = {0,0};
 
 	// Components
 	template <typename T, typename... Args>
@@ -37,7 +38,6 @@ public:
 	}
 	void onCollision(const std::shared_ptr<nGameObject>& other, CollisionInfo& info)
 	{
-		LOG_DEBUG("Collision");
 		if (!m_Active) return;
 		for (const auto& pair : m_Components) {
 			// pair.first 是 ComponentType 键
@@ -46,6 +46,7 @@ public:
 		}
 	}
 
+	void SetWorldCoord(const glm::vec2 coord) {m_WorldCoord = coord;}
 	void SetActive(const bool active) { m_Active = active; }
 	void SetInitialScale(const glm::vec2& scale) { m_InitialScale = scale; }
 	void SetInitialScaleSet(const bool set) { m_InitialScaleSet = set; }
