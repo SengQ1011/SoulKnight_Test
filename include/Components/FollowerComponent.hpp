@@ -37,15 +37,30 @@ public:
 	void SetHoldingPosition(const glm::vec2& holdingOffset) {m_HoldingOffset = holdingOffset;}
 	void IsTargetMouse(const bool isTargetMouse) {m_UseMousePosition = isTargetMouse;}
 	//void SetHoldingRotation(const float& rotation) {m_HoldingRotation = rotation;}
+	void SetRotationLimits(float min, float max, bool enable = true) {
+		m_RotationLimits = glm::vec2(min, max);
+		m_EnableRotationLimits = enable;
+	}
 
+	// 启用/禁用旋转限制
+	void EnableRotationLimits(bool enable) {
+		m_EnableRotationLimits = enable;
+	}
+
+	//----Getter----
+	[[nodiscard]] std::shared_ptr<nGameObject> GetFollower() const { return m_Follower.lock();}
 	[[nodiscard]] float GetHoldingRotation() const {return m_HoldingRotation;}
+
+
 protected:
-	glm::vec2 m_HandOffset = glm::vec2(0, 0); //不完全以世界坐標為Pivot,有一點Offset
-	glm::vec2 m_HoldingOffset = glm::vec2(0, 0); //武器也是
+	glm::vec2 m_RotationLimits = glm::vec2(-glm::pi<float>(), glm::pi<float>()); // 旋转限制 (min, max)
+	bool m_EnableRotationLimits = false;											// 是否启用旋转限制
+	glm::vec2 m_HandOffset = glm::vec2(0, 0);									//不完全以世界坐標為Pivot,有一點Offset
+	glm::vec2 m_HoldingOffset = glm::vec2(0, 0);								//武器也是
 	float m_HoldingRotation = 0;
 	bool m_UseMousePosition = false;
-	std::shared_ptr<nGameObject> m_Follower = nullptr;
-	std::shared_ptr<nGameObject> m_Target = nullptr; //指向目標 -> 用來取位置
+	std::weak_ptr<nGameObject> m_Follower;
+	std::weak_ptr<nGameObject> m_Target;											//指向目標 -> 用來取位置
 };
 
 #endif //FOLLOWERCOMPONENT_HPP

@@ -79,12 +79,20 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 			auto stateComponent = player->AddComponent<StateComponent>(ComponentType::STATE);
 			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
 			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, criticalRate, handBladeDamage, weapon);
+			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
+			CollisionComp->SetCollisionMask(CollisionLayers_None);
 			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
 			FollowerComp->IsTargetMouse(true);
 			FollowerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
 			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
-			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, criticalRate, handBladeDamage, weapon);
+			// 设置旋转限制 (45度到135度)
+			FollowerComp->SetRotationLimits(
+				glm::radians(45.0f),
+				glm::radians(135.0f)
+			);
 			return player;
 		}
 	}

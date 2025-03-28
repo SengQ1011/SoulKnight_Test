@@ -15,7 +15,7 @@ void GunWeapon::attack(int damage) {
 
 	lastAttackTime = m_attackColdDown;  // 重置冷卻
 
-	float bulletSpeed = 100.0f;
+	float bulletSpeed = 150.0f;
 	// 建立 Transform
 	Util::Transform bulletTransform;
 	bulletTransform.translation = this->m_WorldCoord;  // 設定為槍的位置

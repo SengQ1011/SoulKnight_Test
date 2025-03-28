@@ -23,7 +23,7 @@ void AttackComponent::Init()
 
 void AttackComponent::Update()
 {
-	float deltaTime = Util::Time::GetDeltaTime();
+	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	// Weapon中的followerComponent更新
 	m_currentWeapon->Update();
 	m_currentWeapon->UpdateCooldown(deltaTime);

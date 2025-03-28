@@ -47,7 +47,9 @@ public:
 	}
 
 	void SetActive(const bool active) { m_Active = active; }
-	[[nodiscard]] bool IsActive() const { return m_Active; }
+	void SetInitialScale(const glm::vec2& scale) { m_InitialScale = scale; }
+	void SetInitialScaleSet(const bool set) { m_InitialScaleSet = set; }
+
 
 	// Getter
 	[[nodiscard]] std::string GetName() const { return m_Name; }
@@ -55,11 +57,16 @@ public:
 	[[nodiscard]] glm::vec2 GetPivot() const { return m_Pivot;}
 	[[nodiscard]] glm::vec2 GetImageSize() const {return m_Drawable->GetSize();}
 	[[nodiscard]] glm::vec2 GetWorldCoord() const {return m_WorldCoord;}
-	std::shared_ptr<Core::Drawable> GetDrawable() const {return m_Drawable;}
+	[[nodiscard]] std::shared_ptr<Core::Drawable> GetDrawable() const {return m_Drawable;}
+	[[nodiscard]] glm::vec2 GetInitialScale() const { return m_InitialScale;}
+	[[nodiscard]] bool isSetInitialScale()  const { return m_InitialScaleSet; }
+	[[nodiscard]] bool IsActive() const { return m_Active; }
 
 protected:
 	std::string m_Name;
 	bool m_Active = true;
+	glm::vec2 m_InitialScale;			// 儲存初始縮放
+	bool m_InitialScaleSet = false;		// 標記是否已設置初始縮放
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
 
 private:

@@ -45,8 +45,7 @@ void MovementComponent::Update() {
 	if (owner) m_Position = owner->m_WorldCoord;
 
 	// 加速度受SpeedRatio影響 TODO:(速度buff是否要影響達到最大速度的時間？)
-	m_Velocity += m_Acceleration * m_SpeedRatio * deltaTime;
-	m_Velocity += m_Acceleration * deltaTime * accelerationFactor;
+	m_Velocity += m_Acceleration * accelerationFactor * m_SpeedRatio * deltaTime;
 
 	//摩擦力
 	constexpr float friction = 5000.0f; //TODO:摩擦力可能是變數 10-15， 目前爲了及時提速降速先超大值
@@ -58,6 +57,13 @@ void MovementComponent::Update() {
 			const float newSpeed = std::max(0.0f, speedMagnitude - frictionMagnitude);
 			if (speedMagnitude > 0.01f) m_Velocity.x *= (newSpeed / speedMagnitude);
 			else m_Velocity.x = 0.0f; //速度太小，直接設零
+		}
+	}
+	if (m_Acceleration.y == 0.0f) {
+		if (const float speedMagnitude = std::abs(m_Velocity.y); speedMagnitude > 0.0f) {
+			const float newSpeed = std::max(0.0f, speedMagnitude - frictionMagnitude);
+			if (speedMagnitude > 0.01f) m_Velocity.y *= (newSpeed / speedMagnitude);
+			else m_Velocity.y = 0.0f; //速度太小，直接設零
 		}
 	}
 

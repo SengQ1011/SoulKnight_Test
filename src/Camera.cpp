@@ -40,11 +40,16 @@ void Camera::SetFollowTarget(const std::shared_ptr<nGameObject> &target) {
 	m_FollowTarget = target;
 }
 
-
-
 void Camera::ZoomCamera(const float zoomLevel)
 {
-	m_CameraWorldCoord.scale += glm::vec2(1.0f,1.0f) * zoomLevel * Util::Time::GetDeltaTimeMs() / 1000.0f;
+	const float minZoom = 0.5f;  // 最小縮放值
+	const float maxZoom = 2.0f;  // 最大縮放值
+
+	glm::vec2 newScale = m_CameraWorldCoord.scale + glm::vec2(1.0f, 1.0f) * zoomLevel * (Util::Time::GetDeltaTimeMs()/1000.0f);
+	newScale.x = std::clamp(newScale.x, minZoom, maxZoom);
+	newScale.y = std::clamp(newScale.y, minZoom, maxZoom);
+
+	m_CameraWorldCoord.scale = newScale;
 }
 
 void Camera::RotateCamera(const float radian) // radian 是PI， degree是°
@@ -71,18 +76,29 @@ void Camera::AddRelativePivotChildren(
 
 //感覺可以優化 在渲染前一次性修改
 void Camera::Update() {
-	if (auto target = m_FollowTarget.lock()) { \
+	if (auto target = m_FollowTarget.lock()) {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
 
 	for (const auto &child:m_RelativePivotChildren)
 	{
+		// 如果尚未設置初始縮放
+		if (!child->isSetInitialScale()) {
+			child->SetInitialScale(child->m_Transform.scale);
+			child->SetInitialScaleSet(true);
+		}
+
 		//變更坐標軸
 		// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
 		//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
 		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
-		child->m_Transform.scale = glm::vec2((child->m_Transform.scale.x < 0.0f ? -m_CameraWorldCoord.scale.x : m_CameraWorldCoord.scale.x)
-			,m_CameraWorldCoord.scale.y);
+
+		glm::vec2 initialScale = child->GetInitialScale();
+		// std::copysign(第一個參數：大小, 第二個參數：正負號)
+		child->m_Transform.scale = glm::vec2(
+		    initialScale.x * std::copysign(m_CameraWorldCoord.scale.x, child->m_Transform.scale.x),
+		    initialScale.y * m_CameraWorldCoord.scale.y
+		);
 	}
 }
 

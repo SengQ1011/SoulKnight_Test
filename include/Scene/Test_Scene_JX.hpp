@@ -13,6 +13,7 @@
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
 #include "Factory/CharacterFactory.hpp"
+#include "Room/RoomCollisionManager.hpp"
 
 class TestScene_JX : public Scene
 {
@@ -31,13 +32,13 @@ public:
 
 protected:
 	CharacterFactory factory;
+	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
 	std::shared_ptr<InputManager> inputManager = std::make_shared<InputManager>();
 
 	std::shared_ptr<Player> m_Player = factory.createPlayer(1);
 	std::shared_ptr<nGameObject> m_Wall = std::make_shared<nGameObject>();
 	//std::shared_ptr<Weapon> m_Weapon = std::make_shared<Weapon>(RESOURCE_DIR"/weapons_19.png", "Old_worn_pistol", 0, 1, 1,0,0,0,0,0);
-	//std::shared_ptr<Enemy> m_Enemy = std::make_shared<Enemy>(RESOURCE_DIR"/Sprite/monster小怪/冰原/enemy31礦工/enemy31_0.png", 20, 1.0f, 10, nullptr, nullptr);
-	std::shared_ptr<nGameObject> a;
+	std::shared_ptr<nGameObject> m_Enemy = std::make_shared<nGameObject>();
 
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
 

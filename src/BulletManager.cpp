@@ -15,11 +15,16 @@ void BulletManager::spawnBullet(const std::string& bulletImagePath, const Util::
 }
 
 void BulletManager::Update() {
-	float deltaTime = Util::Time::GetDeltaTime();
+	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	if (bullets.empty()) return;
 	// 並行更新
-    std::for_each(std::execution::par, bullets.begin(), bullets.end(),
-        [deltaTime](auto& bullet) { bullet->Update(deltaTime); });
+	if (bullets.size() > 100) {  // 仅在大数据时使用并行
+		std::for_each(std::execution::par, bullets.begin(), bullets.end(),
+			[deltaTime](auto& bullet) { bullet->Update(deltaTime); });
+	} else {
+		std::for_each(std::execution::seq, bullets.begin(), bullets.end(),
+			[deltaTime](auto& bullet) { bullet->Update(deltaTime); });
+	}
 
     // 移除越界子彈
     bullets.erase(std::remove_if(bullets.begin(), bullets.end(),

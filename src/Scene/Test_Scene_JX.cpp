@@ -25,16 +25,24 @@ void TestScene_JX::Start()
 	m_Wall->SetZIndex(1);
 	m_Wall->m_WorldCoord = glm::vec2(0,16*5);
 
-	//m_Enemy->SetZIndex(10);
+	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Sprite/monster小怪/冰原/enemy31礦工/enemy31_0.png"));
+	m_Enemy->SetZIndex(10);
+	m_Enemy->m_WorldCoord = glm::vec2(16*2,16*1);
+	auto MovementComp = m_Enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+	MovementComp->SetMaxSpeed(250.0f);
+	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
+	CollisionComp2->SetCollisionMask(CollisionLayers_Player);
+	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
 
 	m_Player->SetZIndex(12);
-	m_Player->m_WorldCoord = {16*2,16*2}; //騎士初始位置為右兩格，上兩格
+	m_Player->m_WorldCoord = {0,16*2}; //騎士初始位置為右兩格，上兩格
+	m_RoomCollisionManager->RegisterNGameObject(m_Player);
 
 	//加入m_Root大家庭，才可以被渲染到熒幕上
 	m_Root.AddChild(m_Wall);
 	m_Root.AddChild(m_Player);
-	//m_Root.AddChild(m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCurrentWeapon());
-	//m_Root.AddChild(m_Enemy);
+	m_Root.AddChild(m_Enemy);
 
 	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
 	// 只對需要跟隨鏡頭的物件（如玩家、地圖）呼叫
@@ -42,10 +50,10 @@ void TestScene_JX::Start()
 	m_Camera->AddRelativePivotChild(m_Wall);
 	m_Camera->AddRelativePivotChild(m_Player);
 	m_Camera->AddRelativePivotChild(m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCurrentWeapon());
-	//m_Camera.AddRelativePivotChild(m_Enemy);
+	m_Camera->AddRelativePivotChild(m_Enemy);
 
 	// Camera跟隨player
-	//m_Camera->SetFollowTarget(m_Player);
+	m_Camera->SetFollowTarget(m_Player);
 	LOG_DEBUG("Starting--->Checked");
 }
 
@@ -66,13 +74,12 @@ void TestScene_JX::Update()
 	//LOG_DEBUG("Test Scene is running...");
 	float deltaTime = Util::Time::GetDeltaTimeMs();
 	Cursor::SetWindowOriginWorldCoord(m_Camera->GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
-	m_Camera->Update(); //更新Camera大家庭成員的渲染坐標
+
 
 	// Input：位移量
 	inputManager->listenInput();
 
 	//Camera Zoom In=I /Out=K
-
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB))
 	{
 		glm::vec2 cursor = Cursor::GetCursorWorldCoord(m_Camera->GetCameraWorldCoord().scale.x);
@@ -85,6 +92,8 @@ void TestScene_JX::Update()
 		m_Camera->AddRelativePivotChild(bullet);
 	}
 	m_Player->Update();
+	m_RoomCollisionManager->UpdateCollision();
+	m_Camera->Update(); //更新Camera大家庭成員的渲染坐標
 	m_Root.Update();
 }
 

@@ -16,13 +16,12 @@ void CollisionInfo::SetCollisionNormal(const glm::vec2 &normal) {
 	}
 }
 
-glm::vec2 CollisionInfo::GetCollisionNormal() const
-{
-	if (glm::length(collisionNormal) > 0.0f)
-	{
-		return collisionNormal;
+glm::vec2 CollisionInfo::GetCollisionNormal() const {
+	// 使用点积计算长度的平方，避免开方
+	if (glm::dot(collisionNormal, collisionNormal) > std::numeric_limits<float>::epsilon()) {
+		return glm::normalize(collisionNormal);
 	}
-	return {1.0f, 0.0f}; //TODO:零向量要怎麽解決？
+	return glm::vec2(0.0f); // 明确返回零向量 TODO:零向量要怎麽解決？
 }
 
 bool Rect::Intersects(const Rect &other) const {
