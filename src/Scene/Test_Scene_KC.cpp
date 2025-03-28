@@ -105,6 +105,7 @@ void TestScene_KC::Update()
 	if (Util::Input::IsKeyPressed(Util::Keycode::I)) m_Camera->ZoomCamera(1);
 	if (Util::Input::IsKeyPressed(Util::Keycode::K)) m_Camera->ZoomCamera(-1);
 
+	if (Util::Input::IsKeyUp(Util::Keycode::O)) m_RoomCollisionManager->ShowColliderBox();
 	if (movement.x != 0.0f || movement.y != 0.0f)
 	{
 		const glm::vec2 deltaDisplacement = normalize(movement) * 10.0f * deltaTime; //normalize為防止斜向走速度是根號2

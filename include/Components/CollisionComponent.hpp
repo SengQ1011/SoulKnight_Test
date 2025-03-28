@@ -148,7 +148,11 @@ public:
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
 	void SetCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask = collisionMask; }
 	void SetOffset(const glm::vec2& offset) { m_Offset = offset; }
-	void SetSize(const glm::vec2& size) { m_Size = size; }
+	void SetSize(const glm::vec2& size)
+	{
+		m_Size = size;
+		// m_Object->SetInitialScale(m_Size);
+	}
 	void SetTrigger(const bool isTrigger) {m_IsTrigger = isTrigger;}
 	void SetVisible(const bool isVisible)
 	{

@@ -93,11 +93,15 @@ void Camera::Update() {
 		//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
 		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 
+		if (m_MapSize != 0.0f)
+		{
+			child->SetZIndex((child->m_WorldCoord.y - child->GetImageSize().y/2.0f + m_MapSize/2.0f) / m_MapSize);
+		}
 		glm::vec2 initialScale = child->GetInitialScale();
 		// std::copysign(第一個參數：大小, 第二個參數：正負號)
 		child->m_Transform.scale = glm::vec2(
 		    initialScale.x * std::copysign(m_CameraWorldCoord.scale.x, child->m_Transform.scale.x),
-		    initialScale.y * m_CameraWorldCoord.scale.y
+		    initialScale.y * std::copysign(m_CameraWorldCoord.scale.y, child->m_Transform.scale.y)
 		);
 	}
 }

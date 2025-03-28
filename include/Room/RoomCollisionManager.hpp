@@ -19,6 +19,8 @@ public:
 
 	void UpdateCollision() const;
 
+	void ShowColliderBox();
+
 private:
 	// 計算碰撞詳情
 	static void CalculateCollisionDetails(const std::shared_ptr<nGameObject>& objectA,
@@ -32,6 +34,7 @@ private:
 
 protected:
 	std::vector<std::shared_ptr<nGameObject>> m_NGameObjects;
+	bool isVisible = true;
 };
 
 #endif //ROOMCOLLISIONMANAGER_HPP

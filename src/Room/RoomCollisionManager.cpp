@@ -6,6 +6,7 @@
 
 #include "Util/Input.hpp"
 #include "Room/RoomCollisionManager.hpp"
+#include <execution> //并行計算
 
 #include "Components/CollisionComponent.hpp"
 #include "Util/Input.hpp"
@@ -70,6 +71,16 @@ void RoomCollisionManager::UpdateCollision() const
 
 		DispatchCollision(objectA, objectB, info); // 分發碰撞處理
 	}
+}
+
+void RoomCollisionManager::ShowColliderBox()
+{
+	isVisible = isVisible ^ true;
+	std::for_each(std::execution::par_unseq,m_NGameObjects.begin(), m_NGameObjects.end(),
+		[&](const std::shared_ptr<nGameObject>& object)
+		{
+			object->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetBlackBox()->SetVisible(isVisible);
+		});
 }
 
 

@@ -20,7 +20,6 @@ public:
 	~nGameObject() override = default;
 
 	glm::vec2 m_WorldCoord = {0,0};
-	glm::vec2 m_ScaleRatio = {0,0};
 
 	// Components
 	template <typename T, typename... Args>
@@ -50,6 +49,7 @@ public:
 	void SetActive(const bool active) { m_Active = active; }
 	void SetInitialScale(const glm::vec2& scale) { m_InitialScale = scale; }
 	void SetInitialScaleSet(const bool set) { m_InitialScaleSet = set; }
+	void SetZIndexType(const ZIndexType zIndexType) {m_ZIndex = zIndexType;}
 
 
 	// Getter
@@ -66,6 +66,7 @@ public:
 protected:
 	std::string m_Name;
 	bool m_Active = true;
+	ZIndexType m_ZIndex = ZIndexType::FLOOR;
 	glm::vec2 m_InitialScale;			// 儲存初始縮放
 	bool m_InitialScaleSet = false;		// 標記是否已設置初始縮放
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
