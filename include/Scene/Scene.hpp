@@ -5,6 +5,8 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+#include "Camera.hpp"
+#include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
 
 //TODO
@@ -59,8 +61,13 @@ public:
 	virtual void Exit() = 0;
 	virtual SceneType Change() = 0; // 換場景設置
 
+	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
+	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
+
 protected:
 	std::shared_ptr<SceneData> m_SceneData = nullptr;
+	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
+	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
 };
 
 #endif //SCENE_HPP

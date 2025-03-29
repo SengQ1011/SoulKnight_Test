@@ -25,7 +25,6 @@ private:
 
 private:
     State m_CurrentState = State::START;
-	SceneManager m_SceneManager;
 	//TODO: Dungeon預加載指標
 };
 

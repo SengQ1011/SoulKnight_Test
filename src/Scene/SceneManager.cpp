@@ -3,6 +3,13 @@
 //
 
 #include "Scene/SceneManager.hpp"
+SceneManager &SceneManager::GetInstance()
+{
+	static SceneManager instance;
+	return instance;
+}
+
+
 void SceneManager::Start()
 {
 	m_CurrentScene = CreateScene(Scene::SceneType::Test_KC);

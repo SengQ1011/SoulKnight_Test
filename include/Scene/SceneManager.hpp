@@ -19,6 +19,15 @@
 
 class SceneManager {
 public:
+	// 單例模式 (Singleton Pattern)：取得唯一的BulletManager
+	static SceneManager& GetInstance();
+
+	// 禁止拷貝與賦值，確保只有一個實例
+	SceneManager(const SceneManager&) = delete;
+	SceneManager& operator=(const SceneManager&) = delete;
+
+	std::weak_ptr<Scene> GetCurrentScene() {return m_CurrentScene;}
+
 	//場景初始化用功能
 	void ChangeCurrentScene();
 
@@ -32,6 +41,8 @@ protected:
 	static std::shared_ptr<Scene> CreateScene(Scene::SceneType type);
 
 private:
+	SceneManager() = default;
+
 	Scene::SceneType m_NextSceneType = Scene::SceneType::Null;
 	std::shared_ptr<Scene> m_CurrentScene = nullptr;
 	std::shared_ptr<Scene> m_PreLoadScene = nullptr;

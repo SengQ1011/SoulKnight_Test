@@ -34,12 +34,9 @@ protected:
 	std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
 	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
 	std::shared_ptr<nGameObject> m_Player = std::make_shared<nGameObject>();
-
 	std::shared_ptr<nGameObject> m_Player2 = std::make_shared<nGameObject>();
 
 	float roomHeight = 0;
-	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
-	Util::Renderer m_Root;
 };
 
 #endif //TEST_SCENE_HPP

@@ -7,6 +7,7 @@
 #include "Components/FollowerComponent.hpp"
 
 #include "Cursor.hpp"
+#include "Scene/SceneManager.hpp"
 #include "pch.hpp"
 
 #include "Util/Input.hpp"
@@ -52,7 +53,7 @@ void TestScene_KC::Start()
 		collisionComponent->SetOffset(offset[i]);
 		collisionComponent->SetSize(size[i]);
 		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
-		m_Root.AddChild(collisionComponent->GetBlackBox());
+		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
 		m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
 		m_WallCollider.emplace_back(wallCollider);
 	}
@@ -65,11 +66,11 @@ void TestScene_KC::Start()
 		{
 			m_RoomCollisionManager->RegisterNGameObject(elem);
 			auto collisionComponent = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-			m_Root.AddChild(collisionComponent->GetBlackBox());
+			SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
 			m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
 		}
 		m_Camera->AddRelativePivotChild(elem);
-		m_Root.AddChild(elem);
+		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(elem);
 	}
 
 	m_Player->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/knight_0_0.png"));
@@ -79,14 +80,14 @@ void TestScene_KC::Start()
 	collisionComponent->SetCollisionMask(CollisionLayers_Terrain);
 	collisionComponent->SetOffset(glm::vec2(-4,-13));
 	collisionComponent->SetSize(glm::vec2(16,16));
-	m_Root.AddChild(collisionComponent->GetBlackBox());
+	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
 	m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
 	auto movementComponent = m_Player->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
 	movementComponent->SetMaxSpeed(100);
 	movementComponent->SetSpeedRatio(0.9);
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
 	m_Camera->AddRelativePivotChild(m_Player);
-	m_Root.AddChild(m_Player);
+	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(m_Player);
 }
 
 void TestScene_KC::Input()
@@ -123,7 +124,7 @@ void TestScene_KC::Update()
 	m_Camera->SetFollowTarget(m_Player);
 	m_RoomCollisionManager->UpdateCollision();
 	m_Camera->Update();
-	m_Root.Update();
+	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->Update();
 }
 
 void TestScene_KC::Exit()
