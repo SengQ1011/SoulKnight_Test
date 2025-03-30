@@ -14,14 +14,6 @@ void DungeonLoadingScene::Start()
 	LOG_DEBUG("Entering Dungeon Loading Scene");
 }
 
-void DungeonLoadingScene::Input()
-{
-	if (Util::Input::IsKeyDown(Util::Keycode::H))
-	{
-		LOG_DEBUG("DungeonLoadingScene input \'H\' successfully detected");
-	}
-}
-
 void DungeonLoadingScene::Update()
 {
 	LOG_DEBUG("Dungeon Loading Scene is running...");

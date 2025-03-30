@@ -13,20 +13,25 @@ public:
 	Bullet(const std::string& imagePath,Util::Transform bulletTransform,glm::vec2 direction, float speed, int damage);
 	~Bullet() override= default;
 
-	void Update(float deltaTime);
+	void UpdateLocation(float deltaTime);
 	//----Getter----
 	glm::vec2 GetWorldPosition() const { return m_Transform.translation; }
 	int GetDamage() const {return m_damage;}
-	bool isOutOfBounds() const;
+	bool ShouldRemove() const { return m_hasHit; }
 
 	//----Setter----
 	void SetImage(const std::string& imagePath);
+	void MarkForRemoval() { m_hasHit = true; }
+
+	// Init
+	void PostInitialize();
 
 private:
 	std::string m_imagePath;
 	glm::vec2 m_direction;		// 方向
 	float m_speed;
 	int m_damage;
+	bool m_hasHit = false; // 標記是否因碰撞需移除
 };
 
 #endif //BULLET_HPP

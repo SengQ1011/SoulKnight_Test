@@ -10,20 +10,21 @@
 
 class BulletManager {
 public:
-	// 單例模式 (Singleton Pattern)：取得唯一的BulletManager
-	static BulletManager& GetInstance();
+	// 构造函数与析构函数
+	BulletManager() = default;
+	~BulletManager() = default;
 
-	// 禁止拷貝與賦值，確保只有一個實例
+	// 禁止拷贝与赋值
 	BulletManager(const BulletManager&) = delete;
 	BulletManager& operator=(const BulletManager&) = delete;
 
+	// 更新所有子弹
 	void Update();
-	const std::vector<std::shared_ptr<Bullet>>& GetBullets() const {return bullets;}
+	const std::vector<std::shared_ptr<Bullet>>& GetBullets() const {return m_Bullets;}
 	void spawnBullet(const std::string& bulletImagePath,const Util::Transform& transform, glm::vec2 direction, float speed, int damage);
 
 private:
-	BulletManager() = default;
-	std::vector<std::shared_ptr<Bullet>> bullets;
+	std::vector<std::shared_ptr<Bullet>> m_Bullets;
 };
 
 #endif //BULLETMANAGER_HPP

@@ -11,11 +11,27 @@
 
 CharacterFactory::CharacterFactory() {}
 
+CharacterType stringToCharacterType(const std::string& typeStr) {
+	static const std::unordered_map<std::string, CharacterType> typeMap = {
+		{"PLAYER", CharacterType::PLAYER},
+		{"ENEMY", CharacterType::ENEMY},
+		{"NPC", CharacterType::NPC}
+	};
+
+	auto it = typeMap.find(typeStr);
+	if (it != typeMap.end()) {
+		return it->second;
+	}
+
+	// 如果找不到匹配的类型，可以抛出异常或返回默认值
+	throw std::runtime_error("Unknown character type: " + typeStr);
+	// 或者 return CharacterType::PLAYER; // 默认值
+}
 
 State stringToState(const std::string& stateStr) {
 	if (stateStr == "STANDING") return State::STANDING;
 	if (stateStr == "MOVING") return State::MOVING;
-	if (stateStr == "ATTACK") return State::ATTACK;
+	if (stateStr == "SKILL") return State::SKILL;
 	if (stateStr == "DEAD") return State::DEAD;
 	throw std::invalid_argument("Unknown state: " + stateStr);
 }
@@ -33,66 +49,57 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseAnimations(const nloh
 	return animations;
 }
 
-std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
+std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 	// 讀取角色 JSON 資料
 	nlohmann::json characterData = readJsonFile("player.json");
 
 	// 在 JSON 陣列中搜尋符合名稱的角色
 	for (const auto& characterInfo : characterData) {
 		if (characterInfo["ID"] == id) {
-			//auto player = std::make_shared<Player>();
+			CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
+			std::string name = characterInfo["name"];
 			auto animation = parseAnimations(characterInfo["animations"]);
-
 			int maxHp = characterInfo["maxHp"];
-			float moveSpeed = characterInfo["speed"];
+			int maxArmor = characterInfo["maxArmor"];
+			int maxEnergy = characterInfo["maxEnergy"];
 
-			// **讀取碰撞箱資訊**
-			float collisionWidth = characterInfo["collisionBox"]["width"];
-			float collisionHeight = characterInfo["collisionBox"]["height"];
-			float offsetX = characterInfo["collisionBox"]["offsetX"];
-			float offsetY = characterInfo["collisionBox"]["offsetY"];
-			auto collisionBox = std::make_unique<CollisionBox>(offsetX, offsetY, collisionWidth, collisionHeight);
+			float moveSpeed = characterInfo["speed"];
 
 			// 解析武器名稱並創建武器
 			const int weaponID = characterInfo["weaponID"];
 			auto weapon = wf.createWeapon(weaponID);
 
-			int maxArmor = characterInfo["maxArmor"];
-			int maxEnergy = characterInfo["maxEnergy"];
 			double criticalRate = characterInfo["criticalRate"];
 			int handBladeDamage = characterInfo["handBladeDamage"];
 
 			// 讀取技能
-			std::shared_ptr<Skill> skill = nullptr;
-			if (characterInfo.contains("skill")) {
-				skill = std::make_shared<Skill>(
-					characterInfo["skill"]["name"],
-					characterInfo["skill"]["cooldown"],
-					characterInfo["skill"]["damage"]
-				);
-			}
+			// std::shared_ptr<Skill> skill = nullptr;
+			// if (characterInfo.contains("skill")) {
+			// 	skill = std::make_shared<Skill>(
+			// 		characterInfo["skill"]["name"],
+			// 		characterInfo["skill"]["cooldown"],
+			// 		characterInfo["skill"]["damage"]
+			// 	);
+			// }
 
 			// 根據 JSON 內容來決定創建 Player
-			auto player = std::make_shared<Player>(maxHp, moveSpeed, std::move(collisionBox), maxArmor, maxEnergy, skill);
+			auto player = std::make_shared<Character>(name, type);
 
 			auto animationComponent = player->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComponent = player->AddComponent<StateComponent>(ComponentType::STATE);
 			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
-			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
 			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, criticalRate, handBladeDamage, weapon);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
-			CollisionComp->SetCollisionMask(CollisionLayers_None);
+			CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+			CollisionComp->SetSize(glm::vec2(16.0f));
 			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
 			FollowerComp->IsTargetMouse(true);
 			FollowerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
 			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
-			// 设置旋转限制 (45度到135度)
-			FollowerComp->SetRotationLimits(
-				glm::radians(45.0f),
-				glm::radians(135.0f)
-			);
+			LOG_DEBUG("Player created");
 			return player;
 		}
 	}
@@ -100,31 +107,27 @@ std::shared_ptr<Player> CharacterFactory::createPlayer(const int id) {
 	return nullptr;
 }
 
-std::shared_ptr<Enemy>CharacterFactory::createEnemy(const int id) {
+std::shared_ptr<Character>CharacterFactory::createEnemy(const int id) {
     // 讀取角色 JSON 資料
 	nlohmann::json characterData = readJsonFile("enemy.json");
 
     // 在 JSON 陣列中搜尋符合名稱的角色
     for (const auto& characterInfo : characterData) {
         if (characterInfo["id"] == id) {
+        	std::string name = characterInfo["name"];
+        	CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
         	auto animation = parseAnimations(characterInfo["animations"]);
             int maxHp = characterInfo["maxHp"];
             float moveSpeed = characterInfo["speed"];
             int aimRange = characterInfo["aimRange"];
 
-        	// **讀取碰撞箱資訊**
-        	float collisionWidth = characterInfo["collisionBox"]["width"];
-        	float collisionHeight = characterInfo["collisionBox"]["height"];
-        	float offsetX = characterInfo["collisionBox"]["offsetX"];
-        	float offsetY = characterInfo["collisionBox"]["offsetY"];
-        	auto collisionBox = std::make_unique<CollisionBox>(offsetX, offsetY, collisionWidth, collisionHeight);
 
             // 解析武器名稱並創建武器
             int weaponID = characterInfo["weaponID"];
             auto weapon = wf.createWeapon(weaponID);
 
             // 根據 JSON 內容來決定創建 Enemy
-        	return std::make_shared<Enemy>(maxHp, moveSpeed, std::move(collisionBox));
+        	return std::make_shared<Character>(name, type);
         }
     }
 

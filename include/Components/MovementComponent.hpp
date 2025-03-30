@@ -14,40 +14,52 @@
 
 class MovementComponent final : public Component {
 public:
-	explicit MovementComponent(const ComponentType type = ComponentType::MOVEMENT,
-							   const float& speedRatio = 1.0f,
-							   const float& maxSpeed = 100.0f,
-							   const glm::vec2& acceleration = glm::vec2(0.0f),
-							   const glm::vec2& velocity = glm::vec2(0.0f),
-							   const glm::vec2& position = glm::vec2(0.0f))
-		: Component(type), m_SpeedRatio(speedRatio), m_MaxSpeed(maxSpeed), m_Acceleration(acceleration),
-		  m_Velocity(velocity), m_Position(position) {}
+	explicit MovementComponent(const float& speedRatio)
+	: Component(ComponentType::MOVEMENT),
+	  m_SpeedRatio(speedRatio),
+	  m_MaxSpeed(100.0f),
+	  m_Acceleration(glm::vec2(0.0f)),
+	  m_Velocity(glm::vec2(0.0f)),
+	  m_Position(glm::vec2(0.0f)) {}
 
 	void Init() override;
 	void Update() override;
 	void HandleCollision(CollisionInfo &info) override;
 
-	// Getters
+	//----Getters----
 	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
 	[[nodiscard]] float GetMaxSpeed() const { return m_MaxSpeed; }
 	[[nodiscard]] const glm::vec2& GetAcceleration() const { return m_Acceleration; }
 	[[nodiscard]] const glm::vec2& GetVelocity() const { return m_Velocity; }
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Position; }
 
-	// Setters
+	//----Setters----
 	void SetPosition(const glm::vec2& position) { m_Position = position; }
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
 	void SetMaxSpeed(const float maxSpeed) { m_MaxSpeed = maxSpeed; }
 	void SetVelocity(const glm::vec2& velocity) {m_Velocity = velocity;}
-	void SetAcceleration(const glm::vec2& acceleration) { m_Acceleration = acceleration; }
+	//void SetAcceleration(const glm::vec2& acceleration) { m_Acceleration = acceleration; }
+	void SetOnIce(bool isOnIce) { m_IsOnIce = isOnIce; }
+	// InputComponent專用
+	void SetDesiredDirection(const glm::vec2& direction) { m_DesiredDirection = direction; }
 
 private:
-	//TODO: AccelerationFactor和 Friction可能也要是成員變數，這樣可以實現滑行等操作
 	float m_SpeedRatio;			// 基本移動速度係數
 	float m_MaxSpeed;			// 最大速度限制
+	bool m_IsOnIce = false;        // 是否在冰面
 	glm::vec2 m_Acceleration;	// 加速度
+	glm::vec2 m_DesiredDirection;  // 移動方向向量（輸入）
 	glm::vec2 m_Velocity;		// 當前速度向量
 	glm::vec2 m_Position;		// 當前位置
+	// 冰面專用參數()
+	float m_IceAcceleration = 4.0f; // 冰面加速度--》值越小，加速越慢（需要更長時間提速）
+	float m_IceFriction = 15.0f;      // 冰面摩擦力==》值越大，減速越快（滑行距離短）
+	float m_TurnSmoothness = 10.0f;  // 轉向平滑係數（越大=>越難轉向）
+	float m_LateralFriction = 5.0f;      // 橫向摩擦力 (斜向移動時用)
+	// 方向系統
+	glm::vec2 m_LastValidDirection;  // 記錄上次實際移動方向（用於慣性計算）
+	float m_DirectionMemoryThreshold = 0.3f;  // 記錄方向的最低速度
+	float m_DecelerationCurve = 1.5f;         // 減速曲線強度 (值越大，高速時減速越快)
 
 	// 記錄每個方向的碰撞狀態
 	struct ContactState {

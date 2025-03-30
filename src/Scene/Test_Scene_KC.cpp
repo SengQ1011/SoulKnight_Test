@@ -82,16 +82,12 @@ void TestScene_KC::Start()
 	collisionComponent->SetSize(glm::vec2(16,16));
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
 	m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
-	auto movementComponent = m_Player->AddComponent<MovementComponent>(ComponentType::MOVEMENT);
+	auto movementComponent = m_Player->AddComponent<MovementComponent>(ComponentType::MOVEMENT, 1.0f);
 	movementComponent->SetMaxSpeed(100);
 	movementComponent->SetSpeedRatio(0.9);
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
 	m_Camera->AddRelativePivotChild(m_Player);
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(m_Player);
-}
-
-void TestScene_KC::Input()
-{
 }
 
 void TestScene_KC::Update()
@@ -116,7 +112,7 @@ void TestScene_KC::Update()
 		{
 			m_Player->m_Transform.scale.x *= -1.0f;
 		}
-		m_Player->GetComponent<MovementComponent>(ComponentType::MOVEMENT)->SetAcceleration(deltaDisplacement);
+		m_Player->GetComponent<MovementComponent>(ComponentType::MOVEMENT)->SetDesiredDirection(deltaDisplacement);
 	}
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
 	std::for_each(m_WallCollider.begin(), m_WallCollider.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});

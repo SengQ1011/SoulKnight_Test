@@ -14,7 +14,6 @@ public:
 	~CompleteScene() override = default;
 
 	void Start() override;
-	void Input() override;
 	void Update() override;
 	void Exit() override;
 	SceneType Change() override;

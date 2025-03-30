@@ -15,9 +15,7 @@ std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args) 
 	//確保T是Component子類別的安全判斷，如果不用樣板直接用Component，那每次使用Function就要手動ObjectCast了
 	static_assert(std::is_base_of_v<Component, T>, "T must derive from Component");
 	auto component = std::make_shared<T>(std::forward<Args>(args)...);
-
 	component->SetOwner(shared_from_this());
-	//m_Components.push_back(component);
 	m_Components[type] = component;
 	component->Init();
 	return component;

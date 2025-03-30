@@ -48,10 +48,6 @@ void MainMenuScene::Update()
 	m_Root.Update();
 }
 
-void MainMenuScene::Input()
-{
-}
-
 void MainMenuScene::Exit()
 {
 	LOG_DEBUG("Main Menu exited");

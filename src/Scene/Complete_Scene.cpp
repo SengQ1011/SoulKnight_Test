@@ -14,14 +14,6 @@ void CompleteScene::Start()
 	LOG_DEBUG("Entering Complete Scene");
 }
 
-void CompleteScene::Input()
-{
-	if (Util::Input::IsKeyDown(Util::Keycode::H))
-	{
-		LOG_DEBUG("CompleteScene input \'H\' successfully detected");
-	}
-}
-
 void CompleteScene::Update()
 {
 	LOG_DEBUG("Complete Scene is running...");

@@ -17,15 +17,6 @@ void LobbyScene::Start()
 	m_Root.AddChild(m_Background);
 }
 
-void LobbyScene::Input()
-{
-	if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB))
-	{
-		LOG_DEBUG("LobbyScene input \'H\' successfully detected");
-		// SDL_RenderGetScale()
-	}
-}
-
 void LobbyScene::Update()
 {
 	LOG_DEBUG("Lobby Scene is running...");

@@ -3,27 +3,34 @@
 //
 
 #include "Components/StateComponent.hpp"
+#include "Creature/Character.hpp"
 
 StateComponent::StateComponent() {}
 
 void StateComponent::Init() {
 	m_currentState = State::STANDING;
-	LOG_DEBUG("Creating State Component");
 }
 
 void StateComponent::SetState(State newState) {
 	if (newState != m_currentState) {
-		LOG_DEBUG("Changing State to {}",std::to_string(static_cast<int>(newState)));
-		m_currentState = newState;
-		auto character = GetOwner<nGameObject>();
+		auto character = GetOwner<Character>();
 		if (character) {
 			auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 			auto m_currentAnimation = animationComponent->GetCurrentAnimation();
-			// 根据当前状态切换动画
-			if (m_currentAnimation) {
-				LOG_DEBUG("changing animation");
-				m_currentAnimation->PlayAnimation(false);
-				animationComponent->SetAnimation(m_currentState);
+			if (character->GetCharacterName() == "Knight" && newState == State::SKILL)
+			{
+				animationComponent->SetSkillEffect(true);
+			}
+			else {
+				m_currentState = newState;
+				LOG_DEBUG("Changing State to {}",std::to_string(static_cast<int>(newState)));
+
+				// 根据当前状态切换动画
+				if (m_currentAnimation) {
+					m_currentAnimation->PlayAnimation(false);
+					animationComponent->SetAnimation(m_currentState);
+				}
+
 			}
 		}
 	}

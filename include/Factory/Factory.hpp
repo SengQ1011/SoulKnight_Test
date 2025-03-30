@@ -6,8 +6,6 @@
 #define FACTORY_HPP
 
 #include "Creature/Character.hpp"
-#include "Creature/Enemy.hpp"
-#include "Creature/Player.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Weapon/Weapon.hpp"
 #include <json.hpp>

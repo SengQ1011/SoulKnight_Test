@@ -59,6 +59,11 @@ void Camera::RotateCamera(const float radian) // radian 是PI， degree是°
 
 void Camera::AddRelativePivotChild(const std::shared_ptr<nGameObject> &child) {
 	m_RelativePivotChildren.push_back(child);
+	// 如果尚未設置初始縮放
+	if (!child->isSetInitialScale()) {
+		child->SetInitialScale(child->m_Transform.scale);
+		child->SetInitialScaleSet(true);
+	}
 }
 
 void Camera::RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child) {
@@ -82,12 +87,6 @@ void Camera::Update() {
 
 	for (const auto &child:m_RelativePivotChildren)
 	{
-		// 如果尚未設置初始縮放
-		if (!child->isSetInitialScale()) {
-			child->SetInitialScale(child->m_Transform.scale);
-			child->SetInitialScaleSet(true);
-		}
-
 		//變更坐標軸
 		// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
 		//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率

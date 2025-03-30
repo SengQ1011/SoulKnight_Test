@@ -5,11 +5,11 @@
 #include "Components/InputComponent.hpp"
 
 #include "Components/AttackComponent.hpp"
+#include "Components/FollowerComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "Util/Time.hpp"
 
-InputComponent::InputComponent() { LOG_DEBUG("InputComponent Success"); }
-
+InputComponent::InputComponent() {}
 
 void InputComponent::onInputReceived(const std::set<char>& keys)
 {
@@ -17,9 +17,13 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 	if (!character) return;
 
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);
+	auto movementComponent = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
 	auto attackComponent = character->GetComponent<AttackComponent>(ComponentType::ATTACK);
 	auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 	auto m_currentAnimation = animationComponent->GetCurrentAnimation();
+
+	// 使用技能
+	if (keys.count('U')) stateComponent->SetState(State::SKILL);
 
 	// movement移動
 	float deltaTime = Util::Time::GetDeltaTimeMs();
@@ -32,16 +36,17 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 	if (movement.x != 0.0f || movement.y != 0.0f) {
 		const float ratio = 0.2f;
 		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * deltaTime; //normalize為防止斜向走速度是根號2
-		auto movementComponent = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
+
+		movementComponent->SetDesiredDirection(deltaDisplacement);
+
 		if ((movement.x < 0 && character->m_Transform.scale.x > 0) ||
-			(movement.x > 0 && character->m_Transform.scale.x < 0))
-		{
-			character->m_Transform.scale.x *= -1.0f;
-		}
-		movementComponent->SetAcceleration(deltaDisplacement);
-		//LOG_DEBUG("Location:{}", movementComponent->GetPosition());
+		(movement.x > 0 && character->m_Transform.scale.x < 0))
+		{ character->m_Transform.scale.x *= -1.0f;}
+
 		stateComponent->SetState(State::MOVING);
 	} else {
+		// 無輸入時，清空方向向量
+		movementComponent->SetDesiredDirection(glm::vec2(0.0f));
 		stateComponent->SetState(State::STANDING);
 	}
 
@@ -52,8 +57,6 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 		if (keys.count('J')) {
 			attackComponent->TryAttack();
 		}
-
-		//if (keys.count('U')) attackComponent->switchWeapon();
+		//if (keys.count('E')) attackComponent->switchWeapon();
 	}
-
 }

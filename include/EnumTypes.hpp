@@ -15,14 +15,23 @@ enum class ComponentType
 	HEALTH,
 	INPUT,
 	MOVEMENT,
-	STATE
+	SKILL,
+	STATE,
+	TALENT
+};
+
+enum class CharacterType
+{
+	PLAYER,
+	ENEMY,
+	NPC
 };
 
 enum class State
 {
 	STANDING,
 	MOVING,
-	ATTACK,
+	SKILL,
 	DEAD
 };
 

@@ -50,6 +50,7 @@ public:
 	//----Getter----
 	[[nodiscard]] std::shared_ptr<nGameObject> GetFollower() const { return m_Follower.lock();}
 	[[nodiscard]] float GetHoldingRotation() const {return m_HoldingRotation;}
+	[[nodiscard]] bool GetUseMouse() const {return m_UseMousePosition;}
 
 
 protected:

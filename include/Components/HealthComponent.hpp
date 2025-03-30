@@ -9,33 +9,40 @@
 
 class HealthComponent : public Component {
 public:
-	explicit HealthComponent(float maxHP, float armor);
+	explicit HealthComponent(int maxHp, int maxArmor, int maxEnergy);
 	~HealthComponent() override = default;
 
-	void TakeDamage(float damage) {
-		float finalDamage = damage * (1.0f - armor); // 根據護甲減傷
-		currentHP -= finalDamage;
+	void Update() override;
 
-		if (currentHP <= 0) {
-			currentHP = 0;
-			OnDeath();
-		}
-	}
+	//----Getter----
+	int GetMaxHp() const { return m_maxHp; }
+	int GetCurrentHp() const { return m_currentHp; }
+	int GetMaxArmor() const { return m_maxArmor; }
+	int GetCurrentArmor() const { return m_currentArmor; }
+	int GetMaxEnergy() const { return m_maxEnergy; }
+	int GetCurrentEnergy() const { return m_currentEnergy; }
 
-	void Heal(float amount) {
-		currentHP += amount;
-		if (currentHP > maxHP) {
-			currentHP = maxHP;
-		}
-	}
+	//----Setter----
+	void SetMaxHp(int hp) { m_maxHp = hp; }
+	void AddCurrentHp(int hp) { m_currentHp += hp; }
+	void SetMaxArmor(int armor) { m_maxArmor = armor; }
+	void AddCurrentArmor(int armor) {m_currentArmor += armor; }
+	void SetMaxEnergy(int energy) { m_maxEnergy = energy; }
+	void AddCurrentEnergy(int energy) { m_currentEnergy += energy; }
+	void ConsumeEnergy(int energy) {m_currentEnergy -= energy; }
 
-	float GetHP() const { return currentHP; }
-
+	void TakeDamage(int damage);
 
 private:
-	float maxHP;
-	float currentHP;
-	float armor;
+		int m_maxHp;        // 生命上限
+		int m_currentHp;    // 當前生命值
+	int m_maxArmor;         // 護甲上限
+	int m_currentArmor;     // 當前護甲值
+	int m_maxEnergy;        // 能量上限
+	int m_currentEnergy;    // 當前能量值
+
+	float m_armorRecoveryInterval = 3.0f;
+	float m_armorRecoveryTimer; // 恢復護甲計時器
 
 	// 通知 StateComponent 角色死亡
 	void OnDeath();

@@ -13,14 +13,6 @@ void ResultScene::Start()
 	LOG_DEBUG("Entering Result Scene");
 }
 
-void ResultScene::Input()
-{
-	if (Util::Input::IsKeyDown(Util::Keycode::H))
-	{
-		LOG_DEBUG("ResultScene input \'H\' successfully detected");
-	}
-}
-
 void ResultScene::Update()
 {
 	LOG_DEBUG("Result Scene is running...");

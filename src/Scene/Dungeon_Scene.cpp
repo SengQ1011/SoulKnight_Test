@@ -14,14 +14,6 @@ void DungeonScene::Start()
 	LOG_DEBUG("Entering Game Scene");
 }
 
-void DungeonScene::Input()
-{
-	if (Util::Input::IsKeyDown(Util::Keycode::H))
-	{
-		LOG_DEBUG("DungeonScene input \'H\' successfully detected");
-	}
-}
-
 void DungeonScene::Update()
 {
 	LOG_DEBUG("Game Scene is running...");

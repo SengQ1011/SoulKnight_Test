@@ -12,7 +12,7 @@ SceneManager &SceneManager::GetInstance()
 
 void SceneManager::Start()
 {
-	m_CurrentScene = CreateScene(Scene::SceneType::Test_KC);
+	m_CurrentScene = CreateScene(Scene::SceneType::Test_JX);
 	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }
@@ -81,7 +81,6 @@ std::shared_ptr<Scene> SceneManager::CreateScene(Scene::SceneType type)
 
 void SceneManager::Update() const
 {
-	m_CurrentScene->Input();
 	m_CurrentScene->Update();
 }
 
@@ -92,7 +91,3 @@ void SceneManager::End()
 	m_CurrentScene = nullptr;
 	m_PreLoadScene = nullptr;
 }
-
-
-
-

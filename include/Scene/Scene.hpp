@@ -6,10 +6,12 @@
 #define SCENE_HPP
 
 #include "Camera.hpp"
+#include "EnumTypes.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
 
-//TODO
+class Camera;
+// TODO
 enum class StageTheme
 {
 	Null,
@@ -56,7 +58,6 @@ public:
 	};
 
 	virtual void Start() = 0;
-	virtual void Input() = 0; //專門處理玩家輸入
 	virtual void Update() = 0;
 	virtual void Exit() = 0;
 	virtual SceneType Change() = 0; // 換場景設置
@@ -64,10 +65,25 @@ public:
 	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
 	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
 
+	template <typename T>
+	std::shared_ptr<T> GetManager(const std::string& managerName) {
+		auto it = m_Managers.find(managerName);
+		if (it != m_Managers.end()) {
+			return std::static_pointer_cast<T>(it->second);
+		}
+		return nullptr;  // 若找不到指定類型的 Manager 返回 nullptr
+	}
+
+	void AddManager(const std::string& managerName, std::shared_ptr<void> manager) {
+		m_Managers[managerName] = manager;
+		LOG_DEBUG("Successfully added new Manager");
+	}
+
 protected:
 	std::shared_ptr<SceneData> m_SceneData = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
+	std::unordered_map<std::string, std::shared_ptr<void>> m_Managers;			// 存儲各種 Manager
 };
 
 #endif //SCENE_HPP

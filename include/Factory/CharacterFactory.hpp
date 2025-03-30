@@ -5,9 +5,9 @@
 #ifndef CHARACTERFACTORY_HPP
 #define CHARACTERFACTORY_HPP
 
+#include "EnumTypes.hpp"
 #include "Factory/Factory.hpp"
 #include "Factory/WeaponFactory.hpp"
-#include "Tool/CollisionBox.hpp"
 #include "Components/AiComponent.hpp"
 #include "Components/AnimationComponent.hpp"
 #include "Components/CollisionComponent.hpp"
@@ -23,8 +23,8 @@ public:
 	CharacterFactory();
 	~CharacterFactory() override = default;
 	// 根據角色配置文件創建角色
-	std::shared_ptr<Player> createPlayer(const int id);
-	std::shared_ptr<Enemy> createEnemy(const int id);
+	std::shared_ptr<Character> createPlayer(const int id);
+	std::shared_ptr<Character> createEnemy(const int id);
 
 private:
 	WeaponFactory wf;

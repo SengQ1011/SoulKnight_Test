@@ -3,7 +3,8 @@
 //
 
 #include "Components/AttackComponent.hpp"
-
+#include "Scene/SceneManager.hpp"
+#include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
 
 AttackComponent::AttackComponent(float criticalRate, int handBlademage, std::shared_ptr<Weapon> initWeapon)
@@ -13,12 +14,15 @@ void AttackComponent::Init()
 {
 	AddWeapon(m_currentWeapon);
 	auto character = GetOwner<Character>();
-	if(character)
-	{
-		character->AddChild(m_currentWeapon);
+	LOG_DEBUG("Check");
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if(!scene) {
+		LOG_ERROR("Scene not found");
+		return;
 	}
-	// LOG_DEBUG("{}",m_currentWeapon->GetImagePath());
-	// LOG_DEBUG("Weapon System && Attack Function Init");
+	scene->GetRoot().lock()->AddChild(m_currentWeapon);
+	scene->GetCamera().lock()->AddRelativePivotChild(m_currentWeapon);
+
 }
 
 void AttackComponent::Update()
@@ -85,5 +89,22 @@ void AttackComponent::TryAttack() {
 	if (m_currentWeapon && m_currentWeapon->CanAttack()) {
 		auto damage = calculateDamage();
 		m_currentWeapon->attack(damage);
+		auto character = GetOwner<Character>();
+		if (character) {
+			auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
+			if (healthComponent) {
+				healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
+			}
+		}
+	}
+}
+
+void AttackComponent::SetDualWield(bool enable) {
+	if (enable) {
+
+	}
+	else
+	{
+
 	}
 }

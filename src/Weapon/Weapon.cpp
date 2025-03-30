@@ -11,7 +11,6 @@ Weapon::Weapon(const std::string& ImagePath, const std::string& bulletImagePath,
 {
 	SetImage(ImagePath);
 	this->SetZIndex(15);
-	LOG_DEBUG("Weapon created with attackSpeed: {}s", m_attackColdDown);
 }
 
 void Weapon::UpdateCooldown(float deltaTime) {

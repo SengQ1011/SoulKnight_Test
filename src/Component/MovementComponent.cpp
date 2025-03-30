@@ -9,76 +9,136 @@
 #include "Util/Time.hpp"
 
 void MovementComponent::Init() {
-	auto owner = GetOwner<nGameObject>();
-	if (owner) {
-
-	}
 }
 
 
 void MovementComponent::Update() {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	const auto owner = GetOwner<nGameObject>();
+
 	// 更新接觸狀態超時
 	if (m_ContactState.inContactX || m_ContactState.inContactY) {
 		m_ContactState.contactTime -= deltaTime;
 		if (m_ContactState.contactTime <= 0.0f) {
-			// 接觸狀態超時，重置
 			m_ContactState.inContactX = false;
 			m_ContactState.inContactY = false;
 		}
 	}
+
 	// 根據接觸狀態限制加速度
 	if (m_ContactState.inContactX && std::abs(m_ContactState.contactNormal.x) > 0.01f) {
-		// 如果加速度方向與碰撞法線相反，則將該方向加速度歸零
 		if (m_Acceleration.x * m_ContactState.contactNormal.x < 0) {
 			m_Acceleration.x = 0.0f;
 		} else {
-			// 加速度方向不再朝向碰撞表面，可以結束該方向的接觸狀態
 			m_ContactState.inContactX = false;
 		}
 	}
-	constexpr float accelerationFactor = 5000.0f;
+
 	if (owner) m_Position = owner->m_WorldCoord;
 
-	// 加速度受SpeedRatio影響 TODO:(速度buff是否要影響達到最大速度的時間？)
-	m_Velocity += m_Acceleration * accelerationFactor * m_SpeedRatio * deltaTime;
+	// ===== 移動邏輯核心 =====
+	const float baseSpeed = 120.0f;  // 基础速度
+	const float effectiveMaxSpeed = baseSpeed * m_SpeedRatio;
 
-	//摩擦力
-	constexpr float friction = 5000.0f; //TODO:摩擦力可能是變數 10-15， 目前爲了及時提速降速先超大值
-	const float frictionMagnitude = friction * deltaTime;
+	// 確保輸入方向已正規化
+	glm::vec2 inputDir = (glm::length(m_DesiredDirection) > 0.01f)
+		? glm::normalize(m_DesiredDirection)
+		: glm::vec2(0.0f);
 
-	if (m_Acceleration.x == 0.0f) //摩擦力啓動！
-	{
-		if (const float speedMagnitude = std::abs(m_Velocity.x); speedMagnitude > 0.0f) {
-			const float newSpeed = std::max(0.0f, speedMagnitude - frictionMagnitude);
-			if (speedMagnitude > 0.01f) m_Velocity.x *= (newSpeed / speedMagnitude);
-			else m_Velocity.x = 0.0f; //速度太小，直接設零
-		}
+	// 當前速度計算
+	float currentSpeed = glm::length(m_Velocity);
+	glm::vec2 currentDir = currentSpeed > 0.01f ? m_Velocity / currentSpeed : m_LastValidDirection;
+
+	// 冰面参数查看hpp
+	if (m_IsOnIce) {
+		// 分軸速度處理
+        glm::vec2 velocityX = glm::vec2(m_Velocity.x, 0.0f);
+        glm::vec2 velocityY = glm::vec2(0.0f, m_Velocity.y);
+        float speedX = glm::length(velocityX);
+        float speedY = glm::length(velocityY);
+
+        // 更新方向記憶
+        if (currentSpeed > m_DirectionMemoryThreshold) {
+            m_LastValidDirection = currentDir;
+        }
+
+        // 斜向移動特殊處理
+        if (std::abs(inputDir.x) > 0.1f && std::abs(inputDir.y) > 0.1f) {
+            // 斜向移動時加強垂直方向減速
+            if (speedY > 0.1f) {
+                float decelY = m_IceFriction * 1.8f * deltaTime;
+                velocityY -= glm::normalize(velocityY) * decelY;
+            }
+            // 水準方向正常減速
+            if (speedX > 0.1f) {
+                float decelX = m_LateralFriction * deltaTime;
+                velocityX -= glm::normalize(velocityX) * decelX;
+            }
+            m_Velocity = velocityX + velocityY;
+        }
+
+        // 輸入處理
+        if (glm::length(inputDir) > 0.01f) {
+            // 急轉檢測（反向輸入）
+            if (glm::dot(m_LastValidDirection, inputDir) < -0.7f) {
+                float brakePower = m_IceFriction * 8.0f * deltaTime;
+                m_Velocity -= m_Velocity * brakePower;
+            }
+
+            // 限制轉向速度
+            float maxTurnSpeed = effectiveMaxSpeed * 0.6f;
+            if (currentSpeed > maxTurnSpeed) {
+                m_Velocity = m_LastValidDirection * maxTurnSpeed;
+            }
+
+            // 方向混合（平滑轉向）
+            glm::vec2 targetDir = glm::mix(
+                m_LastValidDirection,
+                inputDir,
+                std::min(1.0f, m_TurnSmoothness * deltaTime)
+            );
+            targetDir = glm::normalize(targetDir);
+
+            // 應用加速度
+            glm::vec2 targetVel = targetDir * effectiveMaxSpeed;
+            glm::vec2 accel = (targetVel - m_Velocity) * m_IceAcceleration * deltaTime;
+            m_Velocity += accel;
+        }
+        // 無輸入時的減速
+        else {
+            if (currentSpeed > 0.01f) {
+                // 曲線減速公式
+                float decel = m_IceFriction * deltaTime *
+                             (1.0f + pow(currentSpeed / effectiveMaxSpeed, m_DecelerationCurve));
+
+                m_Velocity -= m_LastValidDirection * decel;
+
+                if (glm::length(m_Velocity) < 0.1f) {
+                    m_Velocity = glm::vec2(0.0f);
+                }
+            }
+        }
+    }
+    // 普通地面移動
+    else {
+        m_Velocity = inputDir * effectiveMaxSpeed;
+        if (glm::length(inputDir) > 0.01f) {
+            m_LastValidDirection = inputDir;
+        }
+    }
+
+	// 极速时限制（防止溢出）
+	if (glm::length(m_Velocity) > effectiveMaxSpeed * 1.1f) {
+		m_Velocity = glm::normalize(m_Velocity) * effectiveMaxSpeed;
 	}
-	if (m_Acceleration.y == 0.0f) {
-		if (const float speedMagnitude = std::abs(m_Velocity.y); speedMagnitude > 0.0f) {
-			const float newSpeed = std::max(0.0f, speedMagnitude - frictionMagnitude);
-			if (speedMagnitude > 0.01f) m_Velocity.y *= (newSpeed / speedMagnitude);
-			else m_Velocity.y = 0.0f; //速度太小，直接設零
-		}
-	}
 
-	if (glm::length(m_Velocity) < 0.01f) { //速度極小，防止抖動，提前結束
+	// 極小速度歸零（防止抖動）
+	if (glm::length(m_Velocity) < 0.01f) {
 		m_Velocity = glm::vec2(0.0f);
-		return;
 	}
-	//取得基礎速度的方向和大小
-	const glm::vec2 direction = glm::normalize(m_Velocity);
-	const float baseSpeed = glm::length(m_Velocity);
 
-	//速度受到速度比率影響 同時限速
-	const float effectiveSpeed = std::min(baseSpeed, m_MaxSpeed) * m_SpeedRatio;
-
-	m_Velocity = direction * effectiveSpeed;
+	// 更新位置
 	m_Position += m_Velocity * deltaTime;
-
-	m_Acceleration = glm::vec2(0.0f); //重置當前加速度
 	if (owner) owner->m_WorldCoord = m_Position;
 }
 

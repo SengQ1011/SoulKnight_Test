@@ -44,6 +44,11 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
+        src/Component/HealthComponent.cpp
+        include/Components/TalentComponet.hpp
+        include/Components/SkillComponent.hpp
+        include/Skill/FullFirepower.hpp
+        src/Skill/FullFirepower.cpp
 )
 
 if(MSVC)

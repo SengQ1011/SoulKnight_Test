@@ -4,6 +4,7 @@
 
 #include "Components/AnimationComponent.hpp"
 #include <utility>
+#include "Scene/SceneManager.hpp"
 
 AnimationComponent::AnimationComponent(std::unordered_map<State, std::shared_ptr<Animation>> animations)
 	:Component(ComponentType::ANIMATION), m_Animations(std::move(animations)){}
@@ -21,13 +22,21 @@ void AnimationComponent::Init() {
 	auto character = GetOwner<nGameObject>();
 	if (character && m_currentAnimation) {
 		character->SetDrawable(m_currentAnimation->GetDrawable());
-		//character->AddChild(m_currentAnimation);  // 確保動畫加入角色
+
 	}
 	else {
 		LOG_ERROR("Failed to add new animation");
 	}
 
 	//LOG_DEBUG("Creating Animation Component & successful find owner");
+}
+
+void AnimationComponent::Update() {
+	if(m_useSkillEffect) {
+		if (auto character = GetOwner<nGameObject>()) {
+			m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
+		}
+	}
 }
 
 // 支援不同類型的物件
@@ -51,7 +60,7 @@ void AnimationComponent::SetAnimation(State state) {
 
 			// 新動畫設為 Character drawable
 			character->SetDrawable(m_currentAnimation->GetDrawable());
-			LOG_DEBUG("Switched animation to state " + std::to_string(static_cast<int>(state)));
+			// LOG_DEBUG("Switched animation to state " + std::to_string(static_cast<int>(state)));
 		}
 	} else {
 		LOG_ERROR("character is no longer valid-->AnimationComponent");
@@ -60,4 +69,42 @@ void AnimationComponent::SetAnimation(State state) {
 	auto gameObject = GetOwner<nGameObject>();
 	if (gameObject){
 	}
+}
+
+void AnimationComponent::SetSkillEffect(bool play)
+{
+	if (play) {
+		m_useSkillEffect = true;
+		auto character = GetOwner<nGameObject>();
+		if (character) {
+			const auto state = State::SKILL;
+			auto it = m_Animations.find(state);
+			// 有找到相關的動畫
+			if (it != m_Animations.end())
+			{
+				LOG_DEBUG("Skill effect");
+				m_effectAnimation = it->second;
+				m_effectAnimation->SetVisible(true);
+				m_effectAnimation->SetZIndex(15);
+				m_effectAnimation->PlayAnimation(true);
+
+				//character->AddChild(m_effectAnimation);
+				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+				scene->GetRoot().lock()->AddChild(m_effectAnimation);
+				scene->GetCamera().lock()->AddRelativePivotChild(m_effectAnimation);
+
+				m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
+			}
+		}
+	}
+	else
+	{
+		m_useSkillEffect = false;
+		m_effectAnimation->SetVisible(false);
+		m_effectAnimation->PlayAnimation(false);
+		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
+		scene->GetCamera().lock()->RemoveRelativePivotChild(m_effectAnimation);
+	}
+
 }

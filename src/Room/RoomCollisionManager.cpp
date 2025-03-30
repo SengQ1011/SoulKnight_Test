@@ -7,7 +7,7 @@
 #include "Util/Input.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include <execution> //并行計算
-
+#include "Weapon/Bullet.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Util/Input.hpp"
 
@@ -15,14 +15,14 @@ void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject
 {
 	if (nGameObject && nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
-		LOG_DEBUG("Collision Manager Registered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
+		//LOG_DEBUG("Collision Manager Registered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
 		m_NGameObjects.push_back(nGameObject);
 	}
 }
 
 void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
-	LOG_DEBUG("Collision Manager Unregistered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
+	//LOG_DEBUG("Collision Manager Unregistered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
 	m_NGameObjects.erase(
 		std::remove(m_NGameObjects.begin(), m_NGameObjects.end(), nGameObject),
 		m_NGameObjects.end()
@@ -56,6 +56,7 @@ void RoomCollisionManager::UpdateCollision() const
 			if (boundA.Intersects(boundB))
 			{
 				collisionPairs.emplace_back(objectA, objectB);
+				LOG_DEBUG("Collision");
 			}
 		}
 	}
@@ -125,6 +126,20 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 {
 	const auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	const auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+
+	// TODO:判斷並觸發對應的動作(在對應的onCollision)
+	// 处理子弹碰撞（假设objectA是子弹）
+	if (colliderA->GetCollisionLayer() == CollisionLayers_Player_Bullet) {
+		if (auto bullet = std::dynamic_pointer_cast<Bullet>(objectA)) {
+			bullet->MarkForRemoval(); // 标记子弹为已击中
+		}
+	}
+	// 处理objectB是子弹的情况
+	else if (colliderB->GetCollisionLayer() == CollisionLayers_Player_Bullet) {
+		if (auto bullet = std::dynamic_pointer_cast<Bullet>(objectB)) {
+			bullet->MarkForRemoval(); // 标记子弹为已击中
+		}
+	}
 
 	if ((colliderB->GetCollisionLayer() & colliderA->GetCollisionMask()) != 0) // !=運算符 優先於 &
 	{

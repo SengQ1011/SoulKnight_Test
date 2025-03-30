@@ -8,12 +8,11 @@ set(SRC_FILES
     Component/AttackComponent.cpp
     Component/CollisionComponent.cpp
     Component/FollowerComponent.cpp
+    Component/HealthComponent.cpp
     Component/InputComponent.cpp
     Component/MovementComponent.cpp
     Component/StateComponent.cpp
     Creature/Character.cpp
-    Creature/Enemy.cpp
-    Creature/Player.cpp
     Cursor.cpp
     Factory/CharacterFactory.cpp
     Factory/Factory.cpp
@@ -33,8 +32,7 @@ set(SRC_FILES
     Scene/SceneManager.cpp
     Scene/Test_Scene_JX.cpp
     Scene/Test_Scene_KC.cpp
-    Tool/CollisionBox.cpp
-    Tool/HitBox.cpp
+    Skill/FullFirepower.cpp
     Tool/Tool.cpp
     Weapon/Bullet.cpp
     Weapon/GunWeapon.cpp
@@ -58,10 +56,10 @@ set(INCLUDE_FILES
     Components/HealthComponent.hpp
     Components/InputComponent.hpp
     Components/MovementComponent.hpp
+    Components/SkillComponent.hpp
     Components/StateComponent.hpp
+    Components/TalentComponet.hpp
     Creature/Character.hpp
-    Creature/Enemy.hpp
-    Creature/Player.hpp
     Cursor.hpp
     EnumTypes.hpp
     Factory/CharacterFactory.hpp
@@ -69,7 +67,6 @@ set(INCLUDE_FILES
     Factory/RoomFactory.hpp
     Factory/RoomObjectFactory.hpp
     Factory/WeaponFactory.hpp
-    GameMechanism/Skill.hpp
     GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
     InputManager.hpp
@@ -90,9 +87,8 @@ set(INCLUDE_FILES
     Scene/SceneManager.hpp
     Scene/Test_Scene_JX.hpp
     Scene/Test_Scene_KC.hpp
-    Tool/CollisionBox.hpp
-    Tool/CollisionManager.hpp
-    Tool/HItBox.hpp
+    Skill/FullFirepower.hpp
+    Skill/Skill.hpp
     Tool/Tool.hpp
     Weapon/Bullet.hpp
     Weapon/GunWeapon.hpp
