@@ -22,21 +22,20 @@ std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args) 
 }
 
 template <typename T>
-std::shared_ptr<T> nGameObject::GetComponent(ComponentType type) //或許weak_ptr
+std::shared_ptr<T> nGameObject::GetComponent(const ComponentType type) //或許weak_ptr
 {
-//	static_assert(std::is_base_of_v<Component, T>, "T must derive from Component");
-//	for (auto &component : m_Components)
-//	{
-//		if (auto castedComponent = std::dynamic_pointer_cast<T>(component))
-//		{
-//			return castedComponent;
-//		}
-//	}
 	// unordermap搜索法：unordered_map.find()
 	auto it = m_Components.find(type);
 	if (it != m_Components.end()) {
 		return std::dynamic_pointer_cast<T>(it->second);
 	}
+	if (it == m_Components.end()) {
+		LOG_ERROR("Component type not found: {}", static_cast<int>(type));
+		for (const auto& [key, val] : m_Components) {
+			LOG_ERROR("Existing component type: {}", static_cast<int>(key));
+		}
+	}
+
 	return nullptr;
 }
 

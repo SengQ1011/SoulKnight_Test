@@ -114,7 +114,6 @@ struct Rect //AABB的矩形結構
 
 class CollisionComponent final : public Component {
 public:
-
 	explicit CollisionComponent(const ComponentType type = ComponentType::COLLISION, const glm::vec2& size = glm::vec2(0),
 					   const glm::vec2& offset = glm::vec2(0),
 					   const glm::uint8_t collisionLayer = CollisionLayers_None,
@@ -146,7 +145,7 @@ public:
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
-	void SetCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask = collisionMask; }
+	void SetCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask += collisionMask; }
 	void SetOffset(const glm::vec2& offset) { m_Offset = offset; }
 	void SetSize(const glm::vec2& size)
 	{

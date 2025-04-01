@@ -8,37 +8,24 @@
 #include "Components/CollisionComponent.hpp"
 #include "Util/Time.hpp"
 
-void MovementComponent::Init() {
-}
-
+void MovementComponent::Init() {}
 
 void MovementComponent::Update() {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	const auto owner = GetOwner<nGameObject>();
-
-	// 更新接觸狀態超時
-	if (m_ContactState.inContactX || m_ContactState.inContactY) {
-		m_ContactState.contactTime -= deltaTime;
-		if (m_ContactState.contactTime <= 0.0f) {
-			m_ContactState.inContactX = false;
-			m_ContactState.inContactY = false;
-		}
-	}
-
-	// 根據接觸狀態限制加速度
-	if (m_ContactState.inContactX && std::abs(m_ContactState.contactNormal.x) > 0.01f) {
-		if (m_Acceleration.x * m_ContactState.contactNormal.x < 0) {
-			m_Acceleration.x = 0.0f;
-		} else {
-			m_ContactState.inContactX = false;
-		}
-	}
-
 	if (owner) m_Position = owner->m_WorldCoord;
+
+	// 檢查是否有加速/減速效果
+	if (m_SpeedEffectDuration > 0.0f) {
+		m_SpeedEffectDuration -= deltaTime;
+		if (m_SpeedEffectDuration <= 0.0f) {
+			m_currentSpeedRatio = m_SpeedRatio;  // 恢復正常速度
+		}
+	}
 
 	// ===== 移動邏輯核心 =====
 	const float baseSpeed = 120.0f;  // 基础速度
-	const float effectiveMaxSpeed = baseSpeed * m_SpeedRatio;
+	const float effectiveMaxSpeed = baseSpeed * m_currentSpeedRatio;
 
 	// 確保輸入方向已正規化
 	glm::vec2 inputDir = (glm::length(m_DesiredDirection) > 0.01f)
@@ -127,14 +114,42 @@ void MovementComponent::Update() {
         }
     }
 
+	// 更新接觸狀態超時
+	if (m_ContactState.inContactX || m_ContactState.inContactY) {
+		m_ContactState.contactTime -= deltaTime;
+		if (m_ContactState.contactTime <= 0.0f) {
+			m_ContactState.inContactX = false;
+			m_ContactState.inContactY = false;
+		}
+	}
+
+	// 根據接觸狀態限制速度
+	if (m_ContactState.inContactX && std::abs(m_ContactState.contactNormal.x) > 0.01f) {
+		if (m_Velocity.x * m_ContactState.contactNormal.x < 0) {
+			m_Velocity.x = 0.0f;  // 停止X方向的運動
+		} else {
+			m_ContactState.inContactX = false;
+		}
+	}
+
+	if (m_ContactState.inContactY && std::abs(m_ContactState.contactNormal.y) > 0.01f) {
+		if (m_Velocity.y * m_ContactState.contactNormal.y < 0) {
+			m_Velocity.y = 0.0f;  // 停止Y方向的運動
+		} else {
+			m_ContactState.inContactY = false;
+		}
+	}
+
 	// 极速时限制（防止溢出）
 	if (glm::length(m_Velocity) > effectiveMaxSpeed * 1.1f) {
 		m_Velocity = glm::normalize(m_Velocity) * effectiveMaxSpeed;
 	}
 
 	// 極小速度歸零（防止抖動）
-	if (glm::length(m_Velocity) < 0.01f) {
+	if (glm::length(m_Velocity) < 0.5f) {
 		m_Velocity = glm::vec2(0.0f);
+		m_ContactState.inContactX = false;
+		m_ContactState.inContactY = false;
 	}
 
 	// 更新位置
@@ -146,10 +161,6 @@ void MovementComponent::HandleCollision(CollisionInfo &info)
 {
 	const auto owner = GetOwner<nGameObject>();
 	if (owner) {m_Position = owner->m_WorldCoord;}
-	//TODO:我似乎已經在其他地方確認了，這裏還需要嗎？
-	if (info.GetObjectA() != owner && info.GetObjectB() != owner) {
-		return;
-	}
 
 	const std::shared_ptr<nGameObject> other = (info.GetObjectA() == owner) ? info.GetObjectB() : info.GetObjectA();
 
@@ -176,10 +187,6 @@ void MovementComponent::HandleCollision(CollisionInfo &info)
 
 	// 調整位置
 	m_Position += collisionNormal * info.penetration;
-
-	// 歸零速度
-	if (std::abs(collisionNormal.x) >  0.01f) m_Velocity.x = 0.0f;
-	if (std::abs(collisionNormal.y) >  0.01f) m_Velocity.y = 0.0f;
 
 	// 立即更新物體位置
 	if (owner) owner->m_WorldCoord = m_Position;

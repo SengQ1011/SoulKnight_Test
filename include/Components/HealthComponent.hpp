@@ -9,7 +9,7 @@
 
 class HealthComponent : public Component {
 public:
-	explicit HealthComponent(int maxHp, int maxArmor, int maxEnergy);
+	explicit HealthComponent(const int maxHp, const  int maxArmor, const  int maxEnergy);
 	~HealthComponent() override = default;
 
 	void Update() override;

@@ -24,9 +24,9 @@ void TestScene_JX::Start()
 	m_Player = factory.createPlayer(1);
 	m_Enemy = std::make_shared<nGameObject>();
 
-	AddManager("BulletManager",bulletManager);
-	AddManager("InputManager",inputManager);
-	AddManager("RoomCollisionManager",m_RoomCollisionManager);
+	AddManager(ManagerTypes::BULLET,bulletManager);
+	AddManager(ManagerTypes::INPUT,inputManager);
+	AddManager(ManagerTypes::ROOMCOLLISION,m_RoomCollisionManager);
 
 	std::ifstream file(JSON_DIR"/LobbyObjectPosition.json");
 	if (!file.is_open()) {
@@ -72,10 +72,9 @@ void TestScene_JX::Start()
 	for (const auto &elem: m_RoomObject)
 	{
 		if (elem == nullptr) continue;
-		if (elem->GetComponent<CollisionComponent>(ComponentType::COLLISION) != nullptr)
+		if (auto collisionComponent = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 		{
 			m_RoomCollisionManager->RegisterNGameObject(elem);
-			auto collisionComponent = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 			SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
 			m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
 		}
@@ -93,24 +92,25 @@ void TestScene_JX::Start()
 	MovementComp->SetMaxSpeed(250.0f);
 	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
-	CollisionComp2->SetSize(glm::vec2(16.0f));
 	CollisionComp2->SetCollisionLayer(CollisionLayers_Enemy);
 	CollisionComp2->SetCollisionMask(CollisionLayers_Player);
-	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
+	CollisionComp2->SetSize(glm::vec2(16.0f));
+	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if(!CollisionComp2)LOG_ERROR("CollisionComp2");
 	m_Root->AddChild(m_Enemy);
+	m_Camera->AddRelativePivotChild(m_Enemy);
+	if(!collision2->GetBlackBox())LOG_ERROR("collision2->GetBlackBox()");
+	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collision2->GetBlackBox());
+	m_Camera->AddRelativePivotChild(collision2->GetBlackBox());
+	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
 
 	m_Player->m_WorldCoord = {0,16*2}; //騎士初始位置為右兩格，上兩格
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collision->GetBlackBox());
+	m_Root->AddChild(collision->GetBlackBox());
+	m_Camera->AddRelativePivotChild(collision->GetBlackBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
-
 	m_Root->AddChild(m_Player);
-
-	//加入了Camera大家庭，Camera移動會被影響，沒加就不會被影響
-	// 只對需要跟隨鏡頭的物件（如玩家、地圖）呼叫
-	//例如UI，不加入就可以固定在熒幕上
 	m_Camera->AddRelativePivotChild(m_Player);
-	m_Camera->AddRelativePivotChild(m_Enemy);
 
 
 	// Camera跟隨player

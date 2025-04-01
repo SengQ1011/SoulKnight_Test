@@ -9,6 +9,29 @@
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 
+void CollisionComponent::Init()
+{
+	auto owner = GetOwner<nGameObject>();
+	if (!owner)
+	{
+		LOG_ERROR("Can't find owner for this component");
+		return;
+	}
+
+	m_Object->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/ccccc.png"));
+	m_Object->SetZIndex(100);
+}
+
+
+void CollisionComponent::Update()
+{
+	auto owner = GetOwner<nGameObject>();
+	if (!owner) return;
+	m_Object->SetInitialScale(m_Size);
+	m_Object->m_WorldCoord = owner->m_WorldCoord + m_Offset + (m_Size/2.0f);
+	m_Object->Update();
+}
+
 void CollisionInfo::SetCollisionNormal(const glm::vec2 &normal) {
 	if (glm::length(normal) > 0.0f) {
 		collisionNormal = glm::normalize(normal);
@@ -42,23 +65,6 @@ Rect CollisionComponent::GetBounds() const {
 		// if (owner->m_Transform.scale.x < 0.0f) isLeft = true;
 	}
 	return {objectPosition + m_Offset, m_Size};
-}
-
-void CollisionComponent::Init()
-{
-	auto owner = GetOwner<nGameObject>();
-	if (!owner) return;
-	m_Object->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/ccccc.png"));
-	m_Object->SetZIndex(100);
-}
-
-void CollisionComponent::Update()
-{
-	auto owner = GetOwner<nGameObject>();
-	if (!owner) return;
-	m_Object->SetInitialScale(m_Size);
-	m_Object->m_WorldCoord = owner->m_WorldCoord + m_Offset + (m_Size/2.0f);
-	m_Object->Update();
 }
 
 bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent> &other) const {

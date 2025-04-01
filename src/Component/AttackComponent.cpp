@@ -13,16 +13,18 @@ AttackComponent::AttackComponent(float criticalRate, int handBlademage, std::sha
 void AttackComponent::Init()
 {
 	AddWeapon(m_currentWeapon);
+	// 武器記錄擁有者
 	auto character = GetOwner<Character>();
-	LOG_DEBUG("Check");
+	m_currentWeapon->SetOwner(character);
+
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if(!scene) {
 		LOG_ERROR("Scene not found");
 		return;
 	}
+	// 加入渲染樹
 	scene->GetRoot().lock()->AddChild(m_currentWeapon);
 	scene->GetCamera().lock()->AddRelativePivotChild(m_currentWeapon);
-
 }
 
 void AttackComponent::Update()
@@ -35,12 +37,15 @@ void AttackComponent::Update()
 
 
 void AttackComponent::AddWeapon(std::shared_ptr<Weapon> newWeapon) {
+	auto character = GetOwner<Character>();
+	if(!character) return;
 	if (m_Weapons.size() >= m_maxWeapon) {
 		RemoveWeapon();  // 刪除舊武器
 	}
 
-	m_Weapons.push_back(newWeapon); // 添加新武器
-	m_currentWeapon = newWeapon; // 更新當前武器
+	m_Weapons.push_back(newWeapon);			// 添加新武器列表
+	m_currentWeapon = newWeapon;			// 更新當前武器
+	m_currentWeapon->SetOwner(character);	// 當前武器添加擁有者的指標
 }
 
 
@@ -48,17 +53,18 @@ void AttackComponent::RemoveWeapon() {
 	auto it = std::find_if(m_Weapons.begin(), m_Weapons.end(),
 						[&](const std::shared_ptr<Weapon>& weapon) { return weapon == m_currentWeapon; });
 	if (it != m_Weapons.end()) {
+		it->get()->RemoveOwner();
 		m_Weapons.erase(it);
 	}
 }
 
 void AttackComponent::switchWeapon() {
 	if (m_Weapons.empty()) return;
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 
 	auto it = std::find(m_Weapons.begin(), m_Weapons.end(), m_currentWeapon);
 	if (it != m_Weapons.end() && std::next(it) != m_Weapons.end()) {
-		auto
-		m_currentWeapon = *std::next(it);
+		auto m_currentWeapon = *std::next(it);
 	} else {
 		m_currentWeapon = m_Weapons.front();  // 循環回到第一把武器
 	}
@@ -91,15 +97,16 @@ void AttackComponent::TryAttack() {
 		m_currentWeapon->attack(damage);
 		auto character = GetOwner<Character>();
 		if (character) {
-			auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
-			if (healthComponent) {
+			// player
+			if (auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH)) {
 				healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
 			}
 		}
 	}
 }
 
-void AttackComponent::SetDualWield(bool enable) {
+// TODO:技能：火力全開（雙武器）
+void AttackComponent::SetDualWield(const bool enable) {
 	if (enable) {
 
 	}

@@ -10,7 +10,7 @@
 
 class Bullet : public nGameObject {
 public:
-	Bullet(const std::string& imagePath,Util::Transform bulletTransform,glm::vec2 direction, float speed, int damage);
+	Bullet(const CharacterType type, const std::string& imagePath,Util::Transform bulletTransform,glm::vec2 direction, float size, float speed, int damage);
 	~Bullet() override= default;
 
 	void UpdateLocation(float deltaTime);
@@ -27,8 +27,10 @@ public:
 	void PostInitialize();
 
 private:
+	CharacterType m_type;
 	std::string m_imagePath;
 	glm::vec2 m_direction;		// 方向
+	float m_size;
 	float m_speed;
 	int m_damage;
 	bool m_hasHit = false; // 標記是否因碰撞需移除

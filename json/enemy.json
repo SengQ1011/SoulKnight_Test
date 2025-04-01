@@ -1,0 +1,40 @@
+[
+  {
+    "ID": 1,
+    "Type": "ENEMY",
+    "name": "Crystal Beetle",
+    "animations": {
+      "STANDING": ["/monster/冰原/enemy30水晶蟲/enemy30_4.png","/monster/冰原/enemy30水晶蟲/enemy30_5.png"],
+      "MOVING": ["/monster/冰原/enemy30水晶蟲/enemy30_0.png", "/monster/冰原/enemy30水晶蟲/enemy30_1.png",
+        "/monster/冰原/enemy30水晶蟲/enemy30_2.png","/monster/冰原/enemy30水晶蟲/enemy30_3.png"],
+      "SKILL": [],
+      "DEAD": ["/monster/冰原/enemy30水晶蟲/enemy30_6.png"]
+    },
+    "monsterType": "Melee",
+    "monsterPoint": 1,
+    "maxHp": 8,
+    "eliteMaxHp":40,
+    "collisionDamage": 2,
+    "speed": 1.0,
+    "weaponId": []
+  },
+  {
+    "ID": 3,
+    "Type": "ENEMY",
+    "name": "Pickaxe Miner",
+    "animations": {
+      "STANDING": ["/monster/冰原/enemy31礦工/enemy31_4.png", "/monster/冰原/enemy31礦工/enemy31_5.png"],
+      "MOVING": ["/monster/冰原/enemy31礦工/enemy31_0.png", "/monster/冰原/enemy31礦工/enemy31_1.png",
+        "/monster/冰原/enemy31礦工/enemy31_2.png","/monster/冰原/enemy31礦工/enemy31_3.png,"],
+      "SKILL": [],
+      "DEAD": ["/monster/冰原/enemy31礦工/enemy31_6.png"]
+    },
+    "monsterPoint": 1,
+    "monsterType": "Melee",
+    "maxHp": 7,
+    "eliteMaxHp":40,
+    "speed": 1.0,
+    "weaponId": 1
+  }
+]
+

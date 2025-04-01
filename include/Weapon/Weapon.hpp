@@ -6,6 +6,7 @@
 #define WEAPON_HPP
 
 #include "Override/nGameObject.hpp"
+#include "Creature/Character.hpp"
 #include "BulletManager.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
@@ -27,6 +28,8 @@ public:
 	//----Setter----
 	void SetImage(const std::string& ImagePath);
 	void SetLastAttackTime(const float time) { lastAttackTime = time; }
+	void SetOwner(std::shared_ptr<Character> owner) { m_currentOwner = owner; }
+	void RemoveOwner() { m_currentOwner = nullptr; }
 
 	void UpdateCooldown(float deltaTime);
 	int calculateDamage();
@@ -42,6 +45,7 @@ protected:
 	float m_criticalRate;			// 武器暴擊率
 	float m_attackColdDown;			// 攻擊頻率
 	int m_offset;					// 攻擊偏移量
+	std::shared_ptr<Character> m_currentOwner;
 
 	float lastAttackTime = 0.0f;  // 上次攻擊的時間
 };

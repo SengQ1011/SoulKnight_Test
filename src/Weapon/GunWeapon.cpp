@@ -21,9 +21,10 @@ void GunWeapon::attack(int damage) {
 	// 建立 Transform
 	Util::Transform bulletTransform;
 	bulletTransform.translation = this->m_WorldCoord;									// 子彈的位置
-	bulletTransform.scale = glm::vec2(m_bulletSize, m_bulletSize);					// 大小
+	bulletTransform.scale = glm::vec2(0.6f, 0.6f);									// 大小
 	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
+	auto characterType = m_currentOwner->GetType();
 
-	auto bulletManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetManager<BulletManager>("BulletManager");
-	bulletManager->spawnBullet(m_bulletImagePath,bulletTransform, bulletDirection, bulletSpeed, damage);
+	auto bulletManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetManager<BulletManager>(ManagerTypes::BULLET);
+	bulletManager->spawnBullet(characterType, m_bulletImagePath,bulletTransform, bulletDirection, m_bulletSize, bulletSpeed, damage);
  }

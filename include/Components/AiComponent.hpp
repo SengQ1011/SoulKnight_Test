@@ -13,7 +13,7 @@ enum class AIType {
 
 class AIComponent : public Component {
 public:
-	explicit AIComponent(AIType type) : aiType(type) {}
+	explicit AIComponent(AIType type, int monsterPoint) : aiType(type) {}
 
 	void UpdateAI() {
 		switch (aiType) {
@@ -28,6 +28,7 @@ public:
 
 private:
 	AIType aiType;
+	int m_monsterPoint;
 };
 
 

@@ -8,7 +8,7 @@
 #include "Override/nGameObject.hpp"
 #include "Util/Time.hpp"
 
-HealthComponent::HealthComponent(int maxHp, int maxArmor, int maxEnergy)
+HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const int maxEnergy = 0)
 	: Component(ComponentType::HEALTH),m_maxHp(maxHp), m_currentHp(maxHp),
 		m_maxArmor(maxArmor), m_currentArmor(maxArmor),
 		m_maxEnergy(maxEnergy), m_currentEnergy(maxEnergy) {}

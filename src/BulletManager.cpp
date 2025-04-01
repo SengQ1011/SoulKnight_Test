@@ -6,16 +6,16 @@
 #include <execution>
 #include "Scene/SceneManager.hpp"
 
-void BulletManager::spawnBullet(const std::string& bulletImagePath, const Util::Transform& transform, glm::vec2 direction, float speed, int damage) {
-	auto bullet = std::make_shared<Bullet>(bulletImagePath, transform, direction, speed, damage);
+void BulletManager::spawnBullet(const CharacterType type, const std::string& bulletImagePath, const Util::Transform& transform, glm::vec2 direction, float size, float speed, int damage) {
+	auto bullet = std::make_shared<Bullet>(type, bulletImagePath, transform, direction, size, speed, damage);
 	bullet->PostInitialize(); // 只初始化碰撞組件，不處理渲染
 	// 加入渲染樹
 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	currentScene->GetRoot().lock()->AddChild(bullet);  // 由 BulletManager 的 shared_ptr 加入
 	currentScene->GetCamera().lock()->AddRelativePivotChild(bullet);
 
-	// TODO:注冊到碰撞管理器
-	currentScene->GetManager<RoomCollisionManager>("RoomCollisionManager")->RegisterNGameObject(bullet);
+	// 注冊到碰撞管理器
+	currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
 
 	m_Bullets.push_back(bullet);
 }
@@ -39,7 +39,7 @@ void BulletManager::Update() {
 			if (bullet->ShouldRemove()) {
 				currentScene->GetRoot().lock()->RemoveChild(bullet);
 				currentScene->GetCamera().lock()->RemoveRelativePivotChild(bullet);
-				currentScene->GetManager<RoomCollisionManager>("RoomCollisionManager")->UnregisterNGameObject(bullet);
+				currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(bullet);
 				return true;
 			}
 			return false;

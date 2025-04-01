@@ -35,6 +35,14 @@ enum class State
 	DEAD
 };
 
+enum class ManagerTypes
+{
+	BULLET,
+	ROOMCOLLISION,
+	INPUT,
+	SCENE
+};
+
 enum class ZIndexType
 {
 	FLOOR		= 0,	//  0 -  20

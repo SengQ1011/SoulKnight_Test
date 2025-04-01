@@ -31,7 +31,7 @@ public:
 
 	int calculateDamage();
 	void TryAttack();		// 使用當前武器攻擊敵人
-	void SetDualWield(bool enable); // 雙武器
+	void SetDualWield(const bool enable); // 雙武器
 
 private:
 	float m_aimRange;			// 自動瞄準範圍

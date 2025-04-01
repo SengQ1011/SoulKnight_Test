@@ -21,7 +21,7 @@ public:
 	// 更新所有子弹
 	void Update();
 	const std::vector<std::shared_ptr<Bullet>>& GetBullets() const {return m_Bullets;}
-	void spawnBullet(const std::string& bulletImagePath,const Util::Transform& transform, glm::vec2 direction, float speed, int damage);
+	void spawnBullet(const CharacterType type, const std::string& bulletImagePath,const Util::Transform& transform, glm::vec2 direction, float size, float speed, int damage);
 
 private:
 	std::vector<std::shared_ptr<Bullet>> m_Bullets;

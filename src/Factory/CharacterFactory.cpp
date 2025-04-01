@@ -85,20 +85,23 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			// 根據 JSON 內容來決定創建 Player
 			auto player = std::make_shared<Character>(name, type);
 
+			auto healthComponent = player->AddComponent<HealthComponent>(ComponentType::HEALTH, maxHp, maxArmor, maxEnergy);
 			auto animationComponent = player->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComponent = player->AddComponent<StateComponent>(ComponentType::STATE);
 			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
-			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
 			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, criticalRate, handBladeDamage, weapon);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 			CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+			CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
 			CollisionComp->SetSize(glm::vec2(16.0f));
+			CollisionComp->SetOffset(glm::vec2(-4.0f,-13.0f));
 			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
 			FollowerComp->IsTargetMouse(true);
 			FollowerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
 			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
+			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
 			LOG_DEBUG("Player created");
 			return player;
 		}
@@ -120,7 +123,6 @@ std::shared_ptr<Character>CharacterFactory::createEnemy(const int id) {
             int maxHp = characterInfo["maxHp"];
             float moveSpeed = characterInfo["speed"];
             int aimRange = characterInfo["aimRange"];
-
 
             // 解析武器名稱並創建武器
             int weaponID = characterInfo["weaponID"];
