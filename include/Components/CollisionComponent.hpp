@@ -142,6 +142,7 @@ public:
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const {return m_CollisionLayer;}
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const {return m_CollisionMask;}
 	[[nodiscard]] std::shared_ptr<nGameObject> GetBlackBox() {return m_Object;}
+	[[nodiscard]] bool IsTrigger() const {return m_IsTrigger;}
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
@@ -157,7 +158,6 @@ public:
 	{
 		m_Object->SetVisible(isVisible);
 	}
-	[[nodiscard]] bool IsTrigger() const {return m_IsTrigger;}
 
 private:
 	glm::vec2 m_Size;

@@ -21,8 +21,8 @@
 void TestScene_JX::Start()
 {
 	LOG_DEBUG("Entering JX Test Scene");
-	m_Player = factory.createPlayer(1);
-	m_Enemy = std::make_shared<nGameObject>();
+	m_Player = CharacterFactory::GetInstance().createPlayer(1);
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(2);
 
 	AddManager(ManagerTypes::BULLET,bulletManager);
 	AddManager(ManagerTypes::INPUT,inputManager);
@@ -85,24 +85,14 @@ void TestScene_JX::Start()
 	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
 	inputManager->addObserver(m_Camera);
 
-	m_Enemy->SetZIndex(10);
-	m_Enemy->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Sprite/monster小怪/冰原/enemy31礦工/enemy31_0.png"));
-	m_Enemy->m_WorldCoord = glm::vec2(16*2,16*1);
-	auto MovementComp = m_Enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT, 1.0f);
-	MovementComp->SetMaxSpeed(250.0f);
-	auto CollisionComp2 = m_Enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
-	CollisionComp2->SetCollisionLayer(CollisionLayers_Terrain);
-	CollisionComp2->SetCollisionLayer(CollisionLayers_Enemy);
-	CollisionComp2->SetCollisionMask(CollisionLayers_Player);
-	CollisionComp2->SetSize(glm::vec2(16.0f));
+	m_Enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if(!CollisionComp2)LOG_ERROR("CollisionComp2");
-	m_Root->AddChild(m_Enemy);
-	m_Camera->AddRelativePivotChild(m_Enemy);
 	if(!collision2->GetBlackBox())LOG_ERROR("collision2->GetBlackBox()");
-	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collision2->GetBlackBox());
+	m_Root->AddChild(collision2->GetBlackBox());
 	m_Camera->AddRelativePivotChild(collision2->GetBlackBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
+	m_Root->AddChild(m_Enemy);
+	m_Camera->AddRelativePivotChild(m_Enemy);
 
 	m_Player->m_WorldCoord = {0,16*2}; //騎士初始位置為右兩格，上兩格
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -121,10 +111,11 @@ void TestScene_JX::Start()
 
 void TestScene_JX::Update()
 {
-	// Input：位移量
+	// Input：
 	inputManager->listenInput();
+	auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH);
+	if(Util::Input::IsKeyPressed(Util::Keycode::Z)) LOG_DEBUG("hp: {}, armor: {}, energy: {}", healthComp->GetCurrentHp(), healthComp->GetCurrentArmor(), healthComp->GetCurrentEnergy());
 
-	float deltaTime = Util::Time::GetDeltaTimeMs();
 	Cursor::SetWindowOriginWorldCoord(m_Camera->GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
 
 	if (Util::Input::IsKeyUp(Util::Keycode::MOUSE_LB)) {
@@ -137,6 +128,8 @@ void TestScene_JX::Update()
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
 	std::for_each(m_WallCollider.begin(), m_WallCollider.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
 	m_Player->Update();
+	m_Enemy->Update();
+
 	m_RoomCollisionManager->UpdateCollision();
 	m_Camera->Update();
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->Update();

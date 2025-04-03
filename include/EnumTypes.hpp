@@ -27,6 +27,12 @@ enum class CharacterType
 	NPC
 };
 
+enum class AIType {
+	ATTACK,		// 追蹤玩家
+	SUMMON,		// 召喚
+	WANDER		// 游蕩
+};
+
 enum class State
 {
 	STANDING,

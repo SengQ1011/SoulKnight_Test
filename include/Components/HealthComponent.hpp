@@ -34,8 +34,8 @@ public:
 	void TakeDamage(int damage);
 
 private:
-		int m_maxHp;        // 生命上限
-		int m_currentHp;    // 當前生命值
+	int m_maxHp;        // 生命上限
+	int m_currentHp;    // 當前生命值
 	int m_maxArmor;         // 護甲上限
 	int m_currentArmor;     // 當前護甲值
 	int m_maxEnergy;        // 能量上限

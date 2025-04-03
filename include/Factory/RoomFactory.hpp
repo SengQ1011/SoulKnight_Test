@@ -21,6 +21,19 @@ public:
 protected:
 	std::string m_JSONName;
 
+//public:
+// 	explicit RoomFactory(std::string configFile = "rooms.json")
+// 			: m_configFile(std::move(configFile)) {}
+//
+// 	// 創建特定類型房間
+// 	std::shared_ptr<Room> createRoom(const std::string& roomId);
+//
+// 	// 隨機創建房間 (適合地牢生成)
+// 	std::shared_ptr<Room> createRandomRoom(RoomType type);
+//
+// private:
+// 	std::string m_configFile;
+// 	RoomObjectFactory m_objectFactory; // 組合使用
 };
 
 #endif //ROOMFACTORY_HPP

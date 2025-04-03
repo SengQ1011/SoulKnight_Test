@@ -15,8 +15,9 @@ HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const 
 
 void HealthComponent::Update()
 {
-	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
-	if(m_currentArmor < 0) {
+	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+	if(m_maxArmor == 0) return;
+	if(m_currentArmor < m_maxArmor) {
 		m_armorRecoveryTimer += deltaTime;
 		if (m_armorRecoveryTimer >= m_armorRecoveryInterval) {
 			AddCurrentArmor(1);

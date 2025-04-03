@@ -14,7 +14,7 @@
 std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
 {
 	std::shared_ptr<RoomObject> roomObject = std::make_shared<RoomObject>();
-	// 讀取角色 JSON 資料
+	// 讀取 JSON 資料
 	nlohmann::json origin = readJsonFile("LobbyObjectData.json");
 
 	auto data = origin[_id];
@@ -31,4 +31,12 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 		LOG_DEBUG("success2");
 	}
 	return roomObject;
+}
+
+std::vector<std::shared_ptr<RoomObject>> RoomObjectFactory::createObjectsFromJson(const nlohmann::json& objectsJson) {
+	std::vector<std::shared_ptr<RoomObject>> objects;
+	for (const auto& objData : objectsJson) {
+		objects.push_back(createRoomObject(objData["id"], objData["class"]));
+	}
+	return objects;
 }

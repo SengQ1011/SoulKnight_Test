@@ -7,22 +7,27 @@
 #include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
 
-AttackComponent::AttackComponent(float criticalRate, int handBlademage, std::shared_ptr<Weapon> initWeapon)
-	: m_criticalRate(criticalRate), m_maxWeapon(2), m_handBladeDamage(handBlademage),m_currentWeapon(initWeapon){}
+AttackComponent::AttackComponent(std::shared_ptr<Weapon> initWeapon = nullptr, float criticalRate = 0, int handBladeDamage = 0, int colLisionDamage = 0)
+	: m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), m_collisionDamage(colLisionDamage),m_currentWeapon(initWeapon){}
 
 void AttackComponent::Init()
 {
+	// 每個角色都會武器，除了部分小怪
+	if (!m_currentWeapon) return;
 	AddWeapon(m_currentWeapon);
 	// 武器記錄擁有者
 	auto character = GetOwner<Character>();
 	m_currentWeapon->SetOwner(character);
 
-	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	if(!scene) {
-		LOG_ERROR("Scene not found");
-		return;
+	if(character->GetType() == CharacterType::ENEMY) {
+		SetMaxWeapon(1);
+	} else if(character->GetType() == CharacterType::PLAYER) {
+		SetMaxWeapon(2);
 	}
+
 	// 加入渲染樹
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if(!scene)return;
 	scene->GetRoot().lock()->AddChild(m_currentWeapon);
 	scene->GetCamera().lock()->AddRelativePivotChild(m_currentWeapon);
 }
@@ -31,6 +36,7 @@ void AttackComponent::Update()
 {
 	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	// Weapon中的followerComponent更新
+	if(!m_currentWeapon) return;
 	m_currentWeapon->Update();
 	m_currentWeapon->UpdateCooldown(deltaTime);
 }
@@ -92,15 +98,18 @@ int AttackComponent::calculateDamage()
 }
 
 void AttackComponent::TryAttack() {
-	if (m_currentWeapon && m_currentWeapon->CanAttack()) {
+	auto character = GetOwner<Character>();
+	if (!character) return;
+
+	auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
+	auto currentEnergy = healthComponent->GetCurrentEnergy();
+
+	if (m_currentWeapon && m_currentWeapon->CanAttack() && currentEnergy > 0) {
 		auto damage = calculateDamage();
 		m_currentWeapon->attack(damage);
-		auto character = GetOwner<Character>();
-		if (character) {
-			// player
-			if (auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH)) {
-				healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
-			}
+
+		if (character->GetType() == CharacterType::PLAYER) {
+			healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
 		}
 	}
 }

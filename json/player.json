@@ -12,9 +12,9 @@
                 "/player/knight/knight_0_10.png", "/player/knight/knight_0_11.png",
                 "/player/knight/knight_0_12.png", "/player/knight/knight_0_13.png",
                 "/player/knight/knight_0_14.png", "/player/knight/knight_0_15.png"],
-            "SKILL": ["/player/knight/knight_1_skill_0_effect_0_0.png","/player/knight/knight_1_skill_0_effect_0_1.png",
-                "/player/knight/knight_1_skill_0_effect_0_2.png","/player/knight/knight_1_skill_0_effect_0_3.png",
-                "/player/knight/knight_1_skill_0_effect_0_4.png","/player/knight/knight_1_skill_0_effect_0_5.png"],
+            "SKILL": ["/player/knight/effect_08_7.png","/player/knight/effect_08_8.png",
+                "/player/knight/effect_08_9.png","/player/knight/effect_08_10.png",
+                "/player/knight/effect_08_11.png","/player/knight/effect_08_12.png"],
             "DEAD": ["/player/knight/knight_0_16.png"]
         },
         "maxHp": 7,

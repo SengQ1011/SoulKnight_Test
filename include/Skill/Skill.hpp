@@ -10,28 +10,28 @@
 
 class Skill {
 public:
-	Skill(Character& owner, std::string name, float cooldownTime): m_owner(owner), m_skillName(name), m_cooldownTime(cooldownTime) {};
+	Skill(const std::string &name, const float cooldownTime): m_skillName(name), m_CDTime(cooldownTime) {};
 	virtual ~Skill() = default;
 
 	virtual void SkillUpdate() = 0;
 
 	//----Getter----
 	[[nodiscard]] std::string GetSkillName() const { return m_skillName; }
-	[[nodiscard]] float GetCoolDownTime() const { return m_cooldownTime; }
-	[[nodiscard]] float GetremainingCooldown() const { return remainingCooldown; }
+	[[nodiscard]] float GetCoolDownTime() const { return m_CDTime; }
+	[[nodiscard]] float GetremainingCooldown() const { return m_remainingCD; }
+	[[nodiscard]] bool IsReady() const { return m_remainingCD <= 0; }
 	[[nodiscard]] bool GetSkillActive() const { return isActive; }
 
 	//----Setter----
-	void SetCoolDownTime(float cooldownTime) { m_cooldownTime = cooldownTime; }
+	void SetCoolDownTime(float cooldownTime) { m_CDTime = cooldownTime; }
 	void SetSkillActive(bool active) { isActive = active; }
 
 	virtual void Execute() = 0;
 
 protected:
-	Character& m_owner;			// 引用
 	std::string m_skillName;
-	float m_cooldownTime;
-	float remainingCooldown;
+	float m_CDTime;
+	float m_remainingCD;
 	bool isActive = false;
 };
 

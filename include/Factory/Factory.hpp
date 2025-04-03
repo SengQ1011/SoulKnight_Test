@@ -16,11 +16,18 @@
 
 class Factory {
 public:
-	Factory();
-	virtual ~Factory() = default;
+	// 禁止複製
+	Factory(Factory const&) = delete;
+	void operator = (const Factory&) = delete;
+
 	// 讀取 JSON 文件
-	nlohmann::json readJsonFile(const std::string& fileName);
+	static nlohmann::json readJsonFile(const std::string& fileName);
 	static std::shared_ptr<Component> createComponent(const nlohmann::json& json);
+
+protected:
+	// 開放建構函式給派生類，但不暴露給外部
+	Factory() = default;
+	virtual ~Factory() = default;
 };
 
 

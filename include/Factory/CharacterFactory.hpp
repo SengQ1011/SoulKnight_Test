@@ -20,14 +20,23 @@
 // 角色工廠：根據名稱創建角色
 class CharacterFactory: public Factory {
 public:
-	CharacterFactory();
-	~CharacterFactory() override = default;
+	static CharacterFactory& GetInstance() {
+		if (!instance) instance = new CharacterFactory();
+		return *instance;
+	}
+
+	// 删除拷贝操作
+	CharacterFactory(const CharacterFactory&) = delete;
+	void operator=(const CharacterFactory&) = delete;
+
 	// 根據角色配置文件創建角色
 	std::shared_ptr<Character> createPlayer(const int id);
 	std::shared_ptr<Character> createEnemy(const int id);
 
 private:
-	WeaponFactory wf;
+	static CharacterFactory* instance;
+	CharacterFactory() = default;
+	std::unordered_map<int, std::shared_ptr<Character>> enemyTemplates;		// 緩存
 };
 
 #endif // CHARACTERFACTORY_HPP

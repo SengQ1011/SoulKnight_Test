@@ -71,3 +71,4 @@ bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent
 	return ((m_CollisionLayer & other->m_CollisionMask) != 0 ||
 			(m_CollisionMask & other->m_CollisionLayer) != 0);
 }
+

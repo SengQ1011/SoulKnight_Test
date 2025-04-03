@@ -33,9 +33,8 @@ protected:
 	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
 
 	std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
-	CharacterFactory factory;
 	std::shared_ptr<Character> m_Player;
-	std::shared_ptr<nGameObject> m_Enemy;
+	std::shared_ptr<Character> m_Enemy;
 
 	float roomHeight = 0;
 };

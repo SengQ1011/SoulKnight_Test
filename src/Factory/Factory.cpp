@@ -6,9 +6,6 @@
 
 #include "Util/Logger.hpp"
 
-Factory::Factory() {}
-
-
 nlohmann::json Factory::readJsonFile(const std::string& fileName) {
 	std::ifstream file(JSON_DIR "/" + fileName);
 	if (!file.is_open()) {

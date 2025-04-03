@@ -10,7 +10,7 @@
 
 class AttackComponent: public Component {
 public:
-	explicit AttackComponent(float criticalRate, int handBladeDamage, std::shared_ptr<Weapon> initWeapon);
+	explicit AttackComponent(std::shared_ptr<Weapon> initWeapon, float criticalRate, int handBladeDamage, int collisionDamage);
 	~AttackComponent() override = default;
 
 	void Init() override;
@@ -37,7 +37,8 @@ private:
 	float m_aimRange;			// 自動瞄準範圍
 	float m_criticalRate;		// 攻擊暴擊率(計算傷害公式=(角色+武器)暴擊率 * 武器傷害)
 	int m_maxWeapon;			// 最多武器數量
-	int m_handBladeDamage;		// 手刀傷害
+	int m_handBladeDamage;		// player:手刀傷害
+	int m_collisionDamage;		// enemy:專用於Collision模式的傷害值
 	std::shared_ptr<Weapon> m_currentWeapon;				// 目前裝備的武器
 	std::vector<std::shared_ptr<Weapon>> m_Weapons;		// 每個角色都有武器
 };

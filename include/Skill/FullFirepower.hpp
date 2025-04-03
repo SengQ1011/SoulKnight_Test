@@ -9,15 +9,14 @@
 
 class FullFirepower : public Skill {
 public:
-	explicit FullFirepower(Character& owner, std::string name, float cooldownTime, float skillTime);
+	explicit FullFirepower(std::string name, float cooldownTime, float skillTime);
 	~FullFirepower() override = default;
 
 	void SkillUpdate() override;
 	void Execute() override;
 
 private:
-	float m_skillTime = 5.0f;
-	float m_Timer;
+
 };
 
 #endif //FULLFIREPOWER_HPP

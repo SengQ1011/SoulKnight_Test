@@ -10,4 +10,5 @@
 Character::Character(std::string name, CharacterType type)
 	: m_name(name),m_type(type) {
 	ResetPosition();
+	this->SetPivot(glm::vec2{0.5f,0.5f});
 }

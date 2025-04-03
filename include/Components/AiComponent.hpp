@@ -5,11 +5,7 @@
 #ifndef AICOMPONENT_HPP
 #define AICOMPONENT_HPP
 
-enum class AIType {
-	CHASER,  // 追蹤玩家
-	SHOOTER, // 遠程射擊
-	PATROLLER // 巡邏
-};
+#include "Components/Component.hpp"
 
 class AIComponent : public Component {
 public:
@@ -17,11 +13,11 @@ public:
 
 	void UpdateAI() {
 		switch (aiType) {
-		case AIType::CHASER:
+		case AIType::ATTACK:
 			break;
-		case AIType::SHOOTER:
+		case AIType::SUMMON:
 			break;
-		case AIType::PATROLLER:
+		case AIType::WANDER:
 			break;
 		}
 	}

@@ -1,4 +1,5 @@
 set(SRC_FILES
+    Animation-hahaha0816.cpp
     Animation.cpp
     App.cpp
     Beacon.cpp
@@ -11,6 +12,7 @@ set(SRC_FILES
     Component/HealthComponent.cpp
     Component/InputComponent.cpp
     Component/MovementComponent.cpp
+    Component/SkillComponent.cpp
     Component/StateComponent.cpp
     Creature/Character.cpp
     Cursor.cpp
