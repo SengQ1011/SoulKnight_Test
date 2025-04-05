@@ -44,6 +44,12 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
+        src/Component/TalentComponent.cpp
+        include/GameMechanism/TalentDatabase.hpp
+        include/Components/AttackAI.hpp
+        src/Component/AttackAI.cpp
+        include/ObserveManager/ObserveManager.hpp
+        include/ObserveManager/TrackingManager.hpp
 )
 
 if(MSVC)

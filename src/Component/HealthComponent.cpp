@@ -26,8 +26,12 @@ void HealthComponent::Update()
 	}
 }
 
-void HealthComponent::TakeDamage(int damage)
-{
+void HealthComponent::TakeDamage(int damage) {
+	// 天賦：破甲保護
+	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0) {
+		m_currentArmor = 0;  // 只扣盔甲
+		return;
+	}
 	damage = std::max(0, damage - m_currentArmor);
 	m_currentArmor = std::max(0, m_currentArmor - damage);
 	m_currentHp = std::max(0, m_currentHp - damage);
@@ -37,8 +41,7 @@ void HealthComponent::TakeDamage(int damage)
 	}
 }
 
-void HealthComponent::OnDeath()
-{
+void HealthComponent::OnDeath() {
 	auto character = GetOwner<nGameObject>();
 	if(!character) return;
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);

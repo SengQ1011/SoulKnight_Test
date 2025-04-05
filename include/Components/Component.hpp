@@ -8,11 +8,11 @@
 #define COMPONENT_HPP
 
 //Component.hpp
-#include <utility>
-#include <string>
 #include <memory>
-#include "InputManager.hpp"
+#include <string>
+#include <utility>
 #include "EnumTypes.hpp"
+#include "ObserveManager/InputManager.hpp"
 
 
 struct CollisionInfo;

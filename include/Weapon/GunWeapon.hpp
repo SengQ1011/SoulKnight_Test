@@ -13,6 +13,9 @@ public:
 	~GunWeapon() override = default;
 
 	void attack(int damage) override;
+	std::shared_ptr<Weapon> Clone() const override {
+		return std::make_shared<GunWeapon>(*this);
+	}
 
 private:
 	float m_bulletSize;

@@ -19,6 +19,9 @@ public:
 	~MeleeWeapon() override = default;
 
 	void attack(int damage) override;
+	std::shared_ptr<Weapon> Clone() const override {
+		return std::make_shared<MeleeWeapon>(*this);
+	}
 
 private:
 	float m_attackRange;  // 近戰武器的攻擊範圍

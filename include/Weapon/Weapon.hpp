@@ -30,11 +30,21 @@ public:
 	void SetLastAttackTime(const float time) { lastAttackTime = time; }
 	void SetOwner(std::shared_ptr<Character> owner) { m_currentOwner = owner; }
 	void RemoveOwner() { m_currentOwner = nullptr; }
+	void SetAttackDelay(float delay) {
+		m_attackDelay = delay;
+		lastAttackTime = m_attackDelay;
+	}
+	void ResetAttackTimer() {
+		lastAttackTime = m_attackColdDown + m_attackDelay; // 冷却时间 + 初始延迟
+	}
 
 	void UpdateCooldown(float deltaTime);
 	int calculateDamage();
 	bool CanAttack();
 	virtual void attack(int damage) = 0;
+	// 支持克隆複製
+	virtual std::shared_ptr<Weapon> Clone() const = 0;
+
 
 protected:
 	std::string m_ImagePath;		// 武器照片
@@ -45,6 +55,7 @@ protected:
 	float m_criticalRate;			// 武器暴擊率
 	float m_attackColdDown;			// 攻擊頻率
 	int m_offset;					// 攻擊偏移量
+	float m_attackDelay = 0.0f;		// 開始攻擊延遲
 	std::shared_ptr<Character> m_currentOwner;
 
 	float lastAttackTime = 0.0f;  // 上次攻擊的時間

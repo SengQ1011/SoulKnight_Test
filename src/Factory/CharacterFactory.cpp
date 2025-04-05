@@ -6,8 +6,9 @@
 #include <fstream>
 #include <memory>
 
-#include "Components/AttackComponent.hpp"
-#include "Components/InputComponent.hpp"
+
+#include "Components/TalentComponet.hpp"
+#include "Skill/FullFirepower.hpp"
 
 CharacterFactory* CharacterFactory::instance = nullptr;
 
@@ -57,6 +58,29 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseAnimations(const nloh
 	return animations;
 }
 
+std::shared_ptr<Skill> createSkill(std::weak_ptr<Character> owner, const nlohmann::json& skillInfo) {
+	if (!skillInfo.contains("name"))
+	{
+		LOG_ERROR("No skill name");
+		return nullptr;
+	}
+
+	auto skillName = skillInfo["name"].get<std::string>();
+	auto iconPath = skillInfo["iconPath"].get<std::string>();
+	float duration = skillInfo["durationTime"].get<float>();
+	float cooldown = skillInfo["cooldownTime"].get<float>();
+
+	// 根據技能名稱創建對應的技能
+	if (skillName == "Full Firepower") {
+		return std::make_shared<FullFirepower>(owner, skillName, iconPath, duration, cooldown);
+	}
+	// else if (skillName == "") {
+	//     return std::make_shared<>(...);
+	// }
+
+	return nullptr;
+}
+
 std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 	// 讀取角色 JSON 資料
 	nlohmann::json characterData = readJsonFile("player.json");
@@ -83,14 +107,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			int handBladeDamage = characterInfo["handBladeDamage"];
 
 			// 讀取技能
-			// std::shared_ptr<Skill> skill = nullptr;
-			// if (characterInfo.contains("skill")) {
-			// 	skill = std::make_shared<Skill>(
-			// 		characterInfo["skill"]["name"],
-			// 		characterInfo["skill"]["cooldown"],
-			// 		characterInfo["skill"]["damage"]
-			// 	);
-			// }
+			auto skill = createSkill(player, characterInfo["skill"]);
 
 			auto animationComponent = player->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComponent = player->AddComponent<StateComponent>(ComponentType::STATE);
@@ -98,6 +115,8 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			auto movementComponent = player->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
 			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
 			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, criticalRate, handBladeDamage, 0);
+			auto skillComponent = player->AddComponent<SkillComponent>(ComponentType::SKILL, skill);
+			auto tanlentCompoent = player->AddComponent<TalentComponent>(ComponentType::TALENT);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 			CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
@@ -117,24 +136,15 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 	return nullptr;
 }
 
+
+
 std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
-	std::shared_ptr<Character> enemy;
-
-	// 從緩存中檢查
-	if (enemyTemplates.count(id))
-	{
-
-	}
-
-	// 讀取角色 JSON 資料
-	nlohmann::json characterData = readJsonFile("enemy.json");
-
     // 在 JSON 陣列中搜尋符合名稱的角色
-    for (const auto& characterInfo : characterData) {
+    for (const auto& characterInfo : enemyJsonData) {
         if (characterInfo["ID"] == id) {
         	std::string name = characterInfo["name"];
         	CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
-        	enemy = std::make_shared<Character>(name, type);
+        	std::shared_ptr<Character> enemy = std::make_shared<Character>(name, type);
 
         	auto animation = parseAnimations(characterInfo["animations"]);
 			AIType aiType = stringToAiType(characterInfo["monsterType"].get<std::string>());

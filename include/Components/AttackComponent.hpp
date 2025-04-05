@@ -28,18 +28,26 @@ public:
 	void AddWeapon(std::shared_ptr<Weapon> weapon);
 	void RemoveWeapon();
 	void switchWeapon();
+	void SetDualWield(const bool enable); // 雙武器
+	void SetSecondWeapon(const std::shared_ptr<Weapon> &weapon)
+	{
+		LOG_DEBUG("Check set weapon");
+		if(!weapon) LOG_ERROR("weapon=nullptr");
+		m_secondWeapon = weapon;
+	}
 
 	int calculateDamage();
 	void TryAttack();		// 使用當前武器攻擊敵人
-	void SetDualWield(const bool enable); // 雙武器
 
 private:
-	float m_aimRange;			// 自動瞄準範圍
-	float m_criticalRate;		// 攻擊暴擊率(計算傷害公式=(角色+武器)暴擊率 * 武器傷害)
-	int m_maxWeapon;			// 最多武器數量
-	int m_handBladeDamage;		// player:手刀傷害
-	int m_collisionDamage;		// enemy:專用於Collision模式的傷害值
-	std::shared_ptr<Weapon> m_currentWeapon;				// 目前裝備的武器
+	float m_aimRange;				// 自動瞄準範圍
+	float m_criticalRate;			// 攻擊暴擊率(計算傷害公式=(角色+武器)暴擊率 * 武器傷害)
+	int m_maxWeapon;				// 最多武器數量
+	int m_handBladeDamage;			// player:手刀傷害
+	int m_collisionDamage;			// enemy:專用於Collision模式的傷害值
+	bool m_dualWield = false;		// 是否雙持武器
+	std::shared_ptr<Weapon> m_currentWeapon;			// 目前裝備的武器
+	std::shared_ptr<Weapon> m_secondWeapon;				// 技能：雙持武器
 	std::vector<std::shared_ptr<Weapon>> m_Weapons;		// 每個角色都有武器
 };
 

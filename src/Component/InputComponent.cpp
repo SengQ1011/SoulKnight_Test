@@ -6,6 +6,7 @@
 
 #include "Components/AttackComponent.hpp"
 #include "Components/FollowerComponent.hpp"
+#include "Components/SkillComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "Util/Time.hpp"
 
@@ -17,13 +18,11 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 	if (!character) return;
 
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);
+	auto skillComponent = character->GetComponent<SkillComponent>(ComponentType::SKILL);
 	auto movementComponent = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
 	auto attackComponent = character->GetComponent<AttackComponent>(ComponentType::ATTACK);
 	auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 	auto m_currentAnimation = animationComponent->GetCurrentAnimation();
-
-	// 使用技能
-	if (keys.count('U')) stateComponent->SetState(State::SKILL);
 
 	// movement移動
 	float deltaTime = Util::Time::GetDeltaTimeMs();
@@ -58,5 +57,13 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 			attackComponent->TryAttack();
 		}
 		//if (keys.count('E')) attackComponent->switchWeapon();
+	}
+	// 使用技能
+	if (keys.count('U')) {
+		LOG_DEBUG("Skill Try Executed");
+		if(skillComponent->ExecuteSkill())
+		{
+			stateComponent->SetState(State::SKILL);
+		}
 	}
 }

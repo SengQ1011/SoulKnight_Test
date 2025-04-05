@@ -10,10 +10,12 @@
 #include "Factory/WeaponFactory.hpp"
 #include "Components/AiComponent.hpp"
 #include "Components/AnimationComponent.hpp"
+#include "Components/AttackComponent.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
 #include "Components/HealthComponent.hpp"
 #include "Components/InputComponent.hpp"
+#include "Components/SkillComponent.hpp"
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
 
@@ -21,22 +23,26 @@
 class CharacterFactory: public Factory {
 public:
 	static CharacterFactory& GetInstance() {
-		if (!instance) instance = new CharacterFactory();
-		return *instance;
+		static CharacterFactory instance;
+		return instance;
 	}
-
-	// 删除拷贝操作
-	CharacterFactory(const CharacterFactory&) = delete;
-	void operator=(const CharacterFactory&) = delete;
 
 	// 根據角色配置文件創建角色
 	std::shared_ptr<Character> createPlayer(const int id);
 	std::shared_ptr<Character> createEnemy(const int id);
+	std::shared_ptr<Character> CloneEnemy(const std::shared_ptr<Character>& original);
+	void ClearCache();  // 缓存清理功能
 
 private:
 	static CharacterFactory* instance;
-	CharacterFactory() = default;
-	std::unordered_map<int, std::shared_ptr<Character>> enemyTemplates;		// 緩存
+	nlohmann::json enemyJsonData;  // 缓存JSON数据（只需读取一次文件）
+
+	// 预加载JSON
+	CharacterFactory() {enemyJsonData = readJsonFile("enemy.json");}
+	~CharacterFactory() = default;
+	// 删除拷贝操作
+	CharacterFactory(const CharacterFactory&) = delete;
+	void operator=(const CharacterFactory&) = delete;
 };
 
 #endif // CHARACTERFACTORY_HPP

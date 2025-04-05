@@ -36,9 +36,16 @@ void AttackComponent::Update()
 {
 	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	// Weapon中的followerComponent更新
-	if(!m_currentWeapon) return;
-	m_currentWeapon->Update();
-	m_currentWeapon->UpdateCooldown(deltaTime);
+	if(m_currentWeapon)
+	{
+		m_currentWeapon->Update();
+		m_currentWeapon->UpdateCooldown(deltaTime);
+	}
+	if(m_secondWeapon)
+	{
+		m_secondWeapon->Update();
+		m_secondWeapon->UpdateCooldown(deltaTime);
+	}
 }
 
 
@@ -102,25 +109,63 @@ void AttackComponent::TryAttack() {
 	if (!character) return;
 
 	auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
-	auto currentEnergy = healthComponent->GetCurrentEnergy();
+	if (!healthComponent) return;
+	const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
+	const float currentEnergy = healthComponent->GetCurrentEnergy();
 
-	if (m_currentWeapon && m_currentWeapon->CanAttack() && currentEnergy > 0) {
-		auto damage = calculateDamage();
-		m_currentWeapon->attack(damage);
+	if (isPlayer && currentEnergy <= 0) {
+		LOG_DEBUG("AttackComponent: Not enough energy to attack");
+		return;
+	}
 
-		if (character->GetType() == CharacterType::PLAYER) {
-			healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
+	// 主武器攻击
+	if (m_currentWeapon && m_currentWeapon->CanAttack()) {
+		if (currentEnergy >= m_currentWeapon->GetEnergy()) {
+			auto damage = calculateDamage();
+			m_currentWeapon->attack(damage);
+
+			if (isPlayer) {
+				healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
+			}
+		}
+	}
+	// 双持模式逻辑
+	if (m_dualWield) {
+		// 确保有第二把武器
+		if (!m_secondWeapon) {
+			LOG_WARN("AttackComponent: Dual wield enabled but secondary weapon not ready");
+			return;
+		}
+		// 副武器攻击
+		if (m_dualWield && m_secondWeapon && m_secondWeapon->CanAttack()) {
+			if (currentEnergy >= m_secondWeapon->GetEnergy()) {
+				auto damage = calculateDamage();
+				m_secondWeapon->attack(damage);
+
+				if (isPlayer) {
+					healthComponent->ConsumeEnergy(m_secondWeapon->GetEnergy());
+				}
+			}
 		}
 	}
 }
 
-// TODO:技能：火力全開（雙武器）
-void AttackComponent::SetDualWield(const bool enable) {
-	if (enable) {
-
-	}
-	else
+// 技能：火力全開（雙武器）
+void AttackComponent::SetDualWield(bool enable) {
+	m_dualWield = enable;
+	if(!m_secondWeapon)
 	{
-
+		LOG_DEBUG("second weapon is nullptr");
+		return;
+	}
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!enable) {
+		scene->GetRoot().lock()->RemoveChild(m_secondWeapon);
+		scene->GetCamera().lock()->RemoveRelativePivotChild(m_secondWeapon);
+		m_secondWeapon = nullptr;
+	}
+	else {
+		scene->GetRoot().lock()->AddChild(m_secondWeapon);
+		scene->GetCamera().lock()->AddRelativePivotChild(m_secondWeapon);
 	}
 }

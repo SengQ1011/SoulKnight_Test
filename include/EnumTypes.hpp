@@ -46,7 +46,8 @@ enum class ManagerTypes
 	BULLET,
 	ROOMCOLLISION,
 	INPUT,
-	SCENE
+	SCENE,
+	Targeting
 };
 
 enum class ZIndexType

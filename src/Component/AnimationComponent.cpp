@@ -82,7 +82,6 @@ void AnimationComponent::SetSkillEffect(bool play)
 			// 有找到相關的動畫
 			if (it != m_Animations.end())
 			{
-				LOG_DEBUG("Skill effect");
 				m_effectAnimation = it->second;
 				m_effectAnimation->SetVisible(true);
 				m_effectAnimation->SetZIndex(15);

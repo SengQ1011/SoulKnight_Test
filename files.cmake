@@ -1,11 +1,11 @@
 set(SRC_FILES
-    Animation-hahaha0816.cpp
     Animation.cpp
     App.cpp
     Beacon.cpp
     BulletManager.cpp
     Camera.cpp
     Component/AnimationComponent.cpp
+    Component/AttackAI.cpp
     Component/AttackComponent.cpp
     Component/CollisionComponent.cpp
     Component/FollowerComponent.cpp
@@ -14,6 +14,7 @@ set(SRC_FILES
     Component/MovementComponent.cpp
     Component/SkillComponent.cpp
     Component/StateComponent.cpp
+    Component/TalentComponent.cpp
     Creature/Character.cpp
     Cursor.cpp
     Factory/CharacterFactory.cpp
@@ -21,7 +22,7 @@ set(SRC_FILES
     Factory/RoomFactory.cpp
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
-    InputManager.cpp
+    ObseverManager/InputManager.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     RoomObject/ObstacleObject.cpp
@@ -51,6 +52,7 @@ set(INCLUDE_FILES
     Camera.hpp
     Components/AiComponent.hpp
     Components/AnimationComponent.hpp
+    Components/AttackAI.hpp
     Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
@@ -71,9 +73,12 @@ set(INCLUDE_FILES
     Factory/WeaponFactory.hpp
     GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
-    InputManager.hpp
+    GameMechanism/TalentDatabase.hpp
     Motion.hpp
     Observer.hpp
+    ObserverManager/InputManager.hpp
+    ObserverManager/ObseverManager.hpp
+    ObserverManager/TrackingManager.hpp
     Override/nGameObject.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp

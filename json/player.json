@@ -25,9 +25,10 @@
         "handBladeDamage": 4,
         "criticalRate": 0.05,
         "skill": {
-            "name": "Shield Bash",
-            "cooldown": 5,
-            "damage": 8
+            "name": "Full Firepower",
+            "iconPath": "/UI/ui_skill/ui_skill01.png",
+            "durationTime": 5,
+            "cooldownTime": 10
         }
     }
 ]
