@@ -2,6 +2,8 @@
 // Created by tjx20 on 3/21/2025.
 //
 
+//AnimationComponent.hpp
+
 #ifndef ANIMATIONCOMPONENT_HPP
 #define ANIMATIONCOMPONENT_HPP
 

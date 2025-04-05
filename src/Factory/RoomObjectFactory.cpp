@@ -20,7 +20,6 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 	auto data = origin[_id];
 	roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+data.at("path").get<std::string>()));
 	if (!data.contains("components")) {return roomObject;}
-
 	for (auto& component : data.at("components"))
 	{
 		if (component.at("Name").get<std::string>() != "collision_box") continue;

@@ -34,7 +34,7 @@ void Bullet::PostInitialize() {
  	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
 
  	// TODO:測試子彈大小
- 	CollisionComp->SetSize(glm::vec2(16));
+ 	CollisionComp->SetSize(glm::vec2(16.0f));
 
  	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
  	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetBlackBox());

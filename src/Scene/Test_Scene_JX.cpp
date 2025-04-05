@@ -50,8 +50,8 @@ void TestScene_JX::Start()
 	}
 
 	// 墻壁碰撞體
-	std::vector<glm::vec2> offset = {glm::vec2(-304.0f,-192.0f), glm::vec2(-288.0f,96.0f), glm::vec2(-32.0f,112.0f),
-									 glm::vec2(32.0f,96.0f), glm::vec2(288.0f,-192.0f), glm::vec2(-304.0f,-208.0f)};
+	std::vector<glm::vec2> offset = {glm::vec2(-296.0f,0.0f), glm::vec2(-160.0f,144.0f), glm::vec2(0.0f,152.0f),
+									 glm::vec2(160.0f,144.0f), glm::vec2(296.0f,0.0f), glm::vec2(0.0f,-200.0f)};
 
 	std::vector<glm::vec2> size = {glm::vec2(16.0f,384.0f), glm::vec2(256.0f,96.0f), glm::vec2(64.0f,80.0f),
 								   glm::vec2(256.0f,96.0f), glm::vec2(16.0f,384.0f), glm::vec2(608.0f,16.0f)};
@@ -132,6 +132,7 @@ void TestScene_JX::Update()
 
 	m_RoomCollisionManager->UpdateCollision();
 	m_Camera->Update();
+	m_Enemy->Update();
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->Update();
 }
 

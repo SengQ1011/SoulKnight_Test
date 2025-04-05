@@ -27,8 +27,6 @@ void CollisionComponent::Update()
 {
 	auto owner = GetOwner<nGameObject>();
 	if (!owner) return;
-	m_Object->SetInitialScale(m_Size);
-	m_Object->m_WorldCoord = owner->m_WorldCoord + m_Offset + (m_Size/2.0f);
 	m_Object->Update();
 }
 
@@ -59,10 +57,18 @@ bool Rect::Intersects(const Rect &other) const {
 Rect CollisionComponent::GetBounds() const {
 	auto objectPosition = glm::vec2(0.0f);
 	auto owner = GetOwner<nGameObject>();
-	// bool isLeft = false;
 	if (owner) {
 		objectPosition = owner->m_WorldCoord;
-		// if (owner->m_Transform.scale.x < 0.0f) isLeft = true;
+		glm::vec2 adjustedOffset = m_Offset;
+
+		//處理可視化矩形大小和位置
+		m_Object->SetInitialScale(m_Size);
+		if (owner->m_Transform.scale.x < 0.0f) {
+			adjustedOffset.x = -adjustedOffset.x; // 如果角色反向，X轴偏移需要镜像
+		}
+		//反向處理
+		m_Object->m_WorldCoord = objectPosition + adjustedOffset ;
+		return {objectPosition + adjustedOffset, m_Size};
 	}
 	return {objectPosition + m_Offset, m_Size};
 }

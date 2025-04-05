@@ -22,6 +22,7 @@ set(SRC_FILES
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
     InputManager.cpp
+    Room/LobbyRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     RoomObject/ObstacleObject.cpp
@@ -75,6 +76,7 @@ set(INCLUDE_FILES
     Motion.hpp
     Observer.hpp
     Override/nGameObject.hpp
+    Room/LobbyRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     RoomObject/ObstacleObject.hpp

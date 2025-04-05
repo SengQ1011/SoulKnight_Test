@@ -103,10 +103,10 @@ struct Rect //AABB的矩形結構
 	Rect(const glm::vec2& position, const glm::vec2& size)
 		: m_Position(position), m_Size(size) {}
 
-	[[nodiscard]] float left() const { return m_Position.x; }
-	[[nodiscard]] float right() const { return m_Position.x + m_Size.x; }
-	[[nodiscard]] float bottom() const { return m_Position.y; }
-	[[nodiscard]] float top() const { return m_Position.y+ m_Size.y; }
+	[[nodiscard]] float left() const { return m_Position.x - m_Size.x/2.0f; }
+	[[nodiscard]] float right() const { return m_Position.x + m_Size.x/2.0f; }
+	[[nodiscard]] float bottom() const { return m_Position.y - m_Size.y/2.0f; }
+	[[nodiscard]] float top() const { return m_Position.y + m_Size.y/2.0f; }
 
 	// 判斷兩個矩形是否有交集
 	[[nodiscard]] bool Intersects(const Rect& other) const;
