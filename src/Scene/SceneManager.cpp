@@ -12,7 +12,7 @@ SceneManager &SceneManager::GetInstance()
 
 void SceneManager::Start()
 {
-	m_CurrentScene = CreateScene(Scene::SceneType::Test_KC);
+	m_CurrentScene = CreateScene(Scene::SceneType::Test_JX);
 	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }

@@ -18,16 +18,31 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 	nlohmann::json origin = readJsonFile("LobbyObjectData.json");
 
 	auto data = origin[_id];
+
+	//設置Drawable
 	roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+data.at("path").get<std::string>()));
+
+	//設置ZIndexLayer
+	if (data.contains("ZIndex"))
+	{
+		const auto zIndex_str = data.at("ZIndex").get<std::string>();
+		if (zIndex_str == "ObjectLow") roomObject->SetZIndexType(ZIndexType::OBJECTLOW);
+		else if (zIndex_str == "Bullet") roomObject->SetZIndexType(ZIndexType::BULLET);
+		else if (zIndex_str == "ObjectHigh") roomObject->SetZIndexType(ZIndexType::OBJECTHIGH);
+		else if (zIndex_str == "UI") roomObject->SetZIndexType(ZIndexType::UI);
+		else if (zIndex_str == "Floor") roomObject->SetZIndexType(ZIndexType::FLOOR);
+		else LOG_DEBUG("RoomObjectFactory::createRoomObject: Unknown ZIndexType");
+	}
+	else LOG_DEBUG("RoomObjectFactory::createRoomObject: No such ZIndex!");
+
+	//設置Components
 	if (!data.contains("components")) {return roomObject;}
 	for (auto& component : data.at("components"))
 	{
 		if (component.at("Name").get<std::string>() != "collision_box") continue;
-		LOG_DEBUG("success1");
 		// auto newComponent = createComponent(component);
 		// LOG_DEBUG("success2 {}", newComponent->GetType() == ComponentType::COLLISION);
 		roomObject->AddComponent<CollisionComponent>(ComponentType::COLLISION,component.get<StructComponents::StructCollisionComponent>());
-		LOG_DEBUG("success2");
 	}
 	return roomObject;
 }

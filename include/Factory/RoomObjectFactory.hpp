@@ -16,6 +16,7 @@ public:
 
 	// 批量創建物件 (適合房間初始化時使用)-->GPT
 	std::vector<std::shared_ptr<RoomObject>> createObjectsFromJson(const nlohmann::json& objectsJson);
+
 };
 
 #endif //ROOMOBJECTFACTORY_HPP

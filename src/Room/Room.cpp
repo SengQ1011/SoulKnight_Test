@@ -20,7 +20,7 @@ Room::~Room() {
 }
 
 void Room::Start(std::shared_ptr<Camera> camera) {
-    LOG_DEBUG("初始化房间");
+    LOG_DEBUG("Initial Room start");
     m_Camera = camera;
 
     // 加载房间数据
@@ -63,21 +63,20 @@ void Room::UpdateRoomState() {
     // 例如检查房间内是否还有敌人，以决定是否从COMBAT切换到CLEARED
 }
 
-void Room::CharacterEnter(std::shared_ptr<Character> character) {
+void Room::PlayerEnter(std::shared_ptr<Character> character) {
     if (character && !HasCharacter(character)) {
         m_Characters.push_back(character);
         OnCharacterEnter(character);
 
         // 如果是玩家，激活房间
-        if (character->GetType() == CharacterType::PLAYER) {
-            if (m_State == RoomState::INACTIVE) {
-                SetState(RoomState::ACTIVE);
-            }
+        if (character->GetType() != CharacterType::PLAYER) return;
+        if (m_State == RoomState::INACTIVE) {
+            SetState(RoomState::ACTIVE);
         }
     }
 }
 
-void Room::CharacterExit(std::shared_ptr<Character> character) {
+void Room::PlayerExit(std::shared_ptr<Character> character) {
     auto it = std::find(m_Characters.begin(), m_Characters.end(), character);
     if (it != m_Characters.end()) {
         m_Characters.erase(it);
@@ -146,7 +145,7 @@ void Room::RemoveRoomObject(const std::shared_ptr<RoomObject>& object) {
 void Room::LoadFromJSON(const std::string& jsonFilePath) {
     std::ifstream file(jsonFilePath);
     if (!file.is_open()) {
-        LOG_DEBUG("错误: 无法打开文件: {}", jsonFilePath);
+        LOG_DEBUG("Error: can't open in Room: {}", jsonFilePath);
         return;
     }
 
@@ -173,7 +172,7 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) {
             const auto position = glm::vec2(x, y);
             roomObject->SetWorldCoord(position);
             AddRoomObject(roomObject);
-            LOG_DEBUG("创建房间对象，位置: {}", position);
+            LOG_DEBUG("create RoomObject,position: {}", position);
         }
     }
 }

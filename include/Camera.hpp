@@ -31,6 +31,7 @@ public:
 	void RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child);
 
 	void Update();
+	void UpdateZIndex(std::shared_ptr<nGameObject> child);
 
 	void SetMapSize(const float mapSize) {m_MapSize = mapSize;}
 	[[nodiscard]] float GetMapSize() const { return m_MapSize;}

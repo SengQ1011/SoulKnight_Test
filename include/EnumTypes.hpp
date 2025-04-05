@@ -49,13 +49,13 @@ enum class ManagerTypes
 	SCENE
 };
 
-enum class ZIndexType
+enum ZIndexType: int
 {
 	FLOOR		= 0,	//  0 -  20
-	OBJECTLOW	= 1,	// 20 -  40
-	BULLET		= 2,	// 40 -  60
-	OBJECTHIGHT	= 3,	// 60 -  80
-	UI			= 4,	// 80 - 100
+	OBJECTLOW	= 20,	// 20 -  40
+	BULLET		= 40,	// 40 -  60
+	OBJECTHIGH	= 60,	// 60 -  80
+	UI			= 80,	// 80 - 100
 };
 
 #endif //ENUMTYPES_HPP

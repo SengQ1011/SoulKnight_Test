@@ -46,12 +46,12 @@ private:
 	std::vector<std::shared_ptr<nGameObject>> m_WallColliders;    // 墙壁碰撞体
 
 	const std::vector<glm::vec2> m_WallColliderOffsets = {
-		glm::vec2(-304.0f, -192.0f),
-		glm::vec2(-288.0f, 96.0f),
-		glm::vec2(-32.0f, 112.0f),
-		glm::vec2(32.0f, 96.0f),
-		glm::vec2(288.0f, -192.0f),
-		glm::vec2(-304.0f, -208.0f)
+		glm::vec2(-296.0f,0.0f),
+		glm::vec2(-160.0f,144.0f),
+		glm::vec2(0.0f,152.0f),
+		glm::vec2(160.0f,144.0f),
+		glm::vec2(296.0f,0.0f),
+		glm::vec2(0.0f,-200.0f)
 	};
 
 	const std::vector<glm::vec2> m_WallColliderSizes = {

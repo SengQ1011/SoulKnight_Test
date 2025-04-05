@@ -79,6 +79,20 @@ void Camera::AddRelativePivotChildren(
 	m_RelativePivotChildren.insert(m_RelativePivotChildren.end(), children.begin(), children.end());
 }
 
+void Camera::UpdateZIndex(std::shared_ptr<nGameObject> child)
+{
+	if (m_MapSize != 0.0f)
+	{
+		const auto ZIndexLayer = child->GetZIndexType();
+		if (ZIndexLayer == ZIndexType::UI || ZIndexLayer == ZIndexType::FLOOR) return;
+
+		// 根據物體Y座標在該區間的相對位置計算最終ZIndex
+		float relativeY = (m_MapSize/2.0f - child->m_WorldCoord.y + child->GetImageSize().y/2.0f) / m_MapSize;
+		child->SetZIndex(static_cast<float>(ZIndexLayer) + (relativeY * 20.0f));
+	}
+}
+
+
 //感覺可以優化 在渲染前一次性修改
 void Camera::Update() {
 	if (auto target = m_FollowTarget.lock()) {
@@ -92,10 +106,9 @@ void Camera::Update() {
 		//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
 		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 
-		if (m_MapSize != 0.0f)
-		{
-			child->SetZIndex((child->m_WorldCoord.y - child->GetImageSize().y/2.0f + m_MapSize/2.0f) / m_MapSize);
-		}
+		//動態調整ZIndex
+		UpdateZIndex(child);
+
 		glm::vec2 initialScale = child->GetInitialScale();
 		// std::copysign(第一個參數：大小, 第二個參數：正負號)
 		child->m_Transform.scale = glm::vec2(

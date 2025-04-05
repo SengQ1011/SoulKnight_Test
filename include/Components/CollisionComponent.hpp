@@ -134,6 +134,7 @@ public:
 
 	void Init() override;
 	void Update() override;
+	void HandleCollision(CollisionInfo &info) override;
 
 	[[nodiscard]] bool CanCollideWith( const std::shared_ptr<CollisionComponent>& other ) const;
 
@@ -141,7 +142,7 @@ public:
 	[[nodiscard]] Rect GetBounds() const;
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const {return m_CollisionLayer;}
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const {return m_CollisionMask;}
-	[[nodiscard]] std::shared_ptr<nGameObject> GetBlackBox() {return m_Object;}
+	[[nodiscard]] std::shared_ptr<nGameObject> GetBlackBox() {return m_ColliderVisibleBox;}
 	[[nodiscard]] bool IsTrigger() const {return m_IsTrigger;}
 
 	// Setter
@@ -154,10 +155,8 @@ public:
 		// m_Object->SetInitialScale(m_Size);
 	}
 	void SetTrigger(const bool isTrigger) {m_IsTrigger = isTrigger;}
-	void SetVisible(const bool isVisible)
-	{
-		m_Object->SetVisible(isVisible);
-	}
+	void SetColliderBoxVisible(const bool isVisible) { m_ColliderVisibleBox->SetVisible(isVisible);}
+	void SetColliderBoxColor(const std::string& color) const;
 
 private:
 	glm::vec2 m_Size;
@@ -165,7 +164,7 @@ private:
 	glm::uint8_t m_CollisionLayer; //自身碰撞層
 	glm::uint8_t m_CollisionMask;  //可以和哪幾層碰撞
 	bool m_IsTrigger;
-	std::shared_ptr<nGameObject> m_Object = std::make_shared<nGameObject>();
+	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
 };
 
 #endif //COLLISIONCOMPONENT_HPP

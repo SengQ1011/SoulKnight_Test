@@ -1,0 +1,35 @@
+{
+  "小怪房間": [
+    { "room_height": 30.0,
+      "room_width": 40.0,
+      "tile_height": 16.0,
+      "tile_width": 16.0,
+      "roomObject": [
+        {
+          "ID": "wall_lobby",
+          "Class": "nGameObject",
+          "Position": [
+            0.0,
+            0.0
+          ],
+          "Size": [
+            640.0,
+            480.0
+          ]
+        }
+      ]
+    }
+  ],
+  "BOSS房間": {
+
+  },
+  "起始房間": {
+
+  },
+  "傳送門房間": {
+
+  },
+  "特殊事件房間":{
+
+  }
+}

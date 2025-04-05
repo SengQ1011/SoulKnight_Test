@@ -23,7 +23,7 @@ void StateComponent::SetState(State newState) {
 			}
 			else {
 				m_currentState = newState;
-				LOG_DEBUG("Changing State to {}",std::to_string(static_cast<int>(newState)));
+				// LOG_DEBUG("Changing State to {}",std::to_string(static_cast<int>(newState)));
 
 				// 根据当前状态切换动画
 				if (m_currentAnimation) {

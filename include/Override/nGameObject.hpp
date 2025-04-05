@@ -45,12 +45,12 @@ public:
 		}
 	}
 
+	//Setter
 	void SetWorldCoord(const glm::vec2 coord) {m_WorldCoord = coord;}
 	void SetActive(const bool active) { m_Active = active; }
 	void SetInitialScale(const glm::vec2& scale) { m_InitialScale = scale; }
 	void SetInitialScaleSet(const bool set) { m_InitialScaleSet = set; }
 	void SetZIndexType(const ZIndexType zIndexType) {m_ZIndex = zIndexType;}
-
 
 	// Getter
 	[[nodiscard]] std::string GetName() const { return m_Name; }
@@ -59,9 +59,10 @@ public:
 	[[nodiscard]] glm::vec2 GetImageSize() const {return m_Drawable->GetSize();}
 	[[nodiscard]] glm::vec2 GetWorldCoord() const {return m_WorldCoord;}
 	[[nodiscard]] std::shared_ptr<Core::Drawable> GetDrawable() const {return m_Drawable;}
-	[[nodiscard]] glm::vec2 GetInitialScale() const { return m_InitialScale;}
-	[[nodiscard]] bool isSetInitialScale()  const { return m_InitialScaleSet; }
 	[[nodiscard]] bool IsActive() const { return m_Active; }
+	[[nodiscard]] glm::vec2 GetInitialScale() const { return m_InitialScale;}
+	[[nodiscard]] bool isSetInitialScale()  const { return m_InitialScaleSet;}
+	[[nodiscard]] ZIndexType GetZIndexType() const { return m_ZIndex;}
 
 protected:
 	std::string m_Name;

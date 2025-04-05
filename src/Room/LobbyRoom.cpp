@@ -14,10 +14,13 @@ LobbyRoom::LobbyRoom() : Room() {
 }
 
 void LobbyRoom::Start(std::shared_ptr<Camera> camera) {
-    LOG_DEBUG("初始化大厅房间");
+    LOG_DEBUG("Initial LobbyRoom start");
 
     // 调用基类的Start方法
     Room::Start(camera);
+
+	// 設置大廳特有的墻壁碰撞體
+	SetupWallColliders();
 
     // 设置大厅特有的互动对象
     SetupInteractiveObjects();
@@ -48,7 +51,7 @@ void LobbyRoom::Update() {
 }
 
 void LobbyRoom::SetupWallColliders() {
-    LOG_DEBUG("设置大厅墙壁碰撞体");
+    LOG_DEBUG("Set Lobby wall collider");
 
     // 根据预定义的偏移和尺寸创建墙壁碰撞体
     for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
@@ -114,7 +117,7 @@ void LobbyRoom::HandleInteractions() {
     // 处理传送门交互
     if (playerNearPortal && Util::Input::IsKeyUp(Util::Keycode::E)) {
         // 这里可以触发进入地牢的逻辑
-        LOG_DEBUG("玩家与传送门交互");
+        LOG_DEBUG("Player-Portal Interaction");
         // 例如，可以通知SceneManager切换到地牢场景
     }
 }
@@ -128,12 +131,12 @@ void LobbyRoom::ActivatePortal(bool active) {
         // 实际实现中，可能需要切换动画或更改纹理
         // m_Portal->SetAnimation(active ? "active" : "inactive");
 
-        LOG_DEBUG("传送门状态更改为: {}", active ? "激活" : "未激活");
+        LOG_DEBUG("Portal state changed to: {}", active ? "Activated" : "Deactivated");
     }
 }
 
 void LobbyRoom::OnStateChanged(RoomState oldState, RoomState newState) {
-    LOG_DEBUG("大厅房间状态从 {} 变更为 {}", static_cast<int>(oldState), static_cast<int>(newState));
+    LOG_DEBUG("Lobby room state changed from {} to {}", static_cast<int>(oldState), static_cast<int>(newState));
 
     // 处理状态变化的特殊逻辑
     switch (newState) {
@@ -149,7 +152,7 @@ void LobbyRoom::OnStateChanged(RoomState oldState, RoomState newState) {
 }
 
 void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character>& character) {
-    LOG_DEBUG("角色 {} 进入大厅", character->GetName());
+    LOG_DEBUG("Character  {} entered the lobby", character->GetName());
 
     // 处理角色进入大厅的特殊逻辑
     if (character->GetType() == CharacterType::PLAYER) {
@@ -159,7 +162,7 @@ void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character>& character) {
 }
 
 void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character>& character) {
-    LOG_DEBUG("角色 {} 离开大厅", character->GetName());
+    LOG_DEBUG("Character {} left the lobby", character->GetName());
 
     // 处理角色离开大厅的特殊逻辑
     if (character->GetType() == CharacterType::PLAYER) {

@@ -41,8 +41,8 @@ public:
     [[nodiscard]] RoomState GetState() const { return m_State; }
 
     // 角色管理方法
-    virtual void CharacterEnter(std::shared_ptr<Character> character);
-    virtual void CharacterExit(std::shared_ptr<Character> character);
+    virtual void PlayerEnter(std::shared_ptr<Character> character);
+    virtual void PlayerExit(std::shared_ptr<Character> character);
     [[nodiscard]] bool HasCharacter(const std::shared_ptr<Character>& character) const;
     [[nodiscard]] const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
 
@@ -100,7 +100,7 @@ protected:
     // 更新房间状态的辅助方法
     virtual void UpdateRoomState();
 
-    // 处理角色进入/离开房间时的事件
+    // 处理角色进入/离开房间时的事件 TODO:怎麽處理
     virtual void OnCharacterEnter(const std::shared_ptr<Character>& character) {}
     virtual void OnCharacterExit(const std::shared_ptr<Character>& character) {}
 };

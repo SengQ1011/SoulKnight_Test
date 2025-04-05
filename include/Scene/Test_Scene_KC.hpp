@@ -12,6 +12,7 @@
 #include "Components/MovementComponent.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 #include "Override/nGameObject.hpp"
+#include "Room/LobbyRoom.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/Scene.hpp"
 #include "Util/Renderer.hpp"
@@ -28,14 +29,16 @@ public:
 	SceneType Change() override;
 
 protected:
-	std::vector<std::shared_ptr<nGameObject>> m_RoomObject;
-	std::vector<std::shared_ptr<nGameObject>> m_WallCollider;
-	std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
-	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
-	std::shared_ptr<nGameObject> m_Player = std::make_shared<nGameObject>();
-	std::shared_ptr<nGameObject> m_Player2 = std::make_shared<nGameObject>();
+	// 私有方法，按功能划分场景初始化流程
+	void CreatePlayer();
+	void SetupCamera();
+	void InitializeSceneManagers();
 
-	float roomHeight = 0;
+	// 更新逻辑的辅助方法
+	void HandlePlayerControls();
+
+	std::shared_ptr<LobbyRoom> m_LobbyRoom;
+	std::shared_ptr<Character> m_Player;
 };
 
 #endif //TEST_SCENE_HPP
