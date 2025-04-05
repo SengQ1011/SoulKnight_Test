@@ -17,7 +17,6 @@ Room::~Room() {
     // 析构函数 - 确保正确清理资源
     m_Characters.clear();
     m_RoomObjects.clear();
-    m_WallColliders.clear();
 }
 
 void Room::Start(std::shared_ptr<Camera> camera) {
@@ -26,9 +25,6 @@ void Room::Start(std::shared_ptr<Camera> camera) {
 
     // 加载房间数据
     LoadFromJSON(JSON_DIR"/LobbyObjectPosition.json");
-
-    // 设置墙壁碰撞体 (由子类实现)
-    SetupWallColliders();
 
     // 注册碰撞
     RegisterCollisions();
@@ -44,11 +40,6 @@ void Room::Update() {
     // 更新所有房间物体
     for (auto& obj : m_RoomObjects) {
         if (obj) obj->Update();
-    }
-
-    // 更新所有墙壁碰撞体
-    for (auto& wall : m_WallColliders) {
-        if (wall) wall->Update();
     }
 
     // 更新碰撞检测
@@ -152,27 +143,6 @@ void Room::RemoveRoomObject(const std::shared_ptr<RoomObject>& object) {
     }
 }
 
-void Room::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
-    if (collider) {
-        m_WallColliders.push_back(collider);
-
-        // 注册到碰撞管理器
-        m_CollisionManager->RegisterNGameObject(collider);
-
-        // 获取碰撞组件并将其黑盒添加到场景和相机
-        if (auto collComp = collider->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-            auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-            if (scene) {
-                scene->GetRoot().lock()->AddChild(collComp->GetBlackBox());
-
-                if (auto camera = m_Camera.lock()) {
-                    camera->AddRelativePivotChild(collComp->GetBlackBox());
-                }
-            }
-        }
-    }
-}
-
 void Room::LoadFromJSON(const std::string& jsonFilePath) {
     std::ifstream file(jsonFilePath);
     if (!file.is_open()) {
@@ -209,25 +179,23 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) {
 }
 
 void Room::RegisterCollisions() {
-    // 注册墙壁碰撞体
-    for (const auto& wall : m_WallColliders) {
-        if (wall) m_CollisionManager->RegisterNGameObject(wall);
-    }
+	// 注册有碰撞组件的房间对象
+	for (const auto& obj : m_RoomObjects) {
+		if (!obj) continue;
 
-    // 注册有碰撞组件的房间对象
-    for (const auto& obj : m_RoomObjects) {
-        if (obj && obj->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-            m_CollisionManager->RegisterNGameObject(obj);
-            auto collComp = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		auto collComp = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		if (!collComp) continue;
 
-            auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-            if (scene) {
-                scene->GetRoot().lock()->AddChild(collComp->GetBlackBox());
+		m_CollisionManager->RegisterNGameObject(obj);
 
-                if (auto camera = m_Camera.lock()) {
-                    camera->AddRelativePivotChild(collComp->GetBlackBox());
-                }
-            }
-        }
-    }
+		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		if (!scene) continue;
+
+		scene->GetRoot().lock()->AddChild(collComp->GetBlackBox());
+
+		auto camera = m_Camera.lock();
+		if (!camera) continue;
+
+		camera->AddRelativePivotChild(collComp->GetBlackBox());
+	}
 }

@@ -40,21 +40,26 @@ void LobbyRoom::Update() {
     if (Util::Input::IsKeyUp(Util::Keycode::O)) {
         m_CollisionManager->ShowColliderBox();
     }
+
+	// 更新所有墙壁碰撞体
+	for (auto& wall : m_WallColliders) {
+		if (wall) wall->Update();
+	}
 }
 
 void LobbyRoom::SetupWallColliders() {
     LOG_DEBUG("设置大厅墙壁碰撞体");
 
     // 根据预定义的偏移和尺寸创建墙壁碰撞体
-    for (size_t i = 0; i < m_WallOffsets.size(); i++) {
+    for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
         auto wallCollider = std::make_shared<nGameObject>("LobbyWall_" + std::to_string(i));
         auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 
-        collisionComponent->SetOffset(m_WallOffsets[i]);
-        collisionComponent->SetSize(m_WallSizes[i]);
+        collisionComponent->SetOffset(m_WallColliderOffsets[i]);
+        collisionComponent->SetSize(m_WallColliderSizes[i]);
         collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
 
-        AddWallCollider(wallCollider);
+    	AddWallCollider(wallCollider);
     }
 }
 
@@ -160,4 +165,25 @@ void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character>& character) {
     if (character->GetType() == CharacterType::PLAYER) {
         // 玩家离开大厅的特殊处理
     }
+}
+
+void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
+	if (collider) {
+		m_WallColliders.emplace_back(collider);
+
+		// 注册到碰撞管理器
+		m_CollisionManager->RegisterNGameObject(collider);
+
+		// 获取碰撞组件并将其黑盒添加到场景和相机
+		if (auto collComp = collider->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+			auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+			if (scene) {
+				scene->GetRoot().lock()->AddChild(collComp->GetBlackBox());
+
+				if (auto camera = m_Camera.lock()) {
+					camera->AddRelativePivotChild(collComp->GetBlackBox());
+				}
+			}
+		}
+	}
 }

@@ -38,42 +38,40 @@ public:
 
     // 房间状态管理
     virtual void SetState(RoomState state);
-    RoomState GetState() const { return m_State; }
+    [[nodiscard]] RoomState GetState() const { return m_State; }
 
     // 角色管理方法
     virtual void CharacterEnter(std::shared_ptr<Character> character);
     virtual void CharacterExit(std::shared_ptr<Character> character);
-    bool HasCharacter(const std::shared_ptr<Character>& character) const;
-    const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
+    [[nodiscard]] bool HasCharacter(const std::shared_ptr<Character>& character) const;
+    [[nodiscard]] const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
 
     // 房间对象管理
     void AddRoomObject(const std::shared_ptr<RoomObject>& object);
     void RemoveRoomObject(const std::shared_ptr<RoomObject>& object);
-    const std::vector<std::shared_ptr<RoomObject>>& GetRoomObjects() const { return m_RoomObjects; }
+    [[nodiscard]] const std::vector<std::shared_ptr<RoomObject>>& GetRoomObjects() const { return m_RoomObjects; }
 
     // 碰撞体管理
-    void AddWallCollider(const std::shared_ptr<nGameObject>& collider);
-    const std::vector<std::shared_ptr<nGameObject>>& GetWallColliders() const { return m_WallColliders; }
-    std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
+    [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
 
     // Getter/Setter
-    glm::vec2 GetWorldCoord() const { return m_WorldCoord; }
+    [[nodiscard]] glm::vec2 GetWorldCoord() const { return m_WorldCoord; }
     void SetWorldCoord(const glm::vec2& worldCoord) { m_WorldCoord = worldCoord; }
 
-    glm::vec2 GetSize() const { return m_Size; }
+    [[nodiscard]] glm::vec2 GetSize() const { return m_Size; }
     void SetSize(const glm::vec2& size) { m_Size = size; }
 
-    glm::vec2 GetTileSize() const { return m_TileSize; }
+    [[nodiscard]] glm::vec2 GetTileSize() const { return m_TileSize; }
     void SetTileSize(const glm::vec2& tileSize) { m_TileSize = tileSize; }
 
-    float GetRoomHeight() const { return m_RoomHeight; }
+    [[nodiscard]] float GetRoomHeight() const { return m_RoomHeight; }
     void SetRoomHeight(float height) { m_RoomHeight = height; }
 
     // 加载JSON配置
     virtual void LoadFromJSON(const std::string& jsonFilePath);
 
     // 注册所有对象到碰撞系统
-    void RegisterCollisions();
+    virtual void RegisterCollisions();
 
 protected:
     // 房间状态
@@ -87,7 +85,6 @@ protected:
 
     // 房间内对象
     std::vector<std::shared_ptr<RoomObject>> m_RoomObjects;       // 房间固定物体
-    std::vector<std::shared_ptr<nGameObject>> m_WallColliders;    // 墙壁碰撞体
     std::vector<std::shared_ptr<Character>> m_Characters;         // 当前在房间内的角色
 
     // 工厂与管理器
@@ -97,8 +94,7 @@ protected:
     // 相机引用
     std::weak_ptr<Camera> m_Camera;
 
-    // 子类需要实现的方法
-    virtual void SetupWallColliders() = 0;       // 设置墙壁碰撞体
+    // 子类需要实现的方法      // 设置墙壁碰撞体
     virtual void OnStateChanged(RoomState oldState, RoomState newState) {}  // 房间状态变化时调用
 
     // 更新房间状态的辅助方法

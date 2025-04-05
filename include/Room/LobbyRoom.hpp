@@ -23,9 +23,11 @@ public:
 	void ActivatePortal(bool active);
 	bool IsPortalActive() const { return m_PortalActive; }
 
+	void AddWallCollider(const std::shared_ptr<nGameObject>& collider);
+
 protected:
 	// 实现抽象方法
-	void SetupWallColliders() override;
+	void SetupWallColliders();
 
 	// 重写状态变化处理方法
 	void OnStateChanged(RoomState oldState, RoomState newState) override;
@@ -39,8 +41,11 @@ private:
 	bool m_PortalActive = false;  // 传送门是否激活
 	std::shared_ptr<RoomObject> m_Portal = nullptr;  // 传送门对象
 
+
 	// Lobby特有墙壁碰撞体配置
-	const std::vector<glm::vec2> m_WallOffsets = {
+	std::vector<std::shared_ptr<nGameObject>> m_WallColliders;    // 墙壁碰撞体
+
+	const std::vector<glm::vec2> m_WallColliderOffsets = {
 		glm::vec2(-304.0f, -192.0f),
 		glm::vec2(-288.0f, 96.0f),
 		glm::vec2(-32.0f, 112.0f),
@@ -49,7 +54,7 @@ private:
 		glm::vec2(-304.0f, -208.0f)
 	};
 
-	const std::vector<glm::vec2> m_WallSizes = {
+	const std::vector<glm::vec2> m_WallColliderSizes = {
 		glm::vec2(16.0f, 384.0f),
 		glm::vec2(256.0f, 96.0f),
 		glm::vec2(64.0f, 80.0f),
