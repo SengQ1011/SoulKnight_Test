@@ -41,8 +41,8 @@ public:
     [[nodiscard]] RoomState GetState() const { return m_State; }
 
     // 角色管理方法
-    virtual void PlayerEnter(std::shared_ptr<Character> character);
-    virtual void PlayerExit(std::shared_ptr<Character> character);
+    virtual void CharacterEnter(std::shared_ptr<Character> character);
+    virtual void CharacterExit(std::shared_ptr<Character> character);
     [[nodiscard]] bool HasCharacter(const std::shared_ptr<Character>& character) const;
     [[nodiscard]] const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
 

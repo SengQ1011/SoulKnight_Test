@@ -63,7 +63,7 @@ void Room::UpdateRoomState() {
     // 例如检查房间内是否还有敌人，以决定是否从COMBAT切换到CLEARED
 }
 
-void Room::PlayerEnter(std::shared_ptr<Character> character) {
+void Room::CharacterEnter(std::shared_ptr<Character> character) {
     if (character && !HasCharacter(character)) {
         m_Characters.push_back(character);
         OnCharacterEnter(character);
@@ -76,7 +76,7 @@ void Room::PlayerEnter(std::shared_ptr<Character> character) {
     }
 }
 
-void Room::PlayerExit(std::shared_ptr<Character> character) {
+void Room::CharacterExit(std::shared_ptr<Character> character) {
     auto it = std::find(m_Characters.begin(), m_Characters.end(), character);
     if (it != m_Characters.end()) {
         m_Characters.erase(it);

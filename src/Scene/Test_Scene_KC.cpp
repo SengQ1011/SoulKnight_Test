@@ -57,7 +57,7 @@ void TestScene_KC::CreatePlayer()
 	m_Camera->AddRelativePivotChild(m_Player);
 
 	// 将玩家添加到房间
-	m_LobbyRoom->PlayerEnter(m_Player);
+	m_LobbyRoom->CharacterEnter(m_Player);
 }
 
 
@@ -101,7 +101,7 @@ void TestScene_KC::Exit()
 	LOG_DEBUG("KC Test Scene exited");
 	// 退出场景时的清理工作
 	if (m_LobbyRoom) {
-		m_LobbyRoom->PlayerExit(std::dynamic_pointer_cast<Character>(m_Player));
+		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
 	}
 }
 
