@@ -3,27 +3,36 @@
 //
 
 #include "Skill/FullFirepower.hpp"
-#include "Util/Time.hpp"
-#include "Components/AttackComponent.hpp"
+#include "Components/FollowerComponent.hpp"
 
-FullFirepower::FullFirepower(std::string name, float cooldownTime, float skillTime) : Skill(name, cooldownTime) {}
 
-void FullFirepower::SkillUpdate(){
-	float deltaTime = Util::Time::GetDeltaTimeMs() /1000.0f;
-	// 技能持续时间倒计时
-	if (isActive) {
-		m_remainingCD -= deltaTime;
-		if (m_remainingCD <= 0.0f) {
-			// 结束双持状态
-			//auto attackComp = m_owner.GetComponent<AttackComponent>(ComponentType::ATTACK);
-			//attackComp.SetDualWield(false);
-			isActive = false;
-		}
-	}
+FullFirepower::FullFirepower(const std::weak_ptr<Character> &m_owner,const std::string& name,
+							 const std::string &iconPath, const float skillDuration, const float cooldownTime)
+: Skill(m_owner, name, iconPath, skillDuration, cooldownTime) {}
 
+void FullFirepower::EndSkill(){
+	auto attackComp = m_owner.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK);
+	attackComp->SetDualWield(false);
 }
 
-void FullFirepower::Execute()
-{
+void FullFirepower::Execute() {
+	if (auto attackComp = m_owner.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+		if(auto currentWeapon = attackComp->GetCurrentWeapon()) {
+			auto cloneWeapon = currentWeapon->Clone();
+			auto FollowerComp = cloneWeapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
+			FollowerComp->SetFollower(m_owner.lock());
+			FollowerComp->IsTargetMouse(true);
+			FollowerComp->SetHandOffset(glm::vec2(30/5.0f,-25/4.0f));
+			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,2.0f));
+			attackComp->SetSecondWeapon(cloneWeapon);
+			attackComp->SetDualWield(true);
 
+			cloneWeapon->SetZIndex(currentWeapon->GetZIndex() +1);
+			// 设置副武器延迟响应
+			cloneWeapon->SetAttackDelay(0.1f); // 0.1秒延迟
+			isActive = true;
+			m_remainingDuration = m_skillDuration;
+			m_remainingCD = m_CDTime;
+		}
+	}
 }

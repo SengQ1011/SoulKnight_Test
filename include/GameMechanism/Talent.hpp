@@ -4,9 +4,34 @@
 
 #ifndef TALENT_HPP
 #define TALENT_HPP
+#include <string>
+#include <functional>
+#include "Creature/Character.hpp"
 
 class Talent {
+public:
+	Talent(const std::string& name, const std::string& iconPath,
+		   std::function<void(Character&)> applyFunc,
+		   std::function<void(Character&)> undoFunc)
+		: m_talentName(name), m_iconPath(iconPath),
+		  m_applyFunc(applyFunc), m_undoFunc(undoFunc) {}
 
+	//----Getter----
+	[[nodiscard]] std::string GetName() const { return m_talentName; }
+	[[nodiscard]] std::string GetIconPath() const { return m_iconPath; }
+
+	void Apply(Character& owner) const {
+		if (m_applyFunc) m_applyFunc(owner);
+	}
+	void Undo(Character& owner) const {
+		if (m_undoFunc) m_undoFunc(owner);  // 撤銷天賦
+	}
+
+private:
+	std::string m_talentName;
+	std::string m_iconPath;
+	std::function<void(Character&)> m_applyFunc;
+	std::function<void(Character&)> m_undoFunc;
 };
 
 #endif //TALENT_HPP

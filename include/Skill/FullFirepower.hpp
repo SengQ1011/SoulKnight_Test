@@ -9,10 +9,11 @@
 
 class FullFirepower : public Skill {
 public:
-	explicit FullFirepower(std::string name, float cooldownTime, float skillTime);
+	explicit FullFirepower(const std::weak_ptr<Character> &m_owner, const std::string& name,
+						   const std::string &iconPath, float skillDuration, float cooldownTime);
 	~FullFirepower() override = default;
 
-	void SkillUpdate() override;
+	void EndSkill() override;
 	void Execute() override;
 
 private:

@@ -20,7 +20,7 @@ void Weapon::UpdateCooldown(float deltaTime) {
 }
 
 bool Weapon::CanAttack() {
-	return lastAttackTime <=0;
+	return lastAttackTime <= 0;
 }
 
 void Weapon::SetImage(const std::string& ImagePath) {

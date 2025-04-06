@@ -23,13 +23,14 @@ public:
 	int GetCurrentEnergy() const { return m_currentEnergy; }
 
 	//----Setter----
-	void SetMaxHp(int hp) { m_maxHp = hp; }
-	void AddCurrentHp(int hp) { m_currentHp += hp; }
-	void SetMaxArmor(int armor) { m_maxArmor = armor; }
-	void AddCurrentArmor(int armor) {m_currentArmor += armor; }
-	void SetMaxEnergy(int energy) { m_maxEnergy = energy; }
-	void AddCurrentEnergy(int energy) { m_currentEnergy += energy; }
-	void ConsumeEnergy(int energy) {m_currentEnergy -= energy; }
+	void SetMaxHp(const int hp) { m_maxHp = hp; }
+	void AddCurrentHp(const int hp) { m_currentHp += hp; }
+	void SetMaxArmor(const int armor) { m_maxArmor = armor; }
+	void AddCurrentArmor(const int armor) {m_currentArmor += armor; }
+	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
+	void AddCurrentEnergy(const int energy) { m_currentEnergy += energy; }
+	void ConsumeEnergy(const int energy) {m_currentEnergy -= energy; }
+	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
 	void TakeDamage(int damage);
 
@@ -40,9 +41,9 @@ private:
 	int m_currentArmor;     // 當前護甲值
 	int m_maxEnergy;        // 能量上限
 	int m_currentEnergy;    // 當前能量值
-
 	float m_armorRecoveryInterval = 3.0f;
-	float m_armorRecoveryTimer; // 恢復護甲計時器
+	float m_armorRecoveryTimer;			// 恢復護甲計時器
+	bool m_breakProtection = false;		// 天賦：破甲保護
 
 	// 通知 StateComponent 角色死亡
 	void OnDeath();

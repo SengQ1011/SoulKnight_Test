@@ -9,13 +9,16 @@
 #include <iostream>
 #include "BulletManager.hpp"
 
+#include "Components/AttackComponent.hpp"
+#include "Components/TalentComponet.hpp"
 #include "EnumTypes.hpp"
-#include "InputManager.hpp"
+#include "GameMechanism/Talent.hpp"
+#include "GameMechanism/TalentDatabase.hpp"
+#include "ObserveManager/InputManager.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include "Scene/SceneManager.hpp"
-#include "Components/AttackComponent.hpp"
 
 
 void TestScene_JX::Start()
@@ -23,6 +26,10 @@ void TestScene_JX::Start()
 	LOG_DEBUG("Entering JX Test Scene");
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
 	m_Enemy = CharacterFactory::GetInstance().createEnemy(2);
+
+	// std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+	// auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT);
+	// talentComp->AddTalent(talentDatabase[1]);
 
 	AddManager(ManagerTypes::BULLET,bulletManager);
 	AddManager(ManagerTypes::INPUT,inputManager);
@@ -96,8 +103,8 @@ void TestScene_JX::Start()
 
 	m_Player->m_WorldCoord = {0,16*2}; //騎士初始位置為右兩格，上兩格
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	m_Root->AddChild(collision->GetBlackBox());
-	m_Camera->AddRelativePivotChild(collision->GetBlackBox());
+	// m_Root->AddChild(collision->GetBlackBox());
+	// m_Camera->AddRelativePivotChild(collision->GetBlackBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
 	m_Root->AddChild(m_Player);
 	m_Camera->AddRelativePivotChild(m_Player);
@@ -112,7 +119,7 @@ void TestScene_JX::Start()
 void TestScene_JX::Update()
 {
 	// Input：
-	inputManager->listenInput();
+	inputManager->Update();
 	auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH);
 	if(Util::Input::IsKeyPressed(Util::Keycode::Z)) LOG_DEBUG("hp: {}, armor: {}, energy: {}", healthComp->GetCurrentHp(), healthComp->GetCurrentArmor(), healthComp->GetCurrentEnergy());
 
