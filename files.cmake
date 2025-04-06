@@ -22,7 +22,8 @@ set(SRC_FILES
     Factory/RoomFactory.cpp
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
-    ObseverManager/InputManager.cpp
+    ObseveManager/InputManager.cpp
+    Room/LobbyRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     RoomObject/ObstacleObject.cpp
@@ -75,11 +76,12 @@ set(INCLUDE_FILES
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
     Motion.hpp
+    ObserveManager/InputManager.hpp
+    ObserveManager/ObserveManager.hpp
+    ObserveManager/TrackingManager.hpp
     Observer.hpp
-    ObserverManager/InputManager.hpp
-    ObserverManager/ObseverManager.hpp
-    ObserverManager/TrackingManager.hpp
     Override/nGameObject.hpp
+    Room/LobbyRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     RoomObject/ObstacleObject.hpp
