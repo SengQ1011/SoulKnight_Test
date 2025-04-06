@@ -41,11 +41,13 @@ void FollowerComponent::BaseTargetRotate()
 void FollowerComponent::Update()
 {
 	const auto owner = GetOwner<nGameObject>();
-	//TODO:當角色反轉，m_HandOffset.x會被影響， m_HoldingOffset不確定，可能要實驗
-	//Follower的手是m_Owner的世界坐標
-	//m_Owner的轉軸是m_Owner的世界坐標-它到握把的距離
+
 	if (owner) {
 		if (const auto follower = m_Follower.lock()) {
+			//跟隨角色ZIndex
+			if (owner->GetZIndexType() != ZIndexType::CUSTOM) owner->SetZIndexType(ZIndexType::CUSTOM);
+			owner->SetZIndex(follower->GetZIndex() + 0.1f); // 置於角色前方
+
 			// 应用偏移
 			owner->m_WorldCoord = follower->m_WorldCoord + m_HandOffset;
 			// 设置旋转和轴心点

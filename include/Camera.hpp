@@ -17,7 +17,7 @@
 class Camera: public Observer {
 public:
 	explicit Camera(const std::vector<std::shared_ptr<nGameObject>> &pivotChildren = {});
-	~Camera() = default;
+	~Camera() override = default;
 
 	void onInputReceived(const std::set<char>& keys) override;
 
@@ -26,24 +26,24 @@ public:
 	void ZoomCamera(float zoomLevel);
 	void RotateCamera(float degree);
 
-	void AddRelativePivotChild(const std::shared_ptr<nGameObject> &child);
-	void AddRelativePivotChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
-	void RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child);
+	void AddChild(const std::shared_ptr<nGameObject> &child);
+	void AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
+	void RemoveChild(const std::shared_ptr<nGameObject>& child);
 
 	void Update();
-	void UpdateZIndex(std::shared_ptr<nGameObject> child);
+	void UpdateZIndex(const std::shared_ptr<nGameObject> &child) const;
 
-	void SetMapSize(const float mapSize) {m_MapSize = mapSize;}
-	[[nodiscard]] float GetMapSize() const { return m_MapSize;}
+	void SetMapSize(const float mapSize) {m_MapYSize = mapSize;}
+	[[nodiscard]] float GetMapSize() const { return m_MapYSize;}
 	[[nodiscard]] Util::Transform GetCameraWorldCoord() const { return m_CameraWorldCoord;}
 
 protected:
 	Util::Transform m_CameraWorldCoord;
-	Beacon m_Beacon;
-	float m_MapSize = 0.0f;
+	float m_MapYSize = 0.0f; // 用來動態調整ZIndex
+
 private:
 	std::weak_ptr<nGameObject> m_FollowTarget;
-	std::vector<std::shared_ptr<nGameObject>> m_RelativePivotChildren;
+	std::vector<std::shared_ptr<nGameObject>> m_Children;
 };
 
 #endif //CAMERA_HPP

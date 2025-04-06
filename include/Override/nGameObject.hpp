@@ -38,6 +38,7 @@ public:
 	void onCollision(const std::shared_ptr<nGameObject>& other, CollisionInfo& info)
 	{
 		if (!m_Active) return;
+
 		for (const auto& pair : m_Components) {
 			// pair.first 是 ComponentType 键
 			// pair.second 是 std::shared_ptr<Component> 值
@@ -60,6 +61,7 @@ public:
 	[[nodiscard]] glm::vec2 GetWorldCoord() const {return m_WorldCoord;}
 	[[nodiscard]] std::shared_ptr<Core::Drawable> GetDrawable() const {return m_Drawable;}
 	[[nodiscard]] bool IsActive() const { return m_Active; }
+	[[nodiscard]] bool IsVisible() const { return m_Visible; }
 	[[nodiscard]] glm::vec2 GetInitialScale() const { return m_InitialScale;}
 	[[nodiscard]] bool isSetInitialScale()  const { return m_InitialScaleSet;}
 	[[nodiscard]] ZIndexType GetZIndexType() const { return m_ZIndex;}
@@ -67,7 +69,7 @@ public:
 protected:
 	std::string m_Name;
 	bool m_Active = true;
-	ZIndexType m_ZIndex = ZIndexType::FLOOR;
+	ZIndexType m_ZIndex = ZIndexType::OBJECTHIGH; // 設置ZIndex層，動態調整
 	glm::vec2 m_InitialScale;			// 儲存初始縮放
 	bool m_InitialScaleSet = false;		// 標記是否已設置初始縮放
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;

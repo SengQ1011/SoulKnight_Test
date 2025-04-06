@@ -17,11 +17,11 @@ public:
 	: Component(ComponentType::AI), m_aiType(type), m_monsterPoint(monsterPoint) {}
 	~AIComponent() override = default;
 
-	void Init() override;
-	void Update() override;
+	void Init() override {};
+	void Update() override {};
 
 	// 行為模式接口
-	virtual void OnDetectTarget() {} // 攻擊型專用
+	virtual void OnDetectTarget(Character* target) {} // 攻擊型專用
 	virtual void OnSummonTimer() {}                  // 召喚型專用
 	virtual void OnWanderUpdate() {}                 // 游蕩型專用
 

@@ -56,7 +56,8 @@ enum ZIndexType: int
 	OBJECTLOW	= 20,	// 20 -  40
 	BULLET		= 40,	// 40 -  60
 	OBJECTHIGH	= 60,	// 60 -  80
-	UI			= 80,	// 80 - 100
+	UI			= 80,	// 80 -  99
+	CUSTOM		=100,   // dont care
 };
 
 #endif //ENUMTYPES_HPP

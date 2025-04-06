@@ -106,7 +106,7 @@ void Room::AddRoomObject(const std::shared_ptr<RoomObject>& object) {
             scene->GetRoot().lock()->AddChild(object);
 
             if (auto camera = m_Camera.lock()) {
-                camera->AddRelativePivotChild(object);
+                camera->AddChild(object);
             }
         }
 
@@ -130,7 +130,7 @@ void Room::RemoveRoomObject(const std::shared_ptr<RoomObject>& object) {
             scene->GetRoot().lock()->RemoveChild(object);
 
             if (auto camera = m_Camera.lock()) {
-                camera->RemoveRelativePivotChild(object);
+                camera->RemoveChild(object);
             }
         }
 
@@ -190,11 +190,11 @@ void Room::RegisterCollisions() {
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		if (!scene) continue;
 
-		scene->GetRoot().lock()->AddChild(collComp->GetBlackBox());
+		scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
 
 		auto camera = m_Camera.lock();
 		if (!camera) continue;
 
-		camera->AddRelativePivotChild(collComp->GetBlackBox());
+		camera->AddChild(collComp->GetVisibleBox());
 	}
 }

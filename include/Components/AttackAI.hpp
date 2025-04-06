@@ -12,16 +12,16 @@ class AttackAI : public AIComponent {
 public:
 	explicit AttackAI(int monsterPoint);
 
-	void Update() override;
+	void Update() override {};
 
-	void OnDetectTarget(Character* target) override;
+	// void OnDetectTarget(Character* target) override;
 
 private:
-	void ExecuteAttack() {
-		if (auto owner = GetOwner<Character>()) {
-			owner->GetComponent<AttackComponent>()->TryAttack();
-		}
-	}
+	// void ExecuteAttack() {
+	// 	if (auto owner = GetOwner<Character>()) {
+			// TODO: owner->GetComponent<AttackComponent>()->TryAttack();
+	// 	}
+	// }
 
 	float m_attackCooldown = 2.0f;
 	float m_attackTimer = 0;

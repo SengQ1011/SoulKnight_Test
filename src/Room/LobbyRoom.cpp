@@ -181,10 +181,10 @@ void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
 		if (auto collComp = collider->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
 			auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 			if (scene) {
-				scene->GetRoot().lock()->AddChild(collComp->GetBlackBox());
+				scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
 
 				if (auto camera = m_Camera.lock()) {
-					camera->AddRelativePivotChild(collComp->GetBlackBox());
+					camera->AddChild(collComp->GetVisibleBox());
 				}
 			}
 		}

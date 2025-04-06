@@ -27,7 +27,8 @@ void FullFirepower::Execute() {
 			attackComp->SetSecondWeapon(cloneWeapon);
 			attackComp->SetDualWield(true);
 
-			cloneWeapon->SetZIndex(currentWeapon->GetZIndex() +1);
+			// cloneWeapon->SetZIndex(currentWeapon->GetZIndex() +1);
+			cloneWeapon->SetZIndexType(currentWeapon->GetZIndexType());
 			// 设置副武器延迟响应
 			cloneWeapon->SetAttackDelay(0.1f); // 0.1秒延迟
 			isActive = true;

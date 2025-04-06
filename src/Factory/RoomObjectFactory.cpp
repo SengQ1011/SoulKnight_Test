@@ -25,13 +25,14 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 	//設置ZIndexLayer
 	if (data.contains("ZIndex"))
 	{
-		const auto zIndex_str = data.at("ZIndex").get<std::string>();
-		if (zIndex_str == "ObjectLow") roomObject->SetZIndexType(ZIndexType::OBJECTLOW);
-		else if (zIndex_str == "Bullet") roomObject->SetZIndexType(ZIndexType::BULLET);
-		else if (zIndex_str == "ObjectHigh") roomObject->SetZIndexType(ZIndexType::OBJECTHIGH);
-		else if (zIndex_str == "UI") roomObject->SetZIndexType(ZIndexType::UI);
-		else if (zIndex_str == "Floor") roomObject->SetZIndexType(ZIndexType::FLOOR);
-		else LOG_DEBUG("RoomObjectFactory::createRoomObject: Unknown ZIndexType");
+		const auto zIndexStr = data.at("ZIndex").get<std::string>();
+		roomObject->SetZIndexType(stringToZIndexType(zIndexStr));
+		// if (zIndex_str == "ObjectLow") roomObject->SetZIndexType(ZIndexType::OBJECTLOW);
+		// else if (zIndex_str == "Bullet") roomObject->SetZIndexType(ZIndexType::BULLET);
+		// else if (zIndex_str == "ObjectHigh") roomObject->SetZIndexType(ZIndexType::OBJECTHIGH);
+		// else if (zIndex_str == "UI") roomObject->SetZIndexType(ZIndexType::UI);
+		// else if (zIndex_str == "Floor") roomObject->SetZIndexType(ZIndexType::FLOOR);
+		// else LOG_DEBUG("RoomObjectFactory::createRoomObject: Unknown ZIndexType");
 	}
 	else LOG_DEBUG("RoomObjectFactory::createRoomObject: No such ZIndex!");
 

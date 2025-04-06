@@ -16,7 +16,6 @@ public:
 	~InputComponent() override = default;
 
 	void onInputReceived(const std::set<char>& keys) override;
-
 };
 
 #endif //INPUTCOMPONENT_HPP

@@ -142,21 +142,18 @@ public:
 	[[nodiscard]] Rect GetBounds() const;
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const {return m_CollisionLayer;}
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const {return m_CollisionMask;}
-	[[nodiscard]] std::shared_ptr<nGameObject> GetBlackBox() {return m_ColliderVisibleBox;}
+	[[nodiscard]] std::shared_ptr<nGameObject> GetVisibleBox() {return m_ColliderVisibleBox;}
 	[[nodiscard]] bool IsTrigger() const {return m_IsTrigger;}
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
 	void SetCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask += collisionMask; }
 	void SetOffset(const glm::vec2& offset) { m_Offset = offset; }
-	void SetSize(const glm::vec2& size)
-	{
-		m_Size = size;
-		// m_Object->SetInitialScale(m_Size);
-	}
+	void SetSize(const glm::vec2& size) { m_Size = size; }
 	void SetTrigger(const bool isTrigger) {m_IsTrigger = isTrigger;}
-	void SetColliderBoxVisible(const bool isVisible) { m_ColliderVisibleBox->SetVisible(isVisible);}
-	void SetColliderBoxColor(const std::string& color) const;
+
+	void SetColliderBoxVisible(const bool isVisible) const { m_ColliderVisibleBox->SetVisible(isVisible);} //設置碰撞箱可視化
+	void SetColliderBoxColor(const std::string& color) const; //設置碰撞箱顔色
 
 private:
 	glm::vec2 m_Size;

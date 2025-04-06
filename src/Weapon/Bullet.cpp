@@ -16,7 +16,7 @@
  	this->m_WorldCoord = bulletTransform.translation;
  	// 其他初始化（縮放、圖片等）
  	this->SetInitialScale(bulletTransform.scale);
- 	this->SetZIndex(10);
+ 	this->SetZIndexType(ZIndexType::BULLET);
  	SetImage(ImagePath);
  	LOG_DEBUG("Bullet.cpp::Bullet is created==>{}",this->m_WorldCoord);
  }
@@ -37,8 +37,8 @@ void Bullet::PostInitialize() {
  	CollisionComp->SetSize(glm::vec2(16.0f));
 
  	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetBlackBox());
- 	currentScene->GetCamera().lock()->AddRelativePivotChild(CollisionComp->GetBlackBox());
+ 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
 void Bullet::UpdateLocation(float deltaTime) {

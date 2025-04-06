@@ -84,13 +84,13 @@ void AnimationComponent::SetSkillEffect(bool play)
 			{
 				m_effectAnimation = it->second;
 				m_effectAnimation->SetVisible(true);
-				m_effectAnimation->SetZIndex(15);
+				m_effectAnimation->SetZIndex(character->GetZIndex() - 0.5f);
 				m_effectAnimation->PlayAnimation(true);
 
 				//character->AddChild(m_effectAnimation);
 				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 				scene->GetRoot().lock()->AddChild(m_effectAnimation);
-				scene->GetCamera().lock()->AddRelativePivotChild(m_effectAnimation);
+				scene->GetCamera().lock()->AddChild(m_effectAnimation);
 
 				m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
 			}
@@ -103,7 +103,7 @@ void AnimationComponent::SetSkillEffect(bool play)
 		m_effectAnimation->PlayAnimation(false);
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
-		scene->GetCamera().lock()->RemoveRelativePivotChild(m_effectAnimation);
+		scene->GetCamera().lock()->RemoveChild(m_effectAnimation);
 	}
 
 }

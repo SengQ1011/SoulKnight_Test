@@ -8,6 +8,7 @@
 #include "Components/FollowerComponent.hpp"
 #include "Components/SkillComponent.hpp"
 #include "Components/StateComponent.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Util/Time.hpp"
 
 InputComponent::InputComponent() {}

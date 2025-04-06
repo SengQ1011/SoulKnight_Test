@@ -10,7 +10,7 @@ Weapon::Weapon(const std::string& ImagePath, const std::string& bulletImagePath,
 	: m_ImagePath(ImagePath), m_bulletImagePath(bulletImagePath),m_weaponName(name), m_damage(damage), m_energy(energy), m_criticalRate(criticalRate), m_offset(offset), m_attackColdDown(attackSpeed)
 {
 	SetImage(ImagePath);
-	this->SetZIndex(15);
+	this->SetZIndexType(ZIndexType::OBJECTLOW);
 }
 
 void Weapon::UpdateCooldown(float deltaTime) {

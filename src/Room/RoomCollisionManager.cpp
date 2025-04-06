@@ -74,13 +74,13 @@ void RoomCollisionManager::UpdateCollision() const
 	}
 }
 
-void RoomCollisionManager::ShowColliderBox()
+void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化 TODO：應該
 {
-	isVisible = isVisible ^ true;
+	isVisible = isVisible ^ true; //XOR bool 實現開關
 	std::for_each(std::execution::par_unseq,m_NGameObjects.begin(), m_NGameObjects.end(),
 		[&](const std::shared_ptr<nGameObject>& object)
 		{
-			object->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetBlackBox()->SetVisible(isVisible);
+			object->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetVisibleBox()->SetVisible(isVisible);
 		});
 }
 
@@ -111,7 +111,7 @@ void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGame
 	// 決定碰撞法綫的方向
 	if (minOverlapX < minOverlapY) {
 		info.penetration = minOverlapX;
-		normal.x = (overlapLeft < overlapRight) ? 1.0f : -1.0f; //TODO:爲什麽邏輯相反？ 需要調查
+		normal.x = (overlapLeft < overlapRight) ? 1.0f : -1.0f;
 	} else {
 		info.penetration = minOverlapY;
 		normal.y = (overlapTop < overlapBottom) ? -1.0f : 1.0f;

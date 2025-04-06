@@ -1,7 +1,7 @@
 {
  "object_questCounter": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -23,7 +23,7 @@
  },
  "object_mahjongTable": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -45,7 +45,7 @@
  },
  "object_television": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -67,12 +67,12 @@
  },
  "object_questBoard": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "path": "/Lobby/object_questBoard.png"
  },
  "object_gachapon": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -94,12 +94,12 @@
  },
  "object_mailbox": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "path": "/Lobby/object_mailbox.png"
  },
  "object_garbageBin": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -121,7 +121,7 @@
  },
  "object_book": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -143,7 +143,7 @@
  },
  "object_refrigerator_0": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -165,17 +165,17 @@
  },
  "object_sofa": {
   "isAnimated": false,
-  "ZIndex": "ObjectLow",
+  "ZIndex": "OBJECTLOW",
   "path": "/Lobby/object_sofa.png"
  },
  "object_chair": {
   "isAnimated": false,
-  "ZIndex": "ObjectLow",
+  "ZIndex": "OBJECTLOW",
   "path": "/Lobby/object_chair.png"
  },
  "object_safeBox": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -197,7 +197,7 @@
  },
  "object_plantPot_0": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -219,7 +219,7 @@
  },
  "room_item_41": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -241,7 +241,7 @@
  },
  "object_luckyCat_0": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -263,7 +263,7 @@
  },
  "object_testTubes": {
   "isAnimated": false,
-  "ZIndex": "ObjectHigh",
+  "ZIndex": "OBJECTHIGH",
   "components": [
    {
     "Name": "collision_box",
@@ -285,22 +285,22 @@
  },
  "object_dungeonDoor": {
   "isAnimated": false,
-  "ZIndex": "ObjectLow",
+  "ZIndex": "OBJECTLOW",
   "path": "/Lobby/object_dungeonDoor.png"
  },
  "object_carpet": {
   "isAnimated": false,
-  "ZIndex": "Floor",
+  "ZIndex": "FLOOR",
   "path": "/Lobby/object_carpet.png"
  },
  "floor_lobby": {
   "isAnimated": false,
-  "ZIndex": "Floor",
+  "ZIndex": "FLOOR",
   "path": "/Lobby/floor_lobby.png"
  },
  "wall_lobby": {
   "isAnimated": false,
-  "ZIndex": "Floor",
+  "ZIndex": "FLOOR",
   "path": "/Lobby/wall_lobby.png"
  }
 }

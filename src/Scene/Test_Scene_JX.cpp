@@ -70,8 +70,8 @@ void TestScene_JX::Start()
 		collisionComponent->SetOffset(offset[i]);
 		collisionComponent->SetSize(size[i]);
 		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
-		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
-		m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
+		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetVisibleBox());
+		m_Camera->AddChild(collisionComponent->GetVisibleBox());
 		m_WallCollider.emplace_back(wallCollider);
 	}
 
@@ -82,10 +82,10 @@ void TestScene_JX::Start()
 		if (auto collisionComponent = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 		{
 			m_RoomCollisionManager->RegisterNGameObject(elem);
-			SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetBlackBox());
-			m_Camera->AddRelativePivotChild(collisionComponent->GetBlackBox());
+			SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(collisionComponent->GetVisibleBox());
+			m_Camera->AddChild(collisionComponent->GetVisibleBox());
 		}
-		m_Camera->AddRelativePivotChild(elem);
+		m_Camera->AddChild(elem);
 		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(elem);
 	}
 
@@ -94,12 +94,12 @@ void TestScene_JX::Start()
 
 	m_Enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if(!collision2->GetBlackBox())LOG_ERROR("collision2->GetBlackBox()");
-	m_Root->AddChild(collision2->GetBlackBox());
-	m_Camera->AddRelativePivotChild(collision2->GetBlackBox());
+	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
+	m_Root->AddChild(collision2->GetVisibleBox());
+	m_Camera->AddChild(collision2->GetVisibleBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
 	m_Root->AddChild(m_Enemy);
-	m_Camera->AddRelativePivotChild(m_Enemy);
+	m_Camera->AddChild(m_Enemy);
 
 	m_Player->m_WorldCoord = {0,16*2}; //騎士初始位置為右兩格，上兩格
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -107,7 +107,7 @@ void TestScene_JX::Start()
 	// m_Camera->AddRelativePivotChild(collision->GetBlackBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
 	m_Root->AddChild(m_Player);
-	m_Camera->AddRelativePivotChild(m_Player);
+	m_Camera->AddChild(m_Player);
 
 
 	// Camera跟隨player
@@ -120,6 +120,8 @@ void TestScene_JX::Update()
 {
 	// Input：
 	inputManager->Update();
+	if (Util::Input::IsKeyDown(Util::Keycode::O)) m_RoomCollisionManager->ShowColliderBox(); // 按鍵O可以顯示關閉colliderBox
+
 	auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH);
 	if(Util::Input::IsKeyPressed(Util::Keycode::Z)) LOG_DEBUG("hp: {}, armor: {}, energy: {}", healthComp->GetCurrentHp(), healthComp->GetCurrentArmor(), healthComp->GetCurrentEnergy());
 

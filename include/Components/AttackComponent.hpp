@@ -24,7 +24,6 @@ public:
 	[[nodiscard]] std::shared_ptr<Weapon> GetCurrentWeapon() const { return m_currentWeapon; }
 	[[nodiscard]] std::vector<std::shared_ptr<Weapon>> GetAllWeapons() const { return m_Weapons; }
 
-
 	//----Setter----
 	void SetMaxWeapon(int num) { m_maxWeapon = num; }
 	void AddWeapon(std::shared_ptr<Weapon> weapon);

@@ -27,7 +27,6 @@ public:
 	~FollowerComponent() override = default;
 
 	void BaseTargetRotate();
-	void Start(); //TODO:錦鑫 如果不想一開始一堆Set,可以這裏增加參數然後一次過Set
 	void Update() override;
 
 	// Setter

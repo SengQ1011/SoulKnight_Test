@@ -45,8 +45,8 @@ void TestScene_KC::CreatePlayer()
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (collision) {
 		// 将碰撞盒添加到场景根节点和相机
-		GetRoot().lock()->AddChild(collision->GetBlackBox());
-		m_Camera->AddRelativePivotChild(collision->GetBlackBox());
+		GetRoot().lock()->AddChild(collision->GetVisibleBox());
+		m_Camera->AddChild(collision->GetVisibleBox());
 	}
 
 	// 将玩家注册到碰撞管理器
@@ -54,7 +54,7 @@ void TestScene_KC::CreatePlayer()
 
 	// 将玩家添加到场景根节点和相机
 	GetRoot().lock()->AddChild(m_Player);
-	m_Camera->AddRelativePivotChild(m_Player);
+	m_Camera->AddChild(m_Player);
 
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);

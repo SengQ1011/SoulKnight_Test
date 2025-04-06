@@ -91,6 +91,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
 			std::string name = characterInfo["name"];
 			auto player = std::make_shared<Character>(name, type);
+			player->SetZIndexType(ZIndexType::OBJECTHIGH); // 設置對應的ZIndexLayer
 
 			auto animation = parseAnimations(characterInfo["animations"]);
 			int maxHp = characterInfo["maxHp"];
@@ -122,7 +123,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
 			CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
 			CollisionComp->SetSize(glm::vec2(16.0f));
-			CollisionComp->SetOffset(glm::vec2(-4.0f,-13.0f));
+			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
 			FollowerComp->IsTargetMouse(true);
@@ -145,6 +146,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	std::string name = characterInfo["name"];
         	CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
         	std::shared_ptr<Character> enemy = std::make_shared<Character>(name, type);
+        	enemy->SetZIndexType(ZIndexType::OBJECTHIGH);
 
         	auto animation = parseAnimations(characterInfo["animations"]);
 			AIType aiType = stringToAiType(characterInfo["monsterType"].get<std::string>());
@@ -176,7 +178,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	collisionComp->SetCollisionMask(CollisionLayers_Player);
         	collisionComp->SetCollisionMask(CollisionLayers_Terrain);
         	collisionComp->SetSize(glm::vec2(16.0f));
-        	collisionComp->SetOffset(glm::vec2(-4.0f,-13.0f));
+        	collisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 
         	return enemy;
         }

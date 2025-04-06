@@ -20,7 +20,8 @@ void CollisionComponent::Init()
 
 	//初始化ColliderVisibleBox
 	SetColliderBoxColor("Red");
-	m_ColliderVisibleBox->SetZIndex(80);
+	m_ColliderVisibleBox->SetZIndex(0.1);
+	m_ColliderVisibleBox->SetZIndexType(ZIndexType::UI);
 }
 
 void CollisionComponent::SetColliderBoxColor(const std::string& color) const // Blue - 未定義， Yellow - 碰撞, Red - 正常
@@ -29,7 +30,6 @@ void CollisionComponent::SetColliderBoxColor(const std::string& color) const // 
 	if(color == "Red") m_ColliderVisibleBox->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/RedCollider.png"));
 	if(color == "Yellow") m_ColliderVisibleBox->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/YellowCollider.png"));
 }
-
 
 void CollisionComponent::Update()
 {

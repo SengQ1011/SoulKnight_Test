@@ -12,7 +12,7 @@ void BulletManager::spawnBullet(const CharacterType type, const std::string& bul
 	// 加入渲染樹
 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	currentScene->GetRoot().lock()->AddChild(bullet);  // 由 BulletManager 的 shared_ptr 加入
-	currentScene->GetCamera().lock()->AddRelativePivotChild(bullet);
+	currentScene->GetCamera().lock()->AddChild(bullet);
 
 	// 注冊到碰撞管理器
 	currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
@@ -35,11 +35,18 @@ void BulletManager::Update() {
 	// 移除碰撞的子彈
 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	m_Bullets.erase(std::remove_if(m_Bullets.begin(), m_Bullets.end(),
-		[currentScene](const auto& bullet) {
+		[currentScene](const std::shared_ptr<Bullet>& bullet) {
 			if (bullet->ShouldRemove()) {
 				currentScene->GetRoot().lock()->RemoveChild(bullet);
-				currentScene->GetCamera().lock()->RemoveRelativePivotChild(bullet);
+				currentScene->GetCamera().lock()->RemoveChild(bullet);
 				currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(bullet);
+
+				//TODO:還沒重置或刪除子彈喔 (凱成：我先關閉碰撞顯示）
+				auto colliderBullet = bullet->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetVisibleBox();
+				currentScene->GetRoot().lock()->RemoveChild(colliderBullet);
+				currentScene->GetCamera().lock()->RemoveChild(colliderBullet);
+				currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(colliderBullet);
+
 				return true;
 			}
 			return false;

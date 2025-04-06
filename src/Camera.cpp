@@ -6,7 +6,7 @@
 
 Camera::Camera(
 	const std::vector<std::shared_ptr<nGameObject>> &pivotChildren
-	) : m_RelativePivotChildren(pivotChildren)
+	) : m_Children(pivotChildren)
 {
 	m_CameraWorldCoord.translation = {0.0f,0.0f};
 	m_CameraWorldCoord.rotation = 0.0f;
@@ -57,8 +57,8 @@ void Camera::RotateCamera(const float radian) // radian 是PI， degree是°
 	m_CameraWorldCoord.rotation -= radian * Util::Time::GetDeltaTimeMs() / 1000;
 }
 
-void Camera::AddRelativePivotChild(const std::shared_ptr<nGameObject> &child) {
-	m_RelativePivotChildren.push_back(child);
+void Camera::AddChild(const std::shared_ptr<nGameObject> &child) {
+	m_Children.push_back(child);
 	// 如果尚未設置初始縮放
 	if (!child->isSetInitialScale()) {
 		child->SetInitialScale(child->m_Transform.scale);
@@ -66,28 +66,38 @@ void Camera::AddRelativePivotChild(const std::shared_ptr<nGameObject> &child) {
 	}
 }
 
-void Camera::RemoveRelativePivotChild(const std::shared_ptr<nGameObject>& child) {
-	m_RelativePivotChildren.erase(
-		std::remove(m_RelativePivotChildren.begin(), m_RelativePivotChildren.end(), child),
-		m_RelativePivotChildren.end()
+void Camera::RemoveChild(const std::shared_ptr<nGameObject>& child) {
+	m_Children.erase(
+		std::remove(m_Children.begin(), m_Children.end(), child),
+		m_Children.end()
 	);
 }
 
-void Camera::AddRelativePivotChildren(
+void Camera::AddChildren(
 		const std::vector<std::shared_ptr<nGameObject>> &children) {
-	m_RelativePivotChildren.reserve(m_RelativePivotChildren.size() + children.size());
-	m_RelativePivotChildren.insert(m_RelativePivotChildren.end(), children.begin(), children.end());
+	m_Children.reserve(m_Children.size() + children.size());
+	m_Children.insert(m_Children.end(), children.begin(), children.end());
 }
 
-void Camera::UpdateZIndex(std::shared_ptr<nGameObject> child)
+void Camera::UpdateZIndex(const std::shared_ptr<nGameObject> &child) const
 {
-	if (m_MapSize != 0.0f)
-	{
-		const auto ZIndexLayer = child->GetZIndexType();
-		if (ZIndexLayer == ZIndexType::UI || ZIndexLayer == ZIndexType::FLOOR) return;
+	const auto ZIndexLayer = child->GetZIndexType();
+	if (ZIndexLayer == ZIndexType::CUSTOM) return; //自動跳過動態調整 --例如跟隨
 
+	// 特殊處理UI層
+	if (ZIndexLayer == ZIndexType::UI)
+	{
+		const auto ZIndexNum = child->GetZIndex();
+		if (ZIndexNum > ZIndexType::UI) return; // 已經加過掉頭就走
+		child->SetZIndex(ZIndexType::UI + ZIndexNum);
+		return;
+	}
+
+	// 動態處理其他層
+	if (m_MapYSize != 0.0f)
+	{
 		// 根據物體Y座標在該區間的相對位置計算最終ZIndex
-		float relativeY = (m_MapSize/2.0f - child->m_WorldCoord.y + child->GetImageSize().y/2.0f) / m_MapSize;
+		const float relativeY = (m_MapYSize/2.0f - child->m_WorldCoord.y + child->GetImageSize().y/2.0f) / m_MapYSize;
 		child->SetZIndex(static_cast<float>(ZIndexLayer) + (relativeY * 20.0f));
 	}
 }
@@ -99,7 +109,7 @@ void Camera::Update() {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
 
-	for (const auto &child:m_RelativePivotChildren)
+	for (const auto &child:m_Children)
 	{
 		//變更坐標軸
 		// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題

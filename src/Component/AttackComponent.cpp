@@ -29,7 +29,7 @@ void AttackComponent::Init()
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if(!scene)return;
 	scene->GetRoot().lock()->AddChild(m_currentWeapon);
-	scene->GetCamera().lock()->AddRelativePivotChild(m_currentWeapon);
+	scene->GetCamera().lock()->AddChild(m_currentWeapon);
 }
 
 void AttackComponent::Update()
@@ -161,11 +161,11 @@ void AttackComponent::SetDualWield(bool enable) {
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if (!enable) {
 		scene->GetRoot().lock()->RemoveChild(m_secondWeapon);
-		scene->GetCamera().lock()->RemoveRelativePivotChild(m_secondWeapon);
+		scene->GetCamera().lock()->RemoveChild(m_secondWeapon);
 		m_secondWeapon = nullptr;
 	}
 	else {
 		scene->GetRoot().lock()->AddChild(m_secondWeapon);
-		scene->GetCamera().lock()->AddRelativePivotChild(m_secondWeapon);
+		scene->GetCamera().lock()->AddChild(m_secondWeapon);
 	}
 }

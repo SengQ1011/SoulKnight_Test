@@ -6,6 +6,17 @@
 
 #include "Util/Logger.hpp"
 
+ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
+	if (zIndexStr == "FLOOR") return FLOOR;
+	if (zIndexStr == "OBJECTLOW") return OBJECTLOW;
+	if (zIndexStr == "BULLET") return BULLET;
+	if (zIndexStr == "OBJECTHIGH") return OBJECTHIGH;
+	if (zIndexStr == "UI") return UI;
+	if (zIndexStr == "CUSTOM") return CUSTOM;
+	LOG_ERROR("Unknown zIndex: {}", zIndexStr);
+	return CUSTOM;
+}
+
 nlohmann::json Factory::readJsonFile(const std::string& fileName) {
 	std::ifstream file(JSON_DIR "/" + fileName);
 	if (!file.is_open()) {
