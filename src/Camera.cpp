@@ -3,6 +3,7 @@
 //
 
 #include "Camera.hpp"
+#include <execution>
 
 Camera::Camera(
 	const std::vector<std::shared_ptr<nGameObject>> &pivotChildren
@@ -109,24 +110,33 @@ void Camera::Update() {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
 
-	for (const auto &child:m_Children)
-	{
-		//變更坐標軸
-		// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
-		//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
-		child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
-
-		//動態調整ZIndex
-		UpdateZIndex(child);
-
-		glm::vec2 initialScale = child->GetInitialScale();
-		// std::copysign(第一個參數：大小, 第二個參數：正負號)
-		child->m_Transform.scale = glm::vec2(
-		    initialScale.x * std::copysign(m_CameraWorldCoord.scale.x, child->m_Transform.scale.x),
-		    initialScale.y * std::copysign(m_CameraWorldCoord.scale.y, child->m_Transform.scale.y)
-		);
+	// 對每個Object調位置
+	if (m_Children.size() < 100) {
+		for (const auto& child : m_Children) UpdateChildViewportPosition(child);
+	} else {
+		std::for_each(std::execution::par_unseq,m_Children.begin(), m_Children.end(),
+		[this](const std::shared_ptr<nGameObject>& child) {UpdateChildViewportPosition(child);});
 	}
 }
+
+void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child) const
+{
+	//變更坐標軸
+	// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
+	//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
+	child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
+
+	//動態調整ZIndex
+	UpdateZIndex(child);
+
+	glm::vec2 initialScale = child->GetInitialScale();
+	// std::copysign(第一個參數：大小, 第二個參數：正負號)
+	child->m_Transform.scale = glm::vec2(
+		initialScale.x * std::copysign(m_CameraWorldCoord.scale.x, child->m_Transform.scale.x),
+		initialScale.y * std::copysign(m_CameraWorldCoord.scale.y, child->m_Transform.scale.y)
+	);
+}
+
 
 
 
