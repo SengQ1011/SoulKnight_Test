@@ -19,43 +19,56 @@ public:
 		m_InteractionRadius(interactionRadius),
 		m_IsAutoInteract(isAutoInteract) {}
 
-	// 使用std::function作爲互動回調
+	// 使用std::function作為互動回調
 	using InteractionCallback = std::function<void(
 		const std::shared_ptr<Character>& interactor,
 		const std::shared_ptr<nGameObject>& target
-		)>;
+	)>;
 
 	void Init() override;
 	void Update() override;
 
 	// 主要功能：處理互動事件
-	virtual void OnInteract(const std::shared_ptr<Character>& interactor) {
-		if (m_InteractionCallback) m_InteractionCallback(interactor,GetOwner<nGameObject>());
-	};
+	virtual bool OnInteract(const std::shared_ptr<Character>& interactor);
 
-	// Getter/Setter
+	// 設置互動回調
+	void SetInteractionCallback(const InteractionCallback& callback) {
+		m_InteractionCallback = callback;
+	}
+
+	// 檢查玩家是否在互動範圍內
+	bool IsInRange(const std::shared_ptr<Character>& character) const;
+	// 顯示/隱藏互動提示
+	void ShowPrompt(bool show);
+
+	// Getter
 	std::string GetPromptText() const { return m_PromptText; }
-	void SetPromptText(const std::string& text) { m_PromptText = text; }
-
 	float GetInteractionRadius() const { return m_InteractionRadius; }
-	void SetInteractionRadius(float radius) { m_InteractionRadius = radius; }
+	bool IsPlayerNearby() const { return m_IsPlayerNearby; }
+	bool IsAutoInteract() const { return m_IsAutoInteract; }
 
-	bool CanInteract() const {
-		const auto player = m_Player.lock();
-		if (!player) return false;
-		return player->GetWorldCoord().length() <= m_InteractionRadius;
-	};
+	//Setter
+	void SetPromptText(const std::string& text) { m_PromptText = text; }
+	void SetInteractionRadius(float radius) { m_InteractionRadius = radius; }
+	void SetPlayerNearby(bool nearby) { m_IsPlayerNearby = nearby; }
+	void SetAutoInteract(bool autoInteract) { m_IsAutoInteract = autoInteract; }
 
 protected:
 	std::string m_PromptText;
 	float m_InteractionRadius;
 	bool m_IsAutoInteract;
 	bool m_IsPlayerNearby = false;
+	bool m_IsPromptVisible = false;
 
-	std::weak_ptr<Character> m_Player; //暫時確定互動物是玩家
+	std::weak_ptr<Character> m_Player; // 記錄正在互動的玩家
 	InteractionCallback m_InteractionCallback;
 
-	// 可以添加其他互動相關屬性，如冷卻時間、使用次數限制等
+	// 互動提示UI元素
+	std::shared_ptr<nGameObject> m_PromptObject = nullptr;
+
+private:
+	// 創建互動提示
+	void CreatePrompt();
 };
 
 #endif //INTERACTABLECOMPONENT_HPP

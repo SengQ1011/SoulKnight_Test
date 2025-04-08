@@ -40,6 +40,7 @@ public:
 		m_RotationLimits = glm::vec2(min, max);
 		m_EnableRotationLimits = enable;
 	}
+	void SetZIndexOffset(const float zIndexOffset) {m_ZIndexOffset = zIndexOffset;}
 
 	// 启用/禁用旋转限制
 	void EnableRotationLimits(bool enable) {
@@ -50,6 +51,7 @@ public:
 	[[nodiscard]] std::shared_ptr<nGameObject> GetFollower() const { return m_Follower.lock();}
 	[[nodiscard]] float GetHoldingRotation() const {return m_HoldingRotation;}
 	[[nodiscard]] bool GetUseMouse() const {return m_UseMousePosition;}
+	[[nodiscard]] float GetZIndexOffset() const {return m_ZIndexOffset;}
 
 
 protected:
@@ -57,6 +59,7 @@ protected:
 	bool m_EnableRotationLimits = false;											// 是否启用旋转限制
 	glm::vec2 m_HandOffset = glm::vec2(0, 0);									//不完全以世界坐標為Pivot,有一點Offset
 	glm::vec2 m_HoldingOffset = glm::vec2(0, 0);								//武器也是
+	float m_ZIndexOffset = 0.0f;
 	float m_HoldingRotation = 0;
 	bool m_UseMousePosition = false;
 	std::weak_ptr<nGameObject> m_Follower;

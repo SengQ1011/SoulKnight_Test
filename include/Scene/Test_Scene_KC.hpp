@@ -39,6 +39,11 @@ protected:
 
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
 	std::shared_ptr<Character> m_Player;
+
+	std::shared_ptr<RoomObject> m_Portal = std::make_shared<RoomObject>();
+
+	bool isChange = false;
+
 };
 
 #endif //TEST_SCENE_HPP

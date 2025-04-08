@@ -5,6 +5,8 @@
 #include "Camera.hpp"
 #include <execution>
 
+#include "Tool/Tool.hpp"
+
 Camera::Camera(
 	const std::vector<std::shared_ptr<nGameObject>> &pivotChildren
 	) : m_Children(pivotChildren)
@@ -80,31 +82,6 @@ void Camera::AddChildren(
 	m_Children.insert(m_Children.end(), children.begin(), children.end());
 }
 
-void Camera::UpdateZIndex(const std::shared_ptr<nGameObject> &child) const
-{
-	const auto ZIndexLayer = child->GetZIndexType();
-	if (ZIndexLayer == ZIndexType::CUSTOM) return; //自動跳過動態調整 --例如跟隨
-
-	// 特殊處理UI層
-	if (ZIndexLayer == ZIndexType::UI)
-	{
-		const auto ZIndexNum = child->GetZIndex();
-		if (ZIndexNum > ZIndexType::UI) return; // 已經加過掉頭就走
-		child->SetZIndex(ZIndexType::UI + ZIndexNum);
-		return;
-	}
-
-	// 動態處理其他層
-	if (m_MapYSize != 0.0f)
-	{
-		// 根據物體Y座標在該區間的相對位置計算最終ZIndex
-		const float relativeY = (m_MapYSize/2.0f - child->m_WorldCoord.y + child->GetImageSize().y/2.0f) / m_MapYSize;
-		child->SetZIndex(static_cast<float>(ZIndexLayer) + (relativeY * 20.0f));
-	}
-}
-
-
-//感覺可以優化 在渲染前一次性修改
 void Camera::Update() {
 	if (auto target = m_FollowTarget.lock()) {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
@@ -135,6 +112,28 @@ void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &chi
 		initialScale.x * std::copysign(m_CameraWorldCoord.scale.x, child->m_Transform.scale.x),
 		initialScale.y * std::copysign(m_CameraWorldCoord.scale.y, child->m_Transform.scale.y)
 	);
+}
+
+void Camera::UpdateZIndex(const std::shared_ptr<nGameObject> &child) const
+{
+	const auto ZIndexLayer = child->GetZIndexType();
+	if (ZIndexLayer == ZIndexType::CUSTOM) return; //自動跳過動態調整 --例如跟隨
+
+	// 特殊處理UI層
+	if (ZIndexLayer == ZIndexType::UI)
+	{
+		const auto ZIndexNum = child->GetZIndex();
+		child->SetZIndex(ZIndexType::UI + ZIndexNum);
+		return;
+	}
+
+	// 動態處理其他層
+	if (m_MapYSize != 0.0f)
+	{
+		// 根據物體Y座標在該區間的相對位置計算最終ZIndex
+		const float relativeY = (m_MapYSize/2.0f - child->m_WorldCoord.y + child->GetImageSize().y/2.0f) / m_MapYSize;
+		child->SetZIndex(static_cast<float>(ZIndexLayer) + (relativeY * 20.0f));
+	}
 }
 
 

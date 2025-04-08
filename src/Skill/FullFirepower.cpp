@@ -19,16 +19,17 @@ void FullFirepower::Execute() {
 	if (auto attackComp = m_owner.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
 		if(auto currentWeapon = attackComp->GetCurrentWeapon()) {
 			auto cloneWeapon = currentWeapon->Clone();
-			auto FollowerComp = cloneWeapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
-			FollowerComp->SetFollower(m_owner.lock());
-			FollowerComp->IsTargetMouse(true);
-			FollowerComp->SetHandOffset(glm::vec2(30/5.0f,-25/4.0f));
-			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,2.0f));
+			auto cloneFollowerComp = cloneWeapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
+			auto currentFollowerComp = currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
+			cloneFollowerComp->SetFollower(m_owner.lock());
+			cloneFollowerComp->IsTargetMouse(true);
+			cloneFollowerComp->SetHandOffset(glm::vec2(30/5.0f,-25/4.0f));
+			cloneFollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,2.0f));
 			attackComp->SetSecondWeapon(cloneWeapon);
 			attackComp->SetDualWield(true);
 
-			// cloneWeapon->SetZIndex(currentWeapon->GetZIndex() +1);
-			cloneWeapon->SetZIndexType(currentWeapon->GetZIndexType());
+			//設置跟隨的ZIndex
+			cloneFollowerComp->SetZIndexOffset(currentFollowerComp->GetZIndexOffset());
 			// 设置副武器延迟响应
 			cloneWeapon->SetAttackDelay(0.1f); // 0.1秒延迟
 			isActive = true;

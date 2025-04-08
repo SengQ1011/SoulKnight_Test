@@ -43,9 +43,9 @@ void Room::Update() {
     }
 
     // 更新碰撞检测
-    if (m_CollisionManager) {
-        m_CollisionManager->UpdateCollision();
-    }
+    if (m_CollisionManager) m_CollisionManager->UpdateCollision();
+
+	if (m_InteractionManager) m_InteractionManager->Update();
 
     // 注意：不在这里更新角色，因为角色更新应该由Scene负责
 }
@@ -114,6 +114,11 @@ void Room::AddRoomObject(const std::shared_ptr<RoomObject>& object) {
         if (auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
             m_CollisionManager->RegisterNGameObject(object);
         }
+
+    	if (object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+    	{
+    		m_InteractionManager->RegisterInteractable(object);
+    	}
     }
 }
 

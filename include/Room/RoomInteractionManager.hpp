@@ -7,6 +7,7 @@
 
 #include "Creature/Character.hpp"
 #include "Override/nGameObject.hpp"
+#include "Components/InteractableComponent.hpp"
 class RoomInteractionManager {
 public:
 	RoomInteractionManager() = default;
@@ -16,28 +17,29 @@ public:
 	void RegisterInteractable(const std::shared_ptr<nGameObject>& interactable);
 	void UnregisterInteractable(const std::shared_ptr<nGameObject>& interactable);
 
-	// 獲取最近的可互動物件
-	[[nodiscard]] std::shared_ptr<nGameObject> GetClosestInteractable(
-		const glm::vec2& position, float maxRadius) const;
+	void SetPlayer(const std::shared_ptr<Character>& player) {m_Player = player;} // 引用玩家角色
 
-	// 顯示/隱藏所有互動提示
-	void ShowInteractionHints(bool show);
+	bool TryInteractWithClosest(float maxRadius = FLT_MAX) const;
 
 	// 更新互動提示（通常由Room::Update調用）
-	void UpdateInteractionHints(const glm::vec2& playerPosition, float interactionRadius);
-
-	// 清空所有註冊的互動物件（通常在房間被卸載時調用）
-	void Clear();
+	void Update();
 
 	// 調試用：顯示互動範圍
 	void ToggleDebugVisibility();
 
+	// 獲取最近的可互動物件
+	[[nodiscard]] std::shared_ptr<nGameObject> GetClosestInteractable(float maxRadius) const;
+
+	// 顯示/隱藏所有互動提示
+	void ShowInteractionHints(bool show);
 
 protected:
 	std::vector<std::weak_ptr<nGameObject>> m_InteractableObjects;
 	std::weak_ptr<Character> m_Player;
 	bool isVisible = true;
 
+private:
+	static void UpdateInteractable(const std::weak_ptr<nGameObject>& interactable, const std::shared_ptr<Character> &player);
 };
 
 #endif //ROOMINTERACTIONMANAGER_HPP

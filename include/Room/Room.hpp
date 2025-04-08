@@ -6,12 +6,13 @@
 #define ROOM_HPP
 
 #include "Camera.hpp"
-#include "RoomCollisionManager.hpp"
-#include "Override/nGameObject.hpp"
-#include "Factory/RoomObjectFactory.hpp"
-#include "Creature/Character.hpp"
-#include "RoomObject/RoomObject.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Creature/Character.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Override/nGameObject.hpp"
+#include "RoomCollisionManager.hpp"
+#include "RoomInteractionManager.hpp"
+#include "RoomObject/RoomObject.hpp"
 #include "pch.hpp"
 
 // 房间状态枚举
@@ -53,6 +54,7 @@ public:
 
     // 碰撞体管理
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
+    [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
 
     // Getter/Setter
     [[nodiscard]] glm::vec2 GetWorldCoord() const { return m_WorldCoord; }
@@ -90,6 +92,7 @@ protected:
     // 工厂与管理器
     std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
     std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
+	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
 
     // 相机引用
     std::weak_ptr<Camera> m_Camera;

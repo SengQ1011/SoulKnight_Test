@@ -6,6 +6,7 @@
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
 
+#include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
 #include "Scene/SceneManager.hpp"
 #include "pch.hpp"
@@ -26,11 +27,46 @@ void TestScene_KC::Start()
 	// 创建并初始化玩家
 	CreatePlayer();
 
+	//建立傳送門
+	m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/way_battle.png"));
+	m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
+	m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
+	m_LobbyRoom->AddRoomObject(m_Portal);
+
+	auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
+	component->SetInteractionRadius(71.0f);
+	component->SetInteractionCallback(
+		[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
+		{
+			isChange = true;
+		});
+
+	m_Camera->AddChild(m_Portal);
+	m_Root->AddChild(m_Portal);
+
 	// 设置相机
 	SetupCamera();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
+}
+
+void TestScene_KC::Update()
+{
+	// Input处理
+	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
+	inputManager->listenInput();
+
+	m_Player->Update();
+
+	// 更新房间
+	m_LobbyRoom->Update();
+
+	// 更新相机
+	m_Camera->Update();
+
+	// 更新场景根节点
+	GetRoot().lock()->Update();
 }
 
 void TestScene_KC::CreatePlayer()
@@ -78,24 +114,6 @@ void TestScene_KC::InitializeSceneManagers()
 	inputManager->addObserver(m_Camera);
 }
 
-void TestScene_KC::Update()
-{
-	// Input处理
-	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	inputManager->listenInput();
-
-	m_Player->Update();
-
-	// 更新房间
-	m_LobbyRoom->Update();
-
-	// 更新相机
-	m_Camera->Update();
-
-	// 更新场景根节点
-	GetRoot().lock()->Update();
-}
-
 void TestScene_KC::Exit()
 {
 	LOG_DEBUG("KC Test Scene exited");
@@ -107,7 +125,7 @@ void TestScene_KC::Exit()
 
 Scene::SceneType TestScene_KC::Change()
 {
-	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
+	if (isChange)
 	{
 		LOG_DEBUG("Change Main Menu");
 		return Scene::SceneType::Menu;
