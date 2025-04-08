@@ -11,6 +11,7 @@
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
 
+// class可能是指定類型再用， 目前都是RoomObject
 std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
 {
 	std::shared_ptr<RoomObject> roomObject = std::make_shared<RoomObject>();
@@ -23,6 +24,7 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 		LOG_ERROR("RoomObjectFactory::createRoomObject: No such ID in JSON: {}", _id);
 		return roomObject;
 	}
+	//TODO:ID系統
 
 	auto data = origin[_id];
 
@@ -44,26 +46,11 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 	}
 
 	//設置Components
-	if (!data.contains("components")) {return roomObject;}
+	if (!data.contains("components")) return roomObject; // 沒有就跳過
 	for (auto& component : data.at("components"))
 	{
-		if (component.at("Class").get<std::string>() == "COLLISION") {
-			roomObject->AddComponent<CollisionComponent>
-			(ComponentType::COLLISION,component.get<StructComponents::StructCollisionComponent>());
-		};
-		// TODO: createComponent(roomObject, component);
-		// try
-		// {
-		// 	roomObject->AddComponent<CollisionComponent>(ComponentType::COLLISION,component.get<StructComponents::StructCollisionComponent>());
-		// }
+		try { Factory::createComponent(roomObject, component); }
+		catch (const std::exception& e) { LOG_ERROR("RoomObjectFactory::createRoomObject: {}", e.what()); }
 	}
 	return roomObject;
-}
-
-std::vector<std::shared_ptr<RoomObject>> RoomObjectFactory::createObjectsFromJson(const nlohmann::json& objectsJson) {
-	std::vector<std::shared_ptr<RoomObject>> objects;
-	for (const auto& objData : objectsJson) {
-		objects.push_back(createRoomObject(objData["id"], objData["class"]));
-	}
-	return objects;
 }

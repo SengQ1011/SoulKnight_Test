@@ -288,6 +288,31 @@
   "ZIndex": "OBJECTLOW",
   "path": "/Lobby/object_dungeonDoor.png"
  },
+ "object_wayBattle": {
+  "isAnimated": false,
+  "ZIndex": "OBJECTHIGH",
+  "components": [
+   {
+    "Name": "portal",
+    "Class": "INTERACTABLE",
+    "InteractionRadius": 35.5,
+    "InteractableFunctionName": "Portal",
+    "PromptObject": {
+     "PromptFontPath": "/Font/zpix.ttf",
+     "PromptFontSize": 10.0,
+     "PromptText": "前面的區域，\n以後再來吧",
+     "PromptColor": [
+      255,
+      255,
+      255,
+      255
+     ],
+     "IsPromptVisible": false
+    }
+   }
+  ],
+  "path": "/Lobby/way_battle.png"
+ },
  "object_carpet": {
   "isAnimated": false,
   "ZIndex": "FLOOR",

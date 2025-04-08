@@ -193,7 +193,6 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) { // 根據圖紙創建
             const auto position = glm::vec2(x, y);
             roomObject->SetWorldCoord(position);
             AddRoomObject(roomObject);
-            LOG_DEBUG("create RoomObject,position: {}", position);
         }
     }
 }

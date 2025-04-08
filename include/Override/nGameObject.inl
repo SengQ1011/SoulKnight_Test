@@ -30,9 +30,10 @@ std::shared_ptr<T> nGameObject::GetComponent(const ComponentType type) //或許w
 		return std::dynamic_pointer_cast<T>(it->second);
 	}
 	if (it == m_Components.end()) {
-		LOG_WARN("Component type not found: {}", static_cast<int>(type));
+		// TODO: 多型的時候會一直報太煩了
+		// LOG_WARN("Component type not found: {}", static_cast<int>(type));
 		for (const auto& [key, val] : m_Components) {
-			LOG_ERROR("Existing component type: {}", static_cast<int>(key));
+			// LOG_ERROR("Existing component type: {}", static_cast<int>(key));
 		}
 	}
 

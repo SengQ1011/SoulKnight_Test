@@ -4,6 +4,7 @@
 
 #include "Factory/Factory.hpp"
 
+#include "Components/InteractableComponent.hpp"
 #include "Util/Logger.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
@@ -31,18 +32,28 @@ nlohmann::json Factory::readJsonFile(const std::string& fileName) {
 
 void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 {
-	static const std::unordered_map<std::string, std::function<void()>> componentBluePrint = {
+	// 配對創建組件
+	static const std::unordered_map<std::string, std::function<void(const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)>>
+	componentBluePrint = {
 		{"COLLISION",
-			[object,json]() {
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json) {
 				object->AddComponent<CollisionComponent>
 				(ComponentType::COLLISION,json.get<StructComponents::StructCollisionComponent>());
+			}
+		},
+		{"INTERACTABLE",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+			{
+				object->AddComponent<InteractableComponent>
+				(ComponentType::INTERACTABLE,json.get<StructComponents::StructCollisionComponent>());
 			}
 		},
 	};
 	const std::string& componentClass = json.at("Class").get<std::string>();
 
 	if (const auto component = componentBluePrint.find(componentClass); component != componentBluePrint.end()) {
-		component->second();
+		component->second(object,json);
+		return;
 	}
 	LOG_DEBUG("ErrorInFactory: Wrong Class: {}",componentClass);
 }

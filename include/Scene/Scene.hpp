@@ -79,7 +79,11 @@ public:
 		LOG_DEBUG("Successfully added new Manager");
 	}
 
+	bool IsChange() const {return m_IsChange;}
+	void SetIsChange(const bool change) {m_IsChange = change;}
+
 protected:
+	bool m_IsChange = false;
 	std::shared_ptr<SceneData> m_SceneData = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();

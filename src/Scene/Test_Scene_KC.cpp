@@ -33,21 +33,21 @@ void TestScene_KC::Start()
 	m_LobbyRoom->CharacterEnter(m_Player);
 
 	//建立傳送門
-	m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/way_battle.png"));
-	m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
-	m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
+	// m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/way_battle.png"));
+	// m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
+	// m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
 
-	auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-	component->SetInteractionRadius(71.0f/2);
-	component->SetInteractionCallback(
-		[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
-		{
-			isChange = true;
-		});
-
-	m_LobbyRoom->AddRoomObject(m_Portal);
-	m_Camera->AddChild(m_Portal);
-	m_Root->AddChild(m_Portal);
+	// auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
+	// component->SetInteractionRadius(71.0f/2);
+	// component->SetInteractionCallback(
+	// 	[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
+	// 	{
+	// 		SetIsChange(true);
+	// 	});
+	//
+	// m_LobbyRoom->AddRoomObject(m_Portal);
+	// m_Camera->AddChild(m_Portal);
+	// m_Root->AddChild(m_Portal);
 
 	// 设置相机
 	SetupCamera();
@@ -127,7 +127,7 @@ void TestScene_KC::Exit()
 
 Scene::SceneType TestScene_KC::Change()
 {
-	if (isChange)
+	if (IsChange())
 	{
 		LOG_DEBUG("Change Main Menu");
 		return Scene::SceneType::Menu;
