@@ -5,6 +5,7 @@
 #ifndef ROOMINTERACTIONMANAGER_HPP
 #define ROOMINTERACTIONMANAGER_HPP
 
+#include "Creature/Character.hpp"
 #include "Override/nGameObject.hpp"
 class RoomInteractionManager {
 public:
@@ -16,7 +17,7 @@ public:
 	void UnregisterInteractable(const std::shared_ptr<nGameObject>& interactable);
 
 	// 獲取最近的可互動物件
-	std::shared_ptr<nGameObject> GetClosestInteractable(
+	[[nodiscard]] std::shared_ptr<nGameObject> GetClosestInteractable(
 		const glm::vec2& position, float maxRadius) const;
 
 	// 顯示/隱藏所有互動提示
@@ -34,6 +35,7 @@ public:
 
 protected:
 	std::vector<std::weak_ptr<nGameObject>> m_InteractableObjects;
+	std::weak_ptr<Character> m_Player;
 	bool isVisible = true;
 
 };
