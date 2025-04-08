@@ -29,20 +29,20 @@ nlohmann::json Factory::readJsonFile(const std::string& fileName) {
 	return jsonData;
 }
 
-std::shared_ptr<Component> Factory::createComponent(const nlohmann::json &json)
+void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 {
-	static const std::unordered_map<std::string, std::function<std::shared_ptr<Component>(const nlohmann::json&)>> componentBluePrint = {
-		{"CollisionComponent",
-			[](const nlohmann::json &data) {
-				return std::make_shared<CollisionComponent>(data.get<StructComponents::StructCollisionComponent>());
+	static const std::unordered_map<std::string, std::function<void()>> componentBluePrint = {
+		{"COLLISION",
+			[object,json]() {
+				object->AddComponent<CollisionComponent>
+				(ComponentType::COLLISION,json.get<StructComponents::StructCollisionComponent>());
 			}
 		},
 	};
 	const std::string& componentClass = json.at("Class").get<std::string>();
 
 	if (const auto component = componentBluePrint.find(componentClass); component != componentBluePrint.end()) {
-		return component->second(json);
+		component->second();
 	}
 	LOG_DEBUG("ErrorInFactory: Wrong Class: {}",componentClass);
-	return nullptr;
 }

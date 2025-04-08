@@ -29,9 +29,6 @@ void Room::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Ch
     // 加载房间数据
     LoadFromJSON(JSON_DIR"/LobbyObjectPosition.json");
 
-    // 注册碰撞
-    RegisterCollisions();
-
     // 设置初始状态
     SetState(RoomState::ACTIVE);
 }
@@ -104,20 +101,28 @@ void Room::AddRoomObject(const std::shared_ptr<RoomObject>& object) {
         m_RoomObjects.push_back(object);
 
         // 将对象添加到场景根节点和相机
-        auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-    	auto renderer = scene->GetRoot().lock();
-    	auto camera = scene->GetCamera().lock();
+		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+    	const auto renderer = scene->GetRoot().lock();
+    	const auto camera = scene->GetCamera().lock();
         if (scene) {
-            if (renderer) renderer->AddChild(object);
+            if (renderer && object->GetDrawable()) renderer->AddChild(object);
         	if (camera) camera->AddChild(object);
         }
 
         // 如果对象有碰撞组件，注册到碰撞管理器
         if (auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
             m_CollisionManager->RegisterNGameObject(object);
+        	if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
+        	{
+        		if (scene)
+        		{
+        			if (renderer && colliderVisible->GetDrawable()) renderer->AddChild(colliderVisible);
+        			if (camera) camera->AddChild(colliderVisible);
+        		}
+        	}
         }
-    	//TODO:
 
+    	// 如果有互動組件，注冊到互動管理器
     	if (auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
     	{
     		m_InteractionManager->RegisterInteractable(object);
@@ -158,7 +163,7 @@ void Room::RemoveRoomObject(const std::shared_ptr<RoomObject>& object) {
     }
 }
 
-void Room::LoadFromJSON(const std::string& jsonFilePath) {
+void Room::LoadFromJSON(const std::string& jsonFilePath) { // 根據圖紙創建
     std::ifstream file(jsonFilePath);
     if (!file.is_open()) {
         LOG_DEBUG("Error: can't open in Room: {}", jsonFilePath);
@@ -191,26 +196,4 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) {
             LOG_DEBUG("create RoomObject,position: {}", position);
         }
     }
-}
-
-void Room::RegisterCollisions() {
-	// 注册有碰撞组件的房间对象
-	for (const auto& obj : m_RoomObjects) {
-		if (!obj) continue;
-
-		auto collComp = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-		if (!collComp) continue;
-
-		m_CollisionManager->RegisterNGameObject(obj);
-
-		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-		if (!scene) continue;
-
-		scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
-
-		auto camera = m_Camera.lock();
-		if (!camera) continue;
-
-		camera->AddChild(collComp->GetVisibleBox());
-	}
 }

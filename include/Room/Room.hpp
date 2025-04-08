@@ -74,9 +74,6 @@ public:
     // 加载JSON配置
     virtual void LoadFromJSON(const std::string& jsonFilePath);
 
-    // 注册所有对象到碰撞系统
-    virtual void RegisterCollisions();
-
 protected:
     // 房间状态
     RoomState m_State = RoomState::INACTIVE;

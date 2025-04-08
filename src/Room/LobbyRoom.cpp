@@ -50,22 +50,6 @@ void LobbyRoom::Update() {
 	}
 }
 
-void LobbyRoom::SetupWallColliders() {
-    LOG_DEBUG("Set Lobby wall collider");
-
-    // 根据预定义的偏移和尺寸创建墙壁碰撞体
-    for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
-        auto wallCollider = std::make_shared<nGameObject>("LobbyWall_" + std::to_string(i));
-        auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
-
-        collisionComponent->SetOffset(m_WallColliderOffsets[i]);
-        collisionComponent->SetSize(m_WallColliderSizes[i]);
-        collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
-
-    	AddWallCollider(wallCollider);
-    }
-}
-
 void LobbyRoom::SetupInteractiveObjects() {
     // 设置大厅中的互动对象，例如传送门、工作台等
     // 这些对象可能有特殊的交互功能
@@ -168,6 +152,22 @@ void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character>& character) {
     if (character->GetType() == CharacterType::PLAYER) {
         // 玩家离开大厅的特殊处理
     }
+}
+
+void LobbyRoom::SetupWallColliders() {
+	LOG_DEBUG("Set Lobby wall collider");
+
+	// 根据预定义的偏移和尺寸创建墙壁碰撞体
+	for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
+		auto wallCollider = std::make_shared<nGameObject>("LobbyWall_" + std::to_string(i));
+		auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+
+		collisionComponent->SetOffset(m_WallColliderOffsets[i]);
+		collisionComponent->SetSize(m_WallColliderSizes[i]);
+		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
+
+		AddWallCollider(wallCollider);
+	}
 }
 
 void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
