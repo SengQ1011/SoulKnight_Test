@@ -14,6 +14,7 @@ enum class ComponentType
 	FOLLOWER,
 	HEALTH,
 	INPUT,
+	INTERACTABLE,
 	MOVEMENT,
 	SKILL,
 	STATE,

@@ -60,6 +60,7 @@ set(INCLUDE_FILES
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp
+    Components/InteractableComponent.hpp
     Components/MovementComponent.hpp
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
@@ -84,6 +85,7 @@ set(INCLUDE_FILES
     Room/LobbyRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
+    Room/RoomInteractionManager.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp
     Scene/Complete_Scene.hpp

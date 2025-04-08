@@ -15,16 +15,20 @@ void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject
 {
 	if (nGameObject && nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
-		//LOG_DEBUG("Collision Manager Registered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
 		m_NGameObjects.push_back(nGameObject);
 	}
 }
 
 void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
-	//LOG_DEBUG("Collision Manager Unregistered:{} {}",nGameObject->GetName(), nGameObject->GetClassName());
 	m_NGameObjects.erase(
-		std::remove(m_NGameObjects.begin(), m_NGameObjects.end(), nGameObject),
+		std::remove_if(m_NGameObjects.begin(), m_NGameObjects.end(),
+			[&nGameObject](const auto& weakPtr)
+			{
+				if (weakPtr.expired()) return false; //檢查weak_ptr是否過期
+				const auto sharedPtr = weakPtr.lock(); //轉換成shared_ptr來比較
+				return sharedPtr.get() == nGameObject.get(); //比較指針地址
+			}),
 		m_NGameObjects.end()
 	);
 }
@@ -35,16 +39,16 @@ void RoomCollisionManager::UpdateCollision() const
 
 	for (size_t i = 0; i < m_NGameObjects.size(); ++i) // ++i效率更好，都是從0開始，i++會建一個臨時變數
 	{
-		auto objectA = m_NGameObjects[i];
-		if (!objectA->IsActive()) continue;
+		auto objectA = m_NGameObjects[i].lock();
+		if (!objectA || !objectA->IsActive()) continue;
 
 		auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		if (!colliderA) continue;
 
 		for (size_t j = i + 1; j < m_NGameObjects.size(); ++j)
 		{
-			auto objectB = m_NGameObjects[j];
-			if (!objectB->IsActive()) continue;
+			auto objectB = m_NGameObjects[j].lock();
+			if (!objectB || !objectB->IsActive()) continue;
 
 			auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 			if (!colliderB) continue;
@@ -53,11 +57,7 @@ void RoomCollisionManager::UpdateCollision() const
 			Rect boundA = colliderA->GetBounds();
 			Rect boundB = colliderB->GetBounds();
 
-			if (boundA.Intersects(boundB))
-			{
-				collisionPairs.emplace_back(objectA, objectB);
-				LOG_DEBUG("Collision");
-			}
+			if (boundA.Intersects(boundB)) collisionPairs.emplace_back(objectA, objectB);
 		}
 	}
 
@@ -74,13 +74,15 @@ void RoomCollisionManager::UpdateCollision() const
 	}
 }
 
-void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化 TODO：應該
+void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 {
 	isVisible = isVisible ^ true; //XOR bool 實現開關
 	std::for_each(std::execution::par_unseq,m_NGameObjects.begin(), m_NGameObjects.end(),
-		[&](const std::shared_ptr<nGameObject>& object)
+		[&](const std::weak_ptr<nGameObject>& object)
 		{
-			object->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetVisibleBox()->SetVisible(isVisible);
+			if (const auto sharedPtr = object.lock())
+				sharedPtr->GetComponent<CollisionComponent>(ComponentType::COLLISION)
+				->GetVisibleBox()->SetVisible(isVisible);
 		});
 }
 
