@@ -19,9 +19,12 @@ Room::~Room() {
     m_RoomObjects.clear();
 }
 
-void Room::Start(std::shared_ptr<Camera> camera) {
+void Room::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial Room start");
     m_Camera = camera;
+	m_Player = player;
+
+	m_InteractionManager->SetPlayer(player);
 
     // 加载房间数据
     LoadFromJSON(JSON_DIR"/LobbyObjectPosition.json");

@@ -34,7 +34,7 @@ public:
     virtual ~Room();
 
     // 核心方法
-    virtual void Start(std::shared_ptr<Camera> camera); // 房间初始化
+    virtual void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player); // 房间初始化
     virtual void Update(); // 更新房间内所有对象
 
     // 房间状态管理
@@ -69,6 +69,8 @@ public:
     [[nodiscard]] float GetRoomHeight() const { return m_RoomHeight; }
     void SetRoomHeight(float height) { m_RoomHeight = height; }
 
+	void SetPlayer(const std::shared_ptr<Character>& player) { m_Player = player; }
+
     // 加载JSON配置
     virtual void LoadFromJSON(const std::string& jsonFilePath);
 
@@ -96,6 +98,7 @@ protected:
 
     // 相机引用
     std::weak_ptr<Camera> m_Camera;
+	std::weak_ptr<Character> m_Player;
 
     // 子类需要实现的方法      // 设置墙壁碰撞体
     virtual void OnStateChanged(RoomState oldState, RoomState newState) {}  // 房间状态变化时调用

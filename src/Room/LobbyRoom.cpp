@@ -13,11 +13,11 @@ LobbyRoom::LobbyRoom() : Room() {
     // LobbyRoom特有的初始化
 }
 
-void LobbyRoom::Start(std::shared_ptr<Camera> camera) {
+void LobbyRoom::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial LobbyRoom start");
 
     // 调用基类的Start方法
-    Room::Start(camera);
+    Room::Start(camera,player);
 
 	// 設置大廳特有的墻壁碰撞體
 	SetupWallColliders();

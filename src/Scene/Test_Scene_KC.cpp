@@ -20,12 +20,17 @@ void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene");
 
-	// 创建并初始化大厅房间
-	m_LobbyRoom = std::make_shared<LobbyRoom>();
-	m_LobbyRoom->Start(m_Camera);
-
 	// 创建并初始化玩家
 	CreatePlayer();
+
+	// 创建并初始化大厅房间
+	m_LobbyRoom = std::make_shared<LobbyRoom>();
+	m_LobbyRoom->Start(m_Camera,m_Player);
+
+	// 将玩家注册到碰撞管理器
+	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
+	// 将玩家添加到房间
+	m_LobbyRoom->CharacterEnter(m_Player);
 
 	//建立傳送門
 	m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/way_battle.png"));
@@ -57,6 +62,8 @@ void TestScene_KC::Update()
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	inputManager->listenInput();
 
+	if (Util::Input::IsKeyUp(Util::Keycode::F)) m_LobbyRoom->GetInteractionManager()->TryInteractWithClosest();
+
 	m_Player->Update();
 
 	// 更新房间
@@ -85,15 +92,10 @@ void TestScene_KC::CreatePlayer()
 		m_Camera->AddChild(collision->GetVisibleBox());
 	}
 
-	// 将玩家注册到碰撞管理器
-	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
-
 	// 将玩家添加到场景根节点和相机
 	GetRoot().lock()->AddChild(m_Player);
 	m_Camera->AddChild(m_Player);
 
-	// 将玩家添加到房间
-	m_LobbyRoom->CharacterEnter(m_Player);
 }
 
 

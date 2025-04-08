@@ -15,7 +15,7 @@ public:
 	~LobbyRoom() override = default;
 
 	// 重写基类方法
-	void Start(std::shared_ptr<Camera> camera) override;
+	void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) override;
 	void Update() override;
 
 	// Lobby特有功能
