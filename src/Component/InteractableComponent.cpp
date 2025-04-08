@@ -21,7 +21,9 @@ void InteractableComponent::Update() {
 		auto owner = GetOwner<nGameObject>();
 		if (owner) {
 			// 設置提示在互動物體上方
-			m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(0.0f,owner->GetImageSize().y) );
+			LOG_DEBUG("InteractableComponent::Update {}",m_PromptObject->IsVisible());
+			m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f,owner->GetImageSize().y) );
+			m_PromptObject->Update();
 		}
 	}
 }
@@ -54,10 +56,11 @@ bool InteractableComponent::IsInRange(const std::shared_ptr<Character>& characte
 void InteractableComponent::CreatePrompt() {
 	m_PromptObject = std::make_shared<nGameObject>("InteractionPrompt");
 	// 這裡可以設置提示的外觀，例如文字或圖示
-	m_PromptObject->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",20,m_PromptText,Util::Color(255,255,255)));
+	m_PromptObject->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",10.0f,m_PromptText,Util::Color(255,255,255)));
 	m_PromptObject->SetZIndexType(ZIndexType::UI);
-	m_PromptObject->SetZIndex(1.0f);
+	m_PromptObject->SetZIndex(20.0f);
 	m_PromptObject->SetVisible(false);
+	if (auto owner = GetOwner<nGameObject>()) m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f,owner->GetImageSize().y) );
 
 	// 通過場景添加到渲染樹 (需要在實現時處理)
 }

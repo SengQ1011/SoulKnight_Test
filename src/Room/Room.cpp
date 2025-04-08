@@ -105,22 +105,30 @@ void Room::AddRoomObject(const std::shared_ptr<RoomObject>& object) {
 
         // 将对象添加到场景根节点和相机
         auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+    	auto renderer = scene->GetRoot().lock();
+    	auto camera = scene->GetCamera().lock();
         if (scene) {
-            scene->GetRoot().lock()->AddChild(object);
-
-            if (auto camera = m_Camera.lock()) {
-                camera->AddChild(object);
-            }
+            if (renderer) renderer->AddChild(object);
+        	if (camera) camera->AddChild(object);
         }
 
         // 如果对象有碰撞组件，注册到碰撞管理器
         if (auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
             m_CollisionManager->RegisterNGameObject(object);
         }
+    	//TODO:
 
-    	if (object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+    	if (auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
     	{
     		m_InteractionManager->RegisterInteractable(object);
+    		// 確保互動提示被添加到場景
+    		if (const std::shared_ptr<nGameObject>& promptObj = interactComp->GetPromptObject())
+    		{
+    			if (scene) {
+    				if (renderer) renderer->AddChild(promptObj);
+    				if (camera) camera->AddChild(promptObj);
+    			}
+    		}
     	}
     }
 }

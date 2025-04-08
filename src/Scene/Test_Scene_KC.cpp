@@ -36,16 +36,16 @@ void TestScene_KC::Start()
 	m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/way_battle.png"));
 	m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
 	m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
-	m_LobbyRoom->AddRoomObject(m_Portal);
 
 	auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-	component->SetInteractionRadius(71.0f);
+	component->SetInteractionRadius(71.0f/2);
 	component->SetInteractionCallback(
 		[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
 		{
 			isChange = true;
 		});
 
+	m_LobbyRoom->AddRoomObject(m_Portal);
 	m_Camera->AddChild(m_Portal);
 	m_Root->AddChild(m_Portal);
 

@@ -36,6 +36,7 @@ std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(floa
 
 	for (const auto& weakPtr : m_InteractableObjects) // 不能并行因爲會改變外面值
 	{
+		LOG_DEBUG("RoomInteractionManager::GetClosestInteractable");
 		if (weakPtr.expired()) continue;
 		const auto obj = weakPtr.lock();
 		if (!obj) continue;
@@ -55,6 +56,7 @@ std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(floa
 
 bool RoomInteractionManager::TryInteractWithClosest(float maxRadius) const
 {
+	LOG_DEBUG("TryInteractWithClosest");
 	const auto player = m_Player.lock();
 	if (!player) return false;
 

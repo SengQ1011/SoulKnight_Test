@@ -46,6 +46,7 @@ public:
 	float GetInteractionRadius() const { return m_InteractionRadius; }
 	bool IsPlayerNearby() const { return m_IsPlayerNearby; }
 	bool IsAutoInteract() const { return m_IsAutoInteract; }
+	std::shared_ptr<nGameObject> GetPromptObject() const { return m_PromptObject; }
 
 	//Setter
 	void SetPromptText(const std::string& text) { m_PromptText = text; }
