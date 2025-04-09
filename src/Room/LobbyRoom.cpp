@@ -13,11 +13,11 @@ LobbyRoom::LobbyRoom() : Room() {
     // LobbyRoom特有的初始化
 }
 
-void LobbyRoom::Start(std::shared_ptr<Camera> camera) {
+void LobbyRoom::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial LobbyRoom start");
 
     // 调用基类的Start方法
-    Room::Start(camera);
+    Room::Start(camera,player);
 
 	// 設置大廳特有的墻壁碰撞體
 	SetupWallColliders();
@@ -50,37 +50,10 @@ void LobbyRoom::Update() {
 	}
 }
 
-void LobbyRoom::SetupWallColliders() {
-    LOG_DEBUG("Set Lobby wall collider");
-
-    // 根据预定义的偏移和尺寸创建墙壁碰撞体
-    for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
-        auto wallCollider = std::make_shared<nGameObject>("LobbyWall_" + std::to_string(i));
-        auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
-
-        collisionComponent->SetOffset(m_WallColliderOffsets[i]);
-        collisionComponent->SetSize(m_WallColliderSizes[i]);
-        collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
-
-    	AddWallCollider(wallCollider);
-    }
-}
-
 void LobbyRoom::SetupInteractiveObjects() {
     // 设置大厅中的互动对象，例如传送门、工作台等
     // 这些对象可能有特殊的交互功能
 
-    // 创建传送门（示例）
-    auto portalFactory = m_Factory->createRoomObject("object_dungeonDoor", "RoomObject");
-    if (portalFactory) {
-        m_Portal = portalFactory;
-        m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
-
-        // 添加传送门的交互组件（这里只是示例，实际需要实现交互组件）
-        // m_Portal->AddComponent<InteractionComponent>(ComponentType::INTERACTION);
-
-        AddRoomObject(m_Portal);
-    }
 
     // 设置为默认未激活状态
     ActivatePortal(false);
@@ -103,17 +76,6 @@ void LobbyRoom::HandleInteractions() {
     // 检查玩家是否接近传送门
     bool playerNearPortal = false;
 
-    for (const auto& character : m_Characters) {
-        if (character->GetType() == CharacterType::PLAYER && m_Portal) {
-            // 简化的距离检查
-            float distance = glm::length(character->GetWorldCoord() - m_Portal->GetWorldCoord());
-            if (distance < 50.0f) {  // 交互距离阈值
-                playerNearPortal = true;
-                break;
-            }
-        }
-    }
-
     // 处理传送门交互
     if (playerNearPortal && Util::Input::IsKeyUp(Util::Keycode::E)) {
         // 这里可以触发进入地牢的逻辑
@@ -124,15 +86,6 @@ void LobbyRoom::HandleInteractions() {
 
 void LobbyRoom::ActivatePortal(bool active) {
     m_PortalActive = active;
-
-    // 更新传送门的视觉效果和交互状态
-    if (m_Portal) {
-        // 示例：更改传送门的外观
-        // 实际实现中，可能需要切换动画或更改纹理
-        // m_Portal->SetAnimation(active ? "active" : "inactive");
-
-        LOG_DEBUG("Portal state changed to: {}", active ? "Activated" : "Deactivated");
-    }
 }
 
 void LobbyRoom::OnStateChanged(RoomState oldState, RoomState newState) {
@@ -168,6 +121,22 @@ void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character>& character) {
     if (character->GetType() == CharacterType::PLAYER) {
         // 玩家离开大厅的特殊处理
     }
+}
+
+void LobbyRoom::SetupWallColliders() {
+	LOG_DEBUG("Set Lobby wall collider");
+
+	// 根据预定义的偏移和尺寸创建墙壁碰撞体
+	for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
+		auto wallCollider = std::make_shared<nGameObject>("LobbyWall_" + std::to_string(i));
+		auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+
+		collisionComponent->SetOffset(m_WallColliderOffsets[i]);
+		collisionComponent->SetSize(m_WallColliderSizes[i]);
+		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
+
+		AddWallCollider(wallCollider);
+	}
 }
 
 void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {

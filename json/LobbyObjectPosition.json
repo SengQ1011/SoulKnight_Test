@@ -53,6 +53,18 @@
    ]
   },
   {
+   "ID": "object_wayBattle",
+   "Class": "nGameObject",
+   "Position": [
+    0.0,
+    128.0
+   ],
+   "Size": [
+    43.0,
+    25.0
+   ]
+  },
+  {
    "ID": "object_carpet",
    "Class": "nGameObject",
    "Position": [

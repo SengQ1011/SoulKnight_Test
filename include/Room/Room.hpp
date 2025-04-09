@@ -6,12 +6,13 @@
 #define ROOM_HPP
 
 #include "Camera.hpp"
-#include "RoomCollisionManager.hpp"
-#include "Override/nGameObject.hpp"
-#include "Factory/RoomObjectFactory.hpp"
-#include "Creature/Character.hpp"
-#include "RoomObject/RoomObject.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Creature/Character.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Override/nGameObject.hpp"
+#include "RoomCollisionManager.hpp"
+#include "RoomInteractionManager.hpp"
+#include "RoomObject/RoomObject.hpp"
 #include "pch.hpp"
 
 // 房间状态枚举
@@ -33,7 +34,7 @@ public:
     virtual ~Room();
 
     // 核心方法
-    virtual void Start(std::shared_ptr<Camera> camera); // 房间初始化
+    virtual void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player); // 房间初始化
     virtual void Update(); // 更新房间内所有对象
 
     // 房间状态管理
@@ -53,6 +54,7 @@ public:
 
     // 碰撞体管理
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
+    [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
 
     // Getter/Setter
     [[nodiscard]] glm::vec2 GetWorldCoord() const { return m_WorldCoord; }
@@ -67,11 +69,10 @@ public:
     [[nodiscard]] float GetRoomHeight() const { return m_RoomHeight; }
     void SetRoomHeight(float height) { m_RoomHeight = height; }
 
+	void SetPlayer(const std::shared_ptr<Character>& player) { m_Player = player; }
+
     // 加载JSON配置
     virtual void LoadFromJSON(const std::string& jsonFilePath);
-
-    // 注册所有对象到碰撞系统
-    virtual void RegisterCollisions();
 
 protected:
     // 房间状态
@@ -90,9 +91,11 @@ protected:
     // 工厂与管理器
     std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
     std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
+	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
 
     // 相机引用
     std::weak_ptr<Camera> m_Camera;
+	std::weak_ptr<Character> m_Player;
 
     // 子类需要实现的方法      // 设置墙壁碰撞体
     virtual void OnStateChanged(RoomState oldState, RoomState newState) {}  // 房间状态变化时调用

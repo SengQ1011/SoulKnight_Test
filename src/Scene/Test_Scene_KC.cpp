@@ -6,6 +6,7 @@
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
 
+#include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
 #include "Scene/SceneManager.hpp"
 #include "pch.hpp"
@@ -19,18 +20,60 @@ void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene");
 
-	// 创建并初始化大厅房间
-	m_LobbyRoom = std::make_shared<LobbyRoom>();
-	m_LobbyRoom->Start(m_Camera);
-
 	// 创建并初始化玩家
 	CreatePlayer();
+
+	// 创建并初始化大厅房间
+	m_LobbyRoom = std::make_shared<LobbyRoom>();
+	m_LobbyRoom->Start(m_Camera,m_Player);
+
+	// 将玩家注册到碰撞管理器
+	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
+	// 将玩家添加到房间
+	m_LobbyRoom->CharacterEnter(m_Player);
+
+	// // 建立傳送門
+	//  m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/way_battle.png"));
+	//  m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
+	//  m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
+	//
+	//  auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
+	//  component->SetInteractionRadius(71.0f/2);
+	//  component->SetInteractionCallback(
+	//  	[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
+	//  	{
+	//  		SetIsChange(true);
+	//  	});
+	//
+	//  m_LobbyRoom->AddRoomObject(m_Portal);
+	//  m_Camera->AddChild(m_Portal);
+	//  m_Root->AddChild(m_Portal);
 
 	// 设置相机
 	SetupCamera();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
+}
+
+void TestScene_KC::Update()
+{
+	// Input处理
+	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
+	inputManager->listenInput();
+
+	if (Util::Input::IsKeyUp(Util::Keycode::F)) m_LobbyRoom->GetInteractionManager()->TryInteractWithClosest();
+
+	m_Player->Update();
+
+	// 更新房间
+	m_LobbyRoom->Update();
+
+	// 更新相机
+	m_Camera->Update();
+
+	// 更新场景根节点
+	GetRoot().lock()->Update();
 }
 
 void TestScene_KC::CreatePlayer()
@@ -49,17 +92,10 @@ void TestScene_KC::CreatePlayer()
 		m_Camera->AddChild(collision->GetVisibleBox());
 	}
 
-	// 将玩家注册到碰撞管理器
-	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
-
 	// 将玩家添加到场景根节点和相机
 	GetRoot().lock()->AddChild(m_Player);
 	m_Camera->AddChild(m_Player);
-
-	// 将玩家添加到房间
-	m_LobbyRoom->CharacterEnter(m_Player);
 }
-
 
 void TestScene_KC::SetupCamera()
 {
@@ -78,24 +114,6 @@ void TestScene_KC::InitializeSceneManagers()
 	inputManager->addObserver(m_Camera);
 }
 
-void TestScene_KC::Update()
-{
-	// Input处理
-	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	inputManager->listenInput();
-
-	m_Player->Update();
-
-	// 更新房间
-	m_LobbyRoom->Update();
-
-	// 更新相机
-	m_Camera->Update();
-
-	// 更新场景根节点
-	GetRoot().lock()->Update();
-}
-
 void TestScene_KC::Exit()
 {
 	LOG_DEBUG("KC Test Scene exited");
@@ -107,7 +125,7 @@ void TestScene_KC::Exit()
 
 Scene::SceneType TestScene_KC::Change()
 {
-	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
+	if (IsChange())
 	{
 		LOG_DEBUG("Change Main Menu");
 		return Scene::SceneType::Menu;

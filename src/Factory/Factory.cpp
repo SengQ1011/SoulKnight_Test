@@ -4,6 +4,7 @@
 
 #include "Factory/Factory.hpp"
 
+#include "Components/InteractableComponent.hpp"
 #include "Util/Logger.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
@@ -29,20 +30,30 @@ nlohmann::json Factory::readJsonFile(const std::string& fileName) {
 	return jsonData;
 }
 
-std::shared_ptr<Component> Factory::createComponent(const nlohmann::json &json)
+void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 {
-	static const std::unordered_map<std::string, std::function<std::shared_ptr<Component>(const nlohmann::json&)>> componentBluePrint = {
-		{"CollisionComponent",
-			[](const nlohmann::json &data) {
-				return std::make_shared<CollisionComponent>(data.get<StructComponents::StructCollisionComponent>());
+	// 配對創建組件
+	static const std::unordered_map<std::string, std::function<void(const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)>>
+	componentBluePrint = {
+		{"COLLISION",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json) {
+				object->AddComponent<CollisionComponent>
+				(ComponentType::COLLISION,json.get<StructComponents::StructCollisionComponent>());
+			}
+		},
+		{"INTERACTABLE",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+			{
+				object->AddComponent<InteractableComponent>
+				(ComponentType::INTERACTABLE,json.get<StructComponents::StructInteractableComponent>());
 			}
 		},
 	};
 	const std::string& componentClass = json.at("Class").get<std::string>();
 
 	if (const auto component = componentBluePrint.find(componentClass); component != componentBluePrint.end()) {
-		return component->second(json);
+		component->second(object,json);
+		return;
 	}
 	LOG_DEBUG("ErrorInFactory: Wrong Class: {}",componentClass);
-	return nullptr;
 }

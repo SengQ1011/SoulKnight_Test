@@ -19,15 +19,15 @@ Room::~Room() {
     m_RoomObjects.clear();
 }
 
-void Room::Start(std::shared_ptr<Camera> camera) {
+void Room::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial Room start");
     m_Camera = camera;
+	m_Player = player;
+
+	m_InteractionManager->SetPlayer(player);
 
     // 加载房间数据
     LoadFromJSON(JSON_DIR"/LobbyObjectPosition.json");
-
-    // 注册碰撞
-    RegisterCollisions();
 
     // 设置初始状态
     SetState(RoomState::ACTIVE);
@@ -43,9 +43,9 @@ void Room::Update() {
     }
 
     // 更新碰撞检测
-    if (m_CollisionManager) {
-        m_CollisionManager->UpdateCollision();
-    }
+    if (m_CollisionManager) m_CollisionManager->UpdateCollision();
+
+	if (m_InteractionManager) m_InteractionManager->Update();
 
     // 注意：不在这里更新角色，因为角色更新应该由Scene负责
 }
@@ -101,19 +101,40 @@ void Room::AddRoomObject(const std::shared_ptr<RoomObject>& object) {
         m_RoomObjects.push_back(object);
 
         // 将对象添加到场景根节点和相机
-        auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+    	const auto renderer = scene->GetRoot().lock();
+    	const auto camera = scene->GetCamera().lock();
         if (scene) {
-            scene->GetRoot().lock()->AddChild(object);
-
-            if (auto camera = m_Camera.lock()) {
-                camera->AddChild(object);
-            }
+            if (renderer && object->GetDrawable()) renderer->AddChild(object);
+        	if (camera) camera->AddChild(object);
         }
 
         // 如果对象有碰撞组件，注册到碰撞管理器
         if (auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
             m_CollisionManager->RegisterNGameObject(object);
+        	if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
+        	{
+        		if (scene)
+        		{
+        			if (renderer && colliderVisible->GetDrawable()) renderer->AddChild(colliderVisible);
+        			if (camera) camera->AddChild(colliderVisible);
+        		}
+        	}
         }
+
+    	// 如果有互動組件，注冊到互動管理器
+    	if (auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+    	{
+    		m_InteractionManager->RegisterInteractable(object);
+    		// 確保互動提示被添加到場景
+    		if (const std::shared_ptr<nGameObject>& promptObj = interactComp->GetPromptObject())
+    		{
+    			if (scene) {
+    				if (renderer) renderer->AddChild(promptObj);
+    				if (camera) camera->AddChild(promptObj);
+    			}
+    		}
+    	}
     }
 }
 
@@ -142,7 +163,7 @@ void Room::RemoveRoomObject(const std::shared_ptr<RoomObject>& object) {
     }
 }
 
-void Room::LoadFromJSON(const std::string& jsonFilePath) {
+void Room::LoadFromJSON(const std::string& jsonFilePath) { // 根據圖紙創建
     std::ifstream file(jsonFilePath);
     if (!file.is_open()) {
         LOG_DEBUG("Error: can't open in Room: {}", jsonFilePath);
@@ -172,29 +193,6 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) {
             const auto position = glm::vec2(x, y);
             roomObject->SetWorldCoord(position);
             AddRoomObject(roomObject);
-            LOG_DEBUG("create RoomObject,position: {}", position);
         }
     }
-}
-
-void Room::RegisterCollisions() {
-	// 注册有碰撞组件的房间对象
-	for (const auto& obj : m_RoomObjects) {
-		if (!obj) continue;
-
-		auto collComp = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-		if (!collComp) continue;
-
-		m_CollisionManager->RegisterNGameObject(obj);
-
-		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-		if (!scene) continue;
-
-		scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
-
-		auto camera = m_Camera.lock();
-		if (!camera) continue;
-
-		camera->AddChild(collComp->GetVisibleBox());
-	}
 }

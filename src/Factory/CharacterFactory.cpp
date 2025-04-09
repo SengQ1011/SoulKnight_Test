@@ -129,6 +129,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			FollowerComp->IsTargetMouse(true);
 			FollowerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
 			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
+			FollowerComp->SetZIndexOffset(0.5f);
 			LOG_DEBUG("Player created");
 			return player;
 		}

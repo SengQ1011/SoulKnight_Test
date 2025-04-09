@@ -46,7 +46,7 @@ void FollowerComponent::Update()
 		if (const auto follower = m_Follower.lock()) {
 			//跟隨角色ZIndex
 			if (owner->GetZIndexType() != ZIndexType::CUSTOM) owner->SetZIndexType(ZIndexType::CUSTOM);
-			owner->SetZIndex(follower->GetZIndex() + 0.1f); // 置於角色前方
+			owner->SetZIndex(follower->GetZIndex() + m_ZIndexOffset); // 置於角色前方
 
 			// 应用偏移
 			owner->m_WorldCoord = follower->m_WorldCoord + m_HandOffset;

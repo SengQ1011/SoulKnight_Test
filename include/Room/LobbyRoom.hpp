@@ -15,7 +15,7 @@ public:
 	~LobbyRoom() override = default;
 
 	// 重写基类方法
-	void Start(std::shared_ptr<Camera> camera) override;
+	void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) override;
 	void Update() override;
 
 	// Lobby特有功能
@@ -39,7 +39,6 @@ protected:
 private:
 	// Lobby特有数据
 	bool m_PortalActive = false;  // 传送门是否激活
-	std::shared_ptr<RoomObject> m_Portal = nullptr;  // 传送门对象
 
 
 	// Lobby特有墙壁碰撞体配置

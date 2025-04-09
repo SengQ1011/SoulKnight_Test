@@ -9,17 +9,22 @@
 
 #include "pch.hpp"
 #include "Override/nGameObject.hpp"
+
 class RoomCollisionManager {
 public:
 	RoomCollisionManager() = default;
+	~RoomCollisionManager() = default;
 
 	// 注冊監聽成員
 	void RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 	void UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 
-	void UpdateCollision() const;
+	void ShowColliderBox(); // 一鍵顯示當前房間碰撞箱
+	void UpdateCollision() const; // 更新碰撞情況
 
-	void ShowColliderBox();
+protected:
+	std::vector<std::weak_ptr<nGameObject>> m_NGameObjects;
+	bool isVisible = true; // 記錄碰撞箱顯示
 
 private:
 	// 計算碰撞詳情
@@ -31,10 +36,6 @@ private:
 	static void DispatchCollision(const std::shared_ptr<nGameObject>& objectA,
 						  const std::shared_ptr<nGameObject>& objectB,
 						  CollisionInfo& info);
-
-protected:
-	std::vector<std::shared_ptr<nGameObject>> m_NGameObjects;
-	bool isVisible = true;
 };
 
 #endif //ROOMCOLLISIONMANAGER_HPP

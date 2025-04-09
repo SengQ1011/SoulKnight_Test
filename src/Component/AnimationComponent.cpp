@@ -35,6 +35,8 @@ void AnimationComponent::Update() {
 	if(m_useSkillEffect) {
 		if (auto character = GetOwner<nGameObject>()) {
 			m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
+			m_effectAnimation->SetZIndexType(ZIndexType::CUSTOM); //可能不該在Update的，但是方便確認
+			m_effectAnimation->SetZIndex(character->GetZIndex() - 0.5f);
 		}
 	}
 }
@@ -84,7 +86,6 @@ void AnimationComponent::SetSkillEffect(bool play)
 			{
 				m_effectAnimation = it->second;
 				m_effectAnimation->SetVisible(true);
-				m_effectAnimation->SetZIndex(character->GetZIndex() - 0.5f);
 				m_effectAnimation->PlayAnimation(true);
 
 				//character->AddChild(m_effectAnimation);

@@ -11,6 +11,7 @@ set(SRC_FILES
     Component/FollowerComponent.cpp
     Component/HealthComponent.cpp
     Component/InputComponent.cpp
+    Component/InteractableComponent.cpp
     Component/MovementComponent.cpp
     Component/SkillComponent.cpp
     Component/StateComponent.cpp
@@ -26,6 +27,7 @@ set(SRC_FILES
     Room/LobbyRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
+    Room/RoomInteractionManager.cpp
     RoomObject/ObstacleObject.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
@@ -60,6 +62,7 @@ set(INCLUDE_FILES
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp
+    Components/InteractableComponent.hpp
     Components/MovementComponent.hpp
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
@@ -84,6 +87,7 @@ set(INCLUDE_FILES
     Room/LobbyRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
+    Room/RoomInteractionManager.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp
     Scene/Complete_Scene.hpp

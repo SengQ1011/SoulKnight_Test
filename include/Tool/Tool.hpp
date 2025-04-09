@@ -6,6 +6,8 @@
 #define TOOL_HPP
 #include <SDL_mouse.h>
 #include <glm/vec2.hpp>
+#include "pch.hpp"
+#include <execution>
 
 namespace Tool
 {
@@ -37,7 +39,6 @@ namespace Tool
 	 * @return vec2(x,y) representing the cursor coordinates.
 	 */
 	glm::vec2 GetMouseCoord();
-
 
 }
 

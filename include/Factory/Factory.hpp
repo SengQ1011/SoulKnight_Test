@@ -22,7 +22,7 @@ public:
 
 	// 讀取 JSON 文件
 	static nlohmann::json readJsonFile(const std::string& fileName);
-	static std::shared_ptr<Component> createComponent(const nlohmann::json& json);
+	static void createComponent(const std::shared_ptr<nGameObject>& object, const nlohmann::json& json);
 
 protected:
 	static ZIndexType stringToZIndexType(const std::string& zIndexStr); // 只給子類工廠用
