@@ -1,9 +1,6 @@
 //
 // Created by QuzzS on 2025/3/7.
 //
-//
-// Created by QuzzS on 2025/3/7.
-//
 
 #include "Room/Room.hpp"
 #include "Scene/SceneManager.hpp"
@@ -24,21 +21,17 @@ void Room::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Ch
 	m_InteractionManager->SetPlayer(player);
 
     // 加载房间数据 TODO:要改 可能是讀取head.json然後選擇房間
-	LOG_DEBUG("Initial Room end{}",m_ThemePath);
     LoadFromJSON(m_ThemePath+"/ObjectPosition.json");
 }
 
 void Room::Update() {
-    // 更新房间状态
-    UpdateRoomState();
-
     // 更新所有房间物体
     for (auto& obj : m_RoomObjects) {
         if (obj) obj->Update();
     }
 
-    // 更新碰撞检测
-    if (m_CollisionManager) m_CollisionManager->UpdateCollision();
+    // 管理員動態邏輯
+    if (m_CollisionManager) m_CollisionManager->Update();
 
 	if (m_InteractionManager)
 	{
@@ -46,37 +39,34 @@ void Room::Update() {
 		if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest(FLT_MAX);
 	}
 
-    // 注意：不在这里更新角色，因为角色更新应该由Scene负责
+    // 注意:不在这里更新角色，因为角色更新应该由Scene负责
 }
 
-void Room::UpdateRoomState() {
-    // 基类中的默认实现 - 子类可以重写
-    // 例如检查房间内是否还有敌人，以决定是否从COMBAT切换到CLEARED
-}
-
-void Room::CharacterEnter(std::shared_ptr<Character> character) {
+//這是走進了房間區域RoomRegion觸發的
+void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
     if (character && !HasCharacter(character)) {
+    	//加入生物組
         m_Characters.push_back(character);
+    	//注冊渲染器、相機、管理員
+    	RegisterObjectToSceneAndManager(character);
+		//觸發進入反應 TODO:進入事件應該是Dungeon裏面的房間大小
         OnCharacterEnter(character);
-
-        // 如果是玩家，激活房间
-        if (character->GetType() != CharacterType::PLAYER) return;
     }
 }
 
+//這是走出了房間區域RoomRegion觸發的
 void Room::CharacterExit(std::shared_ptr<Character> character) {
-    auto it = std::find(m_Characters.begin(), m_Characters.end(), character);
-    if (it != m_Characters.end()) {
+	if (!character) return;
+	if (const auto it = std::find(m_Characters.begin(), m_Characters.end(), character);
+		it != m_Characters.end()) {
         m_Characters.erase(it);
+		UnRegisterObjectToSceneAndManager(character);
         OnCharacterExit(character);
 
-        // 如果没有玩家，将房间设置为非活动状态
-        bool hasPlayer = std::any_of(m_Characters.begin(), m_Characters.end(),
-            [](const std::shared_ptr<Character>& c) { return c->GetType() == CharacterType::PLAYER; });
-
     }
 }
 
+//判斷生物是否已經在房間記錄的容器裏面
 bool Room::HasCharacter(const std::shared_ptr<Character>& character) const {
     return std::find(m_Characters.begin(), m_Characters.end(), character) != m_Characters.end();
 }
@@ -85,66 +75,19 @@ void Room::AddRoomObject(const std::shared_ptr<RoomObject>& object) {
     if (object) {
         m_RoomObjects.push_back(object);
 
-        // 将对象添加到场景根节点和相机
-		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-    	const auto renderer = scene->GetRoot().lock();
-    	const auto camera = scene->GetCamera().lock();
-        if (scene) {
-            if (renderer && object->GetDrawable()) renderer->AddChild(object);
-        	if (camera) camera->AddChild(object);
-        }
-
-        // 如果对象有碰撞组件，注册到碰撞管理器
-        if (auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-            m_CollisionManager->RegisterNGameObject(object);
-        	if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
-        	{
-        		if (scene)
-        		{
-        			if (renderer && colliderVisible->GetDrawable()) renderer->AddChild(colliderVisible);
-        			if (camera) camera->AddChild(colliderVisible);
-        		}
-        	}
-        }
-
-    	// 如果有互動組件，注冊到互動管理器
-    	if (auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
-    	{
-    		m_InteractionManager->RegisterInteractable(object);
-    		// 確保互動提示被添加到場景
-    		if (const std::shared_ptr<nGameObject>& promptObj = interactComp->GetPromptObject())
-    		{
-    			if (scene) {
-    				if (renderer) renderer->AddChild(promptObj);
-    				if (camera) camera->AddChild(promptObj);
-    			}
-    		}
-    	}
+    	RegisterObjectToSceneAndManager(object); //一鍵加入渲染器、相機和管理員
     }
 }
 
 void Room::RemoveRoomObject(const std::shared_ptr<RoomObject>& object) {
     if (object) {
-        // 从碰撞管理器移除
-        if (object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-            m_CollisionManager->UnregisterNGameObject(object);
-        }
-
-        // 从场景和相机移除
-        auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-        if (scene) {
-            scene->GetRoot().lock()->RemoveChild(object);
-
-            if (auto camera = m_Camera.lock()) {
-                camera->RemoveChild(object);
-            }
-        }
+    	UnRegisterObjectToSceneAndManager(object); //一鍵從渲染器、相機和管理員移除
 
         // 从列表移除
-        auto it = std::find(m_RoomObjects.begin(), m_RoomObjects.end(), object);
-        if (it != m_RoomObjects.end()) {
-            m_RoomObjects.erase(it);
-        }
+    	m_RoomObjects.erase(
+			std::remove(m_RoomObjects.begin(), m_RoomObjects.end(), object),
+			m_RoomObjects.end()
+		);
     }
 }
 
@@ -160,8 +103,8 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) { // 根據圖紙創建
 
     // 设置房间尺寸
     m_RoomHeight = jsonData.at("room_height").get<float>() * jsonData.at("tile_height").get<float>();
-    m_Size.x = jsonData.at("room_width").get<float>() * jsonData.at("tile_width").get<float>();
-    m_Size.y = m_RoomHeight;
+    m_RoomRegion.x = jsonData.at("room_width").get<float>() * jsonData.at("tile_width").get<float>();
+    m_RoomRegion.y = m_RoomHeight;
     m_TileSize = glm::vec2(jsonData.at("tile_width").get<float>(), jsonData.at("tile_height").get<float>());
 
     // 设置相机地图大小
@@ -181,3 +124,99 @@ void Room::LoadFromJSON(const std::string& jsonFilePath) { // 根據圖紙創建
         }
     }
 }
+
+bool Room::IsPlayerInside() const
+{
+	auto player = m_Player.lock();
+	if (!player) return false;
+	return (player->m_WorldCoord.x < m_WorldCoord.x + m_RoomRegion.x/2.0f) &&
+		   (player->m_WorldCoord.y < m_WorldCoord.y + m_RoomRegion.y/2.0f) &&
+		   (player->m_WorldCoord.x > m_WorldCoord.x - m_RoomRegion.x/2.0f) &&
+		   (player->m_WorldCoord.y > m_WorldCoord.y - m_RoomRegion.y/2.0f);
+}
+
+//------------------------------------------ Protected Methods ------------------------------------------//
+void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &object) const //查詢類成員
+{
+	// 将对象添加到场景根节点和相机
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	const auto renderer = scene->GetRoot().lock();
+	const auto camera = scene->GetCamera().lock();
+	if (scene) {
+		if (renderer && object->GetDrawable()) renderer->AddChild(object);
+		if (camera) camera->AddChild(object);
+	}
+
+	// 如果对象有碰撞组件，注册到碰撞管理器
+	if (auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+		m_CollisionManager->RegisterNGameObject(object);
+		if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
+		{
+			if (scene)
+			{
+				if (renderer && colliderVisible->GetDrawable()) renderer->AddChild(colliderVisible);
+				if (camera) camera->AddChild(colliderVisible);
+			}
+		}
+	}
+
+	// 如果有互動組件，注冊到互動管理器
+	if (auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+	{
+		m_InteractionManager->RegisterInteractable(object);
+		// 確保互動提示被添加到場景
+		if (const std::shared_ptr<nGameObject>& promptObj = interactComp->GetPromptObject())
+		{
+			if (scene) {
+				if (renderer) renderer->AddChild(promptObj);
+				if (camera) camera->AddChild(promptObj);
+			}
+		}
+	}
+}
+
+void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &object) const
+{
+	// 将对象從场景根节点和相机刪除
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	const auto renderer = scene->GetRoot().lock();
+	const auto camera = scene->GetCamera().lock();
+	if (scene) {
+		if (renderer) renderer->RemoveChild(object);
+		if (camera) camera->RemoveChild(object);
+	}
+
+	// 从碰撞管理器移除
+	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+		m_CollisionManager->UnregisterNGameObject(object);
+		if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
+		{
+			if (scene)
+			{
+				if (renderer) renderer->RemoveChild(colliderVisible);
+				if (camera) camera->RemoveChild(colliderVisible);
+			}
+		}
+	}
+
+	// 从互動管理器移除
+	if (const auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+	{
+		m_InteractionManager->UnregisterInteractable(object);
+		// 確保互動提示被刪除
+		if (const std::shared_ptr<nGameObject>& promptObj = interactComp->GetPromptObject())
+		{
+			if (scene) {
+				if (renderer) renderer->RemoveChild(promptObj);
+				if (camera) camera->RemoveChild(promptObj);
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
