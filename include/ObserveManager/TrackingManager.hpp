@@ -5,22 +5,35 @@
 #ifndef TRACKINGMANAGER_HPP
 #define TRACKINGMANAGER_HPP
 
+#include "Creature/Character.hpp"
+#include "Components/AiComponent.hpp"
+#include "Components/FollowerComponent.hpp"
+#include "Components/CollisionComponent.hpp"
 #include "ObserveManager/ObserveManager.hpp"
 
 class TrackingManager : public ObserveManager {
-	void Update() {
-		UpdatePlayerTarget(player);
+public:
+    void Update() override;
 
-		for (auto& enemy : m_enemies) {
-			// 敌人根据玩家的坐标做出相应的动作
-			UpdateEnemyTarget(enemy);
-		}
-	}
+	//----Setter----
+    void SetPlayer(std::shared_ptr<Character> player) { m_player = player; }
+    void AddEnemy(std::shared_ptr<Character> enemy) { m_enemies.push_back(enemy); }
+    void RemoveEnemy(std::shared_ptr<Character> enemy) { m_enemies.erase(std::remove(m_enemies.begin(), m_enemies.end(), enemy), m_enemies.end()); }
 
-	void notifyObserver() override;
+	// 視野檢測接口
+	bool HasLineOfSight(const glm::vec2& from, const glm::vec2& to)const;
+	bool RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) const;
 private:
-	std::shared_ptr<Player> m_players;
-	std::vector<std::shared_ptr<Enemy>> m_enemies;
+	void FindNearestVisibleEnemy();
+
+    void notifyObserver() override;
+
+    std::weak_ptr<Character> m_player;
+	std::weak_ptr<Character> m_nearestVisibleEnemy;
+	glm::vec2 m_playerPos;
+    std::vector<std::shared_ptr<Character>> m_enemies;
+	std::vector<std::shared_ptr<Character>> m_visibleEnemies;
+    float m_maxSightRange = 100.0f; // 無視障礙物的強制檢測範圍
 };
 
 #endif //TRACKINGMANAGER_HPP

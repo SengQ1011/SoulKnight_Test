@@ -9,8 +9,7 @@
 #include "Override/nGameObject.hpp"
 #include "Util/Input.hpp"
 
-void FollowerComponent::BaseTargetRotate()
-{
+void FollowerComponent::BaseTargetRotate() {
 	const auto owner = GetOwner<nGameObject>();
 	if (!owner) return;
 
@@ -20,7 +19,7 @@ void FollowerComponent::BaseTargetRotate()
 	} else if (m_UseMousePosition) {
 		targetWorldCoord = Cursor::GetCursorWorldCoord(owner->m_Transform.scale.x);
 	} else {
-		LOG_DEBUG("FollowerComponent::BaseTargetRotate");
+		LOG_ERROR("FollowerComponent::BaseTargetRotate");
 		return;
 	}
 	const glm::vec2 direction = targetWorldCoord - owner->m_WorldCoord;
@@ -67,3 +66,6 @@ void FollowerComponent::Update()
 	}
 }
 
+void FollowerComponent::OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) {
+	//TODO
+}

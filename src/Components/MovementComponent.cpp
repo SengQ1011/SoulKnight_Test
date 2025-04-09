@@ -19,12 +19,13 @@ void MovementComponent::Update() {
 	if (m_SpeedEffectDuration > 0.0f) {
 		m_SpeedEffectDuration -= deltaTime;
 		if (m_SpeedEffectDuration <= 0.0f) {
+			m_SpeedEffectDuration = 0.0f;
 			m_currentSpeedRatio = m_SpeedRatio;  // 恢復正常速度
 		}
 	}
 
 	// ===== 移動邏輯核心 =====
-	const float baseSpeed = 120.0f;  // 基础速度
+	constexpr float baseSpeed = 120.0f;  // 基础速度
 	const float effectiveMaxSpeed = baseSpeed * m_currentSpeedRatio;
 
 	// 確保輸入方向已正規化
@@ -68,7 +69,7 @@ void MovementComponent::Update() {
         if (glm::length(inputDir) > 0.01f) {
             // 急轉檢測（反向輸入）
             if (glm::dot(m_LastValidDirection, inputDir) < -0.7f) {
-                float brakePower = m_IceFriction * 8.0f * deltaTime;
+            	float brakePower = m_IceFriction * 8.0f * m_currentSpeedRatio * deltaTime;
                 m_Velocity -= m_Velocity * brakePower;
             }
 
@@ -87,8 +88,8 @@ void MovementComponent::Update() {
             targetDir = glm::normalize(targetDir);
 
             // 應用加速度
-            glm::vec2 targetVel = targetDir * effectiveMaxSpeed;
-            glm::vec2 accel = (targetVel - m_Velocity) * m_IceAcceleration * deltaTime;
+			const glm::vec2 targetVel = targetDir * effectiveMaxSpeed;
+			const glm::vec2 accel = (targetVel - m_Velocity) * m_IceAcceleration * m_currentSpeedRatio * deltaTime;
             m_Velocity += accel;
         }
         // 無輸入時的減速
@@ -100,9 +101,10 @@ void MovementComponent::Update() {
 
                 m_Velocity -= m_LastValidDirection * decel;
 
-                if (glm::length(m_Velocity) < 0.1f) {
-                    m_Velocity = glm::vec2(0.0f);
-                }
+            	if (glm::length(m_Velocity) < 0.1f) {
+            		m_Velocity = glm::vec2(0.0f);
+            		m_LastValidDirection = glm::vec2(0.0f);
+            	}
             }
         }
     }
@@ -141,7 +143,7 @@ void MovementComponent::Update() {
 	}
 
 	// 极速时限制（防止溢出）
-	if (glm::length(m_Velocity) > effectiveMaxSpeed * 1.1f) {
+	if (glm::length(m_Velocity) > effectiveMaxSpeed) {
 		m_Velocity = glm::normalize(m_Velocity) * effectiveMaxSpeed;
 	}
 

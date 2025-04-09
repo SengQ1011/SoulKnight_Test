@@ -8,20 +8,19 @@
 #include "Components/AiComponent.hpp"
 
 // AttackAI.hpp
-class AttackAI : public AIComponent {
+class AttackAI final : public AIComponent {
 public:
 	explicit AttackAI(int monsterPoint);
+	~AttackAI()override = default;
 
-	void Update() override {};
-
-	// void OnDetectTarget(Character* target) override;
+	void Update() override;
 
 private:
-	// void ExecuteAttack() {
-	// 	if (auto owner = GetOwner<Character>()) {
-			// TODO: owner->GetComponent<AttackComponent>()->TryAttack();
-	// 	}
-	// }
+	void ExecuteAttack() const{
+		if (const auto owner = GetOwner<Character>()) {
+			owner->GetComponent<AttackComponent>(ComponentType::ATTACK)->TryAttack();
+		}
+	}
 
 	float m_attackCooldown = 2.0f;
 	float m_attackTimer = 0;

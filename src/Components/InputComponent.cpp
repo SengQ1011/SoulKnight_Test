@@ -26,7 +26,6 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 	auto m_currentAnimation = animationComponent->GetCurrentAnimation();
 
 	// movement移動
-	float deltaTime = Util::Time::GetDeltaTimeMs();
 	glm::vec2 movement(0.0f, 0.0f);
 	if (keys.count('W')) movement.y += 1.0f;
 	if (keys.count('S')) movement.y -= 1.0f;
@@ -35,7 +34,8 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 
 	if (movement.x != 0.0f || movement.y != 0.0f) {
 		const float ratio = 0.2f;
-		const glm::vec2 deltaDisplacement = normalize(movement) * ratio * deltaTime; //normalize為防止斜向走速度是根號2
+		// movementComp中會考慮deltaTime了
+		const glm::vec2 deltaDisplacement = normalize(movement) * ratio; //normalize為防止斜向走速度是根號2
 
 		movementComponent->SetDesiredDirection(deltaDisplacement);
 

@@ -15,7 +15,7 @@ GunWeapon::GunWeapon(const std::string &ImagePath, const std::string& bulletImag
 void GunWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
 
-	float bulletSpeed = 200.0f;
+	float bulletSpeed = 0.4f;
 	// 計算子彈方向（使用旋轉角度）
 	glm::vec2 bulletDirection = glm::vec2(cos(this->m_Transform.rotation), sin(this->m_Transform.rotation));
 	// 建立 Transform

@@ -35,7 +35,7 @@ public:
 			component->Update();  // 更新每個組件
 		}
 	}
-	void onCollision(const std::shared_ptr<nGameObject>& other, CollisionInfo& info)
+	virtual void onCollision(const std::shared_ptr<nGameObject>& other, CollisionInfo& info)
 	{
 		if (!m_Active) return;
 

@@ -43,7 +43,7 @@ void TestScene_KC::Update()
 {
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	inputManager->listenInput();
+	inputManager->Update();
 
 	m_Player->Update();
 

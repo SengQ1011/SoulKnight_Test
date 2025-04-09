@@ -4,9 +4,12 @@
 
 #include "Components/HealthComponent.hpp"
 
+#include "Components/CollisionComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "Override/nGameObject.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Util/Time.hpp"
+#include "Weapon/Bullet.hpp"
 
 HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const int maxEnergy = 0)
 	: Component(ComponentType::HEALTH),m_maxHp(maxHp), m_currentHp(maxHp),
@@ -26,6 +29,15 @@ void HealthComponent::Update()
 	}
 }
 
+void HealthComponent::HandleCollision(CollisionInfo &info){
+	// 判斷碰撞對象是不是子彈==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
+	if (const auto bullet = std::dynamic_pointer_cast<Bullet>(info.GetObjectB())) {
+		const int damage = bullet->GetDamage();
+		this->TakeDamage(damage);
+		LOG_DEBUG("damage: {}", damage);
+	}
+}
+
 void HealthComponent::TakeDamage(int damage) {
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0) {
@@ -41,11 +53,18 @@ void HealthComponent::TakeDamage(int damage) {
 	}
 }
 
-void HealthComponent::OnDeath() {
-	auto character = GetOwner<nGameObject>();
+void HealthComponent::OnDeath() const
+{
+	auto character = GetOwner<Character>();
 	if(!character) return;
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);
+	auto movementComp = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
 	if(!stateComponent) return;
 
+	character->SetActive(false);
 	stateComponent->SetState(State::DEAD);
+	if(movementComp) movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f));
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	scene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(character);
+	if(character->GetType() == CharacterType::ENEMY)scene->GetManager<TrackingManager>(ManagerTypes::TRACKING)->RemoveEnemy(character);
 }

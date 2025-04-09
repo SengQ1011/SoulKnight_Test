@@ -10,10 +10,7 @@
 
 class InputManager: public ObserveManager{
 public:
-	void Update() override
-	{
-		listenInput();
-	}
+	void Update() override;
 	//----Getter-----
 	std::set<char> GetActiveKey() { return m_activeKeys; }
 
@@ -21,7 +18,6 @@ public:
 	void onKeyPressed(char key);
 	void onKeyReleased(char key);
 
-	void listenInput();
 	void notifyObserver() override;
 
 private:

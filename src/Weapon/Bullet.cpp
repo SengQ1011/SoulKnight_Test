@@ -34,7 +34,7 @@ void Bullet::PostInitialize() {
  	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
 
  	// TODO:測試子彈大小
- 	CollisionComp->SetSize(glm::vec2(16.0f));
+ 	CollisionComp->SetSize(glm::vec2(8.0f));
 
  	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
  	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
@@ -52,3 +52,7 @@ void Bullet::SetImage(const std::string& ImagePath) {
  	m_Drawable = std::make_shared<Util::Image>(m_imagePath);
  }
 
+void Bullet::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
+ {
+	 MarkForRemoval();
+ }

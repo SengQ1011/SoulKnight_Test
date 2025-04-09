@@ -25,6 +25,7 @@ public:
 
 	// Init
 	void PostInitialize();
+	void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info) override;
 
 private:
 	CharacterType m_type;

@@ -13,7 +13,7 @@
     },
     "monsterPoint": 1,
     "maxHp": 8,
-    "speed": 1.0,
+    "speed": 0.8,
     "attackType": "Collision",
     "collisionDamage": 2
   },

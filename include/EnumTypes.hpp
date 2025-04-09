@@ -28,12 +28,6 @@ enum class CharacterType
 	NPC
 };
 
-enum class AIType {
-	ATTACK,		// 追蹤玩家
-	SUMMON,		// 召喚
-	WANDER		// 游蕩
-};
-
 enum class State
 {
 	STANDING,
@@ -42,13 +36,27 @@ enum class State
 	DEAD
 };
 
+enum class AIType {
+	ATTACK,		// 追蹤玩家
+	SUMMON,		// 召喚
+	WANDER		// 游蕩
+};
+
+enum class enemyState
+{
+	IDLE,
+	WANDERING,
+	CHASING,
+	READY_ATTACK
+};
+
 enum class ManagerTypes
 {
 	BULLET,
 	ROOMCOLLISION,
 	INPUT,
 	SCENE,
-	Targeting
+	TRACKING
 };
 
 enum ZIndexType: int
