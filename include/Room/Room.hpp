@@ -33,7 +33,7 @@ public:
     virtual void Update(); // 更新房间内所有对象
 
     // 角色管理方法
-    virtual void CharacterEnter(std::shared_ptr<Character> character);
+    virtual void CharacterEnter(const std::shared_ptr<Character>& character);
     virtual void CharacterExit(std::shared_ptr<Character> character);
     [[nodiscard]] bool HasCharacter(const std::shared_ptr<Character>& character) const;
     [[nodiscard]] const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
@@ -51,8 +51,8 @@ public:
     [[nodiscard]] glm::vec2 GetWorldCoord() const { return m_WorldCoord; }
     void SetWorldCoord(const glm::vec2& worldCoord) { m_WorldCoord = worldCoord; }
 
-    [[nodiscard]] glm::vec2 GetSize() const { return m_Size; }
-    void SetSize(const glm::vec2& size) { m_Size = size; }
+    [[nodiscard]] glm::vec2 GetRoomRegion() const { return m_RoomRegion; }
+    void SetRoomRegion(const glm::vec2& size) { m_RoomRegion = size; }
 
     [[nodiscard]] glm::vec2 GetTileSize() const { return m_TileSize; }
     void SetTileSize(const glm::vec2& tileSize) { m_TileSize = tileSize; }
@@ -61,6 +61,7 @@ public:
     void SetRoomHeight(float height) { m_RoomHeight = height; }
 
 	void SetPlayer(const std::shared_ptr<Character>& player) { m_Player = player; }
+	[[nodiscard]] bool IsPlayerInside() const; //場景使用的 確認當前玩家所在的房間
 
     // 加载JSON配置
     virtual void LoadFromJSON(const std::string& jsonFilePath);
@@ -70,7 +71,7 @@ public:
 protected:
     // 房间属性
     glm::vec2 m_WorldCoord = glm::vec2(0, 0);  // 在世界中的位置
-    glm::vec2 m_Size = glm::vec2(0, 0);        // 房间尺寸
+    glm::vec2 m_RoomRegion = glm::vec2(0, 0);        // 房间尺寸
     glm::vec2 m_TileSize = glm::vec2(0, 0);    // 瓦片尺寸
     float m_RoomHeight = 0.0f;                 // 房间高度
 
@@ -89,12 +90,12 @@ protected:
     std::weak_ptr<Camera> m_Camera;
 	std::weak_ptr<Character> m_Player;
 
-    // 更新房间状态的辅助方法
-    virtual void UpdateRoomState();
-
     // 处理角色进入/离开房间时的事件 TODO:怎麽處理
     virtual void OnCharacterEnter(const std::shared_ptr<Character>& character) {}
     virtual void OnCharacterExit(const std::shared_ptr<Character>& character) {}
+
+	void RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>& object) const;
+	void UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>& object) const;
 };
 
 #endif //ROOM_HPP

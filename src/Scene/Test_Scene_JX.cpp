@@ -139,7 +139,7 @@ void TestScene_JX::Update()
 	m_Player->Update();
 	m_Enemy->Update();
 
-	m_RoomCollisionManager->UpdateCollision();
+	m_RoomCollisionManager->Update();
 	m_Camera->Update();
 	m_Enemy->Update();
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->Update();

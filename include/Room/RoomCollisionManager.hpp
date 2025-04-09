@@ -19,12 +19,17 @@ public:
 	void RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 	void UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 
+	void Update() const; // 更新碰撞情況
 	void ShowColliderBox(); // 一鍵顯示當前房間碰撞箱
-	void UpdateCollision() const; // 更新碰撞情況
+
+	//是否啓動管理員
+	void SetIsActive(const bool isActive) {m_IsActive = isActive;}
+	[[nodiscard]] bool IsActive() const {return m_IsActive;}
 
 protected:
 	std::vector<std::weak_ptr<nGameObject>> m_NGameObjects;
-	bool isVisible = true; // 記錄碰撞箱顯示
+	bool m_IsVisible = true; // 記錄碰撞箱顯示
+	bool m_IsActive = true;
 
 private:
 	// 計算碰撞詳情

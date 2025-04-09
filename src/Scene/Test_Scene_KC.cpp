@@ -49,6 +49,7 @@ void TestScene_KC::Update()
 
 	// 更新房间
 	m_LobbyRoom->Update();
+	LOG_DEBUG("Leaving KC Test Scene {}",m_LobbyRoom->IsPlayerInside());
 
 	// 更新相机
 	m_Camera->Update();

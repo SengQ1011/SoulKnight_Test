@@ -23,7 +23,10 @@ public:
 
 	// 重写基类方法
 	void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) override;
-	void Update() override;
+	void Update() override {
+		// TODO:完善中
+		// 更新房间状态
+		UpdateRoomState();};
 
 	// 房间状态管理
 	virtual void SetState(RoomState state);
@@ -41,6 +44,9 @@ protected:
 	// 重写角色进入/离开处理
 	void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
 	void OnCharacterExit(const std::shared_ptr<Character>& character) override;
+
+	// 更新房间状态的辅助方法
+	virtual void UpdateRoomState();
 
 	virtual void OnStateChanged(RoomState oldState, RoomState newState) {}  // 房间状态变化时调用
 
