@@ -63,7 +63,7 @@ bool Rect::Intersects(const Rect &other) const {
 }
 
 Rect CollisionComponent::GetBounds() const {
-	auto objectPosition = glm::vec2(0.0f);
+	glm::vec2 objectPosition = {0.0f, 0.0f};
 	auto owner = GetOwner<nGameObject>();
 	SetColliderBoxColor("Red");//充值顔色
 	if (owner) {

@@ -27,6 +27,9 @@ void FullFirepower::Execute() {
 			cloneFollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,2.0f));
 			attackComp->SetSecondWeapon(cloneWeapon);
 			attackComp->SetDualWield(true);
+			cloneWeapon->SetZIndexType(ZIndexType::CUSTOM);
+			cloneWeapon->SetZIndex(currentWeapon->GetZIndex() - 0.5f);
+
 
 			//設置跟隨的ZIndex
 			cloneFollowerComp->SetZIndexOffset(currentFollowerComp->GetZIndexOffset());

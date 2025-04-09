@@ -7,6 +7,8 @@
 #include <memory>
 
 
+#include "Components/EnemyAI/AttackAI.hpp"
+#include "Components/EnemyAI/WanderAI.hpp"
 #include "Components/TalentComponet.hpp"
 #include "Skill/FullFirepower.hpp"
 
@@ -122,6 +124,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 			CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
 			CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
+			CollisionComp->SetCollisionMask(CollisionLayers_Enemy_Bullet);
 			CollisionComp->SetSize(glm::vec2(16.0f));
 			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
@@ -134,11 +137,9 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			return player;
 		}
 	}
-	LOG_DEBUG("{}'s ID not found: {}", id);
+	LOG_ERROR("{}'s ID not found: {}", id);
 	return nullptr;
 }
-
-
 
 std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
     // 在 JSON 陣列中搜尋符合名稱的角色
@@ -168,16 +169,22 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         		// weapon = wf.createWeapon(weaponID);
         	}
 
+        	if(aiType == AIType::ATTACK) {
+        		auto aiComp = enemy->AddComponent<AttackAI>(ComponentType::AI, monsterPoint);
+        	}else if (aiType == AIType::WANDER) {
+        		auto aiComp = enemy->AddComponent<WanderAI>(ComponentType::AI, monsterPoint);
+        	}
+
         	auto animationComp = enemy->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);
         	auto healthComp = enemy->AddComponent<HealthComponent>(ComponentType::HEALTH, maxHp, 0, 0);
         	auto movementComp = enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
         	auto attackComp = enemy->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, 0, 0, collisionDamage);
-        	auto aiComp = enemy->AddComponent<AIComponent>(ComponentType::AI, aiType, monsterPoint);
 			auto collisionComp = enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
         	collisionComp->SetCollisionLayer(CollisionLayers_Enemy);
-        	collisionComp->SetCollisionMask(CollisionLayers_Player);
+        	if (attackType == "Collision") collisionComp->SetCollisionMask(CollisionLayers_Player);
         	collisionComp->SetCollisionMask(CollisionLayers_Terrain);
+        	collisionComp->SetCollisionMask(CollisionLayers_Player_Bullet);
         	collisionComp->SetSize(glm::vec2(16.0f));
         	collisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 
@@ -185,6 +192,6 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         }
     }
 
-    LOG_DEBUG("{}'s ID not found: {}", id);
+    LOG_ERROR("{}'s ID not found: {}", id);
 	return nullptr;
 }

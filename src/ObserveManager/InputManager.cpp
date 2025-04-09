@@ -5,8 +5,8 @@
 #include "ObserveManager/InputManager.hpp"
 
 
-void InputManager::listenInput() {
-	static const std::array<std::pair<Util::Keycode, char>, 10> keys = {{
+void InputManager::Update() {
+	static const std::array<std::pair<Util::Keycode, char>, 9> keys = {{
 		{Util::Keycode::W, 'W'},	// 上
 		{Util::Keycode::S, 'S'},	// 下
 		{Util::Keycode::A, 'A'},	// 左
@@ -15,7 +15,7 @@ void InputManager::listenInput() {
 		{Util::Keycode::J, 'J'},	// 攻擊
 		{Util::Keycode::U, 'U'},	// 切換武器
 		{Util::Keycode::I, 'I'},
-		{Util::Keycode::K, 'K'},
+		{Util::Keycode::K, 'K'}
 	}};
 
 	for (const auto& [keycode, key] : keys) {

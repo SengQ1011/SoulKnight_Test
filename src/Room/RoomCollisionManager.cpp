@@ -129,20 +129,6 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 	const auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	const auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 
-	// TODO:判斷並觸發對應的動作(在對應的onCollision)
-	// 处理子弹碰撞（假设objectA是子弹）
-	if (colliderA->GetCollisionLayer() == CollisionLayers_Player_Bullet) {
-		if (auto bullet = std::dynamic_pointer_cast<Bullet>(objectA)) {
-			bullet->MarkForRemoval(); // 标记子弹为已击中
-		}
-	}
-	// 处理objectB是子弹的情况
-	else if (colliderB->GetCollisionLayer() == CollisionLayers_Player_Bullet) {
-		if (auto bullet = std::dynamic_pointer_cast<Bullet>(objectB)) {
-			bullet->MarkForRemoval(); // 标记子弹为已击中
-		}
-	}
-
 	if ((colliderB->GetCollisionLayer() & colliderA->GetCollisionMask()) != 0) // !=運算符 優先於 &
 	{
 		objectA->onCollision(objectB,info);
@@ -157,6 +143,3 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 		objectB->onCollision(objectA, reversedInfo);
 	}
 }
-
-
-

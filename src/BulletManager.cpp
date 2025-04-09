@@ -21,10 +21,10 @@ void BulletManager::spawnBullet(const CharacterType type, const std::string& bul
 }
 
 void BulletManager::Update() {
-	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+	float deltaTime = Util::Time::GetDeltaTimeMs();
 	if (m_Bullets.empty()) return;
 	// 並行更新
-	if (m_Bullets.size() > 100) {  // 仅在大数据时使用并行
+	if (m_Bullets.size() > 50) {  // 仅在大数据时使用并行
 		std::for_each(std::execution::par, m_Bullets.begin(), m_Bullets.end(),
 			[deltaTime](auto& bullet) { bullet->UpdateLocation(deltaTime); });
 	} else {
