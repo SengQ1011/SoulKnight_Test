@@ -14,7 +14,7 @@
 #include "pch.hpp"
 #include "Observer.hpp"
 
-class Camera: public Observer {
+class Camera: public InputObserver {
 public:
 	explicit Camera(const std::vector<std::shared_ptr<nGameObject>> &pivotChildren = {});
 	~Camera() override = default;

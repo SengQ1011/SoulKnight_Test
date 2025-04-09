@@ -4,18 +4,19 @@ set(SRC_FILES
     Beacon.cpp
     BulletManager.cpp
     Camera.cpp
-    Component/AnimationComponent.cpp
-    Component/AttackAI.cpp
-    Component/AttackComponent.cpp
-    Component/CollisionComponent.cpp
-    Component/FollowerComponent.cpp
-    Component/HealthComponent.cpp
-    Component/InputComponent.cpp
-    Component/InteractableComponent.cpp
-    Component/MovementComponent.cpp
-    Component/SkillComponent.cpp
-    Component/StateComponent.cpp
-    Component/TalentComponent.cpp
+    Components/AnimationComponent.cpp
+    Components/AttackComponent.cpp
+    Components/CollisionComponent.cpp
+    Components/EnemyAI/AttackAI.cpp
+    Components/EnemyAI/WanderAI.cpp
+    Components/FollowerComponent.cpp
+    Components/HealthComponent.cpp
+    Components/InputComponent.cpp
+    Components/InteractableComponent.cpp
+    Components/MovementComponent.cpp
+    Components/SkillComponent.cpp
+    Components/StateComponent.cpp
+    Components/TalentComponent.cpp
     Creature/Character.cpp
     Cursor.cpp
     Factory/CharacterFactory.cpp
@@ -23,7 +24,8 @@ set(SRC_FILES
     Factory/RoomFactory.cpp
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
-    ObseveManager/InputManager.cpp
+    ObserveManager/InputManager.cpp
+    ObserveManager/TrackingManager.cpp
     Room/LobbyRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
@@ -55,10 +57,11 @@ set(INCLUDE_FILES
     Camera.hpp
     Components/AiComponent.hpp
     Components/AnimationComponent.hpp
-    Components/AttackAI.hpp
     Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
+    Components/EnemyAI/AttackAI.hpp
+    Components/EnemyAI/WanderAI.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp

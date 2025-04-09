@@ -8,10 +8,10 @@
 #define FOLLOWERCOMPONENT_HPP
 
 #include "pch.hpp"
-#include "Component.hpp"
+#include "Components/Component.hpp"
+#include "Observer.hpp"
 
-
-class FollowerComponent final : public Component { //目前暫時只有武器跟隨角色,還有根據指向位置旋轉（需要事件嗎？ 我想取得指向坐標而已）
+class FollowerComponent final : public Component, public TrackingObserver {
 public:
 	explicit FollowerComponent(const ComponentType type = ComponentType::FOLLOWER,
 							   const glm::vec2& handOffset = glm::vec2(0, 0),
@@ -53,6 +53,7 @@ public:
 	[[nodiscard]] bool GetUseMouse() const {return m_UseMousePosition;}
 	[[nodiscard]] float GetZIndexOffset() const {return m_ZIndexOffset;}
 
+	void OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) override;
 
 protected:
 	glm::vec2 m_RotationLimits = glm::vec2(-glm::pi<float>(), glm::pi<float>()); // 旋转限制 (min, max)

@@ -25,7 +25,7 @@ void TestScene_JX::Start()
 {
 	LOG_DEBUG("Entering JX Test Scene");
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
-	m_Enemy = CharacterFactory::GetInstance().createEnemy(2);
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(1);
 
 	// std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
 	// auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT);
@@ -34,6 +34,7 @@ void TestScene_JX::Start()
 	AddManager(ManagerTypes::BULLET,bulletManager);
 	AddManager(ManagerTypes::INPUT,inputManager);
 	AddManager(ManagerTypes::ROOMCOLLISION,m_RoomCollisionManager);
+	AddManager(ManagerTypes::TRACKING,m_trackingManager);
 
 	std::ifstream file(JSON_DIR"/LobbyObjectPosition.json");
 	if (!file.is_open()) {
@@ -98,14 +99,16 @@ void TestScene_JX::Start()
 	m_Root->AddChild(collision2->GetVisibleBox());
 	m_Camera->AddChild(collision2->GetVisibleBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
+	m_trackingManager->AddEnemy(m_Enemy);
 	m_Root->AddChild(m_Enemy);
 	m_Camera->AddChild(m_Enemy);
 
 	m_Player->m_WorldCoord = {0,16*2}; //騎士初始位置為右兩格，上兩格
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	// m_Root->AddChild(collision->GetBlackBox());
-	// m_Camera->AddRelativePivotChild(collision->GetBlackBox());
+	m_Root->AddChild(collision->GetVisibleBox());
+	m_Camera->AddChild(collision->GetVisibleBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
+	m_trackingManager->SetPlayer(m_Player);
 	m_Root->AddChild(m_Player);
 	m_Camera->AddChild(m_Player);
 
@@ -123,7 +126,9 @@ void TestScene_JX::Update()
 	if (Util::Input::IsKeyDown(Util::Keycode::O)) m_RoomCollisionManager->ShowColliderBox(); // 按鍵O可以顯示關閉colliderBox
 
 	auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH);
-	if(Util::Input::IsKeyPressed(Util::Keycode::Z)) LOG_DEBUG("hp: {}, armor: {}, energy: {}", healthComp->GetCurrentHp(), healthComp->GetCurrentArmor(), healthComp->GetCurrentEnergy());
+	auto healthEnemy = m_Enemy->GetComponent<HealthComponent>(ComponentType::HEALTH);
+	if(Util::Input::IsKeyPressed(Util::Keycode::Z)) LOG_DEBUG("Player==>hp: {}, armor: {}, energy: {}", healthComp->GetCurrentHp(), healthComp->GetCurrentArmor(), healthComp->GetCurrentEnergy());
+	if(Util::Input::IsKeyPressed(Util::Keycode::X)) LOG_DEBUG("Enemy==>hp: {}", healthEnemy->GetCurrentHp());
 
 	Cursor::SetWindowOriginWorldCoord(m_Camera->GetCameraWorldCoord().translation); //實時更新Cursor的世界坐標
 
@@ -133,6 +138,7 @@ void TestScene_JX::Update()
 	}
 
 	bulletManager->Update();
+	m_trackingManager->Update();
 
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
 	std::for_each(m_WallCollider.begin(), m_WallCollider.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});
@@ -141,7 +147,6 @@ void TestScene_JX::Update()
 
 	m_RoomCollisionManager->Update();
 	m_Camera->Update();
-	m_Enemy->Update();
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->Update();
 }
 

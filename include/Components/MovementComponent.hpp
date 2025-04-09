@@ -16,7 +16,7 @@ class MovementComponent final : public Component {
 public:
 	explicit MovementComponent(const float& speedRatio)
 	: Component(ComponentType::MOVEMENT), m_SpeedRatio(speedRatio), m_currentSpeedRatio(speedRatio),
-	  m_MaxSpeed(100.0f), m_Position(glm::vec2(0.0f)), m_Velocity(glm::vec2(0.0f)) {}
+	m_Position(glm::vec2(0.0f)), m_Velocity(glm::vec2(0.0f)) {}
 
 	void Init() override;
 	void Update() override;
@@ -24,14 +24,12 @@ public:
 
 	//----Getters----
 	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
-	[[nodiscard]] float GetMaxSpeed() const { return m_MaxSpeed; }
 	[[nodiscard]] const glm::vec2& GetVelocity() const { return m_Velocity; }
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Position; }
 
 	//----Setters----
 	void SetPosition(const glm::vec2& position) { m_Position = position; }
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
-	void SetMaxSpeed(const float maxSpeed) { m_MaxSpeed = maxSpeed; }
 	void SetVelocity(const glm::vec2& velocity) {m_Velocity = velocity;}
 	void SetOnIce(bool isOnIce) { m_IsOnIce = isOnIce; }
 	// InputComponent專用
@@ -41,7 +39,6 @@ private:
 	float m_SpeedRatio;						// 基本移動速度係數
 	float m_currentSpeedRatio = 1.0f;		// 當前速度倍率
 	float m_SpeedEffectDuration = 0.0f;		// 剩餘的加減速時間
-	float m_MaxSpeed;						// 最大速度限制
 	bool m_IsOnIce = false;					// 是否在冰面
 	glm::vec2 m_Position;					// 當前位置
 	glm::vec2 m_DesiredDirection;			// 移動方向向量（輸入）

@@ -88,7 +88,6 @@ void AnimationComponent::SetSkillEffect(bool play)
 				m_effectAnimation->SetVisible(true);
 				m_effectAnimation->PlayAnimation(true);
 
-				//character->AddChild(m_effectAnimation);
 				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 				scene->GetRoot().lock()->AddChild(m_effectAnimation);
 				scene->GetCamera().lock()->AddChild(m_effectAnimation);

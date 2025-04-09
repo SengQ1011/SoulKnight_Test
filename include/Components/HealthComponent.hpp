@@ -33,6 +33,7 @@ public:
 	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
 	void TakeDamage(int damage);
+	void HandleCollision(CollisionInfo &info) override;
 
 private:
 	int m_maxHp;        // 生命上限
@@ -46,7 +47,7 @@ private:
 	bool m_breakProtection = false;		// 天賦：破甲保護
 
 	// 通知 StateComponent 角色死亡
-	void OnDeath();
+	void OnDeath() const;
 };
 
 

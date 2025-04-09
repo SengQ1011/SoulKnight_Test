@@ -10,7 +10,7 @@
 #include "Components/MovementComponent.hpp"
 #include "Observer.hpp"
 
-class InputComponent : public Component, public Observer{
+class InputComponent : public Component, public InputObserver{
 public:
 	explicit InputComponent();
 	~InputComponent() override = default;

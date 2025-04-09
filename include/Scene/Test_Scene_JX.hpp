@@ -12,6 +12,7 @@
 #include "Util/Time.hpp"
 #include "Factory/CharacterFactory.hpp"
 #include "Room/RoomCollisionManager.hpp"
+#include "ObserveManager/TrackingManager.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 
 class TestScene_JX : public Scene
@@ -31,6 +32,7 @@ protected:
 	std::shared_ptr<InputManager> inputManager = std::make_shared<InputManager>();
 	std::shared_ptr<BulletManager> bulletManager = std::make_shared<BulletManager>();
 	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
+	std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
 
 	std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
 	std::shared_ptr<Character> m_Player;
