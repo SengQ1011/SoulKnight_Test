@@ -300,7 +300,7 @@
     "PromptObject": {
      "PromptFontPath": "/Font/zpix.ttf",
      "PromptFontSize": 10.0,
-     "PromptText": "前面的區域，\n以後再來吧",
+     "PromptText": "前面的區域\n以後再來吧\n",
      "PromptColor": [
       255,
       255,
@@ -311,7 +311,7 @@
     }
    }
   ],
-  "path": "/Lobby/way_battle.png"
+  "path": "/Lobby/object_wayBattle.png"
  },
  "object_carpet": {
   "isAnimated": false,

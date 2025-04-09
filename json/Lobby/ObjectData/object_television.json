@@ -1,0 +1,23 @@
+{
+    "id": "object_television",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                45.0,
+                32.0
+            ],
+            "Offset": [
+                22.0,
+                -40.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_television.png"
+}

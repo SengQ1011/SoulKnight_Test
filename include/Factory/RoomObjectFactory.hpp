@@ -7,6 +7,7 @@
 #include "Factory.hpp"
 #include "RoomObject/RoomObject.hpp"
 
+/// @brief:建造RoomObject前必須設置ScenePath(從Room取得)
 class RoomObjectFactory : public Factory{
 public:
 	RoomObjectFactory() = default;
@@ -16,6 +17,11 @@ public:
 
 	// 批量創建物件 (適合房間初始化時使用)-->GPT
 	std::vector<std::shared_ptr<RoomObject>> createObjectsFromJson(const nlohmann::json& objectsJson);
+
+	[[nodiscard]] std::string GetScenePath() const {return m_ScenePath;}
+	void SetScenePath(const std::string &path) {m_ScenePath = path+"/ObjectData/";}
+
+	std::string m_ScenePath; /// @param:"Scene(Theme)/ObjectData/"作爲_id的前綴
 
 };
 

@@ -15,31 +15,22 @@
 #include "RoomObject/RoomObject.hpp"
 #include "pch.hpp"
 
-// 房间状态枚举
-enum class RoomState {
-    INACTIVE,   // 未激活（玩家不在该房间）
-    ACTIVE,     // 已激活（玩家在该房间内）
-    COMBAT,     // 战斗中
-    CLEARED,    // 已清理（战斗结束或无战斗房间）
-    SPECIAL     // 特殊状态（宝箱房、商店等）
-};
-
 // 前向声明
 class RoomCollisionManager;
 class Camera;
 
+/// @brief: 一定要設置m_ObjectPositionPath
 class Room {
 public:
-    Room();
+	explicit Room(const std::string& objectPositionPath) : m_ThemePath(objectPositionPath)
+	{
+		m_Factory->SetScenePath(objectPositionPath);
+	};
     virtual ~Room();
 
     // 核心方法
     virtual void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player); // 房间初始化
     virtual void Update(); // 更新房间内所有对象
-
-    // 房间状态管理
-    virtual void SetState(RoomState state);
-    [[nodiscard]] RoomState GetState() const { return m_State; }
 
     // 角色管理方法
     virtual void CharacterEnter(std::shared_ptr<Character> character);
@@ -73,16 +64,17 @@ public:
 
     // 加载JSON配置
     virtual void LoadFromJSON(const std::string& jsonFilePath);
+	void SetThemePath(const std::string& themePath) {m_ThemePath = themePath;}
+	[[nodiscard]] std::string GetThemePath() const { return m_ThemePath; }
 
 protected:
-    // 房间状态
-    RoomState m_State = RoomState::INACTIVE;
-
     // 房间属性
     glm::vec2 m_WorldCoord = glm::vec2(0, 0);  // 在世界中的位置
     glm::vec2 m_Size = glm::vec2(0, 0);        // 房间尺寸
     glm::vec2 m_TileSize = glm::vec2(0, 0);    // 瓦片尺寸
     float m_RoomHeight = 0.0f;                 // 房间高度
+
+	std::string m_ThemePath;
 
     // 房间内对象
     std::vector<std::shared_ptr<RoomObject>> m_RoomObjects;       // 房间固定物体
@@ -96,9 +88,6 @@ protected:
     // 相机引用
     std::weak_ptr<Camera> m_Camera;
 	std::weak_ptr<Character> m_Player;
-
-    // 子类需要实现的方法      // 设置墙壁碰撞体
-    virtual void OnStateChanged(RoomState oldState, RoomState newState) {}  // 房间状态变化时调用
 
     // 更新房间状态的辅助方法
     virtual void UpdateRoomState();

@@ -9,10 +9,6 @@
 #include "Util/Logger.hpp"
 #include "Factory/CharacterFactory.hpp"
 
-LobbyRoom::LobbyRoom() : Room() {
-    // LobbyRoom特有的初始化
-}
-
 void LobbyRoom::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial LobbyRoom start");
 
@@ -21,23 +17,11 @@ void LobbyRoom::Start(const std::shared_ptr<Camera>& camera, const std::shared_p
 
 	// 設置大廳特有的墻壁碰撞體
 	SetupWallColliders();
-
-    // 设置大厅特有的互动对象
-    SetupInteractiveObjects();
-
-    // 设置NPC
-    SetupNPCs();
-
-    // 将房间设置为ACTIVE状态
-    SetState(RoomState::ACTIVE);
 }
 
 void LobbyRoom::Update() {
     // 调用基类Update
     Room::Update();
-
-    // 处理大厅特有的交互
-    HandleInteractions();
 
     // 调试：显示碰撞盒
     if (Util::Input::IsKeyUp(Util::Keycode::O)) {
@@ -50,59 +34,22 @@ void LobbyRoom::Update() {
 	}
 }
 
-void LobbyRoom::SetupInteractiveObjects() {
-    // 设置大厅中的互动对象，例如传送门、工作台等
-    // 这些对象可能有特殊的交互功能
-
-
-    // 设置为默认未激活状态
-    ActivatePortal(false);
-}
-
-void LobbyRoom::SetupNPCs() {
-    // 在大厅中设置NPC
-    // 例如：商人、任务NPC等
-
-    // 示例：创建一个商人NPC
-    // auto merchant = CharacterFactory::GetInstance().createNPC("Merchant");
-    // merchant->SetWorldCoord(glm::vec2(120.0f, 50.0f));
-    // CharacterEnter(merchant);
-}
-
-void LobbyRoom::HandleInteractions() {
-    // 处理大厅特有的交互逻辑
-    // 例如检测玩家是否接近互动对象，并提示交互选项
-
-    // 检查玩家是否接近传送门
-    bool playerNearPortal = false;
-
-    // 处理传送门交互
-    if (playerNearPortal && Util::Input::IsKeyUp(Util::Keycode::E)) {
-        // 这里可以触发进入地牢的逻辑
-        LOG_DEBUG("Player-Portal Interaction");
-        // 例如，可以通知SceneManager切换到地牢场景
-    }
-}
-
-void LobbyRoom::ActivatePortal(bool active) {
-    m_PortalActive = active;
-}
-
-void LobbyRoom::OnStateChanged(RoomState oldState, RoomState newState) {
-    LOG_DEBUG("Lobby room state changed from {} to {}", static_cast<int>(oldState), static_cast<int>(newState));
-
-    // 处理状态变化的特殊逻辑
-    switch (newState) {
-        case RoomState::ACTIVE:
-            // 大厅被激活时的处理
-            break;
-        case RoomState::INACTIVE:
-            // 大厅变为非活动状态时的处理
-            break;
-        default:
-            break;
-    }
-}
+// TODO:給Dungeon子類別
+// void LobbyRoom::OnStateChanged(RoomState oldState, RoomState newState) {
+//     LOG_DEBUG("Lobby room state changed from {} to {}", static_cast<int>(oldState), static_cast<int>(newState));
+//
+//     // 处理状态变化的特殊逻辑
+//     switch (newState) {
+//         case RoomState::ACTIVE:
+//             // 大厅被激活时的处理
+//             break;
+//         case RoomState::INACTIVE:
+//             // 大厅变为非活动状态时的处理
+//             break;
+//         default:
+//             break;
+//     }
+// }
 
 void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character>& character) {
     LOG_DEBUG("Character  {} entered the lobby", character->GetName());
