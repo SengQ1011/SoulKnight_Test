@@ -96,24 +96,6 @@ void TestScene_KC::InitializeSceneManagers()
 	inputManager->addObserver(m_Camera);
 }
 
-void TestScene_KC::Update()
-{
-	// Input处理
-	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	inputManager->Update();
-
-	m_Player->Update();
-
-	// 更新房间
-	m_LobbyRoom->Update();
-
-	// 更新相机
-	m_Camera->Update();
-
-	// 更新场景根节点
-	GetRoot().lock()->Update();
-}
-
 void TestScene_KC::Exit()
 {
 	LOG_DEBUG("KC Test Scene exited");
