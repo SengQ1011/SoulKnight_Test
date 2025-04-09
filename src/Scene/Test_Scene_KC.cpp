@@ -60,7 +60,7 @@ void TestScene_KC::Update()
 {
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	inputManager->listenInput();
+	inputManager->Update();
 
 	if (Util::Input::IsKeyUp(Util::Keycode::F)) m_LobbyRoom->GetInteractionManager()->TryInteractWithClosest();
 

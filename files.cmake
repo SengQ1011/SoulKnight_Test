@@ -12,6 +12,7 @@ set(SRC_FILES
     Components/FollowerComponent.cpp
     Components/HealthComponent.cpp
     Components/InputComponent.cpp
+    Components/InteractableComponent.cpp
     Components/MovementComponent.cpp
     Components/SkillComponent.cpp
     Components/StateComponent.cpp
