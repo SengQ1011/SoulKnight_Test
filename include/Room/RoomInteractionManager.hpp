@@ -19,7 +19,7 @@ public:
 
 	void SetPlayer(const std::shared_ptr<Character>& player) {m_Player = player;} // 引用玩家角色
 
-	bool TryInteractWithClosest(float maxRadius = FLT_MAX) const;
+	bool TryInteractWithClosest(float maxRadius = FLT_MAX) const; // Notify
 
 	// 更新互動提示（通常由Room::Update調用）
 	void Update();

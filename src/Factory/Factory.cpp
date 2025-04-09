@@ -45,7 +45,7 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 			{
 				object->AddComponent<InteractableComponent>
-				(ComponentType::INTERACTABLE,json.get<StructComponents::StructCollisionComponent>());
+				(ComponentType::INTERACTABLE,json.get<StructComponents::StructInteractableComponent>());
 			}
 		},
 	};

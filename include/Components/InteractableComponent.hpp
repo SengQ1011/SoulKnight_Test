@@ -7,7 +7,6 @@
 
 #include "Component.hpp"
 #include "Creature/Character.hpp"
-#include "Scene/SceneManager.hpp"
 #include "Util/Text.hpp"
 #include "json.hpp"
 
@@ -29,7 +28,7 @@ namespace StructComponents {
 		std::string s_PromptFontPath = "/Font/zpix.ttf";
 		float s_PromptFontSize = 10.0f;
 		std::string s_PromptText = "按 F 互動";
-		std::array<Uint8,4> s_PromptColor = {255, 255, 255, 255};
+		std::array<Uint8,3> s_PromptColor = {255, 255, 255};
 		bool s_IsPromptVisible = false;
 	};
 
@@ -40,7 +39,7 @@ namespace StructComponents {
 			RESOURCE_DIR+object.s_PromptFontPath,
 			object.s_PromptFontSize,
 			object.s_PromptText,
-			Util::Color(object.s_PromptColor[0],object.s_PromptColor[1],object.s_PromptColor[2], object.s_PromptColor[3])));
+			Util::Color(object.s_PromptColor[0],object.s_PromptColor[1],object.s_PromptColor[2])));
 		objectPtr->SetZIndexType(ZIndexType::UI);
 		objectPtr->SetZIndex(10.0f);
 		objectPtr->SetVisible(object.s_IsPromptVisible);
@@ -67,9 +66,11 @@ namespace StructComponents {
 		if (j.contains("InteractableFunctionName"))
 			j.at("InteractableFunctionName").get_to(object.s_InteractableFunctionName);
 		if (j.contains("PromptObject"))
-			object.s_PromptObject = CreatePromptObject(j.get<StructPrompt>());
+			object.s_PromptObject = CreatePromptObject(j.at("PromptObject").get<StructPrompt>());
 	}
 }
+
+class SceneManager;
 
 class InteractableComponent : public Component {
 public:
@@ -86,20 +87,7 @@ public:
 		  m_IsAutoInteract(data.s_IsAutoInteract)
 	{
 		m_PromptObject = data.s_PromptObject;
-		if (auto owner = GetOwner<nGameObject>()) m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f,owner->GetImageSize().y) );
-		//TODO : 可選function
-		if (data.s_InteractableFunctionName == "Portal")
-		{
-			//TODO: 要換地方
-			m_InteractionCallback = [](
-				const std::shared_ptr<Character>& interactor,
-				const std::shared_ptr<nGameObject>& target)
-			{
-				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-				scene->SetIsChange(true);
-			};
-		}
-
+		m_InteractableFunctionName = data.s_InteractableFunctionName;
 	};
 
 	// 使用std::function作為互動回調
@@ -126,30 +114,23 @@ public:
 
 	// Getter
 	float GetInteractionRadius() const { return m_InteractionRadius; }
-	bool IsPlayerNearby() const { return m_IsPlayerNearby; }
 	bool IsAutoInteract() const { return m_IsAutoInteract; }
 	std::shared_ptr<nGameObject> GetPromptObject() const { return m_PromptObject; }
 
 	//Setter
 	void SetInteractionRadius(float radius) { m_InteractionRadius = radius; }
-	void SetPlayerNearby(bool nearby) { m_IsPlayerNearby = nearby; }
 	void SetAutoInteract(bool autoInteract) { m_IsAutoInteract = autoInteract; }
 
 protected:
-	float m_InteractionRadius; //71.0f/2
+	float m_InteractionRadius;
 	bool m_IsAutoInteract = false;
-	bool m_IsPlayerNearby = false;
 	bool m_IsPromptVisible = false;
 
-	std::weak_ptr<Character> m_Player; // 記錄正在互動的玩家
 	InteractionCallback m_InteractionCallback;
+	std::string m_InteractableFunctionName = "Null";
 
 	// 互動提示UI元素
 	std::shared_ptr<nGameObject> m_PromptObject = nullptr;
-
-private:
-	// 創建互動提示
-	void CreatePrompt();
 };
 
 #endif //INTERACTABLECOMPONENT_HPP

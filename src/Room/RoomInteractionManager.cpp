@@ -88,14 +88,16 @@ void RoomInteractionManager::Update() // 玩家位置的更新 來判斷是否�
 void RoomInteractionManager::UpdateInteractable(const std::weak_ptr<nGameObject>& interactable,
 												 const std::shared_ptr<Character> &player)
 {
+	if (!player) return;
 	if (interactable.expired()) return;
 	const auto obj = interactable.lock();
 	const auto component = obj->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
 	if (!component) return;
 
+	// 當玩家進入範圍
 	const bool inRange = component->IsInRange(player);
-	component->SetPlayerNearby(inRange);
 	component->ShowPrompt(inRange);
+	if (inRange && component->IsAutoInteract()) component->OnInteract(player); //自動觸發
 }
 
 
