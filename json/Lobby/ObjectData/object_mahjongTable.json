@@ -1,0 +1,23 @@
+{
+    "id": "object_mahjongTable",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                50.0,
+                41.0
+            ],
+            "Offset": [
+                0.0,
+                -4.0
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_mahjongTable.png"
+}

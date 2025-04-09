@@ -1,0 +1,6 @@
+{
+    "id": "object_chair",
+    "isAnimated": false,
+    "ZIndex": "OBJECTLOW",
+    "path": "/Lobby/object_chair.png"
+}

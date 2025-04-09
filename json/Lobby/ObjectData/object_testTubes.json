@@ -1,0 +1,23 @@
+{
+    "id": "object_testTubes",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                19.0,
+                6.0
+            ],
+            "Offset": [
+                -0.5,
+                -12.0
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_testTubes.png"
+}

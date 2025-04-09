@@ -1,0 +1,95 @@
+{
+    "layerClass": "wall",
+    "wallColliders": [
+        {
+            "Name": "collision_wall1",
+            "Class": "CollisionComponent",
+            "Size": [
+                16.0,
+                384.0
+            ],
+            "Offset": [
+                -296.0,
+                0.0
+            ],
+            "CollisionLayer": 0,
+            "CollisionMask": 0,
+            "IsTrigger": false
+        },
+        {
+            "Name": "collision_wall2",
+            "Class": "CollisionComponent",
+            "Size": [
+                256.0,
+                96.0
+            ],
+            "Offset": [
+                -160.0,
+                144.0
+            ],
+            "CollisionLayer": 0,
+            "CollisionMask": 0,
+            "IsTrigger": false
+        },
+        {
+            "Name": "collision_wall3",
+            "Class": "CollisionComponent",
+            "Size": [
+                64.0,
+                80.0
+            ],
+            "Offset": [
+                0.0,
+                152.0
+            ],
+            "CollisionLayer": 0,
+            "CollisionMask": 0,
+            "IsTrigger": false
+        },
+        {
+            "Name": "collision_wall4",
+            "Class": "CollisionComponent",
+            "Size": [
+                256.0,
+                96.0
+            ],
+            "Offset": [
+                160.0,
+                144.0
+            ],
+            "CollisionLayer": 0,
+            "CollisionMask": 0,
+            "IsTrigger": false
+        },
+        {
+            "Name": "collision_wall5",
+            "Class": "CollisionComponent",
+            "Size": [
+                16.0,
+                384.0
+            ],
+            "Offset": [
+                296.0,
+                0.0
+            ],
+            "CollisionLayer": 0,
+            "CollisionMask": 0,
+            "IsTrigger": false
+        },
+        {
+            "Name": "collision_wall6",
+            "Class": "CollisionComponent",
+            "Size": [
+                608.0,
+                16.0
+            ],
+            "Offset": [
+                0.0,
+                -200.0
+            ],
+            "CollisionLayer": 0,
+            "CollisionMask": 0,
+            "IsTrigger": false
+        }
+    ]
+}

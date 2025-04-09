@@ -70,8 +70,6 @@ namespace StructComponents {
 	}
 }
 
-class SceneManager;
-
 class InteractableComponent : public Component {
 public:
 	explicit InteractableComponent(
@@ -131,6 +129,9 @@ protected:
 
 	// 互動提示UI元素
 	std::shared_ptr<nGameObject> m_PromptObject = nullptr;
+
+	std::array<Uint8,3> m_Color = {0,0,0};
+	Uint8 m_PromptColor = 0;
 };
 
 #endif //INTERACTABLECOMPONENT_HPP

@@ -32,23 +32,6 @@ void TestScene_KC::Start()
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
 
-	// // 建立傳送門
-	//  m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/way_battle.png"));
-	//  m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
-	//  m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
-	//
-	//  auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-	//  component->SetInteractionRadius(71.0f/2);
-	//  component->SetInteractionCallback(
-	//  	[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
-	//  	{
-	//  		SetIsChange(true);
-	//  	});
-	//
-	//  m_LobbyRoom->AddRoomObject(m_Portal);
-	//  m_Camera->AddChild(m_Portal);
-	//  m_Root->AddChild(m_Portal);
-
 	// 设置相机
 	SetupCamera();
 
@@ -61,8 +44,6 @@ void TestScene_KC::Update()
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	inputManager->listenInput();
-
-	if (Util::Input::IsKeyUp(Util::Keycode::F)) m_LobbyRoom->GetInteractionManager()->TryInteractWithClosest();
 
 	m_Player->Update();
 

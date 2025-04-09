@@ -9,9 +9,6 @@
 #include "Scene/SceneManager.hpp"
 #include "Util/Logger.hpp"
 
-Room::Room() {
-    // 默认构造函数
-}
 
 Room::~Room() {
     // 析构函数 - 确保正确清理资源
@@ -26,11 +23,9 @@ void Room::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Ch
 
 	m_InteractionManager->SetPlayer(player);
 
-    // 加载房间数据
-    LoadFromJSON(JSON_DIR"/LobbyObjectPosition.json");
-
-    // 设置初始状态
-    SetState(RoomState::ACTIVE);
+    // 加载房间数据 TODO:要改 可能是讀取head.json然後選擇房間
+	LOG_DEBUG("Initial Room end{}",m_ThemePath);
+    LoadFromJSON(m_ThemePath+"/ObjectPosition.json");
 }
 
 void Room::Update() {
@@ -45,17 +40,13 @@ void Room::Update() {
     // 更新碰撞检测
     if (m_CollisionManager) m_CollisionManager->UpdateCollision();
 
-	if (m_InteractionManager) m_InteractionManager->Update();
+	if (m_InteractionManager)
+	{
+		m_InteractionManager->Update();
+		if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest(FLT_MAX);
+	}
 
     // 注意：不在这里更新角色，因为角色更新应该由Scene负责
-}
-
-void Room::SetState(RoomState state) {
-    if (m_State != state) {
-        RoomState oldState = m_State;
-        m_State = state;
-        OnStateChanged(oldState, state);
-    }
 }
 
 void Room::UpdateRoomState() {
@@ -70,9 +61,6 @@ void Room::CharacterEnter(std::shared_ptr<Character> character) {
 
         // 如果是玩家，激活房间
         if (character->GetType() != CharacterType::PLAYER) return;
-        if (m_State == RoomState::INACTIVE) {
-            SetState(RoomState::ACTIVE);
-        }
     }
 }
 
@@ -86,9 +74,6 @@ void Room::CharacterExit(std::shared_ptr<Character> character) {
         bool hasPlayer = std::any_of(m_Characters.begin(), m_Characters.end(),
             [](const std::shared_ptr<Character>& c) { return c->GetType() == CharacterType::PLAYER; });
 
-        if (!hasPlayer && m_State == RoomState::ACTIVE) {
-            SetState(RoomState::INACTIVE);
-        }
     }
 }
 

@@ -11,26 +11,18 @@
 
 class LobbyRoom : public Room {
 public:
-	LobbyRoom();
+	explicit LobbyRoom(const std::string& path = JSON_DIR"/Lobby") : Room(path) {};
 	~LobbyRoom() override = default;
 
 	// 重写基类方法
 	void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) override;
 	void Update() override;
 
-	// Lobby特有功能
-	void SetupNPCs();
-	void ActivatePortal(bool active);
-	bool IsPortalActive() const { return m_PortalActive; }
-
 	void AddWallCollider(const std::shared_ptr<nGameObject>& collider);
 
 protected:
 	// 实现抽象方法
 	void SetupWallColliders();
-
-	// 重写状态变化处理方法
-	void OnStateChanged(RoomState oldState, RoomState newState) override;
 
 	// 重写角色进入/离开处理
 	void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
@@ -39,7 +31,6 @@ protected:
 private:
 	// Lobby特有数据
 	bool m_PortalActive = false;  // 传送门是否激活
-
 
 	// Lobby特有墙壁碰撞体配置
 	std::vector<std::shared_ptr<nGameObject>> m_WallColliders;    // 墙壁碰撞体
@@ -62,9 +53,6 @@ private:
 		glm::vec2(608.0f, 16.0f)
 	};
 
-	// Lobby特有方法
-	void SetupInteractiveObjects();
-	void HandleInteractions();
 };
 
 #endif //LOBBYROOM_HPP

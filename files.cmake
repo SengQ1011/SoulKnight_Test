@@ -84,6 +84,7 @@ set(INCLUDE_FILES
     ObserveManager/TrackingManager.hpp
     Observer.hpp
     Override/nGameObject.hpp
+    Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp

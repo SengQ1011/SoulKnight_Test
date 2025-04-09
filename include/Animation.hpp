@@ -20,8 +20,6 @@ public:
 	Animation(const Animation&) = delete;
 	Animation& operator=(const Animation&) = delete;
 
-
-
 	[[nodiscard]] bool IsLooping() const {
 		auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
 		return animation ? animation->GetLooping() : false;

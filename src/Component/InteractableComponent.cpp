@@ -20,12 +20,12 @@ void InteractableComponent::Init() {
 }
 
 void InteractableComponent::Update() {
-
-
 	//更新位置
 	if (!m_PromptObject) return;
 	if (const auto owner = GetOwner<nGameObject>())
+	{
 		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f,owner->GetImageSize().y) );
+	}
 }
 
 bool InteractableComponent::OnInteract(const std::shared_ptr<Character>& interactor) {

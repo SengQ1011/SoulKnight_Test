@@ -1,0 +1,26 @@
+{
+    "id": "object_wayBattle",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "portal",
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 35.5,
+            "InteractableFunctionName": "Portal",
+            "PromptObject": {
+                "PromptFontPath": "/Font/zpix.ttf",
+                "PromptFontSize": 10.0,
+                "PromptText": "前面的區域\n以後再來吧\n",
+                "PromptColor": [
+                    255,
+                    255,
+                    255,
+                    0
+                ],
+                "IsPromptVisible": false
+            }
+        }
+    ],
+    "path": "/Lobby/object_wayBattle.png"
+}

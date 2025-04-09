@@ -1,0 +1,23 @@
+{
+    "id": "object_gachapon",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                30.0,
+                14.0
+            ],
+            "Offset": [
+                0.0,
+                -18.0
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_gachapon.png"
+}

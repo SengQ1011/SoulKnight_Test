@@ -1,0 +1,6 @@
+{
+    "id": "floor_lobby",
+    "isAnimated": false,
+    "ZIndex": "FLOOR",
+    "path": "/Lobby/floor_lobby.png"
+}
