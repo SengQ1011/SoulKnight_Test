@@ -16,31 +16,32 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 {
 	std::shared_ptr<RoomObject> roomObject = std::make_shared<RoomObject>();
 
-	if (!m_ScenePath.data())
+	if (!m_ObjectDataFilePath.data())
 	{
 		LOG_DEBUG("RoomObjectFactory::createRoomObject 沒設置ObjectDataPath");
 		return nullptr;
 	}
 
-	// 讀取 JSON 資料
-	nlohmann::json origin = readJsonFile("LobbyObjectData.json");
-
-	// 檢查ID是否存在
-	if (!origin.contains(_id)) {
-		LOG_ERROR("RoomObjectFactory::createRoomObject: No such ID in JSON: {}", _id);
-		return roomObject;
-	}
+	// // 讀取 JSON 資料
+	// nlohmann::json origin = readJsonFile("LobbyObjectData.json");
+	//
+	// // 檢查ID是否存在
+	// if (!origin.contains(_id)) {
+	// 	LOG_ERROR("RoomObjectFactory::createRoomObject: No such ID in JSON: {}", _id);
+	// 	return roomObject;
+	// }
 	//TODO:ID系統
 
-	auto filePath = m_ScenePath+_id+".json";
-	std::ifstream file(filePath);
-	if (!file.is_open()) {
-		LOG_DEBUG("Error: can't open in RoomObjectFactory: {}", filePath);
-		return roomObject;
-	}
+	// auto filePath = m_ObjectDataFilePath+"/"+_id+".json";
+	// std::ifstream file(filePath);
+	// if (!file.is_open()) {
+	// 	LOG_DEBUG("Error: can't open in RoomObjectFactory: {}", filePath);
+	// 	return roomObject;
+	// }
 
-	nlohmann::json jsonData;
-	file >> jsonData;
+	// nlohmann::json jsonData;
+	// file >> jsonData;
+	nlohmann::json jsonData = m_Loader.lock()->LoadObjectData(_id);
 
 	// 設置Drawable
 	if (jsonData.contains("path")) {

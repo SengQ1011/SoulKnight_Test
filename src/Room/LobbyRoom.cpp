@@ -9,11 +9,11 @@
 #include "Util/Logger.hpp"
 #include "Factory/CharacterFactory.hpp"
 
-void LobbyRoom::Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) {
+void LobbyRoom::Start(const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial LobbyRoom start");
 
     // 调用基类的Start方法
-    Room::Start(camera,player);
+    Room::Start(player);
 
 	// 設置大廳特有的墻壁碰撞體
 	SetupWallColliders();
@@ -70,6 +70,13 @@ void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character>& character) {
     }
 }
 
+void LobbyRoom::LoadFromJSON()
+{
+	const nlohmann::ordered_json jsonData = m_Loader.lock()->LoadLobbyObjectPosition();
+	InitializeRoomObjects(jsonData);
+}
+
+
 void LobbyRoom::SetupWallColliders() {
 	LOG_DEBUG("Set Lobby wall collider");
 
@@ -90,19 +97,20 @@ void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
 	if (collider) {
 		m_WallColliders.emplace_back(collider);
 
-		// 注册到碰撞管理器
-		m_CollisionManager->RegisterNGameObject(collider);
-
-		// 获取碰撞组件并将其黑盒添加到场景和相机
-		if (auto collComp = collider->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-			auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-			if (scene) {
-				scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
-
-				if (auto camera = m_Camera.lock()) {
-					camera->AddChild(collComp->GetVisibleBox());
-				}
-			}
-		}
+		RegisterCollisionManger(collider);
+		// // 注册到碰撞管理器
+		// m_CollisionManager->RegisterNGameObject(collider);
+		//
+		// // 获取碰撞组件并将其黑盒添加到场景和相机
+		// if (auto collComp = collider->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+		// 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		// 	if (scene) {
+		// 		scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
+		//
+		// 		if (auto camera = scene->GetCamera().lock()) {
+		// 			camera->AddChild(collComp->GetVisibleBox());
+		// 		}
+		// 	}
+		// }
 	}
 }

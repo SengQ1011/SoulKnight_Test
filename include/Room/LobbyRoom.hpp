@@ -11,11 +11,12 @@
 
 class LobbyRoom : public Room {
 public:
-	explicit LobbyRoom(const std::string& path = JSON_DIR"/Lobby") : Room(path) {};
+	explicit LobbyRoom(const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
+	: Room(loader,room_object_factory) {}
 	~LobbyRoom() override = default;
 
 	// 重写基类方法
-	void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) override;
+	void Start(const std::shared_ptr<Character>& player) override;
 	void Update() override;
 
 	void AddWallCollider(const std::shared_ptr<nGameObject>& collider);
@@ -27,6 +28,8 @@ protected:
 	// 重写角色进入/离开处理
 	void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
 	void OnCharacterExit(const std::shared_ptr<Character>& character) override;
+
+	void LoadFromJSON() override;
 
 private:
 	// Lobby特有数据
