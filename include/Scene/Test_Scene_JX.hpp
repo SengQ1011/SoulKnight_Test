@@ -34,7 +34,7 @@ protected:
 	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
 	std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
 
-	std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
+	// std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
 	std::shared_ptr<Character> m_Player;
 	std::shared_ptr<Character> m_Enemy;
 

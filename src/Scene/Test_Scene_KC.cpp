@@ -19,21 +19,24 @@
 void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene");
-
 	// 创建并初始化玩家
 	CreatePlayer();
 
+	// 设置相机
+	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
+	SetupCamera();
+
+	//設置工廠
+	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
+
 	// 创建并初始化大厅房间
-	m_LobbyRoom = std::make_shared<LobbyRoom>();
-	m_LobbyRoom->Start(m_Camera,m_Player);
+	m_LobbyRoom = std::make_shared<LobbyRoom>(m_Loader,m_RoomObjectFactory);
+	m_LobbyRoom->Start(m_Player);
 
 	// 将玩家注册到碰撞管理器
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
-
-	// 设置相机
-	SetupCamera();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
@@ -49,7 +52,6 @@ void TestScene_KC::Update()
 
 	// 更新房间
 	m_LobbyRoom->Update();
-	LOG_DEBUG("Leaving KC Test Scene {}",m_LobbyRoom->IsPlayerInside());
 
 	// 更新相机
 	m_Camera->Update();
@@ -79,8 +81,9 @@ void TestScene_KC::CreatePlayer()
 	m_Camera->AddChild(m_Player);
 }
 
-void TestScene_KC::SetupCamera()
+void TestScene_KC::SetupCamera() const
 {
+	m_Camera->SetMapSize(m_MapHeight);
 	m_Camera->SetFollowTarget(m_Player);
 }
 

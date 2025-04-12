@@ -24,6 +24,7 @@ set(SRC_FILES
     Factory/RoomFactory.cpp
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
+    Loader.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
     Room/LobbyRoom.cpp
@@ -81,6 +82,7 @@ set(INCLUDE_FILES
     GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
+    Loader.hpp
     Motion.hpp
     ObserveManager/InputManager.hpp
     ObserveManager/ObserveManager.hpp

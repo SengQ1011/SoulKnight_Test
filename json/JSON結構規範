@@ -1,0 +1,112 @@
+json -位置和物件資料
+Theme -大廳，冰原，火山，魔法石場景……
+RoomType -小怪房，BOSS房間，起始房間，傳送門房間，寶箱房間，特殊房間，魔法石房間
+
+Lobby
+- Lobby/
+    - ObjectData/
+        - object1.json
+        - object2.json
+        - ……
+    - ObjectPosition.json
+    - WallColliderData.json
+
+DungeonScene
+// 地圖是
+// Map - Theme (Theme會影響Room和RoomObject的來源）
+   -> Room - RoomType （Room由RoomObject組成）
+   -> RoomObject
+TODO:
+    函數模塊化
+    重構工廠 和 Room的LoadJSON
+    讓子類別可以重寫讀取JSON的方法
+例如:
+- IcePlains/ (Theme)
+    - MonsterRoom/ (RoomType) //TODO：需要改寫DungeonRoom的LoadJSON
+        (Room需要的JSON檔案）
+        head.json (記錄文件夾資訊 用來隨機)
+        ObjectPosition1.json
+        ObjectPosition2.json
+        ObjectPosition3.json
+        ObjectPosition4.json
+        ObjectPosition5.json
+        ObjectPosition6.json
+        ObjectPosition7.json
+        ObjectPosition8.json
+        ……
+    - BossRoom/ //TODO：需要改寫DungeonRoom的LoadJSON
+        BossName1_ObjectPosition.json (ObjectPosition)
+        BossName2_ObjectPosition.json
+    - ChestRoom/ (游戲裏面用列舉來選擇） //TODO：需要改寫DungeonRoom的LoadJSON
+        WeaponChest_ObjectPosition.json
+        Shopkeeper_ObjectPosition.json
+    - SpecialRoom/ //TODO：需要改寫DungeonRoom的LoadJSON
+        Statue_ObjectPosition.json (雕像)
+        Craftsman_ObjectPosition.json (工匠)
+    - StartingRoom/
+        ObjectPosition.json
+    - PortalRoom/
+        ObjectPosition.json
+
+    (這裏開始是工廠需要的）
+    - ObjectData/
+        * wall.json - 記錄所有墻壁的圖片路徑
+        * floor.json - 記錄所有地板的圖片路徑
+        object1.json
+        object2.json
+        ……
+    
+    - Enemy/
+        enemy1.json
+        enemy2.json
+        ……
+        
+
+(全局通用的）
+- Character/
+    character1.json
+    npc1.json
+- Weapon/
+    weapon1.json
+    weapon2.json
+- Bullet/ ?
+        
+
+
+    RoomObject（Wall和障礙物）和Character和Floor和Door - 用RoomObjectFactory和CharacterFactory創建
+    - 只要命名不重複就不用Theme分類？
+    - 分類的好處
+        - 定義規範 - 例如冰原的東西很難出現在火山
+        - 方便尋找
+        - 用來隨機生成 - 例如冰原/地板/無數種地板 選一個 （地板塊和小地板-圖片不同） 墻壁-圖片不同
+    - 敵人和裝飾根據主題會有不同
+    - 玩家沒有不同
+
+~墻壁 地板 門 障礙物 寶箱 互動物 NPC 小怪
+墻壁和地板 - 圖片不同，其他都沒差別
+門 - 有開關狀態，會和房間狀態互動
+障礙物 寶箱 互動物 (RoomObject) - 有各自的設定
+生成網格圖
+- 查看碰撞箱位置來畫
+- 用來動態隨機生成
+
+先是ObjectPosition生成特定RoomObject
+然後再動態生成
+- 門
+- 通道小地板    照片不同而已 _id == floor
+- 通道墻壁      照片不同而已 _id == wall
+- 關卡寶箱
+- 敵人
+
+Result
+- Result/
+    (DungeonRoom)
+    - StartingRoom/
+    - MagicStoneRoom/
+
+
+// 小怪是怪物點數隨機生成，所以是通過對照表呼叫工廠根據id建構
+Character
+- Character/
+    - character1.json
+    - character2.json
