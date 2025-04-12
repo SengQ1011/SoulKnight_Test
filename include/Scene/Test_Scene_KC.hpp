@@ -34,9 +34,6 @@ protected:
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 
-	// 更新逻辑的辅助方法
-	void HandlePlayerControls();
-
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
 	std::shared_ptr<Character> m_Player;
 	float m_MapHeight;
@@ -46,8 +43,6 @@ protected:
 	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
 
 	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
-
-	// std::shared_ptr<RoomObject> m_Portal = std::make_shared<RoomObject>();
 };
 
 #endif //TEST_SCENE_HPP

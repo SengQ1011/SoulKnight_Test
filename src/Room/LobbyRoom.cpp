@@ -34,23 +34,6 @@ void LobbyRoom::Update() {
 	}
 }
 
-// TODO:給Dungeon子類別
-// void LobbyRoom::OnStateChanged(RoomState oldState, RoomState newState) {
-//     LOG_DEBUG("Lobby room state changed from {} to {}", static_cast<int>(oldState), static_cast<int>(newState));
-//
-//     // 处理状态变化的特殊逻辑
-//     switch (newState) {
-//         case RoomState::ACTIVE:
-//             // 大厅被激活时的处理
-//             break;
-//         case RoomState::INACTIVE:
-//             // 大厅变为非活动状态时的处理
-//             break;
-//         default:
-//             break;
-//     }
-// }
-
 void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character>& character) {
     LOG_DEBUG("Character  {} entered the lobby", character->GetName());
 
@@ -98,19 +81,5 @@ void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
 		m_WallColliders.emplace_back(collider);
 
 		RegisterCollisionManger(collider);
-		// // 注册到碰撞管理器
-		// m_CollisionManager->RegisterNGameObject(collider);
-		//
-		// // 获取碰撞组件并将其黑盒添加到场景和相机
-		// if (auto collComp = collider->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-		// 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-		// 	if (scene) {
-		// 		scene->GetRoot().lock()->AddChild(collComp->GetVisibleBox());
-		//
-		// 		if (auto camera = scene->GetCamera().lock()) {
-		// 			camera->AddChild(collComp->GetVisibleBox());
-		// 		}
-		// 	}
-		// }
 	}
 }

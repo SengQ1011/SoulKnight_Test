@@ -12,9 +12,9 @@
 #include "Components/StateComponent.hpp"
 
 // class可能是指定類型再用， 目前都是RoomObject
-std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
+std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
 {
-	std::shared_ptr<RoomObject> roomObject = std::make_shared<RoomObject>();
+	std::shared_ptr<nGameObject> roomObject = std::make_shared<nGameObject>(_id);
 
 	if (!m_ObjectDataFilePath.data())
 	{

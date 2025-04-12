@@ -29,6 +29,7 @@ protected:
 	void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
 	void OnCharacterExit(const std::shared_ptr<Character>& character) override;
 
+	//LobbyRoom有自己的讀取方式
 	void LoadFromJSON() override;
 
 private:

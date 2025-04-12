@@ -21,7 +21,6 @@
 /// @brief: 一定要設置m_ObjectPositionPath
 class Room {
 public:
-	// explicit Room(std::string theme) : m_Theme(std::move(theme)) {}
 	explicit Room(const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
 	: m_Loader(loader), m_Factory(room_object_factory) {}
     virtual ~Room();
@@ -37,9 +36,9 @@ public:
     [[nodiscard]] const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
 
     // 房间对象管理
-    void AddRoomObject(const std::shared_ptr<RoomObject>& object);
-    void RemoveRoomObject(const std::shared_ptr<RoomObject>& object);
-    [[nodiscard]] const std::vector<std::shared_ptr<RoomObject>>& GetRoomObjects() const { return m_RoomObjects; }
+    void AddRoomObject(const std::shared_ptr<nGameObject>& object);
+    void RemoveRoomObject(const std::shared_ptr<nGameObject>& object);
+    [[nodiscard]] const std::vector<std::shared_ptr<nGameObject>>& GetRoomObjects() const { return m_RoomObjects; }
 
     // 碰撞体管理
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
@@ -64,11 +63,11 @@ public:
 protected:
     // 房间属性
     glm::vec2 m_WorldCoord = glm::vec2(0, 0);  // 在世界中的位置
-    glm::vec2 m_RoomRegion = glm::vec2(0, 0);        // 房间尺寸
+    glm::vec2 m_RoomRegion = glm::vec2(0, 0);  // 房间區域
     glm::vec2 m_TileSize = glm::vec2(0, 0);    // 瓦片尺寸
 
     // 房间内对象
-    std::vector<std::shared_ptr<RoomObject>> m_RoomObjects;       // 房间固定物体
+    std::vector<std::shared_ptr<nGameObject>> m_RoomObjects;       // 房间固定物体
     std::vector<std::shared_ptr<Character>> m_Characters;         // 当前在房间内的角色
 
 	/**
@@ -84,7 +83,6 @@ protected:
 	std::weak_ptr<Loader> m_Loader; // 專門用來讀取Json檔案
 	// 工廠
 	std::weak_ptr<RoomObjectFactory> m_Factory;
-	std::string m_Theme = "Lobby";
 	std::weak_ptr<Character> m_Player;
 	std::weak_ptr<Scene> m_CachedCurrentScene;
 	std::weak_ptr<Camera> m_CachedCamera;
