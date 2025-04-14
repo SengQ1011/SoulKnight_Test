@@ -1,0 +1,23 @@
+{
+    "id": "object_luckyCat_0",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                17.0,
+                17.0
+            ],
+            "Offset": [
+                0.0,
+                -5.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_luckyCat_0.png"
+}

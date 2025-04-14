@@ -1,0 +1,23 @@
+{
+    "id": "object_garbageBin",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                18.0,
+                12.0
+            ],
+            "Offset": [
+                0.0,
+                -8.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_garbageBin.png"
+}

@@ -43,15 +43,15 @@ void TestScene_JX::Start()
 	roomHeight = jsonData.at("room_height").get<float>() * jsonData.at("tile_height").get<float>();
 	m_Camera->SetMapSize(roomHeight);
 
-	for (const auto &elem: jsonData["roomObject"])
-	{
-		m_RoomObject.emplace_back(m_Factory->createRoomObject(elem.at("ID").get<std::string>(), elem.at("Class").get<std::string>()));
-		const auto x = elem.at("Position")[0].get<float>();
-		const auto y = elem.at("Position")[1].get<float>();
-		const auto position = glm::vec2(x,y);
-		m_RoomObject.back()->SetWorldCoord(position);
-		LOG_DEBUG("{}",m_RoomObject.back()->GetWorldCoord());
-	}
+	// for (const auto &elem: jsonData["roomObject"])
+	// {
+	// 	m_RoomObject.emplace_back(m_Factory->createRoomObject(elem.at("ID").get<std::string>(), elem.at("Class").get<std::string>()));
+	// 	const auto x = elem.at("Position")[0].get<float>();
+	// 	const auto y = elem.at("Position")[1].get<float>();
+	// 	const auto position = glm::vec2(x,y);
+	// 	m_RoomObject.back()->SetWorldCoord(position);
+	// 	LOG_DEBUG("{}",m_RoomObject.back()->GetWorldCoord());
+	// }
 
 	// 墻壁碰撞體
 	std::vector<glm::vec2> offset = {glm::vec2(-296.0f,0.0f), glm::vec2(-160.0f,144.0f), glm::vec2(0.0f,152.0f),
@@ -155,7 +155,7 @@ void TestScene_JX::Update()
 	m_Player->Update();
 	m_Enemy->Update();
 
-	m_RoomCollisionManager->UpdateCollision();
+	m_RoomCollisionManager->Update();
 	m_Camera->Update();
 	SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->Update();
 }

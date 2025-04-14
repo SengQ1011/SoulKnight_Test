@@ -33,8 +33,9 @@ void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObje
 	);
 }
 
-void RoomCollisionManager::UpdateCollision() const
+void RoomCollisionManager::Update() const
 {
+	if (!m_IsActive) return;
 	std::vector<std::pair<std::shared_ptr<nGameObject>, std::shared_ptr<nGameObject>>> collisionPairs;
 
 	for (size_t i = 0; i < m_NGameObjects.size(); ++i) // ++i效率更好，都是從0開始，i++會建一個臨時變數
@@ -76,13 +77,13 @@ void RoomCollisionManager::UpdateCollision() const
 
 void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 {
-	isVisible = isVisible ^ true; //XOR bool 實現開關
+	m_IsVisible = m_IsVisible ^ true; //XOR bool 實現開關
 	std::for_each(std::execution::par_unseq,m_NGameObjects.begin(), m_NGameObjects.end(),
 		[&](const std::weak_ptr<nGameObject>& object)
 		{
 			if (const auto sharedPtr = object.lock())
 				sharedPtr->GetComponent<CollisionComponent>(ComponentType::COLLISION)
-				->GetVisibleBox()->SetVisible(isVisible);
+				->GetVisibleBox()->SetVisible(m_IsVisible);
 		});
 }
 

@@ -73,6 +73,7 @@ bool RoomInteractionManager::TryInteractWithClosest(float maxRadius) const
 
 void RoomInteractionManager::Update() // 玩家位置的更新 來判斷是否顯示互動提示
 {
+	if (!m_IsActive) return;
 	auto player = m_Player.lock();
 	if (!player) return;
 

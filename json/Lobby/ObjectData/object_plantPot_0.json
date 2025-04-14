@@ -1,0 +1,23 @@
+{
+    "id": "object_plantPot_0",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                11.0,
+                8.0
+            ],
+            "Offset": [
+                0.0,
+                -9.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_plantPot_0.png"
+}

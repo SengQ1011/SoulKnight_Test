@@ -12,32 +12,47 @@
 #include "Components/StateComponent.hpp"
 
 // class可能是指定類型再用， 目前都是RoomObject
-std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
+std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
 {
-	std::shared_ptr<RoomObject> roomObject = std::make_shared<RoomObject>();
+	std::shared_ptr<nGameObject> roomObject = std::make_shared<nGameObject>(_id);
 
-	// 讀取 JSON 資料
-	nlohmann::json origin = readJsonFile("LobbyObjectData.json");
-
-	// 檢查ID是否存在
-	if (!origin.contains(_id)) {
-		LOG_ERROR("RoomObjectFactory::createRoomObject: No such ID in JSON: {}", _id);
-		return roomObject;
+	if (!m_ObjectDataFilePath.data())
+	{
+		LOG_DEBUG("RoomObjectFactory::createRoomObject 沒設置ObjectDataPath");
+		return nullptr;
 	}
+
+	// // 讀取 JSON 資料
+	// nlohmann::json origin = readJsonFile("LobbyObjectData.json");
+	//
+	// // 檢查ID是否存在
+	// if (!origin.contains(_id)) {
+	// 	LOG_ERROR("RoomObjectFactory::createRoomObject: No such ID in JSON: {}", _id);
+	// 	return roomObject;
+	// }
 	//TODO:ID系統
 
-	auto data = origin[_id];
+	// auto filePath = m_ObjectDataFilePath+"/"+_id+".json";
+	// std::ifstream file(filePath);
+	// if (!file.is_open()) {
+	// 	LOG_DEBUG("Error: can't open in RoomObjectFactory: {}", filePath);
+	// 	return roomObject;
+	// }
+
+	// nlohmann::json jsonData;
+	// file >> jsonData;
+	nlohmann::json jsonData = m_Loader.lock()->LoadObjectData(_id);
 
 	// 設置Drawable
-	if (data.contains("path")) {
-		roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+data.at("path").get<std::string>()));
+	if (jsonData.contains("path")) {
+		roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+jsonData.at("path").get<std::string>()));
 	} else {
 		LOG_WARN("RoomObjectFactory::createRoomObject: No path for {}", _id);
 	}
 
 	// 設置ZIndexLayer
-	if (data.contains("ZIndex")) {
-		const auto zIndexStr = data.at("ZIndex").get<std::string>();
+	if (jsonData.contains("ZIndex")) {
+		const auto zIndexStr = jsonData.at("ZIndex").get<std::string>();
 		roomObject->SetZIndexType(stringToZIndexType(zIndexStr));
 	} else {
 		LOG_WARN("RoomObjectFactory::createRoomObject: No ZIndex for {}", _id);
@@ -46,8 +61,8 @@ std::shared_ptr<RoomObject> RoomObjectFactory::createRoomObject(const std::strin
 	}
 
 	//設置Components
-	if (!data.contains("components")) return roomObject; // 沒有就跳過
-	for (auto& component : data.at("components"))
+	if (!jsonData.contains("components")) return roomObject; // 沒有就跳過
+	for (auto& component : jsonData.at("components"))
 	{
 		try { Factory::createComponent(roomObject, component); }
 		catch (const std::exception& e) { LOG_ERROR("RoomObjectFactory::createRoomObject: {}", e.what()); }

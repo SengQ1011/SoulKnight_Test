@@ -19,38 +19,24 @@
 void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene");
-
 	// 创建并初始化玩家
 	CreatePlayer();
 
+	// 设置相机
+	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
+	SetupCamera();
+
+	//設置工廠
+	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
+
 	// 创建并初始化大厅房间
-	m_LobbyRoom = std::make_shared<LobbyRoom>();
-	m_LobbyRoom->Start(m_Camera,m_Player);
+	m_LobbyRoom = std::make_shared<LobbyRoom>(m_Loader,m_RoomObjectFactory);
+	m_LobbyRoom->Start(m_Player);
 
 	// 将玩家注册到碰撞管理器
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
-
-	// // 建立傳送門
-	//  m_Portal->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/Lobby/way_battle.png"));
-	//  m_Portal->SetZIndexType(ZIndexType::OBJECTHIGH);
-	//  m_Portal->SetWorldCoord(glm::vec2(0.0f, 128.0f));
-	//
-	//  auto component = m_Portal->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-	//  component->SetInteractionRadius(71.0f/2);
-	//  component->SetInteractionCallback(
-	//  	[this](const std::shared_ptr<Character>& character, std::shared_ptr<nGameObject> owner)
-	//  	{
-	//  		SetIsChange(true);
-	//  	});
-	//
-	//  m_LobbyRoom->AddRoomObject(m_Portal);
-	//  m_Camera->AddChild(m_Portal);
-	//  m_Root->AddChild(m_Portal);
-
-	// 设置相机
-	SetupCamera();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
@@ -61,8 +47,6 @@ void TestScene_KC::Update()
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	inputManager->Update();
-
-	if (Util::Input::IsKeyUp(Util::Keycode::F)) m_LobbyRoom->GetInteractionManager()->TryInteractWithClosest();
 
 	m_Player->Update();
 
@@ -97,8 +81,9 @@ void TestScene_KC::CreatePlayer()
 	m_Camera->AddChild(m_Player);
 }
 
-void TestScene_KC::SetupCamera()
+void TestScene_KC::SetupCamera() const
 {
+	m_Camera->SetMapSize(m_MapHeight);
 	m_Camera->SetFollowTarget(m_Player);
 }
 

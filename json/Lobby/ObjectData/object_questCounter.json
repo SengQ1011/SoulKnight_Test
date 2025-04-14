@@ -1,0 +1,23 @@
+{
+    "id": "object_questCounter",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                47.0,
+                15.0
+            ],
+            "Offset": [
+                0.5,
+                -6.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/object_questCounter.png"
+}

@@ -17,28 +17,19 @@ public:
 	void RegisterInteractable(const std::shared_ptr<nGameObject>& interactable);
 	void UnregisterInteractable(const std::shared_ptr<nGameObject>& interactable);
 
-	void SetPlayer(const std::shared_ptr<Character>& player) {m_Player = player;} // 引用玩家角色
-
+	void Update(); // 更新互動提示（通常由Room::Update調用）
 	bool TryInteractWithClosest(float maxRadius = FLT_MAX) const; // Notify
-
-	// 更新互動提示（通常由Room::Update調用）
-	void Update();
-
-	// 調試用：顯示互動範圍
-	void ToggleDebugVisibility();
-
-	// 獲取最近的可互動物件
-	[[nodiscard]] std::shared_ptr<nGameObject> GetClosestInteractable(float maxRadius) const;
-
-	// 顯示/隱藏所有互動提示
-	void ShowInteractionHints(bool show);
+	void SetPlayer(const std::shared_ptr<Character>& player) {m_Player = player;} // 引用玩家角色
 
 protected:
 	std::vector<std::weak_ptr<nGameObject>> m_InteractableObjects;
 	std::weak_ptr<Character> m_Player;
-	bool isVisible = true;
+	bool m_IsActive = true;
 
 private:
+	// 獲取最近的可互動物件
+	[[nodiscard]] std::shared_ptr<nGameObject> GetClosestInteractable(float maxRadius) const;
+
 	static void UpdateInteractable(const std::weak_ptr<nGameObject>& interactable, const std::shared_ptr<Character> &player);
 };
 

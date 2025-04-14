@@ -54,7 +54,7 @@ public:
 	void SetZIndexType(const ZIndexType zIndexType) {m_ZIndex = zIndexType;}
 
 	// Getter
-	[[nodiscard]] std::string GetName() const { return m_Name; }
+	[[nodiscard]] virtual std::string GetName() const { return m_Name; }
 	[[nodiscard]] virtual std::string GetClassName() const { return "nGameObject"; }
 	[[nodiscard]] glm::vec2 GetPivot() const { return m_Pivot;}
 	[[nodiscard]] glm::vec2 GetImageSize() const {return m_Drawable->GetSize();}

@@ -1,0 +1,23 @@
+{
+    "id": "room_item_41",
+    "isAnimated": false,
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                16.0,
+                16.0
+            ],
+            "Offset": [
+                -1.0,
+                -6.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ],
+    "path": "/Lobby/room_item_41.png"
+}
