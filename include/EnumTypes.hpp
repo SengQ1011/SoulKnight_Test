@@ -42,8 +42,7 @@ enum class AIType {
 	WANDER		// 游蕩
 };
 
-enum class enemyState
-{
+enum class enemyState {
 	IDLE,
 	WANDERING,
 	CHASING,

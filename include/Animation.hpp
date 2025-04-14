@@ -13,14 +13,12 @@
 
 class Animation: public nGameObject {
 public:
-	Animation(std::vector<std::string> AnimationPaths);
+	Animation(std::vector<std::string> AnimationPaths, bool needLoop);
 	~Animation() = default;
 
 	// 禁用拷贝构造和拷贝赋值
 	Animation(const Animation&) = delete;
 	Animation& operator=(const Animation&) = delete;
-
-
 
 	[[nodiscard]] bool IsLooping() const {
 		auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
@@ -42,6 +40,7 @@ public:
 
 private:
 	std::vector<std::string> m_AnimationPaths;  // 動畫幀列表
+	bool m_Looping;
 };
 
 #endif //ANIMATION_HPP

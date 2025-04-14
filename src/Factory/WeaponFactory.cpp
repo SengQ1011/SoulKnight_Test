@@ -16,7 +16,7 @@ namespace WeaponFactory {
 				if (weapon["ID"] == weaponID) {
 					std::string type = weapon["weaponType"];
 					std::string weaponImagePath = RESOURCE_DIR + weapon["weaponImagePath"].get<std::string>();
-					std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
+
 					std::string name = weapon["name"];
 					int damage = weapon["damage"];
 					int energy = weapon["energy"];
@@ -26,10 +26,12 @@ namespace WeaponFactory {
 
 					// 根據 type 建立不同類型的武器
 					if (type == "Melee") {
+						auto slashAnimation = Factory::parseAnimations(weapon["slashImagePath"], false);
 						float range = weapon["attackRange"];
-						return std::make_shared<MeleeWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackSpeed, range);
+						return std::make_shared<MeleeWeapon>(weaponImagePath, slashAnimation, name, damage, energy, criticalRate, offset, attackSpeed, range);
 					}
 					else if (type == "Gun") {
+						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
 						float size = weapon["bulletSize"];
 						return std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackSpeed, size);
 					}
@@ -50,6 +52,7 @@ namespace WeaponFactory {
 		}
 	}
 }
+
 
 
 

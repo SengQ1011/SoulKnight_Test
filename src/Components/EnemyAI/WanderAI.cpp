@@ -8,39 +8,42 @@ WanderAI::WanderAI(int monsterPoint): AIComponent(AIType::WANDER, monsterPoint) 
 
 void WanderAI::Update() {
 	// 關於移動的deltaTime單位為MS
-	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	const auto enemy = GetOwner<Character>();
 	if(!enemy)return;
 
-	if (auto target = m_Target.lock()) {
+	if (m_attackTimer > 0) {
+		// 繼續巡邏
+		m_attackTimer -= deltaTime;
+	}
+	else if (const auto target = m_Target.lock()) {
 		float distance = glm::distance(target->GetWorldCoord(), enemy->GetWorldCoord());
 		if (distance < m_detectionRange) {
-			ChasePlayerLogic();
-			//m_enemyState = enemyState::CHASING;
-			return;
+			m_enemyState = enemyState::CHASING;
 		}
+	} // 沒有追蹤目標，就進入 wander 模式
+	else m_enemyState = enemyState::WANDERING;
+
+	switch (m_enemyState) {
+		case enemyState::IDLE:
+			break;
+		case enemyState::WANDERING:
+			WanderLogic(deltaTime);
+			break;
+		case enemyState::CHASING:
+			ChasePlayerLogic();
+			break;
+		case enemyState::READY_ATTACK:
+			break;
+		default:
+			break;
 	}
-
-	// 沒有追蹤目標，就進入 wander 模式
-	WanderLogic(deltaTime);
-
-	// switch (m_enemyState) {
-	// 	case enemyState::IDLE:
-	// 		break;
-	// 	case enemyState::WANDERING:
-	// 		break;
-	// 	case enemyState::CHASING:
-	// 		ChasePlayerLogic();
-	// 		break;
-	// 	case enemyState::READY_ATTACK:
-	// 		break;
-	// }
 }
 
 void WanderAI::WanderLogic(const float deltaTime) {
-	auto enemy = GetOwner<Character>();
+	const auto enemy = GetOwner<Character>();
 	auto movementComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
-	auto stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
+	const auto stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
 
 	if (!movementComp || !stateComp) return;
 
@@ -51,7 +54,7 @@ void WanderAI::WanderLogic(const float deltaTime) {
 	}
 
 	// Normalize 避免怪物以更快的速度沿斜線移動
-	const float ratio = 0.2f; // 調整移動比例
+	constexpr float ratio = 0.2f; // 調整移動比例
 	const glm::vec2 deltaDisplacement = glm::normalize(m_wanderDirection) * ratio;
 	// 設置目標移動方向
 	movementComp->SetDesiredDirection(deltaDisplacement);
@@ -84,3 +87,12 @@ void WanderAI::ChasePlayerLogic() const{
 	stateComp->SetState(State::MOVING);
 }
 
+void WanderAI::HandleCollision(CollisionInfo &info) {
+	// 攻擊后强制進入巡邏模式
+	if(const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB())){
+		if(character->GetType() == CharacterType::PLAYER) {
+			m_enemyState = enemyState::WANDERING;
+			m_attackTimer = m_attackCooldown;
+		}
+	}
+}

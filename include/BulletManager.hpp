@@ -6,6 +6,7 @@
 #define BULLETMANAGER_HPP
 
 #include "Weapon/Bullet.hpp"
+#include "BulletPool.hpp"
 #include "Util/Time.hpp"
 
 class BulletManager {
@@ -21,10 +22,13 @@ public:
 	// 更新所有子弹
 	void Update();
 	const std::vector<std::shared_ptr<Bullet>>& GetBullets() const {return m_Bullets;}
-	void spawnBullet(const CharacterType type, const std::string& bulletImagePath,const Util::Transform& transform, glm::vec2 direction, float size, float speed, int damage);
+	void spawnBullet(const CharacterType type, const std::string& bulletImagePath,const Util::Transform& transform, glm::vec2 direction, float size, float speed, int damage, int numRebound);
 
 private:
 	std::vector<std::shared_ptr<Bullet>> m_Bullets;
+	std::deque<std::shared_ptr<Bullet>> m_removalQueue;
+	BulletPool m_bulletPool;
+	std::mutex m_queueMutex; // 用于多线程保护
 };
 
 #endif //BULLETMANAGER_HPP

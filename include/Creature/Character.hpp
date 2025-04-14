@@ -9,15 +9,15 @@
 #include "Animation.hpp"
 
 #include "Override/nGameObject.hpp"
-#include "Components/Component.hpp"
+#include "Components/MovementComponent.hpp"
 #include "EnumTypes.hpp"
 #include <memory>
 #include "Util/Image.hpp"
 
-class Character : public nGameObject {
+class Character final : public nGameObject {
 public:
 	// 建構子(explicit：防止單參數構造函數進行隱式轉換)
-	explicit Character(std::string m_name,CharacterType type);
+	explicit Character(const std::string &m_name,CharacterType type);
 	~Character() override = default;
 
 	// delete function--> 禁止 Character 被複製或移動,確保遊戲角色的唯一性

@@ -24,6 +24,8 @@ public:
 	static nlohmann::json readJsonFile(const std::string& fileName);
 	static void createComponent(const std::shared_ptr<nGameObject>& object, const nlohmann::json& json);
 
+	static std::shared_ptr<Animation> parseAnimations(const nlohmann::json& animationsJson, bool needLoop);
+
 protected:
 	static ZIndexType stringToZIndexType(const std::string& zIndexStr); // 只給子類工廠用
 

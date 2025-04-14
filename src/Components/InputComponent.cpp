@@ -16,7 +16,7 @@ InputComponent::InputComponent() {}
 void InputComponent::onInputReceived(const std::set<char>& keys)
 {
 	auto character = GetOwner<Character>();
-	if (!character) return;
+	if (!character || !character->IsActive()) return;
 
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);
 	auto skillComponent = character->GetComponent<SkillComponent>(ComponentType::SKILL);

@@ -1,6 +1,6 @@
 [
   {
-    "ID": 19,
+    "ID": 1,
     "weaponType": "Gun",
     "name": "Old_worn_pistol",
     "weaponImagePath": "/weapon/weapons/weapons_19.png",
@@ -9,8 +9,25 @@
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 5,
-    "attackSpeed": 0.333,
+    "attackSpeed": 0.000001,
     "bulletSize": 5.0,
-    "dropLevel": 3
+    "dropLevel": 3,
+    "basicPrice": 10
+  },
+  {
+    "ID": 2,
+    "weaponType": "Melee",
+    "name": "Lightsaber_Blue",
+    "weaponImagePath": "/weapon/weapons3/weapons3_92.png",
+    "slashImagePath": ["/Sprite/attackUI/slash/slash_0.png","/Sprite/attackUI/slash/slash_1.png"
+                      ,"/Sprite/attackUI/slash/slash_2.png","/Sprite/attackUI/slash/slash_3.png"],
+    "damage": 8,
+    "energy": 0,
+    "criticalRate": 0.3,
+    "offset": 0,
+    "attackSpeed": 0.416,
+    "attackRange": 10.0,
+    "dropLevel": 4,
+    "basicPrice": 28
   }
 ]

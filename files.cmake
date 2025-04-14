@@ -45,6 +45,7 @@ set(SRC_FILES
     Weapon/Bullet.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
+    Weapon/Slash.cpp
     Weapon/Weapon.cpp
     main.cpp
 )
@@ -54,6 +55,7 @@ set(INCLUDE_FILES
     App.hpp
     Beacon.hpp
     BulletManager.hpp
+    BulletPool.hpp
     Camera.hpp
     Components/AiComponent.hpp
     Components/AnimationComponent.hpp
@@ -109,6 +111,7 @@ set(INCLUDE_FILES
     Weapon/Bullet.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
+    Weapon/Slash.hpp
     Weapon/Weapon.hpp
 )
 

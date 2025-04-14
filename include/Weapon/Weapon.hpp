@@ -13,7 +13,7 @@
 
 class Weapon: public nGameObject {
 public:
-	explicit Weapon(const std::string& ImagePath, const std::string& bulletImagePath,const std::string& name, int damage, int energy, float criticalRate, int offset, float attackSpeed);
+	explicit Weapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackSpeed);
 	~Weapon() override = default;
 
 	//----Getter----
@@ -48,7 +48,6 @@ public:
 
 protected:
 	std::string m_ImagePath;		// 武器照片
-	std::string m_bulletImagePath;	// 子彈照片
 	std::string m_weaponName;		// 武器名稱
 	int m_damage;					// 武器傷害
 	int m_energy;					// 武器所需能量

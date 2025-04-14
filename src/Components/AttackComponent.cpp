@@ -7,11 +7,11 @@
 #include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
 
-AttackComponent::AttackComponent(std::shared_ptr<Weapon> initWeapon = nullptr, float criticalRate = 0, int handBladeDamage = 0, int colLisionDamage = 0)
-	: m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), m_collisionDamage(colLisionDamage),m_currentWeapon(initWeapon){}
+AttackComponent::AttackComponent(const std::shared_ptr<Weapon> &initWeapon = nullptr, const float criticalRate = 0,
+								 const int handBladeDamage = 0, const int collisionDamage = 0)
+	: m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), m_collisionDamage(collisionDamage),m_currentWeapon(initWeapon){}
 
-void AttackComponent::Init()
-{
+void AttackComponent::Init() {
 	// 每個角色都會武器，除了部分小怪
 	if (!m_currentWeapon) return;
 	AddWeapon(m_currentWeapon);

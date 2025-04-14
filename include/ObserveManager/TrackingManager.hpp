@@ -15,14 +15,40 @@ class TrackingManager : public ObserveManager {
 public:
     void Update() override;
 
+	//----Getter----
+	[[nodiscard]] std::vector<std::shared_ptr<Character>> GetEnemies() const { return m_enemies;}
+
 	//----Setter----
-    void SetPlayer(std::shared_ptr<Character> player) { m_player = player; }
-    void AddEnemy(std::shared_ptr<Character> enemy) { m_enemies.push_back(enemy); }
-    void RemoveEnemy(std::shared_ptr<Character> enemy) { m_enemies.erase(std::remove(m_enemies.begin(), m_enemies.end(), enemy), m_enemies.end()); }
+    void SetPlayer(const std::shared_ptr<Character>& player){
+    	if(player == nullptr) {
+    		for(auto &enemy: m_enemies) {
+    			if (const auto aiComp = enemy->GetComponent<AIComponent>(ComponentType::AI)) {
+    				aiComp->RemoveTarget();
+    				LOG_DEBUG("removed");
+    			}
+    		}
+    	}
+	    m_player = player;
+    }
+    void AddEnemy(const std::shared_ptr<Character>& enemy) { m_enemies.push_back(enemy); }
+    void RemoveEnemy(const std::shared_ptr<Character>& enemy) {
+    	// 通知玩家最近的enemy死掉了
+		if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+			if (const auto followerComp = attackComp->GetCurrentWeapon()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)){
+				followerComp->SetTarget(nullptr);
+			}
+		}
+	    m_enemies.erase(std::remove(m_enemies.begin(), m_enemies.end(), enemy), m_enemies.end());
+    }
+	void AddTerrainObjects(const std::vector<std::shared_ptr<nGameObject>>& terrains){
+		for(const auto& terrain : terrains ) {
+			m_terrainObjects.push_back(terrain);
+		}
+    }
 
 	// 視野檢測接口
 	bool HasLineOfSight(const glm::vec2& from, const glm::vec2& to)const;
-	bool RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) const;
+	static bool RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) ;
 private:
 	void FindNearestVisibleEnemy();
 
@@ -33,7 +59,8 @@ private:
 	glm::vec2 m_playerPos;
     std::vector<std::shared_ptr<Character>> m_enemies;
 	std::vector<std::shared_ptr<Character>> m_visibleEnemies;
-    float m_maxSightRange = 100.0f; // 無視障礙物的強制檢測範圍
+	std::vector<std::shared_ptr<nGameObject>> m_terrainObjects;
+    float m_maxSightRange = 1000.0f; // 無視障礙物的強制檢測範圍
 };
 
 #endif //TRACKINGMANAGER_HPP

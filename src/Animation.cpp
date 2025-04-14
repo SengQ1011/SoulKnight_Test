@@ -5,17 +5,20 @@
 #include "Animation.hpp"
 #include "Util/Logger.hpp"
 
-Animation::Animation(std::vector<std::string> AnimationPaths)
-	: m_AnimationPaths(std::move(AnimationPaths)) {
+Animation::Animation(std::vector<std::string> AnimationPaths, bool needLoop)
+	: m_AnimationPaths(std::move(AnimationPaths)), m_Looping(needLoop) {
 	m_Drawable = std::make_shared<Util::Animation>(m_AnimationPaths, false, 500, false, 0);
 	this->SetZIndexType(ZIndexType::CUSTOM);
-	SetLooping(true);
+	SetLooping(m_Looping);
 }
 
 bool Animation::IfAnimationEnds() const {
 	auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
-	return animation && animation->GetCurrentFrameIndex() == animation->GetFrameCount() - 1;
+	return animation &&
+		   !animation->GetLooping() &&                                 // 確保不是循環動畫
+		   animation->GetState() == Util::Animation::State::ENDED;      // 播放狀態為 ENDED（代表播放完畢）
 }
+
 
 // 自动播放（内部控制更新频率）
 void Animation::PlayAnimation(bool play) {

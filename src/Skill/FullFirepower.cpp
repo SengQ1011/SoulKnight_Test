@@ -22,7 +22,7 @@ void FullFirepower::Execute() {
 			auto cloneFollowerComp = cloneWeapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			auto currentFollowerComp = currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			cloneFollowerComp->SetFollower(m_owner.lock());
-			cloneFollowerComp->IsTargetMouse(true);
+			cloneFollowerComp->SetTargetMouse(currentFollowerComp->GetUseMouse());
 			cloneFollowerComp->SetHandOffset(glm::vec2(30/5.0f,-25/4.0f));
 			cloneFollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,2.0f));
 			attackComp->SetSecondWeapon(cloneWeapon);

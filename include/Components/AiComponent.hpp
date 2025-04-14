@@ -8,27 +8,29 @@
 #include "Components/Component.hpp"
 #include "Components/AttackComponent.hpp"
 #include "Components/MovementComponent.hpp"
+#include "Components/CollisionComponent.hpp"
 #include "Util/Time.hpp"
 #include <random>
 #include <cmath>
 
-
 class AIComponent : public Component , public TrackingObserver{
 public:
-	explicit AIComponent(AIType type, int monsterPoint)
-	: Component(ComponentType::AI), m_aiType(type), m_monsterPoint(monsterPoint) {}
+	explicit AIComponent(const AIType type, const int monsterPoint)
+	: Component(ComponentType::AI), m_aiType(type), m_monsterPoint(monsterPoint), m_enemyState(enemyState::IDLE) {}
 	~AIComponent() override = default;
 
 	void Update() override = 0;
 
-	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override {
-		//TODO
-		m_Target = player;
-	}
-	void OnPlayerLost() override {
-		m_Target.reset();
-	}
+	//----Getter----
+	[[nodiscard]] AIType GetAItype() const { return m_aiType; }
+	[[nodiscard]] int GetMonsterPoint() const { return m_monsterPoint; }
+	[[nodiscard]] enemyState GetEnemyState() const { return m_enemyState; }
+	[[nodiscard]] std::weak_ptr<nGameObject> GetTarget() const { return m_Target; }
 
+	//----Setter----
+	void RemoveTarget() { m_Target.reset(); }
+	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override {m_Target = player;}
+	void OnPlayerLost() override { m_Target.reset(); }
 
 protected:
 	// 獲取範圍 [min, max] 內的隨機浮點數
@@ -59,6 +61,5 @@ protected:
 	std::weak_ptr<nGameObject> m_Target;			// enemy鎖定目標的位置
 	float m_behaviorTimer = 0;
 };
-
 
 #endif //AICOMPONENT_HPP

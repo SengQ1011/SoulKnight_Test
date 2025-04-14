@@ -9,6 +9,7 @@
 #include "GameMechanism/Talent.hpp"
 #include "Creature/Character.hpp"
 #include "Components/HealthComponent.hpp"
+#include "Components/AttackComponent.hpp"
 #include <vector>
 #include <functional>
 
@@ -27,13 +28,24 @@ std::vector<Talent> CreateTalentList() {
 		});
 
 	list.emplace_back("護甲+1", "/UI/ui_talentIcon/ui_buff_28.png", [](Character& obj){
-			if (auto healthComp = obj.GetComponent<HealthComponent>(ComponentType::HEALTH)) {
+			if (const auto healthComp = obj.GetComponent<HealthComponent>(ComponentType::HEALTH)) {
 				healthComp->SetMaxArmor(healthComp->GetMaxArmor() + 1);
 			}
 		},
 		[](Character& obj) {
-			if (auto healthComp = obj.GetComponent<HealthComponent>(ComponentType::HEALTH)) {
+			if (const auto healthComp = obj.GetComponent<HealthComponent>(ComponentType::HEALTH)) {
 				healthComp->SetMaxArmor(healthComp->GetMaxArmor() - 1);
+			}
+		});
+
+	list.emplace_back("子彈反彈", "/UI/ui_talentIcon/ui_buff_24.png", [](Character& obj){
+			if (const auto attackComp = obj.GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+				attackComp->SetNumRebound(1);
+			}
+		},
+		[](Character& obj) {
+			if (const auto attackComp = obj.GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+				attackComp->SetNumRebound(0);
 			}
 		});
 
