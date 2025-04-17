@@ -56,10 +56,11 @@ glm::vec2 CollisionInfo::GetCollisionNormal() const {
 }
 
 bool Rect::Intersects(const Rect &other) const {
-	return !(right() < other.left() ||
-			 left() > other.right() ||
-			 bottom() > other.top() ||
-			 top() < other.bottom());
+	constexpr float epsilon = 0.01f; // 緩衝邊界 咬到太緊不好喔
+	return !(right() < other.left() + epsilon ||
+			 left() > other.right() - epsilon||
+			 bottom() > other.top() - epsilon||
+			 top() < other.bottom() + epsilon);
 }
 
 Rect CollisionComponent::GetBounds() const {

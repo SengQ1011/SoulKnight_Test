@@ -1,0 +1,23 @@
+{
+    "id": "w604",
+    "isAnimated": false,
+    "path": "/IcePlains/w604.png",
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                16.0,
+                16.0
+            ],
+            "Offset": [
+                0.0,
+                -1.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ]
+}

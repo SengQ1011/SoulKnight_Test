@@ -5,17 +5,9 @@
 #ifndef TEST_SCENE_HPP
 #define TEST_SCENE_HPP
 
-#include "eventpp/callbacklist.h"
-#include "eventpp/eventdispatcher.h"
-
-#include "Camera.hpp"
-#include "Components/MovementComponent.hpp"
 #include "Factory/RoomObjectFactory.hpp"
-#include "Override/nGameObject.hpp"
-#include "Room/LobbyRoom.hpp"
-#include "Room/RoomCollisionManager.hpp"
+#include "Room/DungeonRoom.hpp"
 #include "Scene/Scene.hpp"
-#include "Util/Renderer.hpp"
 
 class TestScene_KC : public Scene
 {
@@ -34,15 +26,22 @@ protected:
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 
-	std::shared_ptr<LobbyRoom> m_LobbyRoom;
+	float IntersectionArea(const Rect& a, const Rect& b);
+	void CreateVisibleGrid();
+
+	std::shared_ptr<DungeonRoom> m_DungeonRoom;
 	std::shared_ptr<Character> m_Player;
 	float m_MapHeight;
 
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 
-	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
+	std::string m_ThemeName = "IcePlains";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>(m_ThemeName);
 
-	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+	//test
+	std::array<std::array<std::shared_ptr<nGameObject>,35>,35> m_Grid;
+	std::array<std::array<int,35>,35> m_Mark = {};
+	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
 };
 
 #endif //TEST_SCENE_HPP

@@ -45,8 +45,8 @@ void Camera::SetFollowTarget(const std::shared_ptr<nGameObject> &target) {
 
 void Camera::ZoomCamera(const float zoomLevel)
 {
-	const float minZoom = 0.5f;  // 最小縮放值
-	const float maxZoom = 2.0f;  // 最大縮放值
+	const float minZoom = 0.0f;  // 最小縮放值
+	const float maxZoom = 100.0f;  // 最大縮放值
 
 	glm::vec2 newScale = m_CameraWorldCoord.scale + glm::vec2(1.0f, 1.0f) * zoomLevel * (Util::Time::GetDeltaTimeMs()/1000.0f);
 	newScale.x = std::clamp(newScale.x, minZoom, maxZoom);

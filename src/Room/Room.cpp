@@ -87,21 +87,6 @@ void Room::RemoveRoomObject(const std::shared_ptr<nGameObject>& object) {
     }
 }
 
-void Room::LoadFromJSON() {
-	const nlohmann::ordered_json jsonData = m_Loader.lock()->LoadLobbyObjectPosition();
-	InitializeRoomObjects(jsonData);
-}
-
-bool Room::IsPlayerInside() const
-{
-	const auto player = m_Player.lock();
-	if (!player) return false;
-	return (player->m_WorldCoord.x < m_WorldCoord.x + m_RoomRegion.x/2.0f) &&
-	   (player->m_WorldCoord.y < m_WorldCoord.y + m_RoomRegion.y/2.0f) &&
-	   (player->m_WorldCoord.x > m_WorldCoord.x - m_RoomRegion.x/2.0f) &&
-	   (player->m_WorldCoord.y > m_WorldCoord.y - m_RoomRegion.y/2.0f);
-}
-
 nlohmann::ordered_json Room::ReadJsonFile(const std::string &filePath) const
 {
 	std::ifstream file(filePath);

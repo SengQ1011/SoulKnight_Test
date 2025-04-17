@@ -33,10 +33,15 @@ void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObje
 	);
 }
 
-void RoomCollisionManager::Update() const
+void RoomCollisionManager::Update()
 {
 	if (!m_IsActive) return;
 	std::vector<std::pair<std::shared_ptr<nGameObject>, std::shared_ptr<nGameObject>>> collisionPairs;
+
+	// 调试：显示碰撞盒
+	if (Util::Input::IsKeyUp(Util::Keycode::O)) {
+		ShowColliderBox();
+	}
 
 	for (size_t i = 0; i < m_NGameObjects.size(); ++i) // ++i效率更好，都是從0開始，i++會建一個臨時變數
 	{

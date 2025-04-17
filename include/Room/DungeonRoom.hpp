@@ -5,6 +5,7 @@
 #ifndef DUNGEONROOM_HPP
 #define DUNGEONROOM_HPP
 
+#include "Factory/RoomFactory.hpp"
 #include "Room.hpp"
 
 // 房间状态枚举
@@ -18,35 +19,35 @@ enum class RoomState {
 
 class DungeonRoom : public Room {
 public:
-	DungeonRoom();
+	explicit DungeonRoom(const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
+	: Room(loader, room_object_factory) {};
 	~DungeonRoom() override = default;
 
 	// 重写基类方法
-	void Start(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Character>& player) override;
-	void Update() override {
-		// TODO:完善中
-		// 更新房间状态
-		UpdateRoomState();};
+	// void Start(const std::shared_ptr<Character>& player) override;
+	// void Update() override {};
 
 	// 房间状态管理
-	virtual void SetState(RoomState state);
-	[[nodiscard]] RoomState GetState() const { return m_State; }
+	void SetState(RoomState state) {m_State = state;};
+	RoomState GetState() const { return m_State; }
 
-	void AddWallCollider(const std::shared_ptr<nGameObject>& collider);
+	std::string GetRoomType() const { return m_RoomType; }
+	[[nodiscard]] bool IsPlayerInside() const; //場景使用的 確認當前玩家所在的房間
+
+	void LoadFromJSON() override;
+
 
 protected:
-	// 实现抽象方法
-	void SetupWallColliders();
 
 	// 重写状态变化处理方法 TODO:給子類別
 	// void OnStateChanged(RoomState oldState, RoomState newState) override;
 
 	// 重写角色进入/离开处理
-	void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
-	void OnCharacterExit(const std::shared_ptr<Character>& character) override;
+	// void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
+	// void OnCharacterExit(const std::shared_ptr<Character>& character) override;
 
 	// 更新房间状态的辅助方法
-	virtual void UpdateRoomState();
+	// virtual void UpdateRoomState();
 
 	virtual void OnStateChanged(RoomState oldState, RoomState newState) {}  // 房间状态变化时调用
 
@@ -54,7 +55,7 @@ protected:
 	RoomState m_State = RoomState::INACTIVE;
 
 private:
-	bool m_PortalActive = false;  // 传送门是否激活
+	std::string m_RoomType = "START";
 	// DungeonRoom類型 - 戰鬥房間（小怪，BOSS)， 特殊房間， 寶箱， 起始， 終點
 	// Room狀態 -
 

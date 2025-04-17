@@ -27,18 +27,18 @@ public:
 	SceneType Change() override;
 
 protected:
-	std::vector<std::shared_ptr<nGameObject>> m_RoomObject;
-	std::vector<std::shared_ptr<nGameObject>> m_WallCollider;
-	std::shared_ptr<InputManager> inputManager = std::make_shared<InputManager>();
-	std::shared_ptr<BulletManager> bulletManager = std::make_shared<BulletManager>();
-	std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
-	std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
-
-	// std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
-	std::shared_ptr<Character> m_Player;
-	std::shared_ptr<Character> m_Enemy;
-
-	float roomHeight = 0;
+	// std::vector<std::shared_ptr<nGameObject>> m_RoomObject;
+	// std::vector<std::shared_ptr<nGameObject>> m_WallCollider;
+	// std::shared_ptr<InputManager> inputManager = std::make_shared<InputManager>();
+	// std::shared_ptr<BulletManager> bulletManager = std::make_shared<BulletManager>();
+	// std::shared_ptr<RoomCollisionManager> m_RoomCollisionManager = std::make_shared<RoomCollisionManager>();
+	// std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
+	//
+	// // std::shared_ptr<RoomObjectFactory> m_Factory = std::make_shared<RoomObjectFactory>();
+	// std::shared_ptr<Character> m_Player;
+	// std::shared_ptr<Character> m_Enemy;
+	//
+	// float roomHeight = 0;
 };
 
 #endif //TEST_SCENE_JX_HPP

@@ -21,9 +21,12 @@
 /// @brief: 一定要設置m_ObjectPositionPath
 class Room {
 public:
-	explicit Room(const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
-	: m_Loader(loader), m_Factory(room_object_factory) {}
-    virtual ~Room();
+	explicit Room(const std::shared_ptr<Loader> &loader,
+				  const std::shared_ptr<RoomObjectFactory> &room_object_factory) :
+		m_Loader(loader), m_Factory(room_object_factory)
+	{
+	}
+	virtual ~Room();
 
     // 核心方法
     virtual void Start(const std::shared_ptr<Character>& player); // 房间初始化
@@ -55,7 +58,6 @@ public:
     void SetTileSize(const glm::vec2& tileSize) { m_TileSize = tileSize; }
 
 	void SetPlayer(const std::shared_ptr<Character>& player) { m_Player = player; }
-	[[nodiscard]] bool IsPlayerInside() const; //場景使用的 確認當前玩家所在的房間
 
     // 加载JSON配置
     virtual void LoadFromJSON() = 0;
