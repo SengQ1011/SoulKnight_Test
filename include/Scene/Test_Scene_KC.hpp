@@ -27,7 +27,6 @@ protected:
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	std::vector<std::shared_ptr<DungeonRoom>> m_DungeonRooms = std::vector<std::shared_ptr<DungeonRoom>>(25,nullptr);
-	std::weak_ptr<DungeonRoom> m_DungeonRoom;
 	std::shared_ptr<Character> m_Player;
 	float m_MapHeight;
 

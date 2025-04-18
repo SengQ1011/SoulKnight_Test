@@ -17,8 +17,15 @@ void BulletManager::spawnBullet(const CharacterType type, const std::string& bul
 	currentScene->GetCamera().lock()->AddChild(bullet);
 
 	// 注冊到碰撞管理器
-	currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
-
+	if (auto currentRoom = currentScene->GetCurrentRoom())
+	{
+		currentRoom->GetCollisionManager()->RegisterNGameObject(bullet);
+	}
+	else
+	{
+		currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
+	}
+	// currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
 	m_Bullets.push_back(bullet);
 }
 

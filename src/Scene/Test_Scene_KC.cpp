@@ -91,10 +91,10 @@ void TestScene_KC::Update()
 	for(int i=0; i<m_DungeonRooms.size(); i++)
 	{
 		if (!m_DungeonRooms[i]->IsPlayerInside()) continue;
-		m_DungeonRoom = m_DungeonRooms[i];
+		m_CurrentRoom = m_DungeonRooms[i];
 		//LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
 	}
-	m_DungeonRoom.lock()->Update();
+	m_CurrentRoom->Update();
 	// std::for_each(m_DungeonRooms.begin(), m_DungeonRooms.end(), [](const std::shared_ptr<DungeonRoom>& room){room->Update();});
 	// auto time6 = std::chrono::high_resolution_clock::now();
 	// 更新相机

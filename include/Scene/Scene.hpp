@@ -9,7 +9,9 @@
 #include "EnumTypes.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
+#include "spdlog/fmt/bundled/chrono.h"
 
+class Room;
 class Camera;
 // TODO
 enum class StageTheme
@@ -64,6 +66,7 @@ public:
 
 	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
 	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
+	std::shared_ptr<Room> GetCurrentRoom() {return m_CurrentRoom;}
 
 	template <typename T>
 	std::shared_ptr<T> GetManager(const ManagerTypes managerName) {
@@ -85,6 +88,7 @@ public:
 protected:
 	bool m_IsChange = false;
 	std::shared_ptr<SceneData> m_SceneData = nullptr;
+	std::shared_ptr<Room> m_CurrentRoom = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
 	std::unordered_map<ManagerTypes, std::shared_ptr<void>> m_Managers;			// 存儲各種 Manager
