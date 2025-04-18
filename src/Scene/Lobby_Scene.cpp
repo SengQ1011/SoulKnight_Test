@@ -27,7 +27,7 @@ void LobbyScene::Start()
 	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
 
 	// 创建并初始化大厅房间
-	m_LobbyRoom = std::make_shared<LobbyRoom>(m_Loader,m_RoomObjectFactory);
+	m_LobbyRoom = std::make_shared<LobbyRoom>(glm::vec2(0,0),m_Loader,m_RoomObjectFactory);
 	m_LobbyRoom->Start(m_Player);
 
 	// 将玩家注册到碰撞管理器

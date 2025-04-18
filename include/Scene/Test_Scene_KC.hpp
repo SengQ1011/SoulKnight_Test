@@ -8,6 +8,7 @@
 #include "Factory/RoomObjectFactory.hpp"
 #include "Room/DungeonRoom.hpp"
 #include "Scene/Scene.hpp"
+#include "spdlog/fmt/bundled/chrono.h"
 
 class TestScene_KC : public Scene
 {
@@ -25,11 +26,8 @@ protected:
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
-
-	float IntersectionArea(const Rect& a, const Rect& b);
-	void CreateVisibleGrid();
-
-	std::shared_ptr<DungeonRoom> m_DungeonRoom;
+	std::vector<std::shared_ptr<DungeonRoom>> m_DungeonRooms = std::vector<std::shared_ptr<DungeonRoom>>(25,nullptr);
+	std::weak_ptr<DungeonRoom> m_DungeonRoom;
 	std::shared_ptr<Character> m_Player;
 	float m_MapHeight;
 
@@ -39,8 +37,6 @@ protected:
 	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>(m_ThemeName);
 
 	//test
-	std::array<std::array<std::shared_ptr<nGameObject>,35>,35> m_Grid;
-	std::array<std::array<int,35>,35> m_Mark = {};
 	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
 };
 
