@@ -32,13 +32,13 @@ void Room::Update() {
     }
 
     // 管理员动态逻辑
-    if (m_CollisionManager) m_CollisionManager->Update(); //效能暴鯉龍
+    m_CollisionManager->Update(); //效能暴鯉龍
 
-	if (m_InteractionManager)
-	{
-		m_InteractionManager->Update();
-		if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest();
-	}
+
+	m_InteractionManager->Update();
+	if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest();
+
+	m_BulletManager->Update();
 
     // 注意:不在这里更新角色，因为角色更新应该由Scene负责
 }
@@ -203,3 +203,9 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 		}
 	}
 }
+
+// void Room::RegisterTrackingManager(const std::shared_ptr<nGameObject> &object) const
+// {
+//
+// }
+

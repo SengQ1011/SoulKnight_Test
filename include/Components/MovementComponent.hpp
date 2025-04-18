@@ -26,6 +26,7 @@ public:
 	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
 	[[nodiscard]] const glm::vec2& GetVelocity() const { return m_Velocity; }
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Position; }
+	[[nodiscard]] const glm::vec2 GetLastValidDirection() const { return m_LastValidDirection; }
 
 	//----Setters----
 	void SetPosition(const glm::vec2& position) { m_Position = position; }
@@ -64,4 +65,5 @@ private:
 
 	ContactState m_ContactState;
 };
+
 #endif //MOVEMENTCOMPONENT_HPP

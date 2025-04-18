@@ -5,7 +5,6 @@
 #ifndef WEAPONFACTORY_HPP
 #define WEAPONFACTORY_HPP
 
-#pragma once
 #include <random>
 #include "Factory/Factory.hpp"
 #include "Weapon/GunWeapon.hpp"

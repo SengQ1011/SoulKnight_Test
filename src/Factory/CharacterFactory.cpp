@@ -46,8 +46,7 @@ AIType stringToAiType(const std::string& stateStr) {
 	LOG_ERROR("Unknown AiType: {}", stateStr);
 }
 
-
-std::unordered_map<State, std::shared_ptr<Animation>> parseAnimations(const nlohmann::json& animationsJson) {
+std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(const nlohmann::json& animationsJson) {
 	std::unordered_map<State, std::shared_ptr<Animation>> animations;
 	for (const auto& [key, value] : animationsJson.items()) {
 		State state = stringToState(key);
@@ -55,7 +54,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseAnimations(const nloh
 		for (const auto& frame : value) {
 			frames.push_back(RESOURCE_DIR + frame.get<std::string>());
 		}
-		animations[state] = std::make_shared<Animation>(frames); // 使用 shared_ptr 包装 Animation
+		animations[state] = std::make_shared<Animation>(frames, true); // 使用 shared_ptr 包装 Animation
 	}
 	return animations;
 }
@@ -95,7 +94,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			auto player = std::make_shared<Character>(name, type);
 			player->SetZIndexType(ZIndexType::OBJECTHIGH); // 設置對應的ZIndexLayer
 
-			auto animation = parseAnimations(characterInfo["animations"]);
+			auto animation = parseCharacterAnimations(characterInfo["animations"]);
 			int maxHp = characterInfo["maxHp"];
 			int maxArmor = characterInfo["maxArmor"];
 			int maxEnergy = characterInfo["maxEnergy"];
@@ -129,7 +128,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
-			FollowerComp->IsTargetMouse(true);
+			//FollowerComp->SetTargetMouse(true);
 			FollowerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
 			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
 			FollowerComp->SetZIndexOffset(0.5f);
@@ -150,7 +149,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	std::shared_ptr<Character> enemy = std::make_shared<Character>(name, type);
         	enemy->SetZIndexType(ZIndexType::OBJECTHIGH);
 
-        	auto animation = parseAnimations(characterInfo["animations"]);
+        	auto animation = parseCharacterAnimations(characterInfo["animations"]);
 			AIType aiType = stringToAiType(characterInfo["monsterType"].get<std::string>());
         	int monsterPoint = characterInfo["monsterPoint"];
         	int maxHp = characterInfo["maxHp"];

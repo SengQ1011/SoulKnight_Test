@@ -8,6 +8,7 @@
 #include "Scene/Scene.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 #include "Room/LobbyRoom.hpp"
+#include "ObserveManager/TrackingManager.hpp"
 
 #include "Util/GameObject.hpp"
 
@@ -24,11 +25,17 @@ public:
 
 protected:
 	void CreatePlayer();
+	void CreateEnemy();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 
+	std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
+
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
+
 	std::shared_ptr<Character> m_Player;
+	std::shared_ptr<Character> m_Enemy;
+
 	float m_MapHeight;
 
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;

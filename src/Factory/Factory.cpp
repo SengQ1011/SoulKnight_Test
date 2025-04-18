@@ -57,3 +57,13 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 	}
 	LOG_DEBUG("ErrorInFactory: Wrong Class: {}",componentClass);
 }
+
+std::shared_ptr<Animation> Factory::parseAnimations(const nlohmann::json& animationsJson, bool needLoop) {
+	std::vector<std::string> frames;
+	for (const auto &frame : animationsJson) {
+		frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+	}
+	auto animations = std::make_shared<Animation>(frames, needLoop);
+
+	return animations;
+}

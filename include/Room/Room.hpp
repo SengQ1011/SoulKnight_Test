@@ -13,6 +13,7 @@
 #include "Override/nGameObject.hpp"
 #include "RoomCollisionManager.hpp"
 #include "RoomInteractionManager.hpp"
+#include "ObserveManager/TrackingManager.hpp"
 #include "RoomObject/RoomObject.hpp"
 #include "Scene/Scene.hpp"
 #include "Util/Renderer.hpp"
@@ -53,6 +54,8 @@ public:
     // 碰撞体管理
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
     [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
+    [[nodiscard]] std::shared_ptr<BulletManager> GetBulletManager() const { return m_BulletManager; }
+    // [[nodiscard]] std::shared_ptr<TrackingManager> GetTrackingManager() const { return m_TrackingManager; }
 
     // Getter/Setter
     [[nodiscard]] const RoomSpaceInfo& GetRoomSpaceInfo() const { return m_RoomSpaceInfo; }
@@ -81,7 +84,8 @@ protected:
 	 */
     std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
 	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
-	std::shared_ptr<BulletManager> bulletManager = std::make_shared<BulletManager>();
+	std::shared_ptr<BulletManager> m_BulletManager = std::make_shared<BulletManager>();
+	// std::shared_ptr<TrackingManager> m_TrackingManager = std::make_shared<TrackingManager>();
 	/// @todo 未來可期
 
     // 緩存引用
@@ -116,6 +120,7 @@ protected:
 	//嘗試注冊到管理員
 	void RegisterCollisionManger(const std::shared_ptr<nGameObject>& object) const;
 	void RegisterInteractionManager(const std::shared_ptr<nGameObject>& object) const;
+	void RegisterTrackingManager(const std::shared_ptr<nGameObject>& object) const;
 };
 
 #endif //ROOM_HPP

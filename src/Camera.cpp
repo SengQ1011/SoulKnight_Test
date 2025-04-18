@@ -86,7 +86,6 @@ void Camera::Update() {
 	if (auto target = m_FollowTarget.lock()) {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
-	index = 0;
 
 	// 對每個Object調位置
 	if (m_Children.size() < 100) {
@@ -95,7 +94,6 @@ void Camera::Update() {
 		std::for_each(std::execution::seq,m_Children.begin(), m_Children.end(),
 		[this](const std::shared_ptr<nGameObject>& child) {UpdateChildViewportPosition(child);});
 	}
-	LOG_DEBUG("Camera updates{}",index);
 }
 
 void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child)
@@ -103,14 +101,6 @@ void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &chi
 	//變更坐標軸
 	// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
 	//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
-	if (NotShouldBeVisible(child))
-	{
-		child->SetVisible(false);
-		return;
-	}
-	index += 1;
-
-	child->SetVisible(true);
 	child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 
 	//動態調整ZIndex

@@ -4,6 +4,9 @@
 
 #include "Scene/Test_Scene_KC.hpp"
 
+#include "Components/TalentComponet.hpp"
+#include "GameMechanism/Talent.hpp"
+#include "GameMechanism/TalentDatabase.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
 
@@ -18,6 +21,7 @@ void LobbyScene::Start()
 	LOG_DEBUG("Entering Lobby Scene");
 	// 创建并初始化玩家
 	CreatePlayer();
+	CreateEnemy();
 
 	// 设置相机
 	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
@@ -34,6 +38,9 @@ void LobbyScene::Start()
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
+	m_LobbyRoom->CharacterEnter(m_Enemy);
+	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetRoomObjects());
+	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetWallColliders());
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
@@ -46,6 +53,7 @@ void LobbyScene::Update()
 	inputManager->Update();
 
 	m_Player->Update();
+	m_Enemy->Update();
 
 	// 更新房间
 	m_LobbyRoom->Update();
@@ -54,13 +62,17 @@ void LobbyScene::Update()
 	m_Camera->Update();
 
 	// 更新场景根节点
-	GetRoot().lock()->Update();
+	m_Root->Update();
 }
 
 void LobbyScene::CreatePlayer()
 {
 	// 使用 CharacterFactory 创建玩家
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
+	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+		talentComp->AddTalent(talentDatabase[2]);
+	}
 
 	// 设置玩家的初始位置
 	m_Player->SetWorldCoord(glm::vec2(0, 16*2)); // 初始位置为右两格，上两格
@@ -73,10 +85,25 @@ void LobbyScene::CreatePlayer()
 		m_Camera->AddChild(collision->GetVisibleBox());
 	}
 
+	m_trackingManager->SetPlayer(m_Player);
 	// 将玩家添加到场景根节点和相机
 	GetRoot().lock()->AddChild(m_Player);
 	m_Camera->AddChild(m_Player);
 }
+
+void LobbyScene::CreateEnemy()
+{
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(1);
+	m_Enemy->m_WorldCoord = {32,16*2};
+	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
+	m_Root->AddChild(collision2->GetVisibleBox());
+	m_Camera->AddChild(collision2->GetVisibleBox());
+	m_trackingManager->AddEnemy(m_Enemy);
+	m_Root->AddChild(m_Enemy);
+	m_Camera->AddChild(m_Enemy);
+}
+
 
 void LobbyScene::SetupCamera() const
 {
@@ -89,6 +116,7 @@ void LobbyScene::InitializeSceneManagers()
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
 	AddManager(ManagerTypes::ROOMCOLLISION, m_LobbyRoom->GetCollisionManager());
+	AddManager(ManagerTypes::BULLET,m_LobbyRoom->GetBulletManager());
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	// 注册输入观察者

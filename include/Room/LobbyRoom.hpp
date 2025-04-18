@@ -20,6 +20,7 @@ public:
 	void Update() override;
 
 	void AddWallCollider(const std::shared_ptr<nGameObject>& collider);
+	std::vector<std::shared_ptr<nGameObject>> GetWallColliders() {return m_WallColliders; };
 
 protected:
 	// 实现抽象方法

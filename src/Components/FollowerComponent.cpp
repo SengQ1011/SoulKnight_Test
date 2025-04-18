@@ -5,11 +5,13 @@
 //FollowerComponent.cpp
 
 #include "Components/FollowerComponent.hpp"
+#include "Components/MovementComponent.hpp"
 #include "Cursor.hpp"
-#include "Override/nGameObject.hpp"
+#include "Creature/Character.hpp"
 #include "Util/Input.hpp"
 
 void FollowerComponent::BaseTargetRotate() {
+	// weapon
 	const auto owner = GetOwner<nGameObject>();
 	if (!owner) return;
 
@@ -19,12 +21,25 @@ void FollowerComponent::BaseTargetRotate() {
 	} else if (m_UseMousePosition) {
 		targetWorldCoord = Cursor::GetCursorWorldCoord(owner->m_Transform.scale.x);
 	} else {
-		LOG_ERROR("FollowerComponent::BaseTargetRotate");
+		// 沒有目標時，使用移動方向作為旋轉參考
+		if (const auto character = m_Follower.lock()) {
+			if (const auto moveComp = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT)) {
+				if (const glm::vec2 moveDir = moveComp->GetLastValidDirection(); glm::length(moveDir) > 0.01f) {
+					// 若有移動方向就以移動方向轉向
+					m_HoldingRotation = std::atan2(moveDir.y, moveDir.x);
+
+					// 同樣更新翻轉
+					owner->m_Transform.scale.y = (moveDir.x < 0.0f)
+						? -std::abs(owner->m_Transform.scale.y)
+						: std::abs(owner->m_Transform.scale.y);
+				}
+			}
+		}
 		return;
 	}
 	const glm::vec2 direction = targetWorldCoord - owner->m_WorldCoord;
 
-	auto rotation = std::atan2(direction.y, direction.x); // 计算点(x, y)与原点之间的角度[-π, π]==》旋转角度
+	const auto rotation = std::atan2(direction.y, direction.x); // 计算点(x, y)与原点之间的角度[-π, π]==》旋转角度
 
 	// 应用旋转限制
 	if (m_EnableRotationLimits) {
@@ -67,5 +82,7 @@ void FollowerComponent::Update()
 }
 
 void FollowerComponent::OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) {
-	//TODO
+	if (auto locked = enemy.lock()) {
+		this->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+	}
 }

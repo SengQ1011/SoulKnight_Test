@@ -10,9 +10,9 @@
 #include "Components/Component.hpp"
 #include "Weapon/Weapon.hpp"
 
-class AttackComponent: public Component {
+class AttackComponent final : public Component {
 public:
-	explicit AttackComponent(std::shared_ptr<Weapon> initWeapon, float criticalRate, int handBladeDamage, int collisionDamage);
+	explicit AttackComponent(const std::shared_ptr<Weapon> &initWeapon, const float criticalRate, const int handBladeDamage, const int collisionDamage);
 	~AttackComponent() override = default;
 
 	void Init() override;
@@ -23,12 +23,15 @@ public:
 	[[nodiscard]] int GetMaxWeapon() const { return m_maxWeapon; }
 	[[nodiscard]] std::shared_ptr<Weapon> GetCurrentWeapon() const { return m_currentWeapon; }
 	[[nodiscard]] std::vector<std::shared_ptr<Weapon>> GetAllWeapons() const { return m_Weapons; }
+	[[nodiscard]] int GetNumRebound() const { return m_numRebound; }
+	[[nodiscard]] int GetCollisionDamage() const { return m_collisionDamage; }
 
 	//----Setter----
-	void SetMaxWeapon(int num) { m_maxWeapon = num; }
+	void SetMaxWeapon(const int num) { m_maxWeapon = num; }
 	void AddWeapon(std::shared_ptr<Weapon> weapon);
 	void RemoveWeapon();
 	void switchWeapon();
+	void SetNumRebound(const int num) { m_numRebound = num; }
 	void SetDualWield(const bool enable); // 雙武器
 	void SetSecondWeapon(const std::shared_ptr<Weapon> &weapon)
 	{
@@ -46,6 +49,7 @@ private:
 	int m_maxWeapon;				// 最多武器數量
 	int m_handBladeDamage;			// player:手刀傷害
 	int m_collisionDamage;			// enemy:專用於Collision模式的傷害值
+	int m_numRebound = 0;				// 天賦：子彈反彈
 	bool m_dualWield = false;		// 是否雙持武器
 	std::shared_ptr<Weapon> m_currentWeapon;			// 目前裝備的武器
 	std::shared_ptr<Weapon> m_secondWeapon;				// 技能：雙持武器

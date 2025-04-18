@@ -18,6 +18,7 @@ public:
 	}
 
 private:
+	std::string m_bulletImagePath;	// 子彈照片
 	float m_bulletSize;
 };
 

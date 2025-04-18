@@ -4,12 +4,11 @@
 
 #include "ObserveManager/TrackingManager.hpp"
 
-
 void TrackingManager::Update() {
-	if (m_player.expired()) return;
+	if (m_player.lock() == nullptr ||m_player.expired()) return;
 
 	// 更新玩家數據
-	m_playerPos = m_player.lock()->GetPosition();
+	m_playerPos = m_player.lock()->GetWorldCoord();
 
 	// 更新有視野且最近敵人數據
 	FindNearestVisibleEnemy();
@@ -17,7 +16,8 @@ void TrackingManager::Update() {
 	notifyObserver();
 }
 
-bool TrackingManager::RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) const{
+// 射綫檢測
+bool TrackingManager::RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) {
 	// 簡單 AABB 判斷線段是否穿過障礙物
 	float tmin = 0.0f;
 	float tmax = 1.0f;
@@ -42,13 +42,12 @@ bool TrackingManager::RayIntersectsRect(const glm::vec2& rayStart, const glm::ve
 
 bool TrackingManager::HasLineOfSight(const glm::vec2& from, const glm::vec2& to) const {
 	// 搜尋所有敵人、檢查有沒有 Terrain 層的障礙物擋住
-	for (const auto& enemy : m_enemies) {
-		auto collisionComp = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-		if (!collisionComp || !(collisionComp->GetCollisionLayer() & CollisionLayers_Terrain)) continue;
-
+	for (const auto& terrain : m_terrainObjects) {
+		const auto collisionComp = terrain->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		if (!collisionComp) continue;
 		Rect bounds = collisionComp->GetBounds();
 		if (RayIntersectsRect(from, to, bounds)) {
-			LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain");
+			LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain block");
 			return false; // 有擋住
 		}
 	}
@@ -61,15 +60,14 @@ void TrackingManager::FindNearestVisibleEnemy() {
 	float minDist = m_maxSightRange; // 直接使用视野范围作为初始值
 
 	for (auto& enemy : m_enemies) {
-		glm::vec2 enemyPos = enemy->GetPosition();
+		glm::vec2 enemyPos = enemy->GetWorldCoord();
 
-		// 两步检测：距离 + 射线
+		// 检测：距离 + 射线
 		if (float dist = glm::distance(m_playerPos, enemyPos);
 			dist <= m_maxSightRange){
-			if (HasLineOfSight(m_playerPos, enemyPos))
-			{
+			if (HasLineOfSight(m_playerPos, enemyPos)) {
 				m_visibleEnemies.push_back(enemy);
-
+				//LOG_DEBUG("have target");
 				if (dist < minDist) {
 					minDist = dist;
 					m_nearestVisibleEnemy = enemy;
@@ -80,11 +78,14 @@ void TrackingManager::FindNearestVisibleEnemy() {
 }
 
 void TrackingManager::notifyObserver() {
-	//TODO
+	//TODO:修改（改爲使用父類的m_Observer）
+
 	// 給玩家：只傳遞可見的最近敵人
-	// if (const auto comp = m_player.lock()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-	// 	comp->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
-	// }
+	if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+		if (const auto followerComp = attackComp->GetCurrentWeapon()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+			followerComp->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
+		}
+	}
 
 	// 給敵人：分類型處理
 	for (auto& enemy : m_enemies) {

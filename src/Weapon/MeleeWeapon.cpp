@@ -3,11 +3,25 @@
 //
 #include "Weapon/MeleeWeapon.hpp"
 
-MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string& bulletImagePath, const std::string &name, int damage, int energy, float criticalRate,
+#include "Scene/SceneManager.hpp"
+#include "Weapon/Slash.hpp"
+
+MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::shared_ptr<Animation> slashAnimation, const std::string &name, int damage, int energy, float criticalRate,
 						int offset, float attackSpeed, float attackRange)
-						: Weapon(ImagePath, bulletImagePath,name, damage, energy, criticalRate, offset, attackSpeed),
-							m_attackRange(attackRange){}
+						: Weapon(ImagePath, name, damage, energy, criticalRate, offset, attackSpeed),
+							m_slashAnimation(slashAnimation), m_attackRange(attackRange){}
 
 void MeleeWeapon::attack(int damage) {
-	LOG_DEBUG("MeleeWeapon attack");
+	ResetAttackTimer();  // 重置冷卻
+
+	const auto characterType = m_currentOwner->GetType();
+	const auto slash = std::make_shared<Slash>(characterType, m_slashAnimation, m_attackRange);
+	slash->Init();
+	// 加入渲染樹
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	currentScene->GetRoot().lock()->AddChild(slash);  // 由 BulletManager 的 shared_ptr 加入
+	currentScene->GetCamera().lock()->AddChild(slash);
+
+	// 注冊到碰撞管理器
+	currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(slash);
 }

@@ -34,7 +34,7 @@ public:
 	void SetTarget(const std::shared_ptr<nGameObject>& target) {m_Target = target;}
 	void SetHandOffset(const glm::vec2& handOffset) {m_HandOffset = handOffset;}
 	void SetHoldingPosition(const glm::vec2& holdingOffset) {m_HoldingOffset = holdingOffset;}
-	void IsTargetMouse(const bool isTargetMouse) {m_UseMousePosition = isTargetMouse;}
+	void SetTargetMouse(const bool isTargetMouse) {m_UseMousePosition = isTargetMouse;}
 	//void SetHoldingRotation(const float& rotation) {m_HoldingRotation = rotation;}
 	void SetRotationLimits(float min, float max, bool enable = true) {
 		m_RotationLimits = glm::vec2(min, max);
@@ -51,7 +51,7 @@ public:
 	[[nodiscard]] std::shared_ptr<nGameObject> GetFollower() const { return m_Follower.lock();}
 	[[nodiscard]] float GetHoldingRotation() const {return m_HoldingRotation;}
 	[[nodiscard]] bool GetUseMouse() const {return m_UseMousePosition;}
-	[[nodiscard]] float GetZIndexOffset() const {return m_ZIndexOffset;}
+	[[nodiscard]] float GetZIndexOffset() const { return m_ZIndexOffset; }
 
 	void OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) override;
 
@@ -63,8 +63,8 @@ protected:
 	float m_ZIndexOffset = 0.0f;
 	float m_HoldingRotation = 0;
 	bool m_UseMousePosition = false;
-	std::weak_ptr<nGameObject> m_Follower;
-	std::weak_ptr<nGameObject> m_Target;											//指向目標 -> 用來取位置
+	std::weak_ptr<nGameObject> m_Follower;		// 此物件會跟隨的物件
+	std::weak_ptr<nGameObject> m_Target;		// 此物件會跟隨目標旋轉							//指向目標 -> 用來取位置
 };
 
 #endif //FOLLOWERCOMPONENT_HPP
