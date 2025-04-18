@@ -15,8 +15,10 @@ public:
 	explicit Loader(std::string theme): m_Theme(std::move(theme)) {}
 	~Loader() = default;
 	nlohmann::ordered_json LoadLobbyObjectPosition() {return readJsonFile(JSON_DIR"/Lobby/ObjectPosition.json");};
+	nlohmann::ordered_json LoadStartingRoomObjectPosition() {return readJsonFile(JSON_DIR"/"+ m_Theme+"/StartingRoom/ObjectPosition.json");};
+
 	// 因爲Dungeon的Theme不同所以要變數
-	nlohmann::ordered_json LoadObjectData(const std::string& ID) {return readJsonFile(JSON_DIR"/" + m_Theme + "/ObjectData/" + ID + ".json");}
+	nlohmann::ordered_json LoadObjectData(const std::string& ID) {return readJsonFile(JSON_DIR"/"+ m_Theme + "/ObjectData/" + ID + ".json");}
 
 	nlohmann::ordered_json readJsonFile(const std::string& filePath);
 protected:

@@ -1,0 +1,23 @@
+{
+    "id": "object_torch_0",
+    "isAnimated": false,
+    "path": "/IcePlains/object_torch_0.png",
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                16.0,
+                16.0
+            ],
+            "Offset": [
+                0.0,
+                -6.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        }
+    ]
+}

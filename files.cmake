@@ -27,6 +27,7 @@ set(SRC_FILES
     Loader.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
+    Room/DungeonRoom.cpp
     Room/LobbyRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp

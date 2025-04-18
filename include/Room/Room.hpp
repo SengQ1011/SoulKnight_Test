@@ -18,12 +18,22 @@
 #include "Util/Renderer.hpp"
 #include "pch.hpp"
 
+struct RoomSpaceInfo
+{
+	glm::vec2 m_WorldCoord = glm::vec2(0, 0);  // 在世界中的位置
+	glm::vec2 m_RoomRegion = glm::vec2(0, 0);  // 房间區域
+	glm::vec2 m_TileSize = glm::vec2(0, 0);    // 瓦片尺寸
+	glm::vec2 m_RoomSize = glm::vec2(0, 0);	   // 不包括通道的房間大小
+};
+
 /// @brief: 一定要設置m_ObjectPositionPath
 class Room {
 public:
-	explicit Room(const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
-	: m_Loader(loader), m_Factory(room_object_factory) {}
-    virtual ~Room();
+	explicit Room(const glm::vec2 worldCoord, const std::shared_ptr<Loader> &loader,
+				  const std::shared_ptr<RoomObjectFactory> &room_object_factory) :
+		m_Loader(loader), m_Factory(room_object_factory)
+	{ m_RoomSpaceInfo.m_WorldCoord = worldCoord; }
+	virtual ~Room();
 
     // 核心方法
     virtual void Start(const std::shared_ptr<Character>& player); // 房间初始化
@@ -45,26 +55,21 @@ public:
     [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
 
     // Getter/Setter
-    [[nodiscard]] glm::vec2 GetWorldCoord() const { return m_WorldCoord; }
-    void SetWorldCoord(const glm::vec2& worldCoord) { m_WorldCoord = worldCoord; }
+    [[nodiscard]] const RoomSpaceInfo& GetRoomSpaceInfo() const { return m_RoomSpaceInfo; }
 
-    [[nodiscard]] glm::vec2 GetRoomRegion() const { return m_RoomRegion; }
-    void SetRoomRegion(const glm::vec2& size) { m_RoomRegion = size; }
-
-    [[nodiscard]] glm::vec2 GetTileSize() const { return m_TileSize; }
-    void SetTileSize(const glm::vec2& tileSize) { m_TileSize = tileSize; }
+    void SetWorldCoord(const glm::vec2& worldCoord) { m_RoomSpaceInfo.m_WorldCoord = worldCoord; }
+    void SetRoomRegion(const glm::vec2& region) { m_RoomSpaceInfo.m_RoomRegion = region; }
+    void SetTileSize(const glm::vec2& tileSize) { m_RoomSpaceInfo.m_TileSize = tileSize; }
+	void SetRoomSize(const glm::vec2& size) { m_RoomSpaceInfo.m_RoomSize = size; }
 
 	void SetPlayer(const std::shared_ptr<Character>& player) { m_Player = player; }
-	[[nodiscard]] bool IsPlayerInside() const; //場景使用的 確認當前玩家所在的房間
 
     // 加载JSON配置
     virtual void LoadFromJSON() = 0;
 
 protected:
     // 房间属性
-    glm::vec2 m_WorldCoord = glm::vec2(0, 0);  // 在世界中的位置
-    glm::vec2 m_RoomRegion = glm::vec2(0, 0);  // 房间區域
-    glm::vec2 m_TileSize = glm::vec2(0, 0);    // 瓦片尺寸
+	RoomSpaceInfo m_RoomSpaceInfo;
 
     // 房间内对象
     std::vector<std::shared_ptr<nGameObject>> m_RoomObjects;       // 房间固定物体

@@ -11,8 +11,8 @@
 
 class LobbyRoom : public Room {
 public:
-	explicit LobbyRoom(const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
-	: Room(loader,room_object_factory) {}
+	explicit LobbyRoom(const glm::vec2 worldCoord, const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
+	: Room(worldCoord, loader, room_object_factory) {}
 	~LobbyRoom() override = default;
 
 	// 重写基类方法

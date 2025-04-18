@@ -19,7 +19,7 @@ public:
 	void RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 	void UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 
-	void Update() const; // 更新碰撞情況
+	void Update(); // 更新碰撞情況
 	void ShowColliderBox(); // 一鍵顯示當前房間碰撞箱
 
 	//是否啓動管理員

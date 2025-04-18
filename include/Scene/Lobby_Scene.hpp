@@ -6,10 +6,10 @@
 #define LOBBY_SCENE_HPP
 
 #include "Scene/Scene.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Room/LobbyRoom.hpp"
 
 #include "Util/GameObject.hpp"
-#include "Util/Image.hpp"
-#include "Util/Renderer.hpp"
 
 class LobbyScene : public Scene
 {
@@ -23,10 +23,19 @@ public:
 	SceneType Change() override;
 
 protected:
-	std::shared_ptr<Util::GameObject> m_Background = std::make_shared<Util::GameObject>();
+	void CreatePlayer();
+	void SetupCamera() const;
+	void InitializeSceneManagers();
 
-	Util::Renderer m_Root;
+	std::shared_ptr<LobbyRoom> m_LobbyRoom;
+	std::shared_ptr<Character> m_Player;
+	float m_MapHeight;
 
+	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
+
+	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
+
+	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
 };
 
 #endif //LOBBY_SCENE_HPP

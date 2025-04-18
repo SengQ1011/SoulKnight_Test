@@ -5,17 +5,10 @@
 #ifndef TEST_SCENE_HPP
 #define TEST_SCENE_HPP
 
-#include "eventpp/callbacklist.h"
-#include "eventpp/eventdispatcher.h"
-
-#include "Camera.hpp"
-#include "Components/MovementComponent.hpp"
 #include "Factory/RoomObjectFactory.hpp"
-#include "Override/nGameObject.hpp"
-#include "Room/LobbyRoom.hpp"
-#include "Room/RoomCollisionManager.hpp"
+#include "Room/DungeonRoom.hpp"
 #include "Scene/Scene.hpp"
-#include "Util/Renderer.hpp"
+#include "spdlog/fmt/bundled/chrono.h"
 
 class TestScene_KC : public Scene
 {
@@ -33,16 +26,18 @@ protected:
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
-
-	std::shared_ptr<LobbyRoom> m_LobbyRoom;
+	std::vector<std::shared_ptr<DungeonRoom>> m_DungeonRooms = std::vector<std::shared_ptr<DungeonRoom>>(25,nullptr);
+	std::weak_ptr<DungeonRoom> m_DungeonRoom;
 	std::shared_ptr<Character> m_Player;
 	float m_MapHeight;
 
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 
-	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
+	std::string m_ThemeName = "IcePlains";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>(m_ThemeName);
 
-	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+	//test
+	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
 };
 
 #endif //TEST_SCENE_HPP

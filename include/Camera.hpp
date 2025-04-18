@@ -44,8 +44,10 @@ protected:
 private:
 	std::weak_ptr<nGameObject> m_FollowTarget;
 	std::vector<std::shared_ptr<nGameObject>> m_Children;
+	int index = 0;
 
-	void UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child) const;
+	void UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child);
+	bool NotShouldBeVisible(const std::shared_ptr<nGameObject> &child) const;
 };
 
 #endif //CAMERA_HPP

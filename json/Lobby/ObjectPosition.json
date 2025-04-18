@@ -1,6 +1,8 @@
 {
-    "room_height": 30.0,
-    "room_width": 40.0,
+    "room_region_y": 30.0,
+    "room_region_x": 40.0,
+    "room_size_y": 30.0,
+    "room_size_x": 40.0,
     "tile_height": 16.0,
     "tile_width": 16.0,
     "roomObject": [

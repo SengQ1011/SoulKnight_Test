@@ -1,5 +1,6 @@
 {
     "id": "tiles_22",
     "isAnimated": false,
-    "path": "/Lobby/tiles_22.png"
+    "path": "/Lobby/tiles_22.png",
+    "ZIndex": "FLOOR"
 }

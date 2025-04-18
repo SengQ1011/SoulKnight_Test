@@ -23,11 +23,6 @@ void LobbyRoom::Update() {
     // 调用基类Update
     Room::Update();
 
-    // 调试：显示碰撞盒
-    if (Util::Input::IsKeyUp(Util::Keycode::O)) {
-        m_CollisionManager->ShowColliderBox();
-    }
-
 	// 更新所有墙壁碰撞体
 	for (auto& wall : m_WallColliders) {
 		if (wall) wall->Update();

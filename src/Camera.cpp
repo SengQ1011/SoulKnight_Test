@@ -45,8 +45,8 @@ void Camera::SetFollowTarget(const std::shared_ptr<nGameObject> &target) {
 
 void Camera::ZoomCamera(const float zoomLevel)
 {
-	const float minZoom = 0.5f;  // 最小縮放值
-	const float maxZoom = 2.0f;  // 最大縮放值
+	const float minZoom = 0.0f;  // 最小縮放值
+	const float maxZoom = 100.0f;  // 最大縮放值
 
 	glm::vec2 newScale = m_CameraWorldCoord.scale + glm::vec2(1.0f, 1.0f) * zoomLevel * (Util::Time::GetDeltaTimeMs()/1000.0f);
 	newScale.x = std::clamp(newScale.x, minZoom, maxZoom);
@@ -86,21 +86,31 @@ void Camera::Update() {
 	if (auto target = m_FollowTarget.lock()) {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
+	index = 0;
 
 	// 對每個Object調位置
 	if (m_Children.size() < 100) {
 		for (const auto& child : m_Children) UpdateChildViewportPosition(child);
 	} else {
-		std::for_each(std::execution::par_unseq,m_Children.begin(), m_Children.end(),
+		std::for_each(std::execution::seq,m_Children.begin(), m_Children.end(),
 		[this](const std::shared_ptr<nGameObject>& child) {UpdateChildViewportPosition(child);});
 	}
+	LOG_DEBUG("Camera updates{}",index);
 }
 
-void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child) const
+void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child)
 {
 	//變更坐標軸
 	// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
 	//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
+	if (NotShouldBeVisible(child))
+	{
+		child->SetVisible(false);
+		return;
+	}
+	index += 1;
+
+	child->SetVisible(true);
 	child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 
 	//動態調整ZIndex
@@ -135,6 +145,15 @@ void Camera::UpdateZIndex(const std::shared_ptr<nGameObject> &child) const
 		child->SetZIndex(static_cast<float>(ZIndexLayer) + (relativeY * 20.0f));
 	}
 }
+
+bool Camera::NotShouldBeVisible(const std::shared_ptr<nGameObject> &child) const
+{
+	glm::vec2 delta = child->m_WorldCoord - m_CameraWorldCoord.translation;
+	float roomRegionSize = 16 * 35;
+	float threshold = roomRegionSize;
+	return std::abs(delta.x) >  threshold || std::abs(delta.y) > threshold;
+}
+
 
 
 

@@ -3,6 +3,8 @@
 //
 
 #include "Room/Room.hpp"
+
+#include "RoomObject/ObstacleObject.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Util/Logger.hpp"
 
@@ -13,7 +15,6 @@ Room::~Room() {
 }
 
 void Room::Start(const std::shared_ptr<Character>& player) {
-    LOG_DEBUG("Initial Room start");
 	//更新缓存数据
 	m_Player = player;
 	UpdateCachedReferences();
@@ -31,7 +32,7 @@ void Room::Update() {
     }
 
     // 管理员动态逻辑
-    if (m_CollisionManager) m_CollisionManager->Update();
+    if (m_CollisionManager) m_CollisionManager->Update(); //效能暴鯉龍
 
 	if (m_InteractionManager)
 	{
@@ -87,21 +88,6 @@ void Room::RemoveRoomObject(const std::shared_ptr<nGameObject>& object) {
     }
 }
 
-void Room::LoadFromJSON() {
-	const nlohmann::ordered_json jsonData = m_Loader.lock()->LoadLobbyObjectPosition();
-	InitializeRoomObjects(jsonData);
-}
-
-bool Room::IsPlayerInside() const
-{
-	const auto player = m_Player.lock();
-	if (!player) return false;
-	return (player->m_WorldCoord.x < m_WorldCoord.x + m_RoomRegion.x/2.0f) &&
-	   (player->m_WorldCoord.y < m_WorldCoord.y + m_RoomRegion.y/2.0f) &&
-	   (player->m_WorldCoord.x > m_WorldCoord.x - m_RoomRegion.x/2.0f) &&
-	   (player->m_WorldCoord.y > m_WorldCoord.y - m_RoomRegion.y/2.0f);
-}
-
 nlohmann::ordered_json Room::ReadJsonFile(const std::string &filePath) const
 {
 	std::ifstream file(filePath);
@@ -117,16 +103,16 @@ nlohmann::ordered_json Room::ReadJsonFile(const std::string &filePath) const
 
 void Room::InitializeRoomObjects(const nlohmann::json &jsonData)
 {
-	m_RoomRegion.x = jsonData.at("room_width").get<float>() * jsonData.at("tile_width").get<float>();
-	m_RoomRegion.y = jsonData.at("room_height").get<float>() * jsonData.at("tile_height").get<float>();
-	m_TileSize = glm::vec2(jsonData.at("tile_width").get<float>(), jsonData.at("tile_height").get<float>());
+	m_RoomSpaceInfo.m_TileSize = glm::vec2(jsonData.at("tile_width").get<float>(), jsonData.at("tile_height").get<float>());
+	m_RoomSpaceInfo.m_RoomRegion = glm::vec2(jsonData.at("room_region_x").get<float>(), jsonData.at("room_region_y").get<float>());
+	m_RoomSpaceInfo.m_RoomSize = glm::vec2(jsonData.at("room_size_x").get<float>(), jsonData.at("room_size_y").get<float>());
 
 	for (const auto &elem: jsonData["roomObject"]) {
 		auto roomObject = m_Factory.lock()->createRoomObject(elem.at("ID").get<std::string>(), elem.at("Class").get<std::string>());
 		if (roomObject) {
 			const auto x = elem.at("Position")[0].get<float>();
 			const auto y = elem.at("Position")[1].get<float>();
-			const auto position = glm::vec2(x, y);
+			const auto position = m_RoomSpaceInfo.m_WorldCoord + glm::vec2(x, y);
 			roomObject->SetWorldCoord(position);
 			AddRoomObject(roomObject);
 		}
