@@ -8,11 +8,7 @@
 void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 {
 	Room::Start(player);
-	auto time1 = std::chrono::high_resolution_clock::now();
 	CreateGridAndVisibleGrid();
-	auto time2 = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1);
-	LOG_DEBUG("Create grid {}us", duration.count());
 
 }
 
