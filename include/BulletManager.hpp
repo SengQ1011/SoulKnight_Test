@@ -28,7 +28,7 @@ private:
 	std::vector<std::shared_ptr<Bullet>> m_Bullets;
 	std::deque<std::shared_ptr<Bullet>> m_removalQueue;
 	BulletPool m_bulletPool;
-	std::mutex m_queueMutex; // 用于多线程保护
+	//std::mutex m_queueMutex; // 用于多线程保护
 };
 
 #endif //BULLETMANAGER_HPP

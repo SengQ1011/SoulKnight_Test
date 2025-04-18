@@ -24,7 +24,7 @@ public:
     		for(auto &enemy: m_enemies) {
     			if (const auto aiComp = enemy->GetComponent<AIComponent>(ComponentType::AI)) {
     				aiComp->RemoveTarget();
-    				LOG_DEBUG("removed");
+    				// LOG_DEBUG("removed");
     			}
     		}
     	}

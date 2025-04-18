@@ -25,7 +25,6 @@ void Bullet::Init() {
 	this->SetInitialScale(m_Transform.scale);
 	this->SetZIndexType(ZIndexType::BULLET);
 	SetImage(m_imagePath);
-
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();

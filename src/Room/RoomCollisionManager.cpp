@@ -13,9 +13,12 @@
 
 void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
-	if (nGameObject && nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION))
-	{
+	LOG_DEBUG("RegisterNGameObject");
+	if (auto collisionComp = nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		nGameObject && collisionComp) {
 		m_NGameObjects.push_back(nGameObject);
+	}else {
+		LOG_ERROR("GameObject is null");
 	}
 }
 

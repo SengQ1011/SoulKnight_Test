@@ -3,6 +3,7 @@ set(SRC_FILES
     App.cpp
     Beacon.cpp
     BulletManager.cpp
+    BulletPool.cpp
     Camera.cpp
     Components/AiComponent.cpp
     Components/AnimationComponent.cpp

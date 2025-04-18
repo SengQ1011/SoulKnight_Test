@@ -92,7 +92,7 @@ void TestScene_KC::Update()
 	{
 		if (!m_DungeonRooms[i]->IsPlayerInside()) continue;
 		m_DungeonRoom = m_DungeonRooms[i];
-		LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
+		//LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
 	}
 	m_DungeonRoom.lock()->Update();
 	// std::for_each(m_DungeonRooms.begin(), m_DungeonRooms.end(), [](const std::shared_ptr<DungeonRoom>& room){room->Update();});

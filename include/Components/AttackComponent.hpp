@@ -50,7 +50,7 @@ private:
 	int m_maxWeapon;				// 最多武器數量
 	int m_handBladeDamage;			// player:手刀傷害
 	int m_collisionDamage;			// enemy:專用於Collision模式的傷害值
-	int m_numRebound = 0;				// 天賦：子彈反彈
+	int m_numRebound = 0;			// 天賦：子彈反彈
 	bool m_dualWield = false;		// 是否雙持武器
 	std::shared_ptr<Weapon> m_currentWeapon;			// 目前裝備的武器
 	std::shared_ptr<Weapon> m_secondWeapon;				// 技能：雙持武器
