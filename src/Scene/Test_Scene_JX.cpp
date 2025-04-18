@@ -28,10 +28,10 @@ void TestScene_JX::Start()
 	m_Enemy = CharacterFactory::GetInstance().createEnemy(1);
 
 	// 添加天賦
-	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
-	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
-		talentComp->AddTalent(talentDatabase[2]);
-	}
+	// std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+	// if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+	// 	talentComp->AddTalent(talentDatabase[2]);
+	// }
 	std::ifstream file(JSON_DIR"/LobbyObjectPosition.json");
 	if (!file.is_open()) {
 		LOG_DEBUG("Error: Unable to open file: {}","LobbyObjectPosition");

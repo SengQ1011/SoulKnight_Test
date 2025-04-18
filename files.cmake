@@ -45,6 +45,7 @@ set(SRC_FILES
     Scene/Test_Scene_KC.cpp
     Skill/FullFirepower.cpp
     StructType.cpp
+    TalentDatabase.cpp
     Tool/Tool.cpp
     Weapon/Bullet.cpp
     Weapon/GunWeapon.cpp
