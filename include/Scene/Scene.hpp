@@ -7,11 +7,13 @@
 
 #include "Camera.hpp"
 #include "EnumTypes.hpp"
+#include "Room/Room.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
 #include "spdlog/fmt/bundled/chrono.h"
 
-class Room;
+
+class RoomCollisionManager;
 class Camera;
 // TODO
 enum class StageTheme
@@ -67,6 +69,13 @@ public:
 	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
 	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
 	std::shared_ptr<Room> GetCurrentRoom() {return m_CurrentRoom;}
+	std::shared_ptr<RoomCollisionManager> GetCurrentCollisionManager()
+	{
+		std::shared_ptr<RoomCollisionManager> collisionManager;
+		// 碰撞管理員可能在場景也可能在房間
+		if (m_CurrentRoom) return m_CurrentRoom->GetCollisionManager();
+		return GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION);
+	}
 
 	template <typename T>
 	std::shared_ptr<T> GetManager(const ManagerTypes managerName) {

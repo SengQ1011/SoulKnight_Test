@@ -17,26 +17,16 @@ void BulletManager::spawnBullet(const CharacterType type, const std::string& bul
 	currentScene->GetCamera().lock()->AddChild(bullet);
 
 	// 注冊到碰撞管理器
-	if (auto currentRoom = currentScene->GetCurrentRoom())
-	{
-		currentRoom->GetCollisionManager()->RegisterNGameObject(bullet);
-	}
-	else
-	{
-		currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
-	}
-	// currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->RegisterNGameObject(bullet);
+	const std::shared_ptr<RoomCollisionManager> collisionManager = currentScene->GetCurrentCollisionManager();
+	collisionManager->RegisterNGameObject(bullet);
 	m_Bullets.push_back(bullet);
 }
 
 void BulletManager::Update() {
-	if (m_Bullets.empty() && m_removalQueue.empty()) return;
-
 	// 更新子彈位置
 	for (auto& bullet : m_Bullets) {
 		bullet->UpdateLocation(Util::Time::GetDeltaTimeMs());
 	}
-
 	// 過濾要移除的子彈
 	std::vector<std::shared_ptr<Bullet>> activeBullets;
 	activeBullets.reserve(m_Bullets.size());  // 預先分配空間
@@ -64,7 +54,8 @@ void BulletManager::Update() {
 
 	auto root = currentScene->GetRoot().lock();
 	auto camera = currentScene->GetCamera().lock();
-	auto collisionManager = currentScene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION);
+
+	const std::shared_ptr<RoomCollisionManager> collisionManager = currentScene->GetCurrentCollisionManager();
 
 	if (!root || !camera || !collisionManager) return;
 

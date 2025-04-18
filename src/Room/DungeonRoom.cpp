@@ -3,6 +3,8 @@
 //
 
 #include "Room/DungeonRoom.hpp"
+#include "Camera.hpp"
+#include "Util/Renderer.hpp"
 #include <execution>
 
 void DungeonRoom::Start(const std::shared_ptr<Character> &player)

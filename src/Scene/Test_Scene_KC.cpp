@@ -95,6 +95,7 @@ void TestScene_KC::Update()
 		//LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
 	}
 	m_CurrentRoom->Update();
+	m_BulletManager->Update();
 	// std::for_each(m_DungeonRooms.begin(), m_DungeonRooms.end(), [](const std::shared_ptr<DungeonRoom>& room){room->Update();});
 	// auto time6 = std::chrono::high_resolution_clock::now();
 	// 更新相机
@@ -149,6 +150,7 @@ void TestScene_KC::InitializeSceneManagers()
 {
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
+	AddManager(ManagerTypes::BULLET, m_BulletManager);
 	// AddManager(ManagerTypes::ROOMCOLLISION, m_DungeonRoom->GetCollisionManager());
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);

@@ -27,6 +27,20 @@ void GunWeapon::attack(const int damage) {
 	const auto characterType = m_currentOwner->GetType();
 	auto numRebound = m_currentOwner->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetNumRebound();
 
-	const auto bulletManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetManager<BulletManager>(ManagerTypes::BULLET);
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	std::shared_ptr<BulletManager> bulletManager;
+	// if (const auto currentRoom = currentScene->GetCurrentRoom();
+	// 	currentRoom != nullptr)
+	// {
+	// 	LOG_DEBUG("HAS ROOM");
+	// 	bulletManager = currentRoom->GetBulletManager();
+	// 	}
+	// else
+	// {
+	// 	LOG_DEBUG("NO ROOM");
+	// 	bulletManager = currentScene->GetManager<BulletManager>(ManagerTypes::BULLET);
+	// }
+	bulletManager = currentScene->GetManager<BulletManager>(ManagerTypes::BULLET);
 	bulletManager->spawnBullet(characterType, m_bulletImagePath,bulletTransform, bulletDirection, m_bulletSize, bulletSpeed, damage, numRebound);
+
  }
