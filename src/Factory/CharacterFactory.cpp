@@ -7,7 +7,6 @@
 #include <memory>
 
 
-#include "Components/EnemyAI/AttackAI.hpp"
 #include "Components/EnemyAI/WanderAI.hpp"
 #include "Components/TalentComponet.hpp"
 #include "Skill/FullFirepower.hpp"
@@ -35,15 +34,9 @@ State stringToState(const std::string& stateStr) {
 	if (stateStr == "STANDING") return State::STANDING;
 	if (stateStr == "MOVING") return State::MOVING;
 	if (stateStr == "SKILL") return State::SKILL;
+	if (stateStr == "ATTACK") return State::ATTACK;
 	if (stateStr == "DEAD") return State::DEAD;
 	throw std::invalid_argument("Unknown state: " + stateStr);
-}
-
-AIType stringToAiType(const std::string& stateStr) {
-	if (stateStr == "Attack") return AIType::ATTACK;
-	if (stateStr == "Summon") return AIType::SUMMON;
-	if (stateStr == "Wander") return AIType::WANDER;
-	LOG_ERROR("Unknown AiType: {}", stateStr);
 }
 
 std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(const nlohmann::json& animationsJson) {
@@ -59,6 +52,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(c
 	return animations;
 }
 
+// ================================== (Player) ========================================= //
 std::shared_ptr<Skill> createSkill(std::weak_ptr<Character> owner, const nlohmann::json& skillInfo) {
 	if (!skillInfo.contains("name"))
 	{
@@ -140,6 +134,24 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 	return nullptr;
 }
 
+// ================================== (Monster) ========================================= //
+MonsterType stringToMonsterType(const std::string& stateStr) {
+	if (stateStr == "Attack") return MonsterType::ATTACK;
+	if (stateStr == "Summon") return MonsterType::SUMMON;
+	if (stateStr == "Wander") return MonsterType::WANDER;
+}
+
+std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> stringToAtkStrategies(const nlohmann::json& atkStrategies){
+	std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> strategies;
+	for (const auto& atkType : atkStrategies) {
+		if(atkType == "Collision") strategies[AttackType::COLLISION] = std::make_shared<CollisionAttack>();
+		if(atkType == "Melee") strategies[AttackType::MELEE] = std::make_shared<CollisionAttack>();
+		if(atkType == "Gun") strategies[AttackType::GUN] = std::make_shared<CollisionAttack>();
+		if(atkType == "None")  strategies[AttackType::NONE] = std::make_shared<NoAttack>();
+	}
+	return strategies;
+}
+
 std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
     // 在 JSON 陣列中搜尋符合名稱的角色
     for (const auto& characterInfo : enemyJsonData) {
@@ -150,41 +162,47 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	enemy->SetZIndexType(ZIndexType::OBJECTHIGH);
 
         	auto animation = parseCharacterAnimations(characterInfo["animations"]);
-			AIType aiType = stringToAiType(characterInfo["monsterType"].get<std::string>());
+			MonsterType aiType = stringToMonsterType(characterInfo["monsterType"].get<std::string>());
         	int monsterPoint = characterInfo["monsterPoint"];
         	int maxHp = characterInfo["maxHp"];
             float moveSpeed = characterInfo["speed"];
+        	float bodySize = characterInfo["size"];
         	std::shared_ptr<Weapon> weapon = nullptr;
         	int collisionDamage = 0;
 
-            // 根據攻擊類型
-            std::string attackType = characterInfo["attackType"];
-        	if (attackType == "Collision") {
-				collisionDamage = characterInfo["collisionDamage"];
+        	// AIComponent
+        	std::shared_ptr<IMoveStrategy> moveStrategy;
+        	auto attackStrategies = stringToAtkStrategies(characterInfo["attackType"]);
+        	std::shared_ptr<IUtilityStrategy> utilityStrategy = nullptr;
+        	if (aiType == MonsterType::SUMMON) {
+        		moveStrategy = std::make_shared<NoMove>();
+        		utilityStrategy = std::make_shared<SummonUtility>();
+        	} else if (aiType == MonsterType::ATTACK) {
+        		moveStrategy = std::make_shared<WanderMove>();
+        	} else if (aiType == MonsterType::WANDER) {
+        		moveStrategy = std::make_shared<WanderMove>();
         	}
-        	else if (attackType == "Gun"|| attackType == "Malee")
-        	{
+        	// 根據攻擊類型
+			int haveWeapon = characterInfo["haveWeapon"];
+        	if (haveWeapon == 0) {
+        		collisionDamage = characterInfo["collisionDamage"];
+        	}
+        	else{
         		// const int weaponID = characterInfo["weaponID"];
-        		// weapon = wf.createWeapon(weaponID);
+        		// weapon = WeaponFactory::createWeapon(weaponID);
         	}
-
-        	if(aiType == AIType::ATTACK) {
-        		auto aiComp = enemy->AddComponent<AttackAI>(ComponentType::AI, monsterPoint);
-        	}else if (aiType == AIType::WANDER) {
-        		auto aiComp = enemy->AddComponent<WanderAI>(ComponentType::AI, monsterPoint);
-        	}
-
         	auto animationComp = enemy->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);
         	auto healthComp = enemy->AddComponent<HealthComponent>(ComponentType::HEALTH, maxHp, 0, 0);
         	auto movementComp = enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
         	auto attackComp = enemy->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, 0, 0, collisionDamage);
-			auto collisionComp = enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+        	auto aiComp = enemy->AddComponent<AIComponent>(ComponentType::AI, aiType, moveStrategy, attackStrategies, utilityStrategy, monsterPoint);
+        	auto collisionComp = enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
         	collisionComp->SetCollisionLayer(CollisionLayers_Enemy);
-        	if (attackType == "Collision") collisionComp->SetCollisionMask(CollisionLayers_Player);
+        	if (haveWeapon == 0) collisionComp->SetCollisionMask(CollisionLayers_Player);
         	collisionComp->SetCollisionMask(CollisionLayers_Terrain);
         	collisionComp->SetCollisionMask(CollisionLayers_Player_Bullet);
-        	collisionComp->SetSize(glm::vec2(16.0f));
+        	collisionComp->SetSize(glm::vec2(bodySize));
         	collisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 
         	return enemy;

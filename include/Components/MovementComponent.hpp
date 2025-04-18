@@ -33,7 +33,7 @@ public:
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
 	void SetVelocity(const glm::vec2& velocity) {m_Velocity = velocity;}
 	void SetOnIce(bool isOnIce) { m_IsOnIce = isOnIce; }
-	// InputComponent專用
+	// 控制移動
 	void SetDesiredDirection(const glm::vec2& direction) { m_DesiredDirection = direction; }
 
 private:
@@ -50,9 +50,9 @@ private:
 	float m_TurnSmoothness = 10.0f;  // 轉向平滑係數（越大=>越難轉向）
 	float m_LateralFriction = 5.0f;      // 橫向摩擦力 (斜向移動時用)
 	// 方向系統
-	glm::vec2 m_LastValidDirection;  // 記錄上次實際移動方向（用於慣性計算）
-	float m_DirectionMemoryThreshold = 0.3f;  // 記錄方向的最低速度
-	float m_DecelerationCurve = 1.5f;         // 減速曲線強度 (值越大，高速時減速越快)
+	glm::vec2 m_LastValidDirection;				// 記錄上次實際移動方向（用於慣性計算）
+	float m_DirectionMemoryThreshold = 0.3f;	// 記錄方向的最低速度
+	float m_DecelerationCurve = 1.5f;			// 減速曲線強度 (值越大，高速時減速越快)
 
 	// 記錄每個方向的碰撞狀態
 	struct ContactState {

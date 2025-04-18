@@ -6,8 +6,6 @@
 #define INPUTCOMPONENT_HPP
 
 #include "Components/Component.hpp"
-#include "Creature/Character.hpp"
-#include "Components/MovementComponent.hpp"
 #include "Observer.hpp"
 
 class InputComponent : public Component, public InputObserver{

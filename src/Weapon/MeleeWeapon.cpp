@@ -15,6 +15,7 @@ void MeleeWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
 
 	const auto characterType = m_currentOwner->GetType();
+	auto tranform = m_currentOwner;
 	const auto slash = std::make_shared<Slash>(characterType, m_slashAnimation, m_attackRange);
 	slash->Init();
 	// 加入渲染樹

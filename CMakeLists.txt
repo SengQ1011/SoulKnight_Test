@@ -44,7 +44,9 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
-        include/BulletPool.hpp
+        include/StructType.hpp
+        src/Components/EnemyAI/MoveStrategy.cpp
+        src/StructType.cpp
 )
 
 if(MSVC)

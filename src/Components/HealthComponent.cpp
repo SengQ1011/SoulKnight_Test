@@ -33,7 +33,6 @@ void HealthComponent::HandleCollision(CollisionInfo &info){
 	if (const auto bullet = std::dynamic_pointer_cast<Bullet>(info.GetObjectB())) {
 		const int damage = bullet->GetDamage();
 		this->TakeDamage(damage);
-		LOG_DEBUG("bullet damage: {}", damage);
 	}
 
 	// collisionEnemy的碰撞傷害
@@ -41,7 +40,6 @@ void HealthComponent::HandleCollision(CollisionInfo &info){
 		if(character->GetType() == CharacterType::ENEMY) {
 			if (const auto collisionDamage = character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
 				collisionDamage > 0){
-				LOG_DEBUG("damage: {}", collisionDamage);
 				this->TakeDamage(collisionDamage);
 			}
 		}
@@ -49,7 +47,6 @@ void HealthComponent::HandleCollision(CollisionInfo &info){
 }
 
 void HealthComponent::TakeDamage(int damage) {
-	LOG_DEBUG("damage: {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0) {
 		m_currentArmor = 0;  // 只扣盔甲

@@ -9,7 +9,6 @@
 #include "Components/SkillComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "Scene/SceneManager.hpp"
-#include "Util/Time.hpp"
 
 InputComponent::InputComponent() {}
 
@@ -38,11 +37,6 @@ void InputComponent::onInputReceived(const std::set<char>& keys)
 		const glm::vec2 deltaDisplacement = normalize(movement) * ratio; //normalize為防止斜向走速度是根號2
 
 		movementComponent->SetDesiredDirection(deltaDisplacement);
-
-		if ((movement.x < 0 && character->m_Transform.scale.x > 0) ||
-		(movement.x > 0 && character->m_Transform.scale.x < 0))
-		{ character->m_Transform.scale.x *= -1.0f;}
-
 		stateComponent->SetState(State::MOVING);
 	} else {
 		// 無輸入時，清空方向向量

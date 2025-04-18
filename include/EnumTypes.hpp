@@ -33,13 +33,21 @@ enum class State
 	STANDING,
 	MOVING,
 	SKILL,
+	ATTACK,
 	DEAD
 };
 
-enum class AIType {
+enum class MonsterType {
 	ATTACK,		// 追蹤玩家
 	SUMMON,		// 召喚
 	WANDER		// 游蕩
+};
+
+enum class AttackType {
+	MELEE,
+	GUN,
+	COLLISION,
+	NONE
 };
 
 enum class enemyState {
@@ -67,5 +75,6 @@ enum ZIndexType: int
 	UI			= 80,	// 80 -  99
 	CUSTOM		=100,   // dont care
 };
+
 
 #endif //ENUMTYPES_HPP

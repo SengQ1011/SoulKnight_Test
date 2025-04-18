@@ -142,12 +142,7 @@ void TestScene_JX::Update()
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
 
-	auto updateStart = std::chrono::high_resolution_clock::now();
 	bulletManager->Update();
-	auto totalEnd = std::chrono::high_resolution_clock::now();
-	auto elapsedTotal = std::chrono::duration_cast<std::chrono::microseconds>(totalEnd - updateStart).count();
-	LOG_DEBUG("Bullet Manager: {}us", elapsedTotal);
-	if(elapsedTotal >3000)LOG_WARN("High delay");
 	m_trackingManager->Update();
 
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});

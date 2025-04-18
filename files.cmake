@@ -4,10 +4,11 @@ set(SRC_FILES
     Beacon.cpp
     BulletManager.cpp
     Camera.cpp
+    Components/AiComponent.cpp
     Components/AnimationComponent.cpp
     Components/AttackComponent.cpp
     Components/CollisionComponent.cpp
-    Components/EnemyAI/AttackAI.cpp
+    Components/EnemyAI/MoveStrategy.cpp
     Components/EnemyAI/WanderAI.cpp
     Components/FollowerComponent.cpp
     Components/HealthComponent.cpp
@@ -43,6 +44,7 @@ set(SRC_FILES
     Scene/Test_Scene_JX.cpp
     Scene/Test_Scene_KC.cpp
     Skill/FullFirepower.cpp
+    StructType.cpp
     Tool/Tool.cpp
     Weapon/Bullet.cpp
     Weapon/GunWeapon.cpp
@@ -64,7 +66,9 @@ set(INCLUDE_FILES
     Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
-    Components/EnemyAI/AttackAI.hpp
+    Components/EnemyAI/AttackStrategy.hpp
+    Components/EnemyAI/MoveStrategy.hpp
+    Components/EnemyAI/UtilityStrategy.hpp
     Components/EnemyAI/WanderAI.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
@@ -111,6 +115,7 @@ set(INCLUDE_FILES
     Scene/Test_Scene_KC.hpp
     Skill/FullFirepower.hpp
     Skill/Skill.hpp
+    StructType.hpp
     Tool/Tool.hpp
     Weapon/Bullet.hpp
     Weapon/GunWeapon.hpp
