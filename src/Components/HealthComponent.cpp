@@ -16,8 +16,7 @@ HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const 
 		m_maxArmor(maxArmor), m_currentArmor(maxArmor),
 		m_maxEnergy(maxEnergy), m_currentEnergy(maxEnergy) {}
 
-void HealthComponent::Update()
-{
+void HealthComponent::Update() {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	if(m_maxArmor == 0) return;
 	if(m_currentArmor < m_maxArmor) {
@@ -34,19 +33,31 @@ void HealthComponent::HandleCollision(CollisionInfo &info){
 	if (const auto bullet = std::dynamic_pointer_cast<Bullet>(info.GetObjectB())) {
 		const int damage = bullet->GetDamage();
 		this->TakeDamage(damage);
-		LOG_DEBUG("damage: {}", damage);
+		LOG_DEBUG("bullet damage: {}", damage);
+	}
+
+	// collisionEnemy的碰撞傷害
+	if(const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB())){
+		if(character->GetType() == CharacterType::ENEMY) {
+			if (const auto collisionDamage = character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
+				collisionDamage > 0){
+				LOG_DEBUG("damage: {}", collisionDamage);
+				this->TakeDamage(collisionDamage);
+			}
+		}
 	}
 }
 
 void HealthComponent::TakeDamage(int damage) {
+	LOG_DEBUG("damage: {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0) {
 		m_currentArmor = 0;  // 只扣盔甲
 		return;
 	}
-	damage = std::max(0, damage - m_currentArmor);
+	int remainingDamage = std::max(0, damage - m_currentArmor);
 	m_currentArmor = std::max(0, m_currentArmor - damage);
-	m_currentHp = std::max(0, m_currentHp - damage);
+	m_currentHp = std::max(0, m_currentHp - remainingDamage);
 
 	if (m_currentHp == 0) {
 		OnDeath();
@@ -63,8 +74,15 @@ void HealthComponent::OnDeath() const
 
 	character->SetActive(false);
 	stateComponent->SetState(State::DEAD);
-	if(movementComp) movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f));
+	LOG_DEBUG("HealthComponent::OnDeath");
+	if(movementComp) movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f));		// 移動向量設爲0
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(character);
-	if(character->GetType() == CharacterType::ENEMY)scene->GetManager<TrackingManager>(ManagerTypes::TRACKING)->RemoveEnemy(character);
+
+	auto trackingManager = scene->GetManager<TrackingManager>(ManagerTypes::TRACKING);
+	if(character->GetType() == CharacterType::ENEMY) {
+		trackingManager->RemoveEnemy(character);
+		LOG_DEBUG("HealthComponent::remove ");
+	}
+	else trackingManager->SetPlayer(nullptr);
 }

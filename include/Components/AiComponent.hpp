@@ -61,4 +61,5 @@ protected:
 	std::weak_ptr<nGameObject> m_Target;			// enemy鎖定目標的位置
 	float m_behaviorTimer = 0;
 };
+
 #endif //AICOMPONENT_HPP

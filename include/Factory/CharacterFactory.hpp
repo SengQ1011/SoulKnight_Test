@@ -20,7 +20,7 @@
 #include "Components/StateComponent.hpp"
 
 // 角色工廠：根據名稱創建角色
-class CharacterFactory: public Factory {
+class CharacterFactory final : public Factory {
 public:
 	static CharacterFactory& GetInstance() {
 		static CharacterFactory instance;
@@ -39,7 +39,7 @@ private:
 
 	// 预加载JSON
 	CharacterFactory() {enemyJsonData = readJsonFile("enemy.json");}
-	~CharacterFactory() = default;
+	~CharacterFactory() override = default;
 	// 删除拷贝操作
 	CharacterFactory(const CharacterFactory&) = delete;
 	void operator=(const CharacterFactory&) = delete;

@@ -20,7 +20,7 @@
     "name": "Lightsaber_Blue",
     "weaponImagePath": "/weapon/weapons3/weapons3_92.png",
     "slashImagePath": ["/Sprite/attackUI/slash/slash_0.png","/Sprite/attackUI/slash/slash_1.png"
-    ,"/Sprite/attackUI/slash/slash_2.png","/Sprite/attackUI/slash/slash_3.png"],
+                      ,"/Sprite/attackUI/slash/slash_2.png","/Sprite/attackUI/slash/slash_3.png"],
     "damage": 8,
     "energy": 0,
     "criticalRate": 0.3,

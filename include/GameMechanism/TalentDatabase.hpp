@@ -6,14 +6,14 @@
 #define TALENTDATABASE_HPP
 
 
-#include <functional>
-#include <vector>
-#include "Components/AttackComponent.hpp"
-#include "Components/HealthComponent.hpp"
-#include "Creature/Character.hpp"
 #include "GameMechanism/Talent.hpp"
+#include "Creature/Character.hpp"
+#include "Components/HealthComponent.hpp"
+#include "Components/AttackComponent.hpp"
+#include <vector>
+#include <functional>
 
-inline std::vector<Talent> CreateTalentList() {
+std::vector<Talent> CreateTalentList() {
 	std::vector<Talent> list;
 
 	list.emplace_back("破甲保護", "/UI/ui_talentIcon/ui_buff_18.png", [](Character& obj) {

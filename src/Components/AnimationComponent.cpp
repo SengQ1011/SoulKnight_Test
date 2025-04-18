@@ -22,7 +22,6 @@ void AnimationComponent::Init() {
 	auto character = GetOwner<nGameObject>();
 	if (character && m_currentAnimation) {
 		character->SetDrawable(m_currentAnimation->GetDrawable());
-
 	}
 	else {
 		LOG_ERROR("Failed to add new animation");

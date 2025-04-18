@@ -29,4 +29,4 @@ void GunWeapon::attack(const int damage) {
 
 	const auto bulletManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetManager<BulletManager>(ManagerTypes::BULLET);
 	bulletManager->spawnBullet(characterType, m_bulletImagePath,bulletTransform, bulletDirection, m_bulletSize, bulletSpeed, damage, numRebound);
-}
+ }
