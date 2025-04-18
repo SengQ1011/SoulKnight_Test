@@ -84,5 +84,8 @@ void HealthComponent::OnDeath() const
 		trackingManager->RemoveEnemy(character);
 		LOG_DEBUG("HealthComponent::remove ");
 	}
-	else trackingManager->SetPlayer(nullptr);
+	else
+	{
+		trackingManager->SetPlayer(nullptr);
+	}
 }

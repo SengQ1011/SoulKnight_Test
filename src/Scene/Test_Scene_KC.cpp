@@ -27,7 +27,7 @@ void TestScene_KC::Start()
 	CreatePlayer();
 
 	// 设置相机
-	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
+	m_MapHeight = 5 * 35 * 16 ; //Dungeon 5個房間 35個方塊 16像素
 	SetupCamera();
 
 	//設置工廠

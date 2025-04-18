@@ -51,6 +51,7 @@ void LobbyScene::Update()
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	inputManager->Update();
+	m_trackingManager->Update();
 
 	m_Player->Update();
 	m_Enemy->Update();

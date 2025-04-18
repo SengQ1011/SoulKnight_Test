@@ -101,6 +101,7 @@ void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &chi
 	//變更坐標軸
 	// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
 	//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
+	if (!child->IsVisible()) return;
 	child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 
 	//動態調整ZIndex

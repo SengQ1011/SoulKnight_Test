@@ -61,6 +61,7 @@ protected:
 
 	// 房间状态
 	RoomState m_State = RoomState::INACTIVE;
+	std::shared_ptr<nGameObject> m_Bound3535;
 
 private:
 	std::string m_RoomType = "START";

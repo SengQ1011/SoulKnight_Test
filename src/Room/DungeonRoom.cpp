@@ -26,9 +26,11 @@ void DungeonRoom::Update()
 		{
 			for (const auto& elem: row)
 			{
+				if (!elem) continue;
 				elem->SetVisible(true ^ elem->IsVisible());
 			}
 		}
+		m_Bound3535->SetVisible(true ^ m_Bound3535->IsVisible());
 	}
 }
 
@@ -83,20 +85,18 @@ void DungeonRoom::CreateGridAndVisibleGrid()
 			}
 		}
 	}
+	auto bound3535 = m_Factory.lock()->createRoomObject("bound3535","nGameObject");
+	glm::vec2 pos = m_RoomSpaceInfo.m_WorldCoord;
+	bound3535->SetWorldCoord(pos);
+	bound3535->SetZIndex(20.5);
+	m_CachedCamera.lock()->AddChild(bound3535);
+	m_CachedRenderer.lock()->AddChild(bound3535);
+	m_Bound3535 = bound3535;
+
 	for (int row = 0; row < 35; row++)
 	{
 		for (int col = 0; col < 35; col++)
 		{
-			if (m_Mark[row][col] == 0)
-			{
-				auto bound = m_Factory.lock()->createRoomObject("bound","nGameObject");
-				glm::vec2 pos = startPos + glm::vec2(static_cast<float>(col) * tileSize, -static_cast<float>(row) * tileSize);
-				bound->SetWorldCoord(pos);
-				bound->SetZIndex(20);
-				m_CachedCamera.lock()->AddChild(bound);
-				m_CachedRenderer.lock()->AddChild(bound);
-				m_Grid[row][col] = bound;
-			}
 			if (m_Mark[row][col] == 1)
 			{
 				auto bound = std::make_shared<nGameObject>();
