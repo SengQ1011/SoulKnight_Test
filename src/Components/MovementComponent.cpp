@@ -157,6 +157,13 @@ void MovementComponent::Update() {
 	// 更新位置
 	m_Position += m_Velocity * deltaTime;
 	if (owner) owner->m_WorldCoord = m_Position;
+
+	// 調整面朝方向
+	if (m_LastValidDirection.x < 0 && owner->m_Transform.scale.x > 0 ||
+		m_LastValidDirection.x > 0 && owner->m_Transform.scale.x < 0) {
+		owner->m_Transform.scale.x *= -1.0f; // 反轉X軸方向
+		}
+
 }
 
 void MovementComponent::HandleCollision(CollisionInfo &info)

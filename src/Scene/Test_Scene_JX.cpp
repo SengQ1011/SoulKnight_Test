@@ -28,10 +28,10 @@ void TestScene_JX::Start()
 	m_Enemy = CharacterFactory::GetInstance().createEnemy(1);
 
 	// 添加天賦
-	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
-	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
-		talentComp->AddTalent(talentDatabase[2]);
-	}
+	// std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+	// if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+	// 	talentComp->AddTalent(talentDatabase[2]);
+	// }
 	std::ifstream file(JSON_DIR"/LobbyObjectPosition.json");
 	if (!file.is_open()) {
 		LOG_DEBUG("Error: Unable to open file: {}","LobbyObjectPosition");
@@ -142,12 +142,7 @@ void TestScene_JX::Update()
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
 
-	auto updateStart = std::chrono::high_resolution_clock::now();
 	bulletManager->Update();
-	auto totalEnd = std::chrono::high_resolution_clock::now();
-	auto elapsedTotal = std::chrono::duration_cast<std::chrono::microseconds>(totalEnd - updateStart).count();
-	LOG_DEBUG("Bullet Manager: {}us", elapsedTotal);
-	if(elapsedTotal >3000)LOG_WARN("High delay");
 	m_trackingManager->Update();
 
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});

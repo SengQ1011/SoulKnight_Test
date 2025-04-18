@@ -5,8 +5,7 @@
 #include "Weapon/Bullet.hpp"
 
 #include "Components/CollisionComponent.hpp"
-#include "Scene/SceneManager.hpp"
-#include "Util/Time.hpp"
+#include "Creature/Character.hpp"
 
  Bullet::Bullet(const CharacterType type, const std::string& ImagePath, const Util::Transform &bulletTransform, glm::vec2 direction, float size, float speed, int damage, int numRebound)
 	: m_type(type), m_imagePath(ImagePath), m_direction(direction), m_size(size), m_speed(speed), m_damage(damage), m_numRebound(numRebound)
@@ -18,7 +17,7 @@
 std::unordered_map<std::string, std::shared_ptr<Util::Image>> Bullet::sharedImages;
 
 
-void Bullet::PostInitialize() {
+void Bullet::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
 	m_startPosition = this->m_WorldCoord;

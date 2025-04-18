@@ -7,13 +7,13 @@
 #include "Components/AiComponent.hpp"
 #include "Components/StateComponent.hpp"
 
-class WanderAI final : public AIComponent {
+class WanderAI  {
 public:
 	explicit WanderAI(int monsterPoint);
-	~WanderAI() override = default;
+	~WanderAI() = default;
 
-	void Update() override;
-	void HandleCollision(CollisionInfo &info) override;
+	void Update();
+	void HandleCollision(CollisionInfo &info);
 
 private:
 	void WanderLogic(float deltaTime);

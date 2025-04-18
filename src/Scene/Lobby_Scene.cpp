@@ -118,6 +118,7 @@ void LobbyScene::InitializeSceneManagers()
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
 	AddManager(ManagerTypes::ROOMCOLLISION, m_LobbyRoom->GetCollisionManager());
 	AddManager(ManagerTypes::BULLET,m_LobbyRoom->GetBulletManager());
+	AddManager(ManagerTypes::TRACKING, m_trackingManager);
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	// 注册输入观察者

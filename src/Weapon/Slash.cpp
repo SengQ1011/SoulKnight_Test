@@ -28,20 +28,25 @@ void Slash::Init() {
 
 	collisionComp->SetSize(glm::vec2(8.0f));
 
-	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-	// currentScene->GetRoot().lock()->AddChild(collisionComp->GetVisibleBox());
-	// currentScene->GetCamera().lock()->AddChild(collisionComp->GetVisibleBox());
+	// 測試
+	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	currentScene->GetRoot().lock()->AddChild(collisionComp->GetVisibleBox());
+	currentScene->GetCamera().lock()->AddChild(collisionComp->GetVisibleBox());
 }
 
 
 void Slash::Update() {
+	if (!m_Active) return;
+	for (auto& [type, component] : this->m_Components) {
+		component->Update();  // 更新每個組件
+	}
 	LOG_DEBUG("Slash::Update");
  	if (m_animation->IfAnimationEnds()) {
  		SetActive(false);
 		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
- 		// scene->GetRoot().lock()->RemoveChild(shared_from_this());
- 		// scene->GetCamera().lock()->RemoveChild(shared_from_this());
- 		// scene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(shared_from_this());
+ 		scene->GetRoot().lock()->RemoveChild(shared_from_this());
+ 		scene->GetCamera().lock()->RemoveChild(shared_from_this());
+ 		scene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(shared_from_this());
  	}
 
  }

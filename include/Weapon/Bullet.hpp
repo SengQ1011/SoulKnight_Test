@@ -17,8 +17,8 @@ public:
 	// 靜態資源池，只載入一次同一圖片
 	static std::unordered_map<std::string, std::shared_ptr<Util::Image>> sharedImages;
 
-	// Init
-	void PostInitialize();
+	// 初始化
+	void Init();
 	void UpdateLocation(float deltaTime);
 
 	//----Getter----

@@ -7,8 +7,6 @@
 
 #include <deque>
 
-
-#include "Components/CollisionComponent.hpp"
 #include "Weapon/Bullet.hpp"
 
 class BulletPool {
