@@ -22,6 +22,7 @@ public:
 	[[nodiscard]] float GetAimRange() const { return m_aimRange;}
 	[[nodiscard]] int GetMaxWeapon() const { return m_maxWeapon; }
 	[[nodiscard]] std::shared_ptr<Weapon> GetCurrentWeapon() const { return m_currentWeapon; }
+	[[nodiscard]] std::shared_ptr<Weapon> GetSecondWeapon() const { return m_secondWeapon; }
 	[[nodiscard]] std::vector<std::shared_ptr<Weapon>> GetAllWeapons() const { return m_Weapons; }
 	[[nodiscard]] int GetNumRebound() const { return m_numRebound; }
 	[[nodiscard]] int GetCollisionDamage() const { return m_collisionDamage; }

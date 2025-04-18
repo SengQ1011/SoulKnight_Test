@@ -85,6 +85,12 @@ void TrackingManager::notifyObserver() {
 		if (const auto followerComp = attackComp->GetCurrentWeapon()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
 			followerComp->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
 		}
+		if(auto cloneWeapon = attackComp->GetSecondWeapon())
+		{
+			if(const auto followerComp2 = cloneWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+				followerComp2->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
+			}
+		}
 	}
 
 	// 給敵人：分類型處理

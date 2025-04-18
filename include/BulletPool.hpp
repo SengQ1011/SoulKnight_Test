@@ -13,6 +13,7 @@ class BulletPool {
 public:
 	std::shared_ptr<Bullet> Acquire(const CharacterType type, const std::string& ImagePath, const Util::Transform &bulletTransform,
 								const glm::vec2 direction, const float size, const float speed, const int damage, const int numRebound) {
+
 		if (!pool.empty()) {
 			// 從池中取出子彈並重置屬性
 			auto bullet = pool.back();

@@ -11,7 +11,7 @@ SceneManager &SceneManager::GetInstance()
 
 void SceneManager::Start()
 {
-	m_CurrentScene = CreateScene(Scene::SceneType::Test_KC);
+	m_CurrentScene = CreateScene(Scene::SceneType::Menu);
 	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }
@@ -28,6 +28,7 @@ void SceneManager::ChangeCurrentScene()
 	//退出舊場景
 	m_Data = m_CurrentScene->Upload();
 	m_CurrentScene->Exit();
+	m_CurrentScene = nullptr;
 
 	//載入新場景 特殊處理
 	if (m_NextSceneType == Scene::SceneType::DungeonLoad)

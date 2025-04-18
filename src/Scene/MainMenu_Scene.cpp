@@ -50,8 +50,8 @@ void MainMenuScene::Update()
 
 void MainMenuScene::Exit()
 {
-	LOG_DEBUG("Main Menu exited");
-	//m_BGM->Pause();
+	LOG_DEBUG("Main Menu exited {}");
+	m_BGM->Pause();
 }
 
 Scene::SceneType MainMenuScene::Change()

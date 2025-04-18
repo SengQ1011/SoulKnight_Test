@@ -140,7 +140,7 @@ Scene::SceneType LobbyScene::Change()
 	if (IsChange())
 	{
 		LOG_DEBUG("Change Main Menu");
-		return Scene::SceneType::Menu;
+		return Scene::SceneType::Test_KC;
 	}
 	return Scene::SceneType::Null;
 }
