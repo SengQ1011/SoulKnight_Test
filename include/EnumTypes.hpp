@@ -37,10 +37,11 @@ enum class State
 	DEAD
 };
 
-enum class MonsterType {
-	ATTACK,		// 追蹤玩家
-	SUMMON,		// 召喚
-	WANDER		// 游蕩
+enum class EffectAttackType
+{
+	SLASH,
+	STAB,
+	SHOCKWAVE
 };
 
 enum class AttackType {
@@ -48,6 +49,12 @@ enum class AttackType {
 	GUN,
 	COLLISION,
 	NONE
+};
+
+enum class MonsterType {
+	ATTACK,		// 追蹤玩家
+	SUMMON,		// 召喚
+	WANDER		// 游蕩
 };
 
 enum class enemyState {
@@ -59,7 +66,7 @@ enum class enemyState {
 
 enum class ManagerTypes
 {
-	BULLET,
+	ATTACK,
 	ROOMCOLLISION,
 	INPUT,
 	SCENE,
@@ -70,7 +77,7 @@ enum ZIndexType: int
 {
 	FLOOR		= 0,	//  0 -  20
 	OBJECTLOW	= 20,	// 20 -  40
-	BULLET		= 40,	// 40 -  60
+	ATTACK		= 40,	// 40 -  60
 	OBJECTHIGH	= 60,	// 60 -  80
 	UI			= 80,	// 80 -  99
 	CUSTOM		=100,   // dont care

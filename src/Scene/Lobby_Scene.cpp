@@ -58,7 +58,7 @@ void LobbyScene::Update()
 
 	// 更新房间
 	m_LobbyRoom->Update();
-	m_BulletManager->Update();
+	m_AttackManager->Update();
 
 	// 更新相机
 	m_Camera->Update();
@@ -118,8 +118,8 @@ void LobbyScene::InitializeSceneManagers()
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
 	AddManager(ManagerTypes::ROOMCOLLISION, m_LobbyRoom->GetCollisionManager());
-	// AddManager(ManagerTypes::BULLET,m_LobbyRoom->GetBulletManager());
-	AddManager(ManagerTypes::BULLET,m_BulletManager);
+	// AddManager(ManagerTypes::ATTACK,m_LobbyRoom->GetAttackManager());
+	AddManager(ManagerTypes::ATTACK,m_AttackManager);
 	AddManager(ManagerTypes::TRACKING, m_trackingManager);
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);

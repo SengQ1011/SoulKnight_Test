@@ -44,6 +44,7 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
+        src/Attack/Attack.cpp
 )
 
 if(MSVC)

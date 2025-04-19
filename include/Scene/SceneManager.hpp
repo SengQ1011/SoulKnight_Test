@@ -19,7 +19,7 @@
 
 class SceneManager {
 public:
-	// 單例模式 (Singleton Pattern)：取得唯一的BulletManager
+	// 單例模式 (Singleton Pattern)：取得唯一的AttackManager
 	static SceneManager& GetInstance();
 
 	// 禁止拷貝與賦值，確保只有一個實例

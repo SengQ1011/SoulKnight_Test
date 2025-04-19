@@ -38,7 +38,7 @@ void Room::Update() {
 	m_InteractionManager->Update();
 	if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest();
 
-	// m_BulletManager->Update();
+	// m_AttackManager->Update();
 
     // 注意:不在这里更新角色，因为角色更新应该由Scene负责
 }

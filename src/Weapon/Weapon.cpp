@@ -6,8 +6,8 @@
 
 #include "Weapon/Weapon.hpp"
 
-Weapon::Weapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackSpeed)
-	: m_ImagePath(ImagePath), m_weaponName(name), m_damage(damage), m_energy(energy), m_criticalRate(criticalRate), m_offset(offset), m_attackColdDown(attackSpeed)
+Weapon::Weapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackInterval)
+	: m_ImagePath(ImagePath), m_weaponName(name), m_damage(damage), m_energy(energy), m_criticalRate(criticalRate), m_offset(offset), m_attackInterval(attackInterval)
 {
 	SetImage(ImagePath);
 	this->SetZIndexType(ZIndexType::OBJECTLOW);

@@ -7,14 +7,17 @@
 #include "Util/Input.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include <execution> //并行計算
-#include "Weapon/Bullet.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Util/Input.hpp"
 
 void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
 	LOG_DEBUG("RegisterNGameObject");
-	if (auto collisionComp = nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if (!nGameObject) {
+		LOG_ERROR("GameObject is null");
+		return;
+	}
+	if (const auto collisionComp = nGameObject->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		nGameObject && collisionComp) {
 		m_NGameObjects.push_back(nGameObject);
 	}else {

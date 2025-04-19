@@ -9,7 +9,6 @@
 #include "Override/nGameObject.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Util/Time.hpp"
-#include "Weapon/Bullet.hpp"
 
 HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const int maxEnergy = 0)
 	: Component(ComponentType::HEALTH),m_maxHp(maxHp), m_currentHp(maxHp),
@@ -30,7 +29,7 @@ void HealthComponent::Update() {
 
 void HealthComponent::HandleCollision(CollisionInfo &info){
 	// 判斷碰撞對象是不是子彈==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
-	if (const auto bullet = std::dynamic_pointer_cast<Bullet>(info.GetObjectB())) {
+	if (const auto bullet = std::dynamic_pointer_cast<Projectile>(info.GetObjectB())) {
 		const int damage = bullet->GetDamage();
 		this->TakeDamage(damage);
 	}

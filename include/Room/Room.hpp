@@ -55,7 +55,7 @@ public:
     // 碰撞体管理
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
     [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
-    // [[nodiscard]] std::shared_ptr<BulletManager> GetBulletManager() const { return m_BulletManager; }
+    // [[nodiscard]] std::shared_ptr<AttackManager> GetAttackManager() const { return m_AttackManager; }
     // [[nodiscard]] std::shared_ptr<TrackingManager> GetTrackingManager() const { return m_TrackingManager; }
 
     // Getter/Setter
@@ -85,7 +85,7 @@ protected:
 	 */
     std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
 	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
-	// std::shared_ptr<BulletManager> m_BulletManager = std::make_shared<BulletManager>();
+	// std::shared_ptr<AttackManager> m_AttackManager = std::make_shared<AttackManager>();
 	// std::shared_ptr<TrackingManager> m_TrackingManager = std::make_shared<TrackingManager>();
 	/// @todo 未來可期
 

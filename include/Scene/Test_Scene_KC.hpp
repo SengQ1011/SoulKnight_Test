@@ -37,7 +37,7 @@ protected:
 
 	//test
 	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
-	std::shared_ptr<BulletManager> m_BulletManager = std::make_shared<BulletManager>();
+	std::shared_ptr<AttackManager> m_AttackManager = std::make_shared<AttackManager>();
 };
 
 #endif //TEST_SCENE_HPP

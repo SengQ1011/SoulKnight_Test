@@ -7,7 +7,7 @@
 
 #include <filesystem>
 #include <iostream>
-#include "BulletManager.hpp"
+#include "Attack/AttackManager.hpp"
 
 #include "Components/AttackComponent.hpp"
 #include "Components/TalentComponet.hpp"
@@ -87,7 +87,7 @@ void TestScene_JX::Start()
 	}
 
 	// manager setting
-	AddManager(ManagerTypes::BULLET,bulletManager);
+	AddManager(ManagerTypes::ATTACK, m_attackManager);
 	AddManager(ManagerTypes::INPUT,inputManager);
 	AddManager(ManagerTypes::ROOMCOLLISION,m_RoomCollisionManager);
 	AddManager(ManagerTypes::TRACKING,m_trackingManager);
@@ -142,7 +142,7 @@ void TestScene_JX::Update()
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
 
-	bulletManager->Update();
+	m_attackManager->Update();
 	m_trackingManager->Update();
 
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});

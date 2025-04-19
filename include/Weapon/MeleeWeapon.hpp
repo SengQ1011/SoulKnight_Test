@@ -15,7 +15,7 @@
 
 class MeleeWeapon : public Weapon {
 public:
-	explicit MeleeWeapon(const std::string& ImagePath, const std::shared_ptr<Animation> slashAnimation, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackSpeed, float attackRange);
+	explicit MeleeWeapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackInterval, float attackRange);
 	~MeleeWeapon() override = default;
 
 	void attack(int damage) override;
@@ -24,7 +24,6 @@ public:
 	}
 
 private:
-	std::shared_ptr<Animation> m_slashAnimation;
 	float m_attackRange;  // 近戰武器的攻擊範圍
 };
 

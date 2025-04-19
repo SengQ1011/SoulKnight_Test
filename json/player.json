@@ -21,7 +21,7 @@
         "maxArmor": 7,
         "maxEnergy": 200,
         "speed": 1.0,
-        "weaponID": 1,
+        "weaponID": 2,
         "handBladeDamage": 4,
         "criticalRate": 0.05,
         "skill": {

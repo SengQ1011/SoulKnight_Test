@@ -25,6 +25,7 @@ public:
 	[[nodiscard]] std::shared_ptr<Weapon> GetSecondWeapon() const { return m_secondWeapon; }
 	[[nodiscard]] std::vector<std::shared_ptr<Weapon>> GetAllWeapons() const { return m_Weapons; }
 	[[nodiscard]] int GetNumRebound() const { return m_numRebound; }
+	[[nodiscard]] bool GetReflectBullet() const { return m_ReflectBullets; }
 	[[nodiscard]] int GetCollisionDamage() const { return m_collisionDamage; }
 
 	//----Setter----
@@ -33,6 +34,7 @@ public:
 	void RemoveWeapon();
 	void switchWeapon();
 	void SetNumRebound(const int num) { m_numRebound = num; }
+	void SetReflectBullet(const bool enable) { m_ReflectBullets = enable; }
 	void SetDualWield(const bool enable); // 雙武器
 	void SetSecondWeapon(const std::shared_ptr<Weapon> &weapon)
 	{
@@ -51,6 +53,7 @@ private:
 	int m_handBladeDamage;			// player:手刀傷害
 	int m_collisionDamage;			// enemy:專用於Collision模式的傷害值
 	int m_numRebound = 0;			// 天賦：子彈反彈
+	bool m_ReflectBullets = false;	// 天賦：近戰反彈
 	bool m_dualWield = false;		// 是否雙持武器
 	std::shared_ptr<Weapon> m_currentWeapon;			// 目前裝備的武器
 	std::shared_ptr<Weapon> m_secondWeapon;				// 技能：雙持武器
