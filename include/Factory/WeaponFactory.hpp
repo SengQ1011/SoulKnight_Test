@@ -5,10 +5,6 @@
 #ifndef WEAPONFACTORY_HPP
 #define WEAPONFACTORY_HPP
 
-#include <random>
-#include "Factory/Factory.hpp"
-#include "Weapon/GunWeapon.hpp"
-#include "Weapon/MeleeWeapon.hpp"
 #include "Weapon/Weapon.hpp"
 
 namespace WeaponFactory {

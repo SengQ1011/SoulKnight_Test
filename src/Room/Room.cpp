@@ -4,8 +4,15 @@
 
 #include "Room/Room.hpp"
 
-#include "Scene/SceneManager.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/InteractableComponent.hpp"
+#include "Creature/Character.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Room/RoomCollisionManager.hpp"
 #include "Room/RoomInteractionManager.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Util/Input.hpp"
+#include "fstream"
 
 Room::~Room() {
     // 析构函数 - 确保正确清理资源
@@ -17,6 +24,9 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 	//更新缓存数据
 	m_Player = player;
 	UpdateCachedReferences();
+
+	m_CollisionManager = std::make_shared<RoomCollisionManager>();
+	m_InteractionManager = std::make_shared<RoomInteractionManager>();
 
 	AddManager(ManagerTypes::ROOMCOLLISION,m_CollisionManager);
 	AddManager(ManagerTypes::ROOMINTERACTIONMANAGER, m_InteractionManager);
@@ -54,7 +64,7 @@ void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
     }
 }
 
-void Room::CharacterExit(std::shared_ptr<Character> character) {
+void Room::CharacterExit(const std::shared_ptr<Character>& character) {
 	if (!character) return;
 	if (const auto it = std::find(m_Characters.begin(), m_Characters.end(), character);
 		it != m_Characters.end()) {

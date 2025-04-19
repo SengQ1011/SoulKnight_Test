@@ -4,8 +4,12 @@
 
 #include "Factory/Factory.hpp"
 
-#include "Components/InteractableComponent.hpp"
+#include "fstream"
 #include "Util/Logger.hpp"
+
+#include "Components/InteractableComponent.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Animation.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
 	if (zIndexStr == "FLOOR") return FLOOR;
@@ -38,14 +42,14 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 		{"COLLISION",
 			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json) {
 				object->AddComponent<CollisionComponent>
-				(ComponentType::COLLISION,json.get<StructComponents::StructCollisionComponent>());
+				(ComponentType::COLLISION,json.get<StructCollisionComponent>());
 			}
 		},
 		{"INTERACTABLE",
 			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 			{
 				object->AddComponent<InteractableComponent>
-				(ComponentType::INTERACTABLE,json.get<StructComponents::StructInteractableComponent>());
+				(ComponentType::INTERACTABLE,json.get<StructInteractableComponent>());
 			}
 		},
 	};

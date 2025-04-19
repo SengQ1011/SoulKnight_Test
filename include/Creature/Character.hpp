@@ -5,14 +5,7 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
-#include <vector>
-#include "Animation.hpp"
-
 #include "Override/nGameObject.hpp"
-#include "Components/MovementComponent.hpp"
-#include "EnumTypes.hpp"
-#include <memory>
-#include "Util/Image.hpp"
 
 class Character final : public nGameObject {
 public:

@@ -6,7 +6,8 @@
 
 WanderAI::WanderAI(int monsterPoint) {}
 
-void WanderAI::Update() {
+void WanderAI::Update()
+{
 	// // 關於移動的deltaTime單位為MS
 	// const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	// //const auto enemy = GetOwner<Character>();
@@ -40,7 +41,8 @@ void WanderAI::Update() {
 	// }
 }
 
-void WanderAI::WanderLogic(const float deltaTime) {
+void WanderAI::WanderLogic(const float deltaTime)
+{
 	// const auto enemy = GetOwner<Character>();
 	// auto movementComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
 	// const auto stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
@@ -68,7 +70,8 @@ void WanderAI::WanderLogic(const float deltaTime) {
 	// }
 }
 
-void WanderAI::ChasePlayerLogic() const{
+void WanderAI::ChasePlayerLogic() const
+{
 	// auto enemy = GetOwner<Character>();
 	// auto target = m_Target.lock();
 	// auto movementComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
@@ -86,7 +89,8 @@ void WanderAI::ChasePlayerLogic() const{
 	// stateComp->SetState(State::MOVING);
 }
 
-void WanderAI::HandleCollision(CollisionInfo &info) {
+void WanderAI::HandleCollision(CollisionInfo &info)
+{
 	// // 攻擊后强制進入巡邏模式
 	// if(const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB())){
 	// 	if(character->GetType() == CharacterType::PLAYER) {
@@ -96,8 +100,9 @@ void WanderAI::HandleCollision(CollisionInfo &info) {
 	// }
 	//
 	// // 碰到地形回轉
-	// if (const auto  type = info.GetObjectB()->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetCollisionLayer();
-	// 	type == CollisionLayers_Terrain)
+	// if (const auto  type =
+	// info.GetObjectB()->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetCollisionLayer(); 	type ==
+	// CollisionLayers_Terrain)
 	// {
 	// 	const auto enemy = GetOwner<Character>();
 	// 	const auto movementComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
@@ -114,5 +119,4 @@ void WanderAI::HandleCollision(CollisionInfo &info) {
 	// 	movementComp->SetDesiredDirection(reflectDir);
 	//
 	// }
-
 }

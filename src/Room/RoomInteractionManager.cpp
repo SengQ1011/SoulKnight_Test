@@ -4,6 +4,9 @@
 
 #include "Room/RoomInteractionManager.hpp"
 #include "Components/InteractableComponent.hpp"
+#include "Override/nGameObject.hpp"
+#include "Creature/Character.hpp"
+#include "Util/Logger.hpp"
 
 void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObject> &interactable)
 {
@@ -70,6 +73,7 @@ bool RoomInteractionManager::TryInteractWithClosest(float maxRadius) const
 	return false;
 }
 
+void RoomInteractionManager::SetPlayer(const std::shared_ptr<Character> &player) { m_Player = player; }
 
 void RoomInteractionManager::Update() // 玩家位置的更新 來判斷是否顯示互動提示
 {

@@ -7,10 +7,11 @@
 
 #include "Scene/Scene.hpp"
 #include "Factory/RoomObjectFactory.hpp"
-#include "Room/LobbyRoom.hpp"
 #include "ObserveManager/TrackingManager.hpp"
+#include "Attack/AttackManager.hpp"
+#include "Loader.hpp"
 
-#include "Util/GameObject.hpp"
+class LobbyRoom;
 
 class LobbyScene : public Scene
 {
@@ -36,7 +37,7 @@ protected:
 	std::shared_ptr<Character> m_Player;
 	std::shared_ptr<Character> m_Enemy;
 
-	float m_MapHeight;
+	float m_MapHeight = 0.0f;
 
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 

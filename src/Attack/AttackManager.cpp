@@ -2,9 +2,11 @@
 // Created by tjx20 on 3/26/2025.
 //
 
+#include "Attack/AttackManager.hpp"
 #include <execution>
 #include <thread>
-#include "Attack/AttackManager.hpp"
+
+#include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
 
 void AttackManager::spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed, int numRebound)

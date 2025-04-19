@@ -3,7 +3,9 @@
 //
 
 #include "Weapon/GunWeapon.hpp"
-
+#include "Components/AttackComponent.hpp"
+#include "Attack/AttackManager.hpp"
+#include "Creature/Character.hpp"
 #include "Scene/SceneManager.hpp"
 
 GunWeapon::GunWeapon(const std::string &ImagePath, const std::string& bulletImagePath,const std::string &name, int damage, int energy, float criticalRate,

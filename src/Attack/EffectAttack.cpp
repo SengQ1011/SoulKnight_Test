@@ -4,7 +4,9 @@
 
 #include "Attack/EffectAttack.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Animation.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Room/RoomCollisionManager.hpp"
 
 EffectAttack::EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,float size, int damage, bool canReflect, EffectAttackType effectType)
 				:Attack(type, attackTransform, direction, size, damage), m_reflectBullet(canReflect), m_effectType(effectType) {}
@@ -24,14 +26,14 @@ void EffectAttack::Init() {
 	CollisionComp->ResetCollisionMask();
 	CollisionComp->SetTrigger(false);
 	if(m_type == CharacterType::PLAYER) {
-		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_Bullet);
+		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Enemy);
 	}
 	else if (m_type == CharacterType::ENEMY) {
-		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers_Player);
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_Bullet);
+		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Player);
 	}
-	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+	CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Terrain);
 
  	CollisionComp->SetSize(glm::vec2(m_size));
 

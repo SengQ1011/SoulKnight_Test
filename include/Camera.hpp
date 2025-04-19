@@ -5,14 +5,11 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "Beacon.hpp"
-#include "Override/nGameObject.hpp"
-#include "Util/GameObject.hpp"
-#include "Util/Image.hpp"
-#include "Util/Time.hpp"
+#include "Observer.hpp"
 #include "Util/Transform.hpp"
 #include "pch.hpp"
-#include "Observer.hpp"
+
+class nGameObject;
 
 class Camera: public InputObserver {
 public:

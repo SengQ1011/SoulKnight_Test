@@ -6,9 +6,7 @@
 #define ATTACK_HPP
 
 #include "Override/nGameObject.hpp"
-#include "Util/Image.hpp"
 
-class Character;
 class Attack : public nGameObject {
 public:
 	explicit Attack(const CharacterType type, const Util::Transform &attackTransform,

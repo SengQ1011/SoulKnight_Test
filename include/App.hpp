@@ -1,9 +1,6 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "Scene/SceneManager.hpp"
-#include "pch.hpp" // IWYU pragma: export
-
 class App {
 public:
     enum class State {

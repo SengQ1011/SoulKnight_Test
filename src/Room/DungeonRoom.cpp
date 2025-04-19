@@ -5,7 +5,13 @@
 #include "Room/DungeonRoom.hpp"
 #include "Camera.hpp"
 #include "Util/Renderer.hpp"
-#include <execution>
+#include "Util/Input.hpp"
+#include "Util/Image.hpp"
+#include "Components/CollisionComponent.hpp"
+
+#include "Creature/Character.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Loader.hpp"
 
 void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 {
@@ -127,9 +133,7 @@ void DungeonRoom::CreateGridAndVisibleGridPar()
 	startPos *= glm::vec2(-1,1);
 	startPos += m_RoomSpaceInfo.m_WorldCoord; // 轉移中心點
 
-	std::mutex markMutex;
-
-	std::for_each(std::execution::par, m_RoomObjects.begin(), m_RoomObjects.end(), [&](const std::shared_ptr<nGameObject>& elem)
+	for (const std::shared_ptr<nGameObject>& elem: m_RoomObjects)
 	{
 		auto collisionComp = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		if (!collisionComp) return;
@@ -151,12 +155,11 @@ void DungeonRoom::CreateGridAndVisibleGridPar()
 				float cellArea = tileSize * tileSize;
 				if (intersect >= 0.5f * cellArea)
 				{
-					std::scoped_lock lock(markMutex);
 					m_Mark[row][col] = 1;
 				}
 			}
 		}
-	});
+	}
 
 	for (int row = 0; row < 35; row++)
 	{

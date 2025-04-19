@@ -5,15 +5,11 @@
 #ifndef TEST_SCENE_JX_HPP
 #define TEST_SCENE_JX_HPP
 
-#include "Camera.hpp"
-#include "Override/nGameObject.hpp"
 #include "Scene/Scene.hpp"
-#include "Util/Renderer.hpp"
-#include "Util/Time.hpp"
-#include "Factory/CharacterFactory.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "ObserveManager/TrackingManager.hpp"
-#include "Factory/RoomObjectFactory.hpp"
+#include "ObserveManager/InputManager.hpp"
+#include "Attack/AttackManager.hpp"
 
 class TestScene_JX : public Scene
 {

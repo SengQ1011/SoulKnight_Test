@@ -4,10 +4,7 @@
 
 #ifndef TOOL_HPP
 #define TOOL_HPP
-#include <SDL_mouse.h>
-#include <glm/vec2.hpp>
 #include "pch.hpp"
-#include <execution>
 
 namespace Tool
 {

@@ -4,10 +4,12 @@
 
 #ifndef WANDERAI_HPP
 #define WANDERAI_HPP
-#include "Components/AiComponent.hpp"
-#include "Components/StateComponent.hpp"
 
-class WanderAI  {
+#include "pch.hpp"
+struct CollisionInfo;
+
+class WanderAI
+{
 public:
 	explicit WanderAI(int monsterPoint);
 	~WanderAI() = default;

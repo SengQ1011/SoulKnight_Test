@@ -4,9 +4,9 @@
 
 #ifndef ROOMOBJECTFACTORY_HPP
 #define ROOMOBJECTFACTORY_HPP
+
 #include "Factory.hpp"
-#include "Loader.hpp"
-#include "RoomObject/RoomObject.hpp"
+class Loader;
 
 /// @brief:建造RoomObject前必須設置ScenePath(從Room取得)
 class RoomObjectFactory : public Factory{

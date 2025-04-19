@@ -3,6 +3,9 @@
 //
 
 #include "GameMechanism/TalentDatabase.hpp"
+#include "Components/HealthComponent.hpp"
+#include "Components/AttackComponent.hpp"
+#include "Creature/Character.hpp"
 
 std::vector<Talent> CreateTalentList() {
 	std::vector<Talent> list;

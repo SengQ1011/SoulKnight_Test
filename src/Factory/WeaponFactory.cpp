@@ -4,6 +4,12 @@
 // WeaponFactory.cpp
 
 #include "Factory/WeaponFactory.hpp"
+#include "Factory/Factory.hpp"
+
+#include "Weapon/GunWeapon.hpp"
+#include "Weapon/MeleeWeapon.hpp"
+
+#include "Util/Logger.hpp"
 
 namespace WeaponFactory {
 	std::shared_ptr<Weapon> createWeapon(int weaponID) {

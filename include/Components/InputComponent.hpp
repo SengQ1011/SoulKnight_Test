@@ -8,12 +8,15 @@
 #include "Components/Component.hpp"
 #include "Observer.hpp"
 
-class InputComponent : public Component, public InputObserver{
+
+class InputComponent : public Component, public InputObserver
+{
 public:
 	explicit InputComponent();
 	~InputComponent() override = default;
 
-	void onInputReceived(const std::set<char>& keys) override;
+	void onInputReceived(const std::set<char> &keys) override;
 };
+
 
 #endif //INPUTCOMPONENT_HPP

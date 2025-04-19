@@ -8,7 +8,9 @@
 #define ROOMCOLLISIONMANAGER_HPP
 
 #include "pch.hpp"
-#include "Override/nGameObject.hpp"
+
+class nGameObject;
+struct CollisionInfo;
 
 class RoomCollisionManager {
 public:
@@ -33,9 +35,8 @@ protected:
 
 private:
 	// 計算碰撞詳情
-	static void CalculateCollisionDetails(const std::shared_ptr<nGameObject>& objectA,
-								  const std::shared_ptr<nGameObject>& objectB,
-								  CollisionInfo& info);
+	static void CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,
+										  const std::shared_ptr<nGameObject> &objectB, CollisionInfo &info);
 
 	// 分發碰撞處理
 	static void DispatchCollision(const std::shared_ptr<nGameObject>& objectA,

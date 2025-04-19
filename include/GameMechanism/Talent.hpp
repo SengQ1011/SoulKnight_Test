@@ -4,9 +4,13 @@
 
 #ifndef TALENT_HPP
 #define TALENT_HPP
-#include <string>
+// #include <string>
+// #include <functional>
+// #include "Creature/Character.hpp"
+#include "pch.hpp"
 #include <functional>
-#include "Creature/Character.hpp"
+
+class Character;
 
 class Talent {
 public:

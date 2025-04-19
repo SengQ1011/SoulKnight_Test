@@ -6,12 +6,11 @@
 #define STRUCTTYPE_HPP
 
 #include <memory>
-
+class Character;
 class MovementComponent;
 class StateComponent;
 class AttackComponent;
 class AIComponent;
-class Character;
 
 #define LAZY_FIELD(type, name) \
 std::shared_ptr<type> name; \

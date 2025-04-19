@@ -5,6 +5,8 @@
 #include "Attack/Projectile.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Util/Logger.hpp"
+#include "Util/Image.hpp"
 
 Projectile::Projectile(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,
 					   float size, int damage, const std::string &imagePath, float speed, int numRebound)

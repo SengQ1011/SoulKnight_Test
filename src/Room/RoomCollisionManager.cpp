@@ -4,11 +4,10 @@
 
 //RoomCollsionManager.cpp
 
-#include "Util/Input.hpp"
 #include "Room/RoomCollisionManager.hpp"
-#include <execution> //并行計算
 #include "Components/CollisionComponent.hpp"
 #include "Util/Input.hpp"
+#include "Util/Logger.hpp"
 
 void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
@@ -89,13 +88,12 @@ void RoomCollisionManager::Update()
 void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 {
 	m_IsVisible = m_IsVisible ^ true; //XOR bool 實現開關
-	std::for_each(std::execution::par_unseq,m_NGameObjects.begin(), m_NGameObjects.end(),
-		[&](const std::weak_ptr<nGameObject>& object)
-		{
-			if (const auto sharedPtr = object.lock())
-				sharedPtr->GetComponent<CollisionComponent>(ComponentType::COLLISION)
-				->GetVisibleBox()->SetVisible(m_IsVisible);
-		});
+	for (const std::weak_ptr<nGameObject>& object: m_NGameObjects)
+	{
+		if (const auto sharedPtr = object.lock())
+			sharedPtr->GetComponent<CollisionComponent>(ComponentType::COLLISION)
+			->GetVisibleBox()->SetVisible(m_IsVisible);
+	}
 }
 
 
@@ -143,7 +141,7 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 
 	if ((colliderB->GetCollisionLayer() & colliderA->GetCollisionMask()) != 0) // !=運算符 優先於 &
 	{
-		objectA->onCollision(objectB,info);
+		objectA->onCollision(objectB, info);
 	}
 	if ((colliderA->GetCollisionLayer() & colliderB->GetCollisionMask()) != 0)
 	{

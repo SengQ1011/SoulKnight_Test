@@ -2,19 +2,20 @@
 // Created by QuzzS on 2025/3/4.
 //
 
-#include "Scene/Test_Scene_KC.hpp"
+#include "Scene/Lobby_Scene.hpp"
 
-#include "Components/TalentComponet.hpp"
 #include "GameMechanism/Talent.hpp"
 #include "GameMechanism/TalentDatabase.hpp"
+
+#include "Components/TalentComponet.hpp"
 #include "Components/CollisionComponent.hpp"
-#include "Components/FollowerComponent.hpp"
+#include "Components/InputComponent.hpp"
 
-#include "Scene/SceneManager.hpp"
-#include "pch.hpp"
-
-#include "Util/Logger.hpp"
-
+#include "Room/LobbyRoom.hpp"
+#include "Factory/CharacterFactory.hpp"
+#include "Room/RoomCollisionManager.hpp"
+#include "ObserveManager/InputManager.hpp"
+#include "Creature/Character.hpp"
 
 void LobbyScene::Start()
 {

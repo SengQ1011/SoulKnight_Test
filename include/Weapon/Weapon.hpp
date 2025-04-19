@@ -5,11 +5,9 @@
 #ifndef WEAPON_HPP
 #define WEAPON_HPP
 
-#include "Attack/AttackManager.hpp"
-#include "Creature/Character.hpp"
 #include "Override/nGameObject.hpp"
-#include "Util/Image.hpp"
-#include "Util/Logger.hpp"
+
+class Character;
 
 class Weapon: public nGameObject {
 public:

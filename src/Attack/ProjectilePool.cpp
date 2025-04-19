@@ -3,6 +3,7 @@
 //
 
 #include "Attack/ProjectilePool.hpp"
+#include "Util/Logger.hpp"
 
 std::deque<std::shared_ptr<Projectile>> ProjectilePool::pool;
 

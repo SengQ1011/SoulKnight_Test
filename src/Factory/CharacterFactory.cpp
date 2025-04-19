@@ -3,13 +3,23 @@
 //
 
 #include "Factory/CharacterFactory.hpp"
-#include <fstream>
-#include <memory>
+#include "Factory/WeaponFactory.hpp"
 
-
-#include "Components/EnemyAI/WanderAI.hpp"
-#include "Components/TalentComponet.hpp"
+#include "Animation.hpp"
 #include "Skill/FullFirepower.hpp"
+
+#include "Components/AiComponent.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/FollowerComponent.hpp"
+#include "Components/HealthComponent.hpp"
+#include "Components/InputComponent.hpp"
+#include "Components/SkillComponent.hpp"
+#include "Components/TalentComponet.hpp"
+#include "Components/EnemyAI/AttackStrategy.hpp"
+#include "Components/EnemyAI/MoveStrategy.hpp"
+#include "Components/EnemyAI/UtilityStrategy.hpp"
+
+#include "Util/Logger.hpp"
 
 CharacterFactory* CharacterFactory::instance = nullptr;
 

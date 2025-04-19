@@ -6,14 +6,12 @@
 #define SCENE_HPP
 
 #include "Camera.hpp"
-#include "EnumTypes.hpp"
 #include "Room/Room.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
-#include "spdlog/fmt/bundled/chrono.h"
-
 
 class RoomCollisionManager;
+
 class Camera;
 // TODO
 enum class StageTheme

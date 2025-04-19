@@ -6,11 +6,8 @@
 #define EFFECTATTACK_HPP
 
 #include "Attack/Attack.hpp"
-#include "Animation.hpp"
-#include "EnumTypes.hpp"
-#include <memory>
+class Animation;
 
-// EnumType.hpp
 namespace EffectAssets {
 	inline std::string ResourcePath(const std::string& relative) {
 		return std::string(RESOURCE_DIR) + relative;

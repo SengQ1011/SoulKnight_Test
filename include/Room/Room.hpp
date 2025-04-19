@@ -5,10 +5,10 @@
 #ifndef ROOM_HPP
 #define ROOM_HPP
 
-#include "pch.hpp"
+#include "EnumTypes.hpp"
 #include "Util/Logger.hpp"
 #include "json.hpp"
-#include "EnumTypes.hpp"
+#include "pch.hpp"
 
 class Scene;
 class Camera;
@@ -57,7 +57,7 @@ public:
 
     // 角色管理方法
     virtual void CharacterEnter(const std::shared_ptr<Character>& character);
-    virtual void CharacterExit(std::shared_ptr<Character> character);
+    virtual void CharacterExit(const std::shared_ptr<Character>& character);
     [[nodiscard]] bool HasCharacter(const std::shared_ptr<Character>& character) const;
     [[nodiscard]] const std::vector<std::shared_ptr<Character>>& GetCharacters() const { return m_Characters; }
 

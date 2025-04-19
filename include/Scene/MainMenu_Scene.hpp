@@ -5,14 +5,11 @@
 #ifndef MAINMENU_SCENE_HPP
 #define MAINMENU_SCENE_HPP
 
-#include "Override/nGameObject.hpp"
 #include "Scene/Scene.hpp"
 
 #include "Util/SFX.hpp"
 #include "Util/BGM.hpp"
-#include "Util/GameObject.hpp"
-#include "Util/Image.hpp"
-#include "Util/Renderer.hpp"
+
 
 class MainMenuScene : public Scene
 {

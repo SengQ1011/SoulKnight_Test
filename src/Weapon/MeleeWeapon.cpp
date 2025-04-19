@@ -2,6 +2,10 @@
 // Created by tjx20 on 3/26/2025.
 //
 #include "Weapon/MeleeWeapon.hpp"
+
+#include "Attack/AttackManager.hpp"
+#include "Components/AttackComponent.hpp"
+#include "Creature/Character.hpp"
 #include "Scene/SceneManager.hpp"
 
 MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string &name, int damage, int energy, float criticalRate,

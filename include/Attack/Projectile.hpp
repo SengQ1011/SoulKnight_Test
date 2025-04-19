@@ -6,6 +6,7 @@
 #define PROJECTILE_HPP
 
 #include "Attack/Attack.hpp"
+namespace Util{ class Image; }
 
 class Projectile : public Attack {
 public:

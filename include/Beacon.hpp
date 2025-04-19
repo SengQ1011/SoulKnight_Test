@@ -6,8 +6,6 @@
 #define BEACON_HPP
 
 #include "pch.hpp"
-#include "Util/Logger.hpp"
-#include "Util/Input.hpp"
 
 class Beacon {
 public:

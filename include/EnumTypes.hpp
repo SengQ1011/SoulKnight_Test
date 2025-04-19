@@ -37,6 +37,15 @@ enum class State
 	DEAD
 };
 
+enum class StatusEffect {
+	BURNS,		// 灼燒
+	POISON,		// 中毒
+	ELECTRIC,	// 感電
+	 DIZZINESS,	// 眩暈
+	FROZEN,		// 冰凍
+	FATIGUE		// 疲勞
+};
+
 enum class EffectAttackType
 {
 	SLASH,

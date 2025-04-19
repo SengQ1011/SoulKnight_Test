@@ -6,16 +6,6 @@
 #define SCENEMANAGER_HPP
 
 #include "Scene/Scene.hpp"
-#include "Scene/MainMenu_Scene.hpp"
-#include "Scene/Lobby_Scene.hpp"
-#include "Scene/DungeonLoading_Scene.hpp"
-#include "Scene/Dungeon_Scene.hpp"
-#include "Scene/Complete_Scene.hpp"
-#include "Scene/Result_Scene.hpp"
-#include "Scene/Test_Scene_JX.hpp"
-#include "Scene/Test_Scene_KC.hpp"
-
-#include "pch.hpp" // IWYU pragma: export
 
 class SceneManager {
 public:

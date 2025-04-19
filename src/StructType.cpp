@@ -3,6 +3,7 @@
 //
 #include "StructType.hpp"
 #include "Components/AiComponent.hpp"
+#include "Creature/Character.hpp"
 
 std::shared_ptr<AIComponent> EnemyContext::GetAIComp() const {
 	return enemy->GetComponent<AIComponent>(ComponentType::AI);

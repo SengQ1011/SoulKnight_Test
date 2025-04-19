@@ -70,6 +70,7 @@ set(INCLUDE_FILES
     Beacon.hpp
     Camera.hpp
     Components/AiComponent.hpp
+    Components/AllComponentInclude.hpp
     Components/AnimationComponent.hpp
     Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
@@ -78,7 +79,6 @@ set(INCLUDE_FILES
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
     Components/EnemyAI/WanderAI.hpp
-    Components/EnemyAI/forward.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp
@@ -87,7 +87,6 @@ set(INCLUDE_FILES
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
-    Components/forward.hpp
     Creature/Character.hpp
     Cursor.hpp
     EnumTypes.hpp
@@ -96,7 +95,6 @@ set(INCLUDE_FILES
     Factory/RoomFactory.hpp
     Factory/RoomObjectFactory.hpp
     Factory/WeaponFactory.hpp
-    GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
     Loader.hpp
@@ -127,6 +125,7 @@ set(INCLUDE_FILES
     Skill/Skill.hpp
     StructType.hpp
     Structs/CollisionComponentStruct.hpp
+    Structs/InteractionComponentStruct.hpp
     Tool/Tool.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp

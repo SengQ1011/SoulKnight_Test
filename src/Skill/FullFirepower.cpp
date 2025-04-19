@@ -2,9 +2,10 @@
 // Created by tjx20 on 3/29/2025.
 //
 
+#include "Weapon/Weapon.hpp"
+#include "Components/AttackComponent.hpp"
 #include "Skill/FullFirepower.hpp"
 #include "Components/FollowerComponent.hpp"
-
 
 FullFirepower::FullFirepower(const std::weak_ptr<Character> &m_owner,const std::string& name,
 							 const std::string &iconPath, const float skillDuration, const float cooldownTime)

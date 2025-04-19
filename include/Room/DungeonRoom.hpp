@@ -8,6 +8,8 @@
 #include "Factory/RoomFactory.hpp"
 #include "Room.hpp"
 
+struct Rect;
+
 // 房间状态枚举
 enum class RoomState {
 	INACTIVE,   // 未激活（玩家不在该房间）

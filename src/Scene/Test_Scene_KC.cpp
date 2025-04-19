@@ -10,6 +10,7 @@
 #include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
 #include "Scene/SceneManager.hpp"
+#include "ObserveManager/InputManager.hpp"
 #include "pch.hpp"
 
 #include "Util/Input.hpp"
@@ -17,6 +18,11 @@
 #include "Util/Logger.hpp"
 
 #include <execution>
+
+#include "Creature/Character.hpp"
+#include "Factory/CharacterFactory.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Components/InputComponent.hpp"
 
 void TestScene_KC::Start()
 {

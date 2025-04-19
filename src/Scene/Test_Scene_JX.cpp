@@ -7,19 +7,19 @@
 
 #include <filesystem>
 #include <iostream>
+#include <fstream>
 #include "Attack/AttackManager.hpp"
 
-#include "Components/AttackComponent.hpp"
-#include "Components/TalentComponet.hpp"
-#include "EnumTypes.hpp"
-#include "GameMechanism/Talent.hpp"
-#include "GameMechanism/TalentDatabase.hpp"
-#include "ObserveManager/InputManager.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/InputComponent.hpp"
+#include "Components/HealthComponent.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
+#include "Factory/CharacterFactory.hpp"
+#include "Creature/Character.hpp"
 
 void TestScene_JX::Start()
 {

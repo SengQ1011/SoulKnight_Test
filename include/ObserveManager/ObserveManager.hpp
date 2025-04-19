@@ -5,11 +5,14 @@
 #ifndef OBSERVEMANAGER_HPP
 #define OBSERVEMANAGER_HPP
 
+#include "pch.hpp"
 #include "Util/Logger.hpp"
-#include "Observer.hpp"
+
+class InputObserver;
 
 class ObserveManager {
 public:
+	virtual ~ObserveManager() = default;
 	virtual void Update() = 0;
 
 	//----Getter-----

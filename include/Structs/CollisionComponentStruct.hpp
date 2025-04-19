@@ -6,9 +6,20 @@
 #define COLLISIONCOMPONENTSTRUCT_HPP
 
 #include "pch.hpp"
-#include "Components/forward.hpp"
+#include "json.hpp"
+#include "EnumTypes.hpp"
 
-namespace Comp {
+class nGameObject;
+
+enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子直接用uint8_t的運算子
+	CollisionLayers_None = 0,				//00000000
+	CollisionLayers_Player = 1 << 0,		//00000001 玩家層
+	CollisionLayers_Enemy = 1 << 1,			//00000010 敵人層
+	CollisionLayers_Player_Bullet = 1 << 2,	//00000100 玩家子彈層
+	CollisionLayers_Enemy_Bullet = 1 << 3,	//00001000 玩家子彈層
+	CollisionLayers_Pickup = 1 << 4,		//00010000 拾取物層
+	CollisionLayers_Terrain = 1 << 5,		//00100000 地形層
+};
 
 struct StructCollisionComponent
 {
@@ -98,6 +109,5 @@ struct Rect //AABB的矩形結構
 	[[nodiscard]] bool Intersects(const Rect& other) const;
 };
 
-}
 
 #endif //COLLISIONCOMPONENTSTRUCT_HPP

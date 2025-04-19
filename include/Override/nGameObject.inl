@@ -8,6 +8,7 @@
 #define NGAMEOBJECT_INL
 
 #include "nGameObject.hpp"
+#include "Components/AllComponentInclude.hpp"
 
 template <typename T, typename... Args>
 std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args) //或許weak_ptr

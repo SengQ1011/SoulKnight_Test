@@ -6,7 +6,6 @@
 #define PROJECTILEPOOL_HPP
 
 #include <deque>
-
 #include "Attack/Projectile.hpp"
 
 class ProjectilePool {

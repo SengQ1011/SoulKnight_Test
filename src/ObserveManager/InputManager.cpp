@@ -4,6 +4,8 @@
 
 #include "ObserveManager/InputManager.hpp"
 
+#include "Observer.hpp"
+#include "Util/Input.hpp"
 
 void InputManager::Update() {
 	static const std::array<std::pair<Util::Keycode, char>, 9> keys = {{

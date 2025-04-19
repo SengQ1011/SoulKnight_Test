@@ -5,10 +5,10 @@
 #ifndef TEST_SCENE_HPP
 #define TEST_SCENE_HPP
 
-#include "Factory/RoomObjectFactory.hpp"
-#include "Room/DungeonRoom.hpp"
 #include "Scene/Scene.hpp"
-#include "spdlog/fmt/bundled/chrono.h"
+#include "Room/DungeonRoom.hpp"
+#include "Loader.hpp"
+#include "Attack/AttackManager.hpp"
 
 class TestScene_KC : public Scene
 {

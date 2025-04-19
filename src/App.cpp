@@ -1,13 +1,8 @@
 #include "App.hpp"
 
-#include <utility>
-
-#include "Scene/Test_Scene_KC.hpp"
-#include "Scene/Test_Scene_JX.hpp"
-#include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
-#include "Util/Logger.hpp"
+#include "Scene/SceneManager.hpp"
 
 void App::Start() {
     LOG_TRACE("Start");
