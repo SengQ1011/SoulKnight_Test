@@ -39,6 +39,9 @@ void LobbyScene::Start()
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
 	m_LobbyRoom->CharacterEnter(m_Enemy);
+
+	m_CurrentRoom = m_LobbyRoom;
+
 	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetRoomObjects());
 	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetWallColliders());
 
@@ -105,7 +108,6 @@ void LobbyScene::CreateEnemy()
 	m_Root->AddChild(m_Enemy);
 	m_Camera->AddChild(m_Enemy);
 }
-
 
 void LobbyScene::SetupCamera() const
 {

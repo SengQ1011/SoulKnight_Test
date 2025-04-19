@@ -72,6 +72,7 @@ set(INCLUDE_FILES
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
     Components/EnemyAI/WanderAI.hpp
+    Components/EnemyAI/forward.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp
@@ -80,6 +81,7 @@ set(INCLUDE_FILES
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
+    Components/forward.hpp
     Creature/Character.hpp
     Cursor.hpp
     EnumTypes.hpp
@@ -118,6 +120,7 @@ set(INCLUDE_FILES
     Skill/FullFirepower.hpp
     Skill/Skill.hpp
     StructType.hpp
+    Structs/CollisionComponentStruct.hpp
     Tool/Tool.hpp
     Weapon/Bullet.hpp
     Weapon/GunWeapon.hpp

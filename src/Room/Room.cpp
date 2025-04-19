@@ -4,9 +4,8 @@
 
 #include "Room/Room.hpp"
 
-#include "RoomObject/ObstacleObject.hpp"
 #include "Scene/SceneManager.hpp"
-#include "Util/Logger.hpp"
+#include "Room/RoomInteractionManager.hpp"
 
 Room::~Room() {
     // 析构函数 - 确保正确清理资源
@@ -18,6 +17,9 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 	//更新缓存数据
 	m_Player = player;
 	UpdateCachedReferences();
+
+	AddManager(ManagerTypes::ROOMCOLLISION,m_CollisionManager);
+	AddManager(ManagerTypes::ROOMINTERACTIONMANAGER, m_InteractionManager);
 
 	m_InteractionManager->SetPlayer(player);
 
@@ -37,8 +39,6 @@ void Room::Update() {
 
 	m_InteractionManager->Update();
 	if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest();
-
-	// m_BulletManager->Update();
 
     // 注意:不在这里更新角色，因为角色更新应该由Scene负责
 }

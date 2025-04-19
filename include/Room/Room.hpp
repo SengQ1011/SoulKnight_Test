@@ -5,19 +5,19 @@
 #ifndef ROOM_HPP
 #define ROOM_HPP
 
-#include "Components/CollisionComponent.hpp"
-#include "Creature/Character.hpp"
-#include "Factory/RoomObjectFactory.hpp"
-#include "Loader.hpp"
-#include "Override/nGameObject.hpp"
-#include "RoomCollisionManager.hpp"
-#include "RoomInteractionManager.hpp"
-#include "ObserveManager/TrackingManager.hpp"
-#include "RoomObject/RoomObject.hpp"
 #include "pch.hpp"
+#include "Util/Logger.hpp"
+#include "json.hpp"
+#include "EnumTypes.hpp"
 
 class Scene;
 class Camera;
+class nGameObject;
+class Character;
+class Loader;
+class RoomObjectFactory;
+class RoomInteractionManager;
+class RoomCollisionManager;
 namespace Util {class Renderer;}
 
 struct RoomSpaceInfo
@@ -40,6 +40,20 @@ public:
     // 核心方法
     virtual void Start(const std::shared_ptr<Character>& player); // 房间初始化
     virtual void Update(); // 更新房间内所有对象
+
+	template <typename T>
+	std::shared_ptr<T> GetManager(const ManagerTypes managerName) {
+		auto it = m_Managers.find(managerName);
+		if (it != m_Managers.end()) {
+			return std::static_pointer_cast<T>(it->second);
+		}
+		return nullptr;  // 若找不到指定類型的 Manager 返回 nullptr
+	}
+
+	void AddManager(const ManagerTypes managerName, std::shared_ptr<void> manager) {
+		m_Managers[managerName] = manager;
+		LOG_DEBUG("Successfully added new Manager");
+	}
 
     // 角色管理方法
     virtual void CharacterEnter(const std::shared_ptr<Character>& character);
@@ -75,18 +89,18 @@ protected:
     // 房间属性
 	RoomSpaceInfo m_RoomSpaceInfo;
 
+	std::unordered_map<ManagerTypes, std::shared_ptr<void>> m_Managers;			// 存儲各種 Manager
+
     // 房间内对象
-    std::vector<std::shared_ptr<nGameObject>> m_RoomObjects;       // 房间固定物体
+    std::vector<std::shared_ptr<nGameObject>> m_RoomObjects;	  // 房间固定物体
     std::vector<std::shared_ptr<Character>> m_Characters;         // 当前在房间内的角色
 
 	/**
 	 * @brief Room的Manager成員
 	 * @note 未來所有局部Manager都在這裏建構
 	 */
-    std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
-	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
-	// std::shared_ptr<BulletManager> m_BulletManager = std::make_shared<BulletManager>();
-	// std::shared_ptr<TrackingManager> m_TrackingManager = std::make_shared<TrackingManager>();
+    std::shared_ptr<RoomCollisionManager> m_CollisionManager;
+	std::shared_ptr<RoomInteractionManager> m_InteractionManager;
 	/// @todo 未來可期
 
     // 緩存引用

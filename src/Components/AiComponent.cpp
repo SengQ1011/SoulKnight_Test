@@ -6,6 +6,7 @@
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "StructType.hpp"
+#include "Components/AttackComponent.hpp"
 
 AIComponent::AIComponent(const MonsterType MonsterType, const std::shared_ptr<IMoveStrategy>& moveStrategy,
 						 const std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>>& attackStrategies,
@@ -70,3 +71,5 @@ void AIComponent::HandleCollision(CollisionInfo &info) {
 
 	}
 }
+
+void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }

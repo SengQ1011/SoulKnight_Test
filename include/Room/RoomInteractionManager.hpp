@@ -5,9 +5,11 @@
 #ifndef ROOMINTERACTIONMANAGER_HPP
 #define ROOMINTERACTIONMANAGER_HPP
 
-#include "Creature/Character.hpp"
-#include "Override/nGameObject.hpp"
-#include "Components/InteractableComponent.hpp"
+#include "pch.hpp"
+
+class nGameObject;
+class Character;
+
 class RoomInteractionManager {
 public:
 	RoomInteractionManager() = default;
