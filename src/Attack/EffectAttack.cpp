@@ -19,22 +19,26 @@ void EffectAttack::Init() {
  	m_animation->PlayAnimation(true);
 
  	// 只初始化碰撞組件，不加入渲染器
- 	const auto collisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION);
- 	if(m_type == CharacterType::PLAYER) {
- 		collisionComp->SetCollisionLayer(CollisionLayers_Player_Bullet);
- 		collisionComp->SetCollisionMask(CollisionLayers_Enemy);
- 	}
- 	else if (m_type == CharacterType::ENEMY) {
- 		collisionComp->SetCollisionLayer(CollisionLayers_Enemy_Bullet);
- 		collisionComp->SetCollisionMask(CollisionLayers_Player);
- 	}
+	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
+	CollisionComp->ResetCollisionMask();
+	CollisionComp->SetTrigger(false);
+	if(m_type == CharacterType::PLAYER) {
+		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Bullet);
+		CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
+	}
+	else if (m_type == CharacterType::ENEMY) {
+		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Bullet);
+		CollisionComp->SetCollisionMask(CollisionLayers_Player);
+	}
+	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
 
- 	collisionComp->SetSize(glm::vec2(16.0f));
+ 	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// 測試
  	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(collisionComp->GetVisibleBox());
- 	currentScene->GetCamera().lock()->AddChild(collisionComp->GetVisibleBox());
+ 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(float deltaTime) {

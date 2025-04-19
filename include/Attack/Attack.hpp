@@ -28,7 +28,7 @@ public:
 
 protected:
 	CharacterType m_type;
-	glm::vec2 m_direction;		// 方向
+	glm::vec2 m_direction;			// 方向
 	bool m_markRemove = false;		// 標記是否因碰撞需移除
 	float m_size;
 	int m_damage;

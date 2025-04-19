@@ -22,6 +22,7 @@ void Projectile::Init() {
 	this->SetInitialScale(m_Transform.scale);
 	this->SetZIndexType(ZIndexType::ATTACK);
 	SetImage(m_imagePath);
+
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();
@@ -37,8 +38,7 @@ void Projectile::Init() {
 	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
 
 	// TODO:測試子彈大小
-	CollisionComp->SetSize(glm::vec2(10.0f));
-	//CollisionComp->SetSize(glm::vec2(m_size));
+	CollisionComp->SetSize(glm::vec2(m_size));
 
 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());

@@ -28,9 +28,9 @@ void HealthComponent::Update() {
 }
 
 void HealthComponent::HandleCollision(CollisionInfo &info){
-	// 判斷碰撞對象是不是子彈==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
-	if (const auto bullet = std::dynamic_pointer_cast<Projectile>(info.GetObjectB())) {
-		const int damage = bullet->GetDamage();
+	// 判斷碰撞對象是不是攻擊==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
+	if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB())) {
+		const int damage = attack->GetDamage();
 		this->TakeDamage(damage);
 	}
 

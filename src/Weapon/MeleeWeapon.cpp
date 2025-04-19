@@ -16,9 +16,11 @@ void MeleeWeapon::attack(int damage) {
 	const auto bulletDirection = glm::vec2(cos(this->m_Transform.rotation), sin(this->m_Transform.rotation));
 	// 建立 Transform
 	Util::Transform slashTransform;
-	slashTransform.translation = this->m_WorldCoord;									// 子彈的位置
+
+	glm::vec2 offset = (m_currentOwner->m_Transform.scale.x < 0) ? glm::vec2(16.0f, 0.0f) : glm::vec2(-16.0f, 0.0f);
+	slashTransform.translation = this->m_WorldCoord + offset;							// 揮擊的位置
 	slashTransform.scale = glm::vec2(0.6f, 0.6f);									// 大小
-	slashTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
+	slashTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);			// 刀揮擊的中心角度
 
 	const auto characterType = m_currentOwner->GetType();
 

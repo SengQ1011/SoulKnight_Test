@@ -43,7 +43,6 @@ void AttackManager::spawnEffectAttack(const CharacterType type, const Util::Tran
 void AttackManager::Update() {
     if (m_projectiles.empty() && m_projectileRemovalQueue.empty() &&
         m_effects.empty() && m_effectRemovalQueue.empty()) {
-		LOG_DEBUG("empty");
     	return;
     }
 
