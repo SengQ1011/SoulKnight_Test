@@ -47,7 +47,7 @@ bool TrackingManager::HasLineOfSight(const glm::vec2& from, const glm::vec2& to)
 		if (!collisionComp) continue;
 		Rect bounds = collisionComp->GetBounds();
 		if (RayIntersectsRect(from, to, bounds)) {
-			LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain block");
+			// LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain block");
 			return false; // 有擋住
 		}
 	}

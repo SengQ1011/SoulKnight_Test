@@ -1,9 +1,13 @@
 set(SRC_FILES
     Animation.cpp
     App.cpp
+    Attack/Attack.cpp
+    Attack/AttackManager.cpp
+    Attack/EffectAttack.cpp
+    Attack/EffectAttackPool.cpp
+    Attack/Projectile.cpp
+    Attack/ProjectilePool.cpp
     Beacon.cpp
-    BulletManager.cpp
-    BulletPool.cpp
     Camera.cpp
     Components/AiComponent.cpp
     Components/AnimationComponent.cpp
@@ -48,10 +52,8 @@ set(SRC_FILES
     StructType.cpp
     TalentDatabase.cpp
     Tool/Tool.cpp
-    Weapon/Bullet.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
-    Weapon/Slash.cpp
     Weapon/Weapon.cpp
     main.cpp
 )
@@ -59,9 +61,13 @@ set(SRC_FILES
 set(INCLUDE_FILES
     Animation.hpp
     App.hpp
+    Attack/Attack.hpp
+    Attack/AttackManager.hpp
+    Attack/EffectAttack.hpp
+    Attack/EffectAttackPool.hpp
+    Attack/Projectile.hpp
+    Attack/ProjectilePool.hpp
     Beacon.hpp
-    BulletManager.hpp
-    BulletPool.hpp
     Camera.hpp
     Components/AiComponent.hpp
     Components/AnimationComponent.hpp
@@ -122,10 +128,8 @@ set(INCLUDE_FILES
     StructType.hpp
     Structs/CollisionComponentStruct.hpp
     Tool/Tool.hpp
-    Weapon/Bullet.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
-    Weapon/Slash.hpp
     Weapon/Weapon.hpp
 )
 

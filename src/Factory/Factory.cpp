@@ -10,7 +10,7 @@
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
 	if (zIndexStr == "FLOOR") return FLOOR;
 	if (zIndexStr == "OBJECTLOW") return OBJECTLOW;
-	if (zIndexStr == "BULLET") return BULLET;
+	if (zIndexStr == "ATTACK") return ATTACK;
 	if (zIndexStr == "OBJECTHIGH") return OBJECTHIGH;
 	if (zIndexStr == "UI") return UI;
 	if (zIndexStr == "CUSTOM") return CUSTOM;
