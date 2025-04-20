@@ -5,13 +5,17 @@
 //RoomCollsionManager.cpp
 
 #include "Room/RoomCollisionManager.hpp"
+#include <iostream>
+#include <execution>
 #include "Components/CollisionComponent.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 
+#include "Room/UniformGrid.hpp"
+
 void RoomCollisionManager::RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject)
 {
-	LOG_DEBUG("RegisterNGameObject");
+	// LOG_DEBUG("RegisterNGameObject");
 	if (!nGameObject) {
 		LOG_ERROR("GameObject is null");
 		return;
@@ -40,24 +44,25 @@ void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObje
 
 void RoomCollisionManager::Update()
 {
+	UniformGrid m_SpatialGrid;
 	if (!m_IsActive) return;
+
 	std::vector<std::pair<std::shared_ptr<nGameObject>, std::shared_ptr<nGameObject>>> collisionPairs;
 
-	// 调试：显示碰撞盒
+	// 調試顯示碰撞盒
 	if (Util::Input::IsKeyUp(Util::Keycode::O)) {
 		ShowColliderBox();
 	}
 
-	for (size_t i = 0; i < m_NGameObjects.size(); ++i) // ++i效率更好，都是從0開始，i++會建一個臨時變數
-	{
+	// 檢查碰撞（暴力版本）
+	for (size_t i = 0; i < m_NGameObjects.size(); ++i) {
 		auto objectA = m_NGameObjects[i].lock();
 		if (!objectA || !objectA->IsActive()) continue;
 
 		auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		if (!colliderA) continue;
 
-		for (size_t j = i + 1; j < m_NGameObjects.size(); ++j)
-		{
+		for (size_t j = i + 1; j < m_NGameObjects.size(); ++j) {
 			auto objectB = m_NGameObjects[j].lock();
 			if (!objectB || !objectB->IsActive()) continue;
 
@@ -65,25 +70,87 @@ void RoomCollisionManager::Update()
 			if (!colliderB) continue;
 
 			if (!colliderA->CanCollideWith(colliderB)) continue;
+
 			Rect boundA = colliderA->GetBounds();
 			Rect boundB = colliderB->GetBounds();
 
-			if (boundA.Intersects(boundB)) collisionPairs.emplace_back(objectA, objectB);
+			if (boundA.Intersects(boundB)) {
+				collisionPairs.emplace_back(objectA, objectB);
+			}
 		}
 	}
 
-	for (const auto& pair: collisionPairs) // 處理碰撞對
-	{
+	// 處理碰撞
+	for (const auto& pair : collisionPairs) {
 		auto objectA = pair.first;
 		auto objectB = pair.second;
 
-		CollisionInfo info(objectA, objectB); // 創建碰撞信息
-
-		CalculateCollisionDetails(objectA, objectB, info); // 計算碰撞詳情(穿透深度&碰撞法綫)
-
-		DispatchCollision(objectA, objectB, info); // 分發碰撞處理
+		CollisionInfo info(objectA, objectB);
+		CalculateCollisionDetails(objectA, objectB, info);
+		DispatchCollision(objectA, objectB, info);
 	}
 }
+
+// void RoomCollisionManager::Update()
+// {
+// 	if (!m_IsActive) return;
+//
+// 	std::vector<std::pair<std::shared_ptr<nGameObject>, std::shared_ptr<nGameObject>>> collisionPairs;
+// 	std::mutex mutex;
+//
+// 	// 調試顯示碰撞盒
+// 	if (Util::Input::IsKeyUp(Util::Keycode::O)) {
+// 		ShowColliderBox();
+// 	}
+//
+// 	m_SpatialGrid.Clear();
+//
+// 	// 塞入 grid
+// 	for (const auto& weakObj : m_NGameObjects) {
+// 		auto obj = weakObj.lock();
+// 		if (!obj || !obj->IsActive())
+// 			continue;
+//
+// 		const std::shared_ptr<CollisionComponent> collider = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+// 		if (!collider) continue;
+//
+// 		m_SpatialGrid.Insert(obj, collider->GetBounds());
+// 	}
+//
+// 	std::for_each(std::execution::par, m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
+// 		auto objectA = weakObj.lock();
+// 		if (!objectA || !objectA->IsActive()) return;
+//
+// 		auto colliderA = objectA->template GetComponent<CollisionComponent>(ComponentType::COLLISION);
+// 		if (!colliderA) return;
+//
+// 		Rect boundA = colliderA->GetBounds();
+// 		auto nearbyObjects = m_SpatialGrid.QueryNearby(boundA);
+//
+// 		for (const auto& objectB : nearbyObjects) {
+// 			if (objectA == objectB || !objectB->IsActive()) continue;
+// 			if (!(objectA < objectB)) continue; // 去重複
+//
+// 			auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+// 			if (!colliderB || !colliderA->CanCollideWith(colliderB)) continue;
+//
+// 			if (colliderA->GetBounds().Intersects(colliderB->GetBounds())) {
+// 				std::scoped_lock lock(mutex);
+// 				collisionPairs.emplace_back(objectA, objectB);
+// 			}
+// 		}
+// 	});
+//
+// 	// 處理碰撞
+// 	for (const auto& pair : collisionPairs) {
+// 		auto objectA = pair.first;
+// 		auto objectB = pair.second;
+//
+// 		CollisionInfo info(objectA, objectB);
+// 		CalculateCollisionDetails(objectA, objectB, info);
+// 		DispatchCollision(objectA, objectB, info);
+// 	}
+// }
 
 void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 {

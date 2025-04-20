@@ -8,13 +8,14 @@
 #define ROOMCOLLISIONMANAGER_HPP
 
 #include "pch.hpp"
+#include "Room/UniformGrid.hpp"
 
 class nGameObject;
 struct CollisionInfo;
 
 class RoomCollisionManager {
 public:
-	RoomCollisionManager() = default;
+	RoomCollisionManager() {m_SpatialGrid.Initialize(560, 560, 32); };
 	~RoomCollisionManager() = default;
 
 	// 注冊監聽成員
@@ -29,6 +30,7 @@ public:
 	[[nodiscard]] bool IsActive() const {return m_IsActive;}
 
 protected:
+	UniformGrid m_SpatialGrid;
 	std::vector<std::weak_ptr<nGameObject>> m_NGameObjects;
 	bool m_IsVisible = true; // 記錄碰撞箱顯示
 	bool m_IsActive = true;

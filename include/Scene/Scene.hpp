@@ -71,7 +71,7 @@ public:
 	{
 		std::shared_ptr<RoomCollisionManager> collisionManager;
 		// 碰撞管理員可能在場景也可能在房間
-		if (m_CurrentRoom) return m_CurrentRoom->GetCollisionManager();
+		if (m_CurrentRoom) {return m_CurrentRoom->GetCollisionManager();}
 		return GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION);
 	}
 

@@ -18,11 +18,13 @@
 #include "Util/Logger.hpp"
 
 #include <execution>
+#include <iostream>
 
+#include "Components/InputComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Factory/CharacterFactory.hpp"
 #include "Factory/RoomObjectFactory.hpp"
-#include "Components/InputComponent.hpp"
+#include "Room/DungeonMap.hpp"
 
 void TestScene_KC::Start()
 {
@@ -39,6 +41,8 @@ void TestScene_KC::Start()
 	//設置工廠
 	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
 
+	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory,m_Loader,m_Player);
+	m_Map->Start();
 	// // 创建并初始化大厅房间
 	// m_DungeonRoom = std::make_shared<DungeonRoom>(glm::vec2(0,0),m_Loader,m_RoomObjectFactory);
 	// m_DungeonRoom->Start(m_Player);
@@ -49,80 +53,62 @@ void TestScene_KC::Start()
 	// m_DungeonRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// // 将玩家添加到房间
 	// m_DungeonRoom->CharacterEnter(m_Player);
-	float tileSize = 16;
-	float roomRegion = 35;
-	float mapSizeInGrid = 5;
-	auto startPos = glm::vec2(std::floor(mapSizeInGrid/2) * roomRegion * tileSize);
-	startPos *= glm::vec2(-1,1);
-	float offsetRoom = tileSize * roomRegion;
 
-	std::vector<int> indices(static_cast<int>(m_DungeonRooms.size()));
-	std::iota(indices.begin(), indices.end(), 0);
-
-	std::vector<std::shared_ptr<DungeonRoom>> localRooms(m_DungeonRooms.size());
-
-	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](int i)
-	{
-		auto x = i % static_cast<int>(mapSizeInGrid);
-		auto y = i / static_cast<int>(mapSizeInGrid);
-
-		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
-		auto room = std::make_shared<DungeonRoom>(roomPosition,m_Loader,m_RoomObjectFactory);
-		localRooms[i] = room;
-	});
-	for (int i=0; i<localRooms.size(); ++i)
-	{
-		m_DungeonRooms[i] = localRooms[i];
-		m_DungeonRooms[i]->Start(m_Player);
-		m_DungeonRooms[i]->CharacterEnter(m_Player);
-	}
 	// 初始化场景管理器
 	InitializeSceneManagers();
 }
 
 void TestScene_KC::Update()
 {
-	// auto time1 = std::chrono::high_resolution_clock::now();
+	auto time1 = std::chrono::high_resolution_clock::now();
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	// auto time2 = std::chrono::high_resolution_clock::now();
 	inputManager->Update();
-	// auto time3 = std::chrono::high_resolution_clock::now();
+	auto time2 = std::chrono::high_resolution_clock::now();
 
 	m_Player->Update();
-	// auto time4 = std::chrono::high_resolution_clock::now();
+	auto time3 = std::chrono::high_resolution_clock::now();
 
 	// 更新房间
-	// auto time5 = std::chrono::high_resolution_clock::now();
-	for(int i=0; i<m_DungeonRooms.size(); i++)
-	{
-		if (!m_DungeonRooms[i]->IsPlayerInside()) continue;
-		m_CurrentRoom = m_DungeonRooms[i];
-		//LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
-	}
-	m_CurrentRoom->Update();
+	m_Map->Update();
+	auto time4 = std::chrono::high_resolution_clock::now();
+	m_CurrentRoom = m_Map->GetCurrentRoom();
+	auto time5 = std::chrono::high_resolution_clock::now();
+	if (m_CurrentRoom) m_CurrentRoom->Update();
+
+	auto time6 = std::chrono::high_resolution_clock::now();
+
 	m_AttackManager->Update();
-	// std::for_each(m_DungeonRooms.begin(), m_DungeonRooms.end(), [](const std::shared_ptr<DungeonRoom>& room){room->Update();});
-	// auto time6 = std::chrono::high_resolution_clock::now();
+	auto time7 = std::chrono::high_resolution_clock::now();
 	// 更新相机
 	m_Camera->Update();
-	// auto time7 = std::chrono::high_resolution_clock::now();
+	auto time8 = std::chrono::high_resolution_clock::now();
 
 	// 更新场景根节点
-	GetRoot().lock()->Update();
-	// auto time8 = std::chrono::high_resolution_clock::now();
-	// auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1);
-	// auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(time3 - time2);
-	// auto duration3 = std::chrono::duration_cast<std::chrono::milliseconds>(time4 - time3);
-	// auto duration4 = std::chrono::duration_cast<std::chrono::milliseconds>(time5 - time4);
-	// auto duration5 = std::chrono::duration_cast<std::chrono::milliseconds>(time6 - time5);
-	// auto duration6 = std::chrono::duration_cast<std::chrono::milliseconds>(time7 - time6);
-	// auto duration7 = std::chrono::duration_cast<std::chrono::milliseconds>(time8 - time7);
-	// auto time9 = std::chrono::high_resolution_clock::now();
-	// auto duration8 = std::chrono::duration_cast<std::chrono::microseconds>(time9 - time1);
-	// LOG_DEBUG("Update useTime End:{}", duration8);
-	// LOG_DEBUG("Update useTime GetInputManager:{}, ManagerUpdate:{}, PlayerUpdate:{}, RoomUpdate:{}, CameraUpdate{}, RendererUpdate{}, End:{}",
-	// 	duration1, duration2, duration3, duration4, duration5, duration6, duration7, duration8);
+	m_Root->Update();
+	auto time9 = std::chrono::high_resolution_clock::now();
+	// 计算所有区块的耗时
+	auto d_input    = std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count();
+	auto d_player   = std::chrono::duration_cast<std::chrono::microseconds>(time3 - time2).count();
+	auto d_map      = std::chrono::duration_cast<std::chrono::microseconds>(time4 - time3).count();
+	auto d_roomGet  = std::chrono::duration_cast<std::chrono::microseconds>(time5 - time4).count();
+	auto d_roomUpd  = std::chrono::duration_cast<std::chrono::microseconds>(time6 - time5).count();
+	auto d_attack   = std::chrono::duration_cast<std::chrono::microseconds>(time7 - time6).count();
+	auto d_camera   = std::chrono::duration_cast<std::chrono::microseconds>(time8 - time7).count();
+	auto d_root     = std::chrono::duration_cast<std::chrono::microseconds>(time9 - time8).count();
+	auto d_total    = std::chrono::duration_cast<std::chrono::microseconds>(time9 - time1).count();
+
+	// 一次性输出
+	std::cout << "[Time(us)] Input: " << d_input
+			  << ", Player: " << d_player
+			  << ", Map: " << d_map
+			  << ", GetRoom: " << d_roomGet
+			  << ", RoomUpdate: " << d_roomUpd
+			  << ", Attack: " << d_attack
+			  << ", Camera: " << d_camera
+			  << ", Root: " << d_root
+			  << " | Total: " << d_total
+			  << std::endl;
 }
 
 void TestScene_KC::CreatePlayer()

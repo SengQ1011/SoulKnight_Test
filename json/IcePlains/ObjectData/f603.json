@@ -1,5 +1,6 @@
 {
     "id": "f603",
     "isAnimated": false,
-    "path": "/IcePlains/f603.png"
+    "path": "/IcePlains/f603.png",
+    "ZIndex": "FLOOR"
 }

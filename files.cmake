@@ -33,11 +33,13 @@ set(SRC_FILES
     Loader.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
+    Room/DungeonMap.cpp
     Room/DungeonRoom.cpp
     Room/LobbyRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
+    Room/UniformGrid.cpp
     RoomObject/ObstacleObject.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
@@ -104,11 +106,13 @@ set(INCLUDE_FILES
     ObserveManager/TrackingManager.hpp
     Observer.hpp
     Override/nGameObject.hpp
+    Room/DungeonMap.hpp
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
+    Room/UniformGrid.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp
     Scene/Complete_Scene.hpp

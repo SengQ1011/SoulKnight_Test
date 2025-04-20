@@ -20,9 +20,18 @@ enum class RoomState {
 };
 
 class DungeonRoom : public Room {
+	enum class Direction
+	{
+		UP,
+		LEFT,
+		DOWN,
+		RIGHT
+	};
 public:
 	explicit DungeonRoom(const glm::vec2 worldCoord, const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory)
 	: Room(worldCoord, loader, room_object_factory) {};
+	explicit DungeonRoom(const glm::vec2 worldCoord, const std::shared_ptr<Loader>& loader, const std::shared_ptr<RoomObjectFactory>& room_object_factory, const glm::vec2& mapGridPos)
+	: Room(worldCoord, loader, room_object_factory), m_MapGridPos(mapGridPos) {};
 	~DungeonRoom() override = default;
 
 	// 重写基类方法
@@ -34,15 +43,14 @@ public:
 	RoomState GetState() const { return m_State; }
 
 	std::string GetRoomType() const { return m_RoomType; }
+	glm::vec2 GetMapGridPos() const { return m_MapGridPos; }
 	[[nodiscard]] bool IsPlayerInside() const; //場景使用的 確認當前玩家所在的房間
 
 	void LoadFromJSON() override;
 
 	float IntersectionArea(const Rect& a, const Rect& b);
 	void CreateGridAndVisibleGrid();
-	void CreateGridAndVisibleGridPar();
-
-
+	void CreateCorridorInDirection(Direction dir);
 
 protected:
 
@@ -64,6 +72,7 @@ protected:
 	// 房间状态
 	RoomState m_State = RoomState::INACTIVE;
 	std::shared_ptr<nGameObject> m_Bound3535;
+	glm::vec2 m_MapGridPos = glm::vec2(0, 0);
 
 private:
 	std::string m_RoomType = "START";

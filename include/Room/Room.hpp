@@ -10,6 +10,9 @@
 #include "json.hpp"
 #include "pch.hpp"
 
+#include "RoomCollisionManager.hpp"
+#include "RoomInteractionManager.hpp"
+
 class Scene;
 class Camera;
 class nGameObject;
@@ -99,8 +102,8 @@ protected:
 	 * @brief Room的Manager成員
 	 * @note 未來所有局部Manager都在這裏建構
 	 */
-    std::shared_ptr<RoomCollisionManager> m_CollisionManager;
-	std::shared_ptr<RoomInteractionManager> m_InteractionManager;
+	std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
+	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
 	/// @todo 未來可期
 
     // 緩存引用
