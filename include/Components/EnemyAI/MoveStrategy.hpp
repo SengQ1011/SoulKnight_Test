@@ -6,7 +6,8 @@
 #define MOVESTRATEGY_HPP
 
 #include <random>
-#include "pch.hpp"
+#include <glm/vec2.hpp>
+#include <memory>
 
 struct EnemyContext;
 class nGameObject;

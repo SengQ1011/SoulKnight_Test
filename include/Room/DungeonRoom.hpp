@@ -42,6 +42,7 @@ public:
 	void SetState(RoomState state) {m_State = state;};
 	RoomState GetState() const { return m_State; }
 
+	std::vector<std::vector<int>> GetMark() const { return m_Mark; }
 	std::string GetRoomType() const { return m_RoomType; }
 	glm::vec2 GetMapGridPos() const { return m_MapGridPos; }
 	[[nodiscard]] bool IsPlayerInside() const; //場景使用的 確認當前玩家所在的房間

@@ -7,6 +7,7 @@
 #ifndef FOLLOWERCOMPONENT_HPP
 #define FOLLOWERCOMPONENT_HPP
 
+#include <glm/ext/scalar_constants.hpp> // glm::pi
 #include "Components/Component.hpp"
 #include "Observer.hpp"
 

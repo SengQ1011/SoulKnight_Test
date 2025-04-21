@@ -8,7 +8,6 @@
 #include "EnumTypes.hpp"
 #include "Util/Logger.hpp"
 #include "json.hpp"
-#include "pch.hpp"
 
 #include "RoomCollisionManager.hpp"
 #include "RoomInteractionManager.hpp"

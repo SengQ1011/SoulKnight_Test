@@ -6,6 +6,7 @@
 #define SCENE_HPP
 
 #include "Camera.hpp"
+#include "Room/DungeonRoom.hpp"
 #include "Room/Room.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"

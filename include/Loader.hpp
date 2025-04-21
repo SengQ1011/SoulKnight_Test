@@ -7,8 +7,6 @@
 
 #include <json.hpp>
 
-#include "pch.hpp"
-
 class Loader {
 public:
 	explicit Loader(std::string theme): m_Theme(std::move(theme)) {}

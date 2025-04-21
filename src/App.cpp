@@ -11,11 +11,22 @@ void App::Start() {
 }
 
 void App::Update() {
+	// 测试UI
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::Begin("FPS Panel");
+	ImGui::Text("FPS: %.1f",ImGui::GetIO().Framerate);
+	ImGui::End();
 
     //TODO: do your things here and delete this line <3
 	SceneManager::GetInstance().ChangeCurrentScene();
 	SceneManager::GetInstance().Update();
 
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     /*
      * Do not touch the code below as they serve the purpose for
      * closing the window.

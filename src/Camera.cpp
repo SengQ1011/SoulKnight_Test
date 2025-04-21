@@ -85,6 +85,7 @@ void Camera::Update() {
 	// 對每個Object調位置
 	for (const auto& child : m_Children)
 	{
+		// TODO:需要变数调解？
 		if (NotShouldBeVisible(child))
 		{
 			child->SetVisible(false);

@@ -106,7 +106,6 @@ namespace Tool
 											const glm::vec2 &objectWorldCoord,
 											const glm::vec2 &regionCenterPointWorldCoord)
 	{
-		LOG_DEBUG("HELLO");
 		glm::vec2 topLeftWorldCoord = unitGridSize * regionGridCount / 2.0f;
 		topLeftWorldCoord *= glm::vec2(-1.0f, 1.0f);
 		topLeftWorldCoord += regionCenterPointWorldCoord;
@@ -115,25 +114,12 @@ namespace Tool
 		glm::vec2 gridFloat = offset / unitGridSize;
 		glm::ivec2 regionIndex = glm::ivec2(floor(gridFloat));
 
-		// ✅ Debug 輸出
-		LOG_DEBUG("========== FindIndex Debug ==========");
-		LOG_DEBUG("regionGridCount: {}, {}", regionGridCount.x, regionGridCount.y);
-		LOG_DEBUG("unitGridSize: {}, {}", unitGridSize.x, unitGridSize.y);
-		LOG_DEBUG("regionCenterPointWorldCoord: {}, {}", regionCenterPointWorldCoord.x, regionCenterPointWorldCoord.y);
-		LOG_DEBUG("objectWorldCoord: {}, {}", objectWorldCoord.x, objectWorldCoord.y);
-		LOG_DEBUG("topLeftWorldCoord: {}, {}", topLeftWorldCoord.x, topLeftWorldCoord.y);
-		LOG_DEBUG("offset: {}, {}", offset.x, offset.y);
-		LOG_DEBUG("offset / unitGridSize: {}, {}", gridFloat.x, gridFloat.y);
-		LOG_DEBUG("regionIndex: {}, {}", regionIndex.x, regionIndex.y);
-
 		if (regionIndex.x < 0 || regionIndex.x >= static_cast<int>(regionGridCount.x) ||
 			regionIndex.y < 0 || regionIndex.y >= static_cast<int>(regionGridCount.y))
 		{
-			std::cout << "⚠️ FindIndexWhichGridObjectIsInside returned false (out of bounds)\n";
 			return {-1, -1};
 		}
 
-		std::cout << "✅ Index Valid! Returning: " << regionIndex.x << ", " << regionIndex.y << "\n";
 		return regionIndex;
 	}
 

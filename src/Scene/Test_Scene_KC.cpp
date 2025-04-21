@@ -11,7 +11,6 @@
 #include "Cursor.hpp"
 #include "Scene/SceneManager.hpp"
 #include "ObserveManager/InputManager.hpp"
-#include "pch.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -60,55 +59,71 @@ void TestScene_KC::Start()
 
 void TestScene_KC::Update()
 {
-	auto time1 = std::chrono::high_resolution_clock::now();
+
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	inputManager->Update();
-	auto time2 = std::chrono::high_resolution_clock::now();
 
 	m_Player->Update();
-	auto time3 = std::chrono::high_resolution_clock::now();
 
 	// 更新房间
 	m_Map->Update();
-	auto time4 = std::chrono::high_resolution_clock::now();
-	m_CurrentRoom = m_Map->GetCurrentRoom();
-	auto time5 = std::chrono::high_resolution_clock::now();
-	if (m_CurrentRoom) m_CurrentRoom->Update();
+	const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
+	if (dungeonRoom)
+	{
+		m_CurrentRoom = dungeonRoom;
+		dungeonRoom->Update();
+		// TODO: 之後寫到DungeonRoom cpp裏面用class包裝這裏呼叫
+		const auto mark = dungeonRoom->GetMark();
+		ImGui::Begin("Current Room Grid Viewer Can't Spawn");
 
-	auto time6 = std::chrono::high_resolution_clock::now();
+		// if (ImGui::CollapsingHeader("Current Room Grid Viewer"))
+		// {
+			ImVec2 tableSize = ImGui::GetContentRegionAvail();
+		ImGui::BeginChild("TableContainer", tableSize, false, ImGuiWindowFlags_None);
+			if (ImGui::BeginTable("RoomTable", 35,
+				ImGuiTableFlags_Borders |
+				ImGuiTableFlags_Resizable |
+				ImGuiTableFlags_SizingStretchProp))
+			{
+				for (int index = 0; index < 35; index++)
+					ImGui::TableSetupColumn((std::to_string(index)).c_str(), ImGuiTableColumnFlags_WidthStretch, tableSize.x);
+
+				ImGui::TableHeadersRow();
+
+				for (int row = 0; row < 35; row++)
+				{
+					ImGui::TableNextRow();
+					for (int col = 0; col < 35; col++)
+					{
+						ImGui::TableSetColumnIndex(col);
+						if (mark[row][col])
+						{
+							ImGui::TextColored(ImVec4(0,0,1,1),"1");
+						}
+						else
+						{
+							ImGui::TextColored(ImVec4(1,1,1,1),"0");
+						}
+					}
+				}
+				ImGui::EndTable();
+			}
+		ImGui::EndChild();
+		// }
+		ImGui::End();
+
+	}
+
+
 
 	m_AttackManager->Update();
-	auto time7 = std::chrono::high_resolution_clock::now();
 	// 更新相机
 	m_Camera->Update();
-	auto time8 = std::chrono::high_resolution_clock::now();
 
 	// 更新场景根节点
 	m_Root->Update();
-	auto time9 = std::chrono::high_resolution_clock::now();
-	// 计算所有区块的耗时
-	auto d_input    = std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count();
-	auto d_player   = std::chrono::duration_cast<std::chrono::microseconds>(time3 - time2).count();
-	auto d_map      = std::chrono::duration_cast<std::chrono::microseconds>(time4 - time3).count();
-	auto d_roomGet  = std::chrono::duration_cast<std::chrono::microseconds>(time5 - time4).count();
-	auto d_roomUpd  = std::chrono::duration_cast<std::chrono::microseconds>(time6 - time5).count();
-	auto d_attack   = std::chrono::duration_cast<std::chrono::microseconds>(time7 - time6).count();
-	auto d_camera   = std::chrono::duration_cast<std::chrono::microseconds>(time8 - time7).count();
-	auto d_root     = std::chrono::duration_cast<std::chrono::microseconds>(time9 - time8).count();
-	auto d_total    = std::chrono::duration_cast<std::chrono::microseconds>(time9 - time1).count();
 
-	// 一次性输出
-	std::cout << "[Time(us)] Input: " << d_input
-			  << ", Player: " << d_player
-			  << ", Map: " << d_map
-			  << ", GetRoom: " << d_roomGet
-			  << ", RoomUpdate: " << d_roomUpd
-			  << ", Attack: " << d_attack
-			  << ", Camera: " << d_camera
-			  << ", Root: " << d_root
-			  << " | Total: " << d_total
-			  << std::endl;
 }
 
 void TestScene_KC::CreatePlayer()

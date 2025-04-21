@@ -1,0 +1,562 @@
+{
+    "room_region_y": 35.0,
+    "room_region_x": 35.0,
+    "room_size_y": 17.0,
+    "room_size_x": 17.0,
+    "tile_height": 16.0,
+    "tile_width": 16.0,
+    "roomObject": [
+        {
+            "ID": "1",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                0.0
+            ],
+            "Size": [
+                272.0,
+                272.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -80.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                112.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                96.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                80.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                64.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -64.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -80.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -96.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -112.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -80.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                80.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -112.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -96.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -80.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -64.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                80.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                112.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                96.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                80.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                64.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "tiles_22",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                0.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        }
+    ]
+}

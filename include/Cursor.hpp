@@ -5,7 +5,7 @@
 #ifndef CURSOR_HPP
 #define CURSOR_HPP
 
-#include "pch.hpp"
+#include "glm/vec2.hpp"
 
 class Cursor
 {

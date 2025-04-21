@@ -5,8 +5,6 @@
 #ifndef BEACON_HPP
 #define BEACON_HPP
 
-#include "pch.hpp"
-
 class Beacon {
 public:
 	Beacon() = default;

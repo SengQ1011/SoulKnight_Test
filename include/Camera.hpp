@@ -7,7 +7,7 @@
 
 #include "Observer.hpp"
 #include "Util/Transform.hpp"
-#include "pch.hpp"
+#include <vector>
 
 class nGameObject;
 

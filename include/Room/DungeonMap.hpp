@@ -5,7 +5,9 @@
 #ifndef DUNGEONMAP_HPP
 #define DUNGEONMAP_HPP
 
-#include "pch.hpp"
+#include <memory>
+#include <vector>
+#include "glm/vec2.hpp"
 
 class Loader;
 class RoomObjectFactory;

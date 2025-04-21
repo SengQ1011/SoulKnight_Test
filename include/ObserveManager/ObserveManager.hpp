@@ -5,7 +5,6 @@
 #ifndef OBSERVEMANAGER_HPP
 #define OBSERVEMANAGER_HPP
 
-#include "pch.hpp"
 #include "Util/Logger.hpp"
 
 class InputObserver;

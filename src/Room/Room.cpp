@@ -39,35 +39,18 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 }
 
 void Room::Update() {
-	auto t1 = std::chrono::high_resolution_clock::now();
-
 	// 更新所有房间物体
 	for (auto& obj : m_RoomObjects) {
 		if (obj) obj->Update();
 	}
-	auto t2 = std::chrono::high_resolution_clock::now();
 
 	// 碰撞管理（效能暴鲤龙）
 	m_CollisionManager->Update();
-	auto t3 = std::chrono::high_resolution_clock::now();
 
 	// 互動管理
 	m_InteractionManager->Update();
 	if (Util::Input::IsKeyDown(Util::Keycode::F))
 		m_InteractionManager->TryInteractWithClosest();
-	auto t4 = std::chrono::high_resolution_clock::now();
-
-	// 計算時間差
-	auto d_objects     = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-	auto d_collision   = std::chrono::duration_cast<std::chrono::microseconds>(t3 - t2).count();
-	auto d_interaction = std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3).count();
-	auto d_total       = std::chrono::duration_cast<std::chrono::microseconds>(t4 - t1).count();
-
-	std::cout << "[RoomUpdate(us)] Objects: " << d_objects
-			  << ", Collision: " << d_collision
-			  << ", Interaction: " << d_interaction
-			  << " | Total: " << d_total
-			  << std::endl;
 }
 
 void Room::CharacterEnter(const std::shared_ptr<Character>& character) {

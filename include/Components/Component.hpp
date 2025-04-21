@@ -9,7 +9,6 @@
 
 #include "EnumTypes.hpp"
 #include "Structs/CollisionComponentStruct.hpp"
-#include "pch.hpp"
 
 class nGameObject;
 

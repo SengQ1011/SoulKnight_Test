@@ -5,7 +5,8 @@
 #ifndef OBSERVER_HPP
 #define OBSERVER_HPP
 
-#include "pch.hpp"
+#include <set>
+#include <memory>
 
 class Character;
 // === 觀察者Interface ===

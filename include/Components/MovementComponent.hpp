@@ -9,8 +9,6 @@
 
 #include "Component.hpp"
 #include "Structs/CollisionComponentStruct.hpp"
-#include "pch.hpp"
-
 
 class MovementComponent final : public Component
 {

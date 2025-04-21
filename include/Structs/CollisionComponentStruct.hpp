@@ -5,9 +5,12 @@
 #ifndef COLLISIONCOMPONENTSTRUCT_HPP
 #define COLLISIONCOMPONENTSTRUCT_HPP
 
-#include "pch.hpp"
+
 #include "json.hpp"
 #include "EnumTypes.hpp"
+#include "glm/fwd.hpp" // glm::uint8_t
+#include "glm/vec2.hpp"
+#include <unordered_map>
 
 class nGameObject;
 

@@ -5,7 +5,10 @@
 #ifndef UNIFORMGRID_HPP
 #define UNIFORMGRID_HPP
 
-#include "pch.hpp"
+#include <memory>
+#include <vector>
+#include <unordered_map>
+
 class nGameObject;
 struct Rect;
 

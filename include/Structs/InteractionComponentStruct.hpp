@@ -5,7 +5,7 @@
 #ifndef INTERACTIONCOMPONENTSTRUCT_HPP
 #define INTERACTIONCOMPONENTSTRUCT_HPP
 
-#include "pch.hpp"
+
 #include "json.hpp"
 #include "EnumTypes.hpp"
 

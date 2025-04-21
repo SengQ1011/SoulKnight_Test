@@ -24,13 +24,15 @@ void DungeonMap::Start()
 	{
 		const int x = i % static_cast<int>(mapSizeInGrid);
 		const int y = i / static_cast<int>(mapSizeInGrid);
-		if (x == 0 || x == 4 || y == 0 || y == 4) continue;
-		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
-		const auto room = std::make_shared<DungeonRoom>(roomPosition,m_Loader.lock(),m_RoomObjectFactory.lock(),glm::vec2(x,y));
-		m_Rooms[i] = room;
-		m_Rooms[i]->Start(m_Player.lock());
-		m_Rooms[i]->CharacterEnter(m_Player.lock());
-		LOG_DEBUG("DungeonMap::Start {}",room->GetMapGridPos());
+		if (x == 2 && y == 2)
+		{
+			glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
+			const auto room = std::make_shared<DungeonRoom>(roomPosition,m_Loader.lock(),m_RoomObjectFactory.lock(),glm::vec2(x,y));
+			m_Rooms[i] = room;
+			m_Rooms[i]->Start(m_Player.lock());
+			m_Rooms[i]->CharacterEnter(m_Player.lock());
+			LOG_DEBUG("DungeonMap::Start {}",room->GetMapGridPos());
+		}
 	}
 }
 

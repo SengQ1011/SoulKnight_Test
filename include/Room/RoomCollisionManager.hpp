@@ -7,7 +7,6 @@
 #ifndef ROOMCOLLISIONMANAGER_HPP
 #define ROOMCOLLISIONMANAGER_HPP
 
-#include "pch.hpp"
 #include "Room/UniformGrid.hpp"
 
 class nGameObject;

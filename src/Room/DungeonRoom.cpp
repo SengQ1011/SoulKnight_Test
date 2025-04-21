@@ -111,34 +111,34 @@ void DungeonRoom::CreateGridAndVisibleGrid()
 	}
 
 	// 下面都是测试可视化用的，可以删
-	auto bound3535 = m_Factory.lock()->createRoomObject("bound3535","nGameObject");
-	glm::vec2 pos = m_RoomSpaceInfo.m_WorldCoord;
-	bound3535->SetWorldCoord(pos);
-	bound3535->SetZIndex(20.5);
-	m_CachedCamera.lock()->AddChild(bound3535);
-	m_CachedRenderer.lock()->AddChild(bound3535);
-	m_Bound3535 = bound3535;
+	// auto bound3535 = m_Factory.lock()->createRoomObject("bound3535","nGameObject");
+	// glm::vec2 pos = m_RoomSpaceInfo.m_WorldCoord;
+	// bound3535->SetWorldCoord(pos);
+	// bound3535->SetZIndex(20.5);
+	// m_CachedCamera.lock()->AddChild(bound3535);
+	// m_CachedRenderer.lock()->AddChild(bound3535);
+	// m_Bound3535 = bound3535;
 
-	for (int row = 0; row < 35; row++)
-	{
-		for (int col = 0; col < 35; col++)
-		{
-			if (m_Mark[row][col] == 1)
-			{
-				auto bound = std::make_shared<nGameObject>();
-				bound->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/BlueCollider.png"));
-				glm::vec2 pos = startPos + glm::vec2(static_cast<float>(col) * tileSize, -static_cast<float>(row) * tileSize);
-				bound->SetInitialScale(glm::vec2(16));
-				bound->SetInitialScaleSet(true);
-				bound->SetWorldCoord(pos);
-				bound->SetZIndexType(CUSTOM);
-				bound->SetZIndex(100);
-				m_CachedCamera.lock()->AddChild(bound);
-				m_CachedRenderer.lock()->AddChild(bound);
-				m_Grid[row][col] = bound;
-			}
-		}
-	}
+	// for (int row = 0; row < 35; row++)
+	// {
+	// 	for (int col = 0; col < 35; col++)
+	// 	{
+	// 		if (m_Mark[row][col] == 1)
+	// 		{
+	// 			auto bound = std::make_shared<nGameObject>();
+	// 			bound->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/BlueCollider.png"));
+	// 			glm::vec2 pos = startPos + glm::vec2(static_cast<float>(col) * tileSize, -static_cast<float>(row) * tileSize);
+	// 			bound->SetInitialScale(glm::vec2(16));
+	// 			bound->SetInitialScaleSet(true);
+	// 			bound->SetWorldCoord(pos);
+	// 			bound->SetZIndexType(CUSTOM);
+	// 			bound->SetZIndex(100);
+	// 			m_CachedCamera.lock()->AddChild(bound);
+	// 			m_CachedRenderer.lock()->AddChild(bound);
+	// 			m_Grid[row][col] = bound;
+	// 		}
+	// 	}
+	// }
 }
 
 float DungeonRoom::IntersectionArea(const Rect& a, const Rect& b) {
@@ -155,7 +155,7 @@ float DungeonRoom::IntersectionArea(const Rect& a, const Rect& b) {
 
 void DungeonRoom::CreateCorridorInDirection(Direction dir)
 {
-	constexpr float corridorWidth = 5.0f;
+	constexpr float corridorWidth = 7.0f;
 	const glm::vec2 gridCount = m_RoomSpaceInfo.m_RoomRegion;
 	const glm::vec2 center = gridCount / 2.0f;
 	const glm::vec2 roomSize = m_RoomSpaceInfo.m_RoomSize;
@@ -168,25 +168,28 @@ void DungeonRoom::CreateCorridorInDirection(Direction dir)
 	// 根據方向決定偏移方向與邊界終點
 	glm::ivec2 delta; // 通道方向單位向量
 	glm::ivec2 limitStart, limitEnd;
-	if (dir == Direction::UP) {
+	switch (dir)
+	{
+	case Direction::UP:
 		delta = glm::vec2(0, -1);
 		limitStart = glm::ivec2(center.x - corridorWidth / 2, 0);
 		limitEnd   = glm::ivec2(center.x + corridorWidth / 2, center.y - roomSize.y/2);
-	}
-	else if (dir == Direction::DOWN) {
+		break;
+	case Direction::DOWN:
 		delta = glm::vec2(0, 1);
 		limitStart = glm::ivec2(center.x - corridorWidth / 2, center.y + roomSize.y/2);
 		limitEnd   = glm::ivec2(center.x + corridorWidth / 2, gridCount.y);
-	}
-	else if (dir == Direction::LEFT) {
+		break;
+	case Direction::LEFT:
 		delta = glm::vec2(-1, 0);
 		limitStart = glm::ivec2(0, center.y - corridorWidth / 2);
 		limitEnd   = glm::ivec2(center.x - roomSize.x/2, center.y + corridorWidth / 2);
-	}
-	else if (dir == Direction::RIGHT) {
+		break;
+	case Direction::RIGHT:
 		delta = glm::vec2(1, 0);
 		limitStart = glm::ivec2(center.x + roomSize.x/2, center.y - corridorWidth / 2);
 		limitEnd = glm::ivec2(gridCount.x, center.y + corridorWidth / 2);
+		break;
 	}
 	if (delta.x == 0)
 	{

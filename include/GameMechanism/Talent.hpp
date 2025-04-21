@@ -4,10 +4,8 @@
 
 #ifndef TALENT_HPP
 #define TALENT_HPP
-// #include <string>
-// #include <functional>
-// #include "Creature/Character.hpp"
-#include "pch.hpp"
+
+#include <string>
 #include <functional>
 
 class Character;
