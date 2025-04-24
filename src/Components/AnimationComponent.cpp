@@ -3,36 +3,47 @@
 //
 
 #include "Components/AnimationComponent.hpp"
-#include <utility>
+
+#include "Animation.hpp"
 #include "Scene/SceneManager.hpp"
 
-AnimationComponent::AnimationComponent(std::unordered_map<State, std::shared_ptr<Animation>> animations)
-	:Component(ComponentType::ANIMATION), m_Animations(std::move(animations)){}
+AnimationComponent::AnimationComponent(std::unordered_map<State, std::shared_ptr<Animation>> animations) :
+	Component(ComponentType::ANIMATION), m_Animations(std::move(animations))
+{
+}
 
 
-void AnimationComponent::Init() {
+void AnimationComponent::Init()
+{
 	// 初始化動畫
-	for (auto& pair : m_Animations) {
-		if (pair.second) {
+	for (auto &pair : m_Animations)
+	{
+		if (pair.second)
+		{
 			pair.second->PlayAnimation(false);
-			//LOG_DEBUG("Animation for state " + std::to_string(static_cast<int>(pair.first)) + " initialized");
+			// LOG_DEBUG("Animation for state " + std::to_string(static_cast<int>(pair.first)) + " initialized");
 		}
 	}
 	SetAnimation(State::STANDING);
 	auto character = GetOwner<nGameObject>();
-	if (character && m_currentAnimation) {
+	if (character && m_currentAnimation)
+	{
 		character->SetDrawable(m_currentAnimation->GetDrawable());
 	}
-	else {
+	else
+	{
 		LOG_ERROR("Failed to add new animation");
 	}
 
-	//LOG_DEBUG("Creating Animation Component & successful find owner");
+	// LOG_DEBUG("Creating Animation Component & successful find owner");
 }
 
-void AnimationComponent::Update() {
-	if(m_useSkillEffect) {
-		if (auto character = GetOwner<nGameObject>()) {
+void AnimationComponent::Update()
+{
+	if (m_useSkillEffect)
+	{
+		if (auto character = GetOwner<nGameObject>())
+		{
 			m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
 			m_effectAnimation->SetZIndexType(ZIndexType::CUSTOM); //可能不該在Update的，但是方便確認
 			m_effectAnimation->SetZIndex(character->GetZIndex() - 0.5f);
@@ -41,17 +52,21 @@ void AnimationComponent::Update() {
 }
 
 // 支援不同類型的物件
-void AnimationComponent::SetAnimation(State state) {
+void AnimationComponent::SetAnimation(State state)
+{
 	auto character = GetOwner<nGameObject>();
-	if (character) {  // 檢查 owner 是否有效
+	if (character)
+	{ // 檢查 owner 是否有效
 		auto it = m_Animations.find(state);
 		// 有找到相關的動畫
-		if (it != m_Animations.end()) {
+		if (it != m_Animations.end())
+		{
 			// 移除舊的動畫
-			if (m_currentAnimation) {
+			if (m_currentAnimation)
+			{
 				m_currentAnimation->PlayAnimation(false);
 				m_currentAnimation->SetVisible(false);
-				//character->RemoveChild(m_currentAnimation);  // 使用 owner 訪問 RemoveChild
+				// character->RemoveChild(m_currentAnimation);  // 使用 owner 訪問 RemoveChild
 			}
 
 			// 設定新動畫
@@ -63,21 +78,26 @@ void AnimationComponent::SetAnimation(State state) {
 			character->SetDrawable(m_currentAnimation->GetDrawable());
 			// LOG_DEBUG("Switched animation to state " + std::to_string(static_cast<int>(state)));
 		}
-	} else {
+	}
+	else
+	{
 		LOG_ERROR("character is no longer valid-->AnimationComponent");
 	}
 
 	auto gameObject = GetOwner<nGameObject>();
-	if (gameObject){
+	if (gameObject)
+	{
 	}
 }
 
 void AnimationComponent::SetSkillEffect(bool play)
 {
-	if (play) {
+	if (play)
+	{
 		m_useSkillEffect = true;
 		auto character = GetOwner<nGameObject>();
-		if (character) {
+		if (character)
+		{
 			const auto state = State::SKILL;
 			auto it = m_Animations.find(state);
 			// 有找到相關的動畫
@@ -104,5 +124,5 @@ void AnimationComponent::SetSkillEffect(bool play)
 		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
 		scene->GetCamera().lock()->RemoveChild(m_effectAnimation);
 	}
-
 }
+

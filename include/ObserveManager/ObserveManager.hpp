@@ -6,10 +6,12 @@
 #define OBSERVEMANAGER_HPP
 
 #include "Util/Logger.hpp"
-#include "Observer.hpp"
+
+class InputObserver;
 
 class ObserveManager {
 public:
+	virtual ~ObserveManager() = default;
 	virtual void Update() = 0;
 
 	//----Getter-----

@@ -7,10 +7,11 @@
 
 #include "Scene/Scene.hpp"
 #include "Factory/RoomObjectFactory.hpp"
-#include "Room/LobbyRoom.hpp"
 #include "ObserveManager/TrackingManager.hpp"
+#include "Attack/AttackManager.hpp"
+#include "Loader.hpp"
 
-#include "Util/GameObject.hpp"
+class LobbyRoom;
 
 class LobbyScene : public Scene
 {
@@ -36,13 +37,15 @@ protected:
 	std::shared_ptr<Character> m_Player;
 	std::shared_ptr<Character> m_Enemy;
 
-	float m_MapHeight;
+	float m_MapHeight = 0.0f;
 
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 
 	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
 
 	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+
+	std::shared_ptr<AttackManager> m_AttackManager = std::make_shared<AttackManager>();
 };
 
 #endif //LOBBY_SCENE_HPP

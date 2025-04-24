@@ -6,8 +6,6 @@
 #define LOBBYROOM_HPP
 
 #include "Room/Room.hpp"
-#include "Components/MovementComponent.hpp"
-#include "Creature/Character.hpp"
 
 class LobbyRoom : public Room {
 public:

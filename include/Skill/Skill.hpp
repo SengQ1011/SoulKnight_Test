@@ -8,7 +8,6 @@
 #include <string>
 
 #include "Components/AnimationComponent.hpp"
-#include "Components/AttackComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Util/Time.hpp"
 

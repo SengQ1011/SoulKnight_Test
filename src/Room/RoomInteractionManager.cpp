@@ -3,7 +3,10 @@
 //
 
 #include "Room/RoomInteractionManager.hpp"
-#include <execution>
+#include "Components/InteractableComponent.hpp"
+#include "Override/nGameObject.hpp"
+#include "Creature/Character.hpp"
+#include "Util/Logger.hpp"
 
 void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObject> &interactable)
 {
@@ -70,6 +73,7 @@ bool RoomInteractionManager::TryInteractWithClosest(float maxRadius) const
 	return false;
 }
 
+void RoomInteractionManager::SetPlayer(const std::shared_ptr<Character> &player) { m_Player = player; }
 
 void RoomInteractionManager::Update() // 玩家位置的更新 來判斷是否顯示互動提示
 {
@@ -78,12 +82,8 @@ void RoomInteractionManager::Update() // 玩家位置的更新 來判斷是否�
 	if (!player) return;
 
 	// 對每個interactable做更新
-	if (m_InteractableObjects.size() < 100) {
-		for (const auto& interactable : m_InteractableObjects) UpdateInteractable(interactable,player);
-	} else {
-		std::for_each(std::execution::par_unseq,m_InteractableObjects.begin(), m_InteractableObjects.end(),
-		[this, player](const std::weak_ptr<nGameObject>& interactable) {UpdateInteractable(interactable, player);});
-	}
+	for (const auto& interactable : m_InteractableObjects) UpdateInteractable(interactable,player);
+
 }
 
 void RoomInteractionManager::UpdateInteractable(const std::weak_ptr<nGameObject>& interactable,

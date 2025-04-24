@@ -7,36 +7,38 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
-//Component.hpp
-#include <memory>
-#include <string>
-#include <utility>
 #include "EnumTypes.hpp"
-#include "ObserveManager/InputManager.hpp"
+#include "Structs/CollisionComponentStruct.hpp"
 
-
-struct CollisionInfo;
 class nGameObject;
 
-class Component {
+class Component
+{
 public:
 	Component() = default;
-	explicit Component(ComponentType type): m_type(std::move(type)) {}
+	explicit Component(const ComponentType type) : m_type(type) {}
 	virtual ~Component() = default;
 
-	virtual void Init() {} //nGameObject在AddComponent就會自動執行 -- nGameObject.inl
-	virtual void Update() {} //n
-	virtual void HandleCollision(CollisionInfo& info) {}
+	virtual void Init() {} // nGameObject在AddComponent就會自動執行 -- nGameObject.inl
+	virtual void Update() {} // n
+	virtual void HandleCollision(CollisionInfo &info) {}
 
-	void SetOwner(const std::shared_ptr<nGameObject> &owner) { m_Owner = owner; } //nGameObject在AddComponent就會自動執行 -- nGameObject.inl
+	void SetOwner(const std::shared_ptr<nGameObject> &owner)
+	{
+		m_Owner = owner;
+	} // nGameObject在AddComponent就會自動執行 -- nGameObject.inl
 	template <typename T>
-	std::shared_ptr<T> GetOwner() const { return std::dynamic_pointer_cast<T>(m_Owner.lock());}
+	std::shared_ptr<T> GetOwner() const
+	{
+		return std::dynamic_pointer_cast<T>(m_Owner.lock());
+	}
 
-	[[nodiscard]] ComponentType GetType() const { return m_type;}
+	[[nodiscard]] ComponentType GetType() const { return m_type; }
 
 private:
 	std::weak_ptr<nGameObject> m_Owner; // 打破循環引用,只能用GetOwner取得std::shared_ptr
 	ComponentType m_type; // 區別Component 比如hitbox和collision_box 方便閲讀
 };
+
 
 #endif //COMPONENT_HPP

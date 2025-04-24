@@ -2,19 +2,20 @@
 // Created by QuzzS on 2025/3/4.
 //
 
-#include "Scene/Test_Scene_KC.hpp"
+#include "Scene/Lobby_Scene.hpp"
 
-#include "Components/TalentComponet.hpp"
 #include "GameMechanism/Talent.hpp"
 #include "GameMechanism/TalentDatabase.hpp"
+
+#include "Components/TalentComponet.hpp"
 #include "Components/CollisionComponent.hpp"
-#include "Components/FollowerComponent.hpp"
+#include "Components/InputComponent.hpp"
 
-#include "Scene/SceneManager.hpp"
-#include "pch.hpp"
-
-#include "Util/Logger.hpp"
-
+#include "Room/LobbyRoom.hpp"
+#include "Factory/CharacterFactory.hpp"
+#include "Room/RoomCollisionManager.hpp"
+#include "ObserveManager/InputManager.hpp"
+#include "Creature/Character.hpp"
 
 void LobbyScene::Start()
 {
@@ -39,6 +40,9 @@ void LobbyScene::Start()
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
 	m_LobbyRoom->CharacterEnter(m_Enemy);
+
+	m_CurrentRoom = m_LobbyRoom;
+
 	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetRoomObjects());
 	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetWallColliders());
 
@@ -58,6 +62,7 @@ void LobbyScene::Update()
 
 	// 更新房间
 	m_LobbyRoom->Update();
+	m_AttackManager->Update();
 
 	// 更新相机
 	m_Camera->Update();
@@ -105,7 +110,6 @@ void LobbyScene::CreateEnemy()
 	m_Camera->AddChild(m_Enemy);
 }
 
-
 void LobbyScene::SetupCamera() const
 {
 	m_Camera->SetMapSize(m_MapHeight);
@@ -117,7 +121,8 @@ void LobbyScene::InitializeSceneManagers()
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
 	AddManager(ManagerTypes::ROOMCOLLISION, m_LobbyRoom->GetCollisionManager());
-	AddManager(ManagerTypes::BULLET,m_LobbyRoom->GetBulletManager());
+	// AddManager(ManagerTypes::ATTACK,m_LobbyRoom->GetAttackManager());
+	AddManager(ManagerTypes::ATTACK,m_AttackManager);
 	AddManager(ManagerTypes::TRACKING, m_trackingManager);
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);

@@ -7,19 +7,19 @@
 
 #include <filesystem>
 #include <iostream>
-#include "BulletManager.hpp"
+#include <fstream>
+#include "Attack/AttackManager.hpp"
 
-#include "Components/AttackComponent.hpp"
-#include "Components/TalentComponet.hpp"
-#include "EnumTypes.hpp"
-#include "GameMechanism/Talent.hpp"
-#include "GameMechanism/TalentDatabase.hpp"
-#include "ObserveManager/InputManager.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/InputComponent.hpp"
+#include "Components/HealthComponent.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
+#include "Factory/CharacterFactory.hpp"
+#include "Creature/Character.hpp"
 
 void TestScene_JX::Start()
 {
@@ -87,7 +87,7 @@ void TestScene_JX::Start()
 	}
 
 	// manager setting
-	AddManager(ManagerTypes::BULLET,bulletManager);
+	AddManager(ManagerTypes::ATTACK, m_attackManager);
 	AddManager(ManagerTypes::INPUT,inputManager);
 	AddManager(ManagerTypes::ROOMCOLLISION,m_RoomCollisionManager);
 	AddManager(ManagerTypes::TRACKING,m_trackingManager);
@@ -142,7 +142,7 @@ void TestScene_JX::Update()
 		LOG_DEBUG("Cursor coord:{}", cursor);
 	}
 
-	bulletManager->Update();
+	m_attackManager->Update();
 	m_trackingManager->Update();
 
 	std::for_each(m_RoomObject.begin(), m_RoomObject.end(), [](std::shared_ptr<nGameObject> obj){obj->Update();});

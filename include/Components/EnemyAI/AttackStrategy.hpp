@@ -5,9 +5,8 @@
 #ifndef ATTACKSTRATEGY_HPP
 #define ATTACKSTRATEGY_HPP
 
-#include "StructType.hpp"
-
 class Character;
+
 //--------------------------------------------
 // Strategy Interfaces
 //--------------------------------------------
@@ -46,5 +45,4 @@ public:
 	// No attack
 	void TryAttack(Character& owner) override {}
 };
-
 #endif //ATTACKSTRATEGY_HPP

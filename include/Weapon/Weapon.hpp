@@ -6,14 +6,12 @@
 #define WEAPON_HPP
 
 #include "Override/nGameObject.hpp"
-#include "Creature/Character.hpp"
-#include "BulletManager.hpp"
-#include "Util/Image.hpp"
-#include "Util/Logger.hpp"
+
+class Character;
 
 class Weapon: public nGameObject {
 public:
-	explicit Weapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackSpeed);
+	explicit Weapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackInterval);
 	~Weapon() override = default;
 
 	//----Getter----
@@ -22,7 +20,7 @@ public:
 	int GetDamage() const{ return m_damage; }
 	int GetEnergy() const { return m_energy; }
 	float GetCriticalRate() const { return m_criticalRate; }
-	float GetAttackSpeed() const { return m_attackColdDown; }
+	float GetAttackInterval() const { return m_attackInterval; }
 	int GetOffset() const { return m_offset; }
 
 	//----Setter----
@@ -35,7 +33,7 @@ public:
 		lastAttackTime = m_attackDelay;
 	}
 	void ResetAttackTimer() {
-		lastAttackTime = m_attackColdDown + m_attackDelay; // 冷却时间 + 初始延迟
+		lastAttackTime = m_attackInterval + m_attackDelay; // 冷却时间 + 初始延迟
 	}
 
 	void UpdateCooldown(float deltaTime);
@@ -52,7 +50,7 @@ protected:
 	int m_damage;					// 武器傷害
 	int m_energy;					// 武器所需能量
 	float m_criticalRate;			// 武器暴擊率
-	float m_attackColdDown;			// 攻擊頻率
+	float m_attackInterval;			// 攻擊頻率
 	int m_offset;					// 攻擊偏移量
 	float m_attackDelay = 0.0f;		// 開始攻擊延遲
 	std::shared_ptr<Character> m_currentOwner;

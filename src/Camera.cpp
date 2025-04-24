@@ -3,9 +3,9 @@
 //
 
 #include "Camera.hpp"
-#include <execution>
 
-#include "Tool/Tool.hpp"
+#include "Util/Time.hpp"
+#include "Override/nGameObject.hpp"
 
 Camera::Camera(
 	const std::vector<std::shared_ptr<nGameObject>> &pivotChildren
@@ -13,7 +13,7 @@ Camera::Camera(
 {
 	m_CameraWorldCoord.translation = {0.0f,0.0f};
 	m_CameraWorldCoord.rotation = 0.0f;
-	m_CameraWorldCoord.scale = {1.0f,1.0f};
+	m_CameraWorldCoord.scale = glm::vec2{1.0f};
 }
 
 void Camera::onInputReceived(const std::set<char>& keys) {
@@ -21,11 +21,6 @@ void Camera::onInputReceived(const std::set<char>& keys) {
 	if (keys.count('K')) ZoomCamera(-1);
 }
 
-// void Camera::MoveCamera(const glm::vec2 &displacement)
-// {
-// 	//加位移變化量
-// 	m_CameraWorldCoord.translation += displacement * Util::Time::GetDeltaTimeMs() / 5.0f / std::sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
-// }
 
 void Camera::MoveCamera(const glm::vec2 &deltaDisplacement)
 {
@@ -88,11 +83,19 @@ void Camera::Update() {
 	}
 
 	// 對每個Object調位置
-	if (m_Children.size() < 100) {
-		for (const auto& child : m_Children) UpdateChildViewportPosition(child);
-	} else {
-		std::for_each(std::execution::seq,m_Children.begin(), m_Children.end(),
-		[this](const std::shared_ptr<nGameObject>& child) {UpdateChildViewportPosition(child);});
+	for (const auto& child : m_Children)
+	{
+		// TODO:需要变数调解？
+		if (NotShouldBeVisible(child))
+		{
+			child->SetVisible(false);
+			continue;
+		}
+		if (child->GetZIndexType() != UI)
+		{
+			child->SetVisible(true);
+		}
+		UpdateChildViewportPosition(child);
 	}
 }
 
@@ -101,7 +104,6 @@ void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &chi
 	//變更坐標軸
 	// child->SetPivot(m_CameraWorldCoord.translation - child->m_WorldCoord);//成功 - 跟著鏡頭縮放旋轉 但是改變Object Pivot以後槍旋轉點、子彈從槍口發射可能會有問題
 	//Obejct窗口位置 = (Object世界坐標 - Camera世界坐標) * 縮放倍率
-	if (!child->IsVisible()) return;
 	child->m_Transform.translation = (child->m_WorldCoord - m_CameraWorldCoord.translation) * m_CameraWorldCoord.scale;
 
 	//動態調整ZIndex

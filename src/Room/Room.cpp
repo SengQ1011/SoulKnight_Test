@@ -4,9 +4,16 @@
 
 #include "Room/Room.hpp"
 
-#include "RoomObject/ObstacleObject.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/InteractableComponent.hpp"
+#include "Creature/Character.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Room/RoomCollisionManager.hpp"
+#include "Room/RoomInteractionManager.hpp"
 #include "Scene/SceneManager.hpp"
-#include "Util/Logger.hpp"
+#include "Util/Input.hpp"
+#include "fstream"
+#include <iostream>
 
 Room::~Room() {
     // 析构函数 - 确保正确清理资源
@@ -19,6 +26,12 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 	m_Player = player;
 	UpdateCachedReferences();
 
+	// m_CollisionManager = std::make_shared<RoomCollisionManager>();
+	// m_InteractionManager = std::make_shared<RoomInteractionManager>();
+
+	// AddManager(ManagerTypes::ROOMCOLLISION,m_CollisionManager);
+	// AddManager(ManagerTypes::ROOMINTERACTIONMANAGER, m_InteractionManager);
+
 	m_InteractionManager->SetPlayer(player);
 
     // 加载房间数据 TODO:要改 可能是读取head.json然后选择房间
@@ -26,22 +39,50 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 }
 
 void Room::Update() {
-    // 更新所有房间物体
-    for (auto& obj : m_RoomObjects) {
-        if (obj) obj->Update();
-    }
+	// 更新所有房间物体
+	for (auto& obj : m_RoomObjects) {
+		if (obj) obj->Update();
+	}
 
-    // 管理员动态逻辑
-    m_CollisionManager->Update(); //效能暴鯉龍
+	// 碰撞管理（效能暴鲤龙）
+	m_CollisionManager->Update();
 
-
+	// 互動管理
 	m_InteractionManager->Update();
-	if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest();
-
-	m_BulletManager->Update();
-
-    // 注意:不在这里更新角色，因为角色更新应该由Scene负责
+	if (Util::Input::IsKeyDown(Util::Keycode::F))
+		m_InteractionManager->TryInteractWithClosest();
 }
+
+// void Room::Update() {
+// 	auto start = std::chrono::high_resolution_clock::now();
+//
+// 	// === 物件更新 ===
+// 	auto objStart = std::chrono::high_resolution_clock::now();
+// 	for (auto& obj : m_RoomObjects) {
+// 		if (obj) obj->Update();
+// 	}
+// 	auto objEnd = std::chrono::high_resolution_clock::now();
+//
+// 	// === 碰撞更新 ===
+// 	auto collisionStart = std::chrono::high_resolution_clock::now();
+// 	m_CollisionManager->Update();
+// 	auto collisionEnd = std::chrono::high_resolution_clock::now();
+//
+// 	// === 互動更新 ===
+// 	auto interactionStart = std::chrono::high_resolution_clock::now();
+// 	m_InteractionManager->Update();
+// 	if (Util::Input::IsKeyDown(Util::Keycode::F))
+// 		m_InteractionManager->TryInteractWithClosest();
+// 	auto interactionEnd = std::chrono::high_resolution_clock::now();
+//
+// 	auto end = std::chrono::high_resolution_clock::now();
+//
+// 	// === 輸出時間 ===
+// 	LOG_DEBUG("[Profile] Room::Object Update:        {:>8.4f} ms", std::chrono::duration<float, std::milli>(objEnd - objStart).count());
+// 	LOG_DEBUG("[Profile] Room::CollisionManager:     {:>8.4f} ms", std::chrono::duration<float, std::milli>(collisionEnd - collisionStart).count());
+// 	LOG_DEBUG("[Profile] Room::InteractionManager:   {:>8.4f} ms", std::chrono::duration<float, std::milli>(interactionEnd - interactionStart).count());
+// 	LOG_DEBUG("[Profile] Room::Update Total:         {:>8.4f} ms", std::chrono::duration<float, std::milli>(end - start).count());
+// }
 
 void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
     if (character && !HasCharacter(character)) {
@@ -54,7 +95,7 @@ void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
     }
 }
 
-void Room::CharacterExit(std::shared_ptr<Character> character) {
+void Room::CharacterExit(const std::shared_ptr<Character>& character) {
 	if (!character) return;
 	if (const auto it = std::find(m_Characters.begin(), m_Characters.end(), character);
 		it != m_Characters.end()) {
@@ -204,8 +245,4 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 	}
 }
 
-// void Room::RegisterTrackingManager(const std::shared_ptr<nGameObject> &object) const
-// {
-//
-// }
 

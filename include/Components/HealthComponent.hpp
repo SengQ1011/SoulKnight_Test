@@ -6,10 +6,13 @@
 #define HEALTHCOMPONENT_HPP
 
 #include "Components/Component.hpp"
+#include "Structs/CollisionComponentStruct.hpp"
 
-class HealthComponent : public Component {
+
+class HealthComponent : public Component
+{
 public:
-	explicit HealthComponent(const int maxHp, const  int maxArmor, const  int maxEnergy);
+	explicit HealthComponent(const int maxHp, const int maxArmor, const int maxEnergy);
 	~HealthComponent() override = default;
 
 	void Update() override;
@@ -26,29 +29,30 @@ public:
 	void SetMaxHp(const int hp) { m_maxHp = hp; }
 	void AddCurrentHp(const int hp) { m_currentHp += hp; }
 	void SetMaxArmor(const int armor) { m_maxArmor = armor; }
-	void AddCurrentArmor(const int armor) {m_currentArmor += armor; }
+	void AddCurrentArmor(const int armor) { m_currentArmor += armor; }
 	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
 	void AddCurrentEnergy(const int energy) { m_currentEnergy += energy; }
-	void ConsumeEnergy(const int energy) {m_currentEnergy -= energy; }
+	void ConsumeEnergy(const int energy) { m_currentEnergy -= energy; }
 	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
 	void TakeDamage(int damage);
 	void HandleCollision(CollisionInfo &info) override;
 
 private:
-	int m_maxHp;        // 生命上限
-	int m_currentHp;    // 當前生命值
-	int m_maxArmor;         // 護甲上限
-	int m_currentArmor;     // 當前護甲值
-	int m_maxEnergy;        // 能量上限
-	int m_currentEnergy;    // 當前能量值
+	int m_maxHp; // 生命上限
+	int m_currentHp; // 當前生命值
+	int m_maxArmor; // 護甲上限
+	int m_currentArmor; // 當前護甲值
+	int m_maxEnergy; // 能量上限
+	int m_currentEnergy; // 當前能量值
 	float m_armorRecoveryInterval = 3.0f;
-	float m_armorRecoveryTimer;			// 恢復護甲計時器
-	bool m_breakProtection = false;		// 天賦：破甲保護
+	float m_armorRecoveryTimer; // 恢復護甲計時器
+	bool m_breakProtection = false; // 天賦：破甲保護
 
 	// 通知 StateComponent 角色死亡
 	void OnDeath() const;
 };
+
 
 
 #endif //HEALTHCOMPONENT_HPP

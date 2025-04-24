@@ -6,7 +6,7 @@
 #define ROOMOBJECT_HPP
 
 #include "Override/nGameObject.hpp"
-#include "pch.hpp"
+
 #include "json.hpp"
 
 

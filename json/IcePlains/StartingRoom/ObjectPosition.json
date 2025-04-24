@@ -7,7 +7,7 @@
     "tile_width": 16.0,
     "roomObject": [
         {
-            "ID": "1",
+            "ID": "floor1717",
             "Class": "nGameObject",
             "Position": [
                 0.0,
@@ -271,54 +271,6 @@
             ]
         },
         {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -48.0,
-                51.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -32.0,
-                51.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                32.0,
-                51.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                48.0,
-                51.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
             "ID": "w604",
             "Class": "nGameObject",
             "Position": [
@@ -331,114 +283,6 @@
             ]
         },
         {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -48.0,
-                35.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -32.0,
-                35.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                32.0,
-                35.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                48.0,
-                35.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_iceMiningCart",
-            "Class": "nGameObject",
-            "Position": [
-                70.0,
-                38.0
-            ],
-            "Size": [
-                28.0,
-                38.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -48.0,
-                -29.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -32.0,
-                -29.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                32.0,
-                -29.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                48.0,
-                -29.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
             "ID": "w604",
             "Class": "nGameObject",
             "Position": [
@@ -448,54 +292,6 @@
             "Size": [
                 16.0,
                 29.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -48.0,
-                -45.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                -32.0,
-                -45.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                32.0,
-                -45.0
-            ],
-            "Size": [
-                16.0,
-                32.0
-            ]
-        },
-        {
-            "ID": "object_pillarIce2",
-            "Class": "nGameObject",
-            "Position": [
-                48.0,
-                -45.0
-            ],
-            "Size": [
-                16.0,
-                32.0
             ]
         },
         {
@@ -748,18 +544,6 @@
             "Size": [
                 16.0,
                 29.0
-            ]
-        },
-        {
-            "ID": "tiles_22",
-            "Class": "nGameObject",
-            "Position": [
-                0.0,
-                0.0
-            ],
-            "Size": [
-                16.0,
-                16.0
             ]
         }
     ]

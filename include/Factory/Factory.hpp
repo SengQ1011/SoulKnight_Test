@@ -5,14 +5,11 @@
 #ifndef FACTORY_HPP
 #define FACTORY_HPP
 
-#include "Creature/Character.hpp"
-#include "Components/CollisionComponent.hpp"
-#include "Weapon/Weapon.hpp"
-#include <json.hpp>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <memory>
+#include "json.hpp"
+
+enum ZIndexType: int;
+class nGameObject;
+class Animation;
 
 class Factory {
 public:

@@ -6,20 +6,10 @@
 #define SCENEMANAGER_HPP
 
 #include "Scene/Scene.hpp"
-#include "Scene/MainMenu_Scene.hpp"
-#include "Scene/Lobby_Scene.hpp"
-#include "Scene/DungeonLoading_Scene.hpp"
-#include "Scene/Dungeon_Scene.hpp"
-#include "Scene/Complete_Scene.hpp"
-#include "Scene/Result_Scene.hpp"
-#include "Scene/Test_Scene_JX.hpp"
-#include "Scene/Test_Scene_KC.hpp"
-
-#include "pch.hpp" // IWYU pragma: export
 
 class SceneManager {
 public:
-	// 單例模式 (Singleton Pattern)：取得唯一的BulletManager
+	// 單例模式 (Singleton Pattern)：取得唯一的AttackManager
 	static SceneManager& GetInstance();
 
 	// 禁止拷貝與賦值，確保只有一個實例

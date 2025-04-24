@@ -3,11 +3,11 @@
 //
 
 #include "Room/LobbyRoom.hpp"
-#include "Scene/SceneManager.hpp"
-#include "Util/Input.hpp"
-#include "Util/Keycode.hpp"
+
+#include "Creature/Character.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Loader.hpp"
 #include "Util/Logger.hpp"
-#include "Factory/CharacterFactory.hpp"
 
 void LobbyRoom::Start(const std::shared_ptr<Character>& player) {
     LOG_DEBUG("Initial LobbyRoom start");

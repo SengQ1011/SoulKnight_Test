@@ -9,7 +9,7 @@
 
 class GunWeapon final : public Weapon {
 public:
-	explicit GunWeapon(const std::string& ImagePath, const std::string& bulletImagePath,const std::string& name, int damage, int energy, float criticalRate, int offset, float attackSpeed, float size);
+	explicit GunWeapon(const std::string& ImagePath, const std::string& bulletImagePath,const std::string& name, int damage, int energy, float criticalRate, int offset, float attackInterval, float size, float speed);
 	~GunWeapon() override = default;
 
 	void attack(int damage) override;
@@ -20,6 +20,7 @@ public:
 private:
 	std::string m_bulletImagePath;	// 子彈照片
 	float m_bulletSize;
+	float m_bulletSpeed;
 };
 
 #endif //GUN_HPP

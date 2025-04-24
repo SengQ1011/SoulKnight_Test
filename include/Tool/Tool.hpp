@@ -4,10 +4,8 @@
 
 #ifndef TOOL_HPP
 #define TOOL_HPP
-#include <SDL_mouse.h>
-#include <glm/vec2.hpp>
-#include "pch.hpp"
-#include <execution>
+
+#include "glm/vec2.hpp"
 
 namespace Tool
 {
@@ -40,6 +38,30 @@ namespace Tool
 	 */
 	glm::vec2 GetMouseCoord();
 
+	glm::ivec2 WorldToMapGrid(const glm::vec2& worldPos, const glm::vec2& tileSize, const glm::vec2& roomRegion, const glm::ivec2& roomNum);
+	glm::vec2 MapGridToWorld(const glm::ivec2& gridPos, const glm::vec2& tileSize, const glm::vec2& roomRegion, const glm::ivec2& roomNum);
+	glm::ivec2 WorldToRoomGrid(const glm::vec2& worldPos, const glm::vec2& tileSize, const glm::vec2& roomCoord, const glm::vec2& roomRegion);
+	glm::vec2 RoomGridToWorld(const glm::ivec2& grid, const glm::vec2& tileSize, const glm::vec2& roomCoord, const glm::vec2& roomRegion);
+
+
+	/**
+	 * @ brief 計算一個物件的世界座標對應到哪個「區域格子」索引（例如對應哪個房間或區塊）。
+	 *
+	 * 此函數假設整個地圖是由多個等大小的區域（如房間）組成，且每個區域包含固定格數，
+	 * 根據物件的世界座標與地圖的格子組成與尺寸，計算其落在哪個區域中。
+	 *
+	 * @param regionGridCount 區域中网格（如地图有的房間或房间有的格子）的个數，例如Room有35x35格子, Map有5x5房间区域。
+	 * @param unitGridSize 每個网格的像素大小，例如Room的格子有16x16像素, Map的房间区域有(35x16)x(35x16)像素。
+	 * @param objectWorldCoord 物件的世界座標（像素單位）。
+	 * @param regionCenterPointWorldCoord 区域中心点的世界坐标
+	 * @return glm::vec2 物件所在的區域索引（如房間索引），第一個為 x（列），第二個為 y（行）。
+	 *         若座標越界，可能會回傳負值或超出 regionGridCount 範圍的索引。
+	 */
+	glm::ivec2 FindIndexWhichGridObjectIsInside(
+		const glm::vec2& regionGridCount,
+		const glm::vec2& unitGridSize,
+		const glm::vec2& objectWorldCoord,
+		const glm::vec2& regionCenterPointWorldCoord = glm::vec2(0));
 }
 
 #endif //TOOL_HPP

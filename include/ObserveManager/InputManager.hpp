@@ -6,7 +6,6 @@
 #define INPUTMANAGER_HPP
 
 #include "ObserveManager/ObserveManager.hpp"
-#include "Util/Input.hpp"
 
 class InputManager: public ObserveManager{
 public:

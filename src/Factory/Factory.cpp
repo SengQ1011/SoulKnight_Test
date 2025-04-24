@@ -4,13 +4,18 @@
 
 #include "Factory/Factory.hpp"
 
-#include "Components/InteractableComponent.hpp"
+#include "fstream"
 #include "Util/Logger.hpp"
+
+#include "Animation.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/DoorComponent.hpp"
+#include "Components/InteractableComponent.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
 	if (zIndexStr == "FLOOR") return FLOOR;
 	if (zIndexStr == "OBJECTLOW") return OBJECTLOW;
-	if (zIndexStr == "BULLET") return BULLET;
+	if (zIndexStr == "ATTACK") return ATTACK;
 	if (zIndexStr == "OBJECTHIGH") return OBJECTHIGH;
 	if (zIndexStr == "UI") return UI;
 	if (zIndexStr == "CUSTOM") return CUSTOM;
@@ -38,14 +43,21 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 		{"COLLISION",
 			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json) {
 				object->AddComponent<CollisionComponent>
-				(ComponentType::COLLISION,json.get<StructComponents::StructCollisionComponent>());
+				(ComponentType::COLLISION,json.get<StructCollisionComponent>());
 			}
 		},
 		{"INTERACTABLE",
 			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 			{
 				object->AddComponent<InteractableComponent>
-				(ComponentType::INTERACTABLE,json.get<StructComponents::StructInteractableComponent>());
+				(ComponentType::INTERACTABLE,json.get<StructInteractableComponent>());
+			}
+		},
+		{"DOOR",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+			{
+				object->AddComponent<DoorComponent>
+				(ComponentType::DOOR);
 			}
 		},
 	};

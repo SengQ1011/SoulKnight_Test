@@ -10,13 +10,20 @@
 #include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
 #include "Scene/SceneManager.hpp"
-#include "pch.hpp"
+#include "ObserveManager/InputManager.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
 #include <execution>
+#include <iostream>
+
+#include "Components/InputComponent.hpp"
+#include "Creature/Character.hpp"
+#include "Factory/CharacterFactory.hpp"
+#include "Factory/RoomObjectFactory.hpp"
+#include "Room/DungeonMap.hpp"
 
 void TestScene_KC::Start()
 {
@@ -33,6 +40,8 @@ void TestScene_KC::Start()
 	//設置工廠
 	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
 
+	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory,m_Loader,m_Player);
+	m_Map->Start();
 	// // 创建并初始化大厅房间
 	// m_DungeonRoom = std::make_shared<DungeonRoom>(glm::vec2(0,0),m_Loader,m_RoomObjectFactory);
 	// m_DungeonRoom->Start(m_Player);
@@ -43,80 +52,174 @@ void TestScene_KC::Start()
 	// m_DungeonRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// // 将玩家添加到房间
 	// m_DungeonRoom->CharacterEnter(m_Player);
-	float tileSize = 16;
-	float roomRegion = 35;
-	float mapSizeInGrid = 5;
-	auto startPos = glm::vec2(std::floor(mapSizeInGrid/2) * roomRegion * tileSize);
-	startPos *= glm::vec2(-1,1);
-	float offsetRoom = tileSize * roomRegion;
 
-	std::vector<int> indices(static_cast<int>(m_DungeonRooms.size()));
-	std::iota(indices.begin(), indices.end(), 0);
-
-	std::vector<std::shared_ptr<DungeonRoom>> localRooms(m_DungeonRooms.size());
-
-	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](int i)
-	{
-		auto x = i % static_cast<int>(mapSizeInGrid);
-		auto y = i / static_cast<int>(mapSizeInGrid);
-
-		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
-		auto room = std::make_shared<DungeonRoom>(roomPosition,m_Loader,m_RoomObjectFactory);
-		localRooms[i] = room;
-	});
-	for (int i=0; i<localRooms.size(); ++i)
-	{
-		m_DungeonRooms[i] = localRooms[i];
-		m_DungeonRooms[i]->Start(m_Player);
-		m_DungeonRooms[i]->CharacterEnter(m_Player);
-	}
 	// 初始化场景管理器
 	InitializeSceneManagers();
 }
 
 void TestScene_KC::Update()
 {
-	// auto time1 = std::chrono::high_resolution_clock::now();
+
 	// Input处理
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	// auto time2 = std::chrono::high_resolution_clock::now();
 	inputManager->Update();
-	// auto time3 = std::chrono::high_resolution_clock::now();
 
 	m_Player->Update();
-	// auto time4 = std::chrono::high_resolution_clock::now();
 
 	// 更新房间
-	// auto time5 = std::chrono::high_resolution_clock::now();
-	for(int i=0; i<m_DungeonRooms.size(); i++)
+	m_Map->Update();
+	const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
+	if (dungeonRoom)
 	{
-		if (!m_DungeonRooms[i]->IsPlayerInside()) continue;
-		m_DungeonRoom = m_DungeonRooms[i];
-		LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
+		m_CurrentRoom = dungeonRoom;
+		dungeonRoom->Update();
+
+		dungeonRoom->DebugDungeonRoom();
+
+		// TODO: 之後寫到DungeonRoom cpp裏面用class包裝這裏呼叫
+		const auto mark = dungeonRoom->GetMark();
+		ImGui::Begin("Current Room Grid Viewer Can't Spawn");
+
+		ImVec2 tableSize = ImGui::GetContentRegionAvail();
+		ImGui::BeginChild("TableContainer", tableSize, false, ImGuiWindowFlags_None);
+			if (ImGui::BeginTable("RoomTable", 35,
+				ImGuiTableFlags_Borders |
+				ImGuiTableFlags_Resizable |
+				ImGuiTableFlags_SizingStretchProp))
+			{
+				for (int index = 0; index < 35; index++)
+					ImGui::TableSetupColumn((std::to_string(index)).c_str(), ImGuiTableColumnFlags_WidthStretch, tableSize.x);
+
+				ImGui::TableHeadersRow();
+
+				for (int row = 0; row < 35; row++)
+				{
+					ImGui::TableNextRow();
+					for (int col = 0; col < 35; col++)
+					{
+						ImGui::TableSetColumnIndex(col);
+						if (mark[row][col])
+						{
+							ImGui::TextColored(ImVec4(0,0,1,1),"1");
+						}
+						else
+						{
+							ImGui::TextColored(ImVec4(1,1,1,1),"0");
+						}
+					}
+				}
+				ImGui::EndTable();
+			}
+		ImGui::EndChild();
+
+		ImGui::End();
+
 	}
-	m_DungeonRoom.lock()->Update();
-	// std::for_each(m_DungeonRooms.begin(), m_DungeonRooms.end(), [](const std::shared_ptr<DungeonRoom>& room){room->Update();});
-	// auto time6 = std::chrono::high_resolution_clock::now();
+
+
+
+	m_AttackManager->Update();
 	// 更新相机
 	m_Camera->Update();
-	// auto time7 = std::chrono::high_resolution_clock::now();
 
 	// 更新场景根节点
-	GetRoot().lock()->Update();
-	// auto time8 = std::chrono::high_resolution_clock::now();
-	// auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1);
-	// auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(time3 - time2);
-	// auto duration3 = std::chrono::duration_cast<std::chrono::milliseconds>(time4 - time3);
-	// auto duration4 = std::chrono::duration_cast<std::chrono::milliseconds>(time5 - time4);
-	// auto duration5 = std::chrono::duration_cast<std::chrono::milliseconds>(time6 - time5);
-	// auto duration6 = std::chrono::duration_cast<std::chrono::milliseconds>(time7 - time6);
-	// auto duration7 = std::chrono::duration_cast<std::chrono::milliseconds>(time8 - time7);
-	// auto time9 = std::chrono::high_resolution_clock::now();
-	// auto duration8 = std::chrono::duration_cast<std::chrono::microseconds>(time9 - time1);
-	// LOG_DEBUG("Update useTime End:{}", duration8);
-	// LOG_DEBUG("Update useTime GetInputManager:{}, ManagerUpdate:{}, PlayerUpdate:{}, RoomUpdate:{}, CameraUpdate{}, RendererUpdate{}, End:{}",
-	// 	duration1, duration2, duration3, duration4, duration5, duration6, duration7, duration8);
+	m_Root->Update();
+
 }
+
+// void TestScene_KC::Update()
+// {
+// 	using namespace std::chrono;
+//
+// 	std::vector<std::pair<std::string, double>> timeLogs;
+// 	auto recordStart = high_resolution_clock::now();
+//
+// 	// Input處理
+// 	auto inputStart = high_resolution_clock::now();
+// 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
+// 	inputManager->Update();
+// 	auto inputEnd = high_resolution_clock::now();
+// 	timeLogs.emplace_back("InputManager::Update", duration<double, std::milli>(inputEnd - inputStart).count());
+//
+// 	// Player 更新
+// 	auto playerStart = high_resolution_clock::now();
+// 	m_Player->Update();
+// 	auto playerEnd = high_resolution_clock::now();
+// 	timeLogs.emplace_back("Player::Update", duration<double, std::milli>(playerEnd - playerStart).count());
+//
+// 	// 地圖更新
+// 	auto mapStart = high_resolution_clock::now();
+// 	m_Map->Update();
+// 	auto mapEnd = high_resolution_clock::now();
+// 	timeLogs.emplace_back("Map::Update", duration<double, std::milli>(mapEnd - mapStart).count());
+//
+// 	auto dungeonRoom = m_Map->GetCurrentRoom();
+// 	if (dungeonRoom)
+// 	{
+// 		auto roomStart = high_resolution_clock::now();
+// 		m_CurrentRoom = dungeonRoom;
+// 		dungeonRoom->Update();
+// 		auto roomEnd = high_resolution_clock::now();
+// 		timeLogs.emplace_back("DungeonRoom::Update", duration<double, std::milli>(roomEnd - roomStart).count());
+//
+// 		auto debugStart = high_resolution_clock::now();
+// 		dungeonRoom->DebugDungeonRoom();
+// 		auto debugEnd = high_resolution_clock::now();
+// 		timeLogs.emplace_back("DungeonRoom::DebugDungeonRoom", duration<double, std::milli>(debugEnd - debugStart).count());
+//
+// 		auto imguiStart = high_resolution_clock::now();
+// 		const auto mark = dungeonRoom->GetMark();
+// 		ImGui::Begin("Current Room Grid Viewer Can't Spawn");
+// 		ImVec2 tableSize = ImGui::GetContentRegionAvail();
+// 		ImGui::BeginChild("TableContainer", tableSize, false, ImGuiWindowFlags_None);
+// 		if (ImGui::BeginTable("RoomTable", 35, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp))
+// 		{
+// 			for (int index = 0; index < 35; index++)
+// 				ImGui::TableSetupColumn((std::to_string(index)).c_str(), ImGuiTableColumnFlags_WidthStretch, tableSize.x);
+// 			ImGui::TableHeadersRow();
+// 			for (int row = 0; row < 35; row++)
+// 			{
+// 				ImGui::TableNextRow();
+// 				for (int col = 0; col < 35; col++)
+// 				{
+// 					ImGui::TableSetColumnIndex(col);
+// 					if (mark[row][col])
+// 						ImGui::TextColored(ImVec4(0,0,1,1),"1");
+// 					else
+// 						ImGui::TextColored(ImVec4(1,1,1,1),"0");
+// 				}
+// 			}
+// 			ImGui::EndTable();
+// 		}
+// 		ImGui::EndChild();
+// 		ImGui::End();
+// 		auto imguiEnd = high_resolution_clock::now();
+// 		timeLogs.emplace_back("ImGui Table Render", duration<double, std::milli>(imguiEnd - imguiStart).count());
+// 	}
+//
+// 	auto attackStart = high_resolution_clock::now();
+// 	m_AttackManager->Update();
+// 	auto attackEnd = high_resolution_clock::now();
+// 	timeLogs.emplace_back("AttackManager::Update", duration<double, std::milli>(attackEnd - attackStart).count());
+//
+// 	auto cameraStart = high_resolution_clock::now();
+// 	m_Camera->Update();
+// 	auto cameraEnd = high_resolution_clock::now();
+// 	timeLogs.emplace_back("Camera::Update", duration<double, std::milli>(cameraEnd - cameraStart).count());
+//
+// 	auto rootStart = high_resolution_clock::now();
+// 	m_Root->Update();
+// 	auto rootEnd = high_resolution_clock::now();
+// 	timeLogs.emplace_back("SceneRoot::Update", duration<double, std::milli>(rootEnd - rootStart).count());
+//
+// 	// 總結輸出
+// 	std::ostringstream oss;
+// 	oss << "[Scene::Update Performance]";
+// 	for (const auto& log : timeLogs)
+// 		oss << "\n - " << log.first << ": " << log.second << " ms";
+//
+// 	LOG_DEBUG("{}", oss.str());
+// }
 
 void TestScene_KC::CreatePlayer()
 {
@@ -149,6 +252,7 @@ void TestScene_KC::InitializeSceneManagers()
 {
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
+	AddManager(ManagerTypes::ATTACK, m_AttackManager);
 	// AddManager(ManagerTypes::ROOMCOLLISION, m_DungeonRoom->GetCollisionManager());
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);

@@ -5,10 +5,6 @@
 #ifndef BEACON_HPP
 #define BEACON_HPP
 
-#include "pch.hpp"
-#include "Util/Logger.hpp"
-#include "Util/Input.hpp"
-
 class Beacon {
 public:
 	Beacon() = default;

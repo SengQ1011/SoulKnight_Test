@@ -1,13 +1,19 @@
 set(SRC_FILES
     Animation.cpp
     App.cpp
+    Attack/Attack.cpp
+    Attack/AttackManager.cpp
+    Attack/EffectAttack.cpp
+    Attack/EffectAttackPool.cpp
+    Attack/Projectile.cpp
+    Attack/ProjectilePool.cpp
     Beacon.cpp
-    BulletManager.cpp
     Camera.cpp
     Components/AiComponent.cpp
     Components/AnimationComponent.cpp
     Components/AttackComponent.cpp
     Components/CollisionComponent.cpp
+    Components/DoorComponent.cpp
     Components/EnemyAI/MoveStrategy.cpp
     Components/EnemyAI/WanderAI.cpp
     Components/FollowerComponent.cpp
@@ -28,11 +34,15 @@ set(SRC_FILES
     Loader.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
+    Room/DungeonMap.cpp
     Room/DungeonRoom.cpp
     Room/LobbyRoom.cpp
+    Room/MonsterRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
+    Room/StartingRoom.cpp
+    Room/UniformGrid.cpp
     RoomObject/ObstacleObject.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
@@ -47,10 +57,8 @@ set(SRC_FILES
     StructType.cpp
     TalentDatabase.cpp
     Tool/Tool.cpp
-    Weapon/Bullet.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
-    Weapon/Slash.cpp
     Weapon/Weapon.cpp
     main.cpp
 )
@@ -58,15 +66,21 @@ set(SRC_FILES
 set(INCLUDE_FILES
     Animation.hpp
     App.hpp
+    Attack/Attack.hpp
+    Attack/AttackManager.hpp
+    Attack/EffectAttack.hpp
+    Attack/EffectAttackPool.hpp
+    Attack/Projectile.hpp
+    Attack/ProjectilePool.hpp
     Beacon.hpp
-    BulletManager.hpp
-    BulletPool.hpp
     Camera.hpp
     Components/AiComponent.hpp
+    Components/AllComponentInclude.hpp
     Components/AnimationComponent.hpp
     Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
+    Components/DoorComponent.hpp
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
@@ -87,7 +101,6 @@ set(INCLUDE_FILES
     Factory/RoomFactory.hpp
     Factory/RoomObjectFactory.hpp
     Factory/WeaponFactory.hpp
-    GameMechanism/StatusEffect.hpp
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
     Loader.hpp
@@ -97,11 +110,15 @@ set(INCLUDE_FILES
     ObserveManager/TrackingManager.hpp
     Observer.hpp
     Override/nGameObject.hpp
+    Room/DungeonMap.hpp
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
+    Room/MonsterRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
+    Room/StartingRoom.hpp
+    Room/UniformGrid.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp
     Scene/Complete_Scene.hpp
@@ -117,11 +134,11 @@ set(INCLUDE_FILES
     Skill/FullFirepower.hpp
     Skill/Skill.hpp
     StructType.hpp
+    Structs/CollisionComponentStruct.hpp
+    Structs/InteractionComponentStruct.hpp
     Tool/Tool.hpp
-    Weapon/Bullet.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
-    Weapon/Slash.hpp
     Weapon/Weapon.hpp
 )
 

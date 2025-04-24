@@ -4,6 +4,12 @@
 // WeaponFactory.cpp
 
 #include "Factory/WeaponFactory.hpp"
+#include "Factory/Factory.hpp"
+
+#include "Weapon/GunWeapon.hpp"
+#include "Weapon/MeleeWeapon.hpp"
+
+#include "Util/Logger.hpp"
 
 namespace WeaponFactory {
 	std::shared_ptr<Weapon> createWeapon(int weaponID) {
@@ -22,18 +28,18 @@ namespace WeaponFactory {
 					int energy = weapon["energy"];
 					float criticalRate = weapon["criticalRate"];
 					int offset = weapon["offset"];
-					float attackSpeed = weapon["attackSpeed"];
+					float attackInterval = weapon["attackInterval"];
 
 					// 根據 type 建立不同類型的武器
 					if (type == "Melee") {
-						auto slashAnimation = Factory::parseAnimations(weapon["slashImagePath"], false);
 						float range = weapon["attackRange"];
-						return std::make_shared<MeleeWeapon>(weaponImagePath, slashAnimation, name, damage, energy, criticalRate, offset, attackSpeed, range);
+						return std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range);
 					}
 					else if (type == "Gun") {
 						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
 						float size = weapon["bulletSize"];
-						return std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackSpeed, size);
+						float speed = weapon["bulletSpeed"];
+						return std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackInterval, size, speed);
 					}
 					// else if (type == "Bow") {
 					// 	float chargeTime = weapon["chargeTime"];

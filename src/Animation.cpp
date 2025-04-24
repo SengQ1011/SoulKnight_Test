@@ -22,9 +22,22 @@ bool Animation::IfAnimationEnds() const {
 
 // 自动播放（内部控制更新频率）
 void Animation::PlayAnimation(bool play) {
-	auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
-	if(m_AnimationPaths.size() >= 5) animation->SetInterval(1000.0f / 30.0f);
-	else animation->SetInterval(1000.0f / 5.0f);
+	const auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
+
+	if (const int frameCount = m_AnimationPaths.size(); frameCount > 0) {
+		float interval;
+		if (frameCount <= 2) {
+			interval = 250.0f; // 每張顯示250ms (4FPS)，避免過快
+		} else if (frameCount <= 4) {
+			interval = 125.0f; // 8FPS
+		} else {
+			interval = 1000.0f / frameCount; // 總時長固定1秒
+			interval = std::clamp(interval, 33.0f, 125.0f);
+		}
+		animation->SetInterval(interval);
+	}else{
+		LOG_ERROR("Animation::PlayAnimation: AnimationPaths is empty");
+	}
 
 	if (animation && animation->GetState() != Util::Animation::State::PLAY && play) {
 		animation->Play();  // 開始播放動畫

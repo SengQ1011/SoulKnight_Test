@@ -5,20 +5,22 @@
 #ifndef AICOMPONENT_HPP
 #define AICOMPONENT_HPP
 
-#include "Components/AttackComponent.hpp"
-#include "Components/CollisionComponent.hpp"
-#include "Components/Component.hpp"
-#include "Components/EnemyAI/MoveStrategy.hpp"
-#include "Components/EnemyAI/AttackStrategy.hpp"
-#include "Components/EnemyAI/UtilityStrategy.hpp"
-#include "Util/Time.hpp"
+#include "Component.hpp"
+#include "Observer.hpp"
 
+#include "StructType.hpp"
+#include "Structs/CollisionComponentStruct.hpp"
 
-class AIComponent : public Component , public TrackingObserver{
+class IMoveStrategy;
+class IAttackStrategy;
+class IUtilityStrategy;
+
+class AIComponent : public Component, public TrackingObserver
+{
 public:
-	explicit AIComponent(const MonsterType MonsterType, const std::shared_ptr<IMoveStrategy>& moveStrategy,
-		const std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>>& attackStrategies,
-		const std::shared_ptr<IUtilityStrategy>& utilityStrategies, const int monsterPoint);
+	explicit AIComponent(MonsterType MonsterType, const std::shared_ptr<IMoveStrategy> &moveStrategy,
+						 const std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> &attackStrategies,
+						 const std::shared_ptr<IUtilityStrategy> &utilityStrategies, int monsterPoint);
 	~AIComponent() override = default;
 
 	void Init() override;
@@ -32,7 +34,7 @@ public:
 
 	//----Setter----
 	void RemoveTarget() { m_Target.reset(); }
-	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override {m_Target = player;}
+	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override;
 	void OnPlayerLost() override { m_Target.reset(); }
 	void SetEnemyState(enemyState state) const;
 
@@ -42,7 +44,7 @@ protected:
 	MonsterType m_aiType;
 	enemyState m_enemyState;
 	int m_monsterPoint;
-	std::weak_ptr<nGameObject> m_Target;			// enemy鎖定目標的位置
+	std::weak_ptr<nGameObject> m_Target; // enemy鎖定目標的位置
 	float m_behaviorTimer = 0;
 	float m_attackCooldown = 0;
 
@@ -51,5 +53,6 @@ protected:
 	std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> m_attackStrategy;
 	std::shared_ptr<IUtilityStrategy> m_utilityStrategy;
 };
+
 
 #endif //AICOMPONENT_HPP

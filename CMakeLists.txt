@@ -44,9 +44,7 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
-        include/StructType.hpp
-        src/Components/EnemyAI/MoveStrategy.cpp
-        src/StructType.cpp
+        src/Attack/Attack.cpp
 )
 
 if(MSVC)
@@ -80,7 +78,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/l
 target_link_libraries(${PROJECT_NAME}
     SDL2::SDL2main
     PTSD
-    eventpp
 )
 
 # 定義生成 files.cmake 的函數
@@ -150,4 +147,10 @@ function(generate_files_cmake)
 
 endfunction()
 
+# 改成僅在你手動設定 flag 時執行
+#if(DEFINED GENERATE_FILES AND GENERATE_FILES)
+message(STATUS "✅ GENERATE_FILES is defined and ON，將執行 generate_files_cmake()")
 generate_files_cmake()
+#else ()
+#    message(STATUS "❌ GENERATE_FILES 未定義或為 OFF，不執行 generate_files_cmake()")
+#endif()

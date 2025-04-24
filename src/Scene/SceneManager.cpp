@@ -3,6 +3,15 @@
 //
 
 #include "Scene/SceneManager.hpp"
+#include "Scene/MainMenu_Scene.hpp"
+#include "Scene/Lobby_Scene.hpp"
+#include "Scene/DungeonLoading_Scene.hpp"
+#include "Scene/Dungeon_Scene.hpp"
+#include "Scene/Result_Scene.hpp"
+#include "Scene/Complete_Scene.hpp"
+#include "Scene/Test_Scene_JX.hpp"
+#include "Scene/Test_Scene_KC.hpp"
+
 SceneManager &SceneManager::GetInstance()
 {
 	static SceneManager instance;
@@ -11,7 +20,7 @@ SceneManager &SceneManager::GetInstance()
 
 void SceneManager::Start()
 {
-	m_CurrentScene = CreateScene(Scene::SceneType::Menu);
+	m_CurrentScene = CreateScene(Scene::SceneType::Test_KC);
 	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }

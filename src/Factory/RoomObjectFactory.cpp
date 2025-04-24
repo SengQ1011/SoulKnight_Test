@@ -4,12 +4,10 @@
 
 #include "Factory/RoomObjectFactory.hpp"
 
-#include "Components/AnimationComponent.hpp"
-#include "Components/AttackComponent.hpp"
-#include "Components/FollowerComponent.hpp"
-#include "Components/InputComponent.hpp"
-#include "Components/MovementComponent.hpp"
-#include "Components/StateComponent.hpp"
+#include "Loader.hpp"
+#include "Override/nGameObject.hpp"
+#include "Util/Image.hpp"
+#include "Util/Logger.hpp"
 
 // class可能是指定類型再用， 目前都是RoomObject
 std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
@@ -22,25 +20,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		return nullptr;
 	}
 
-	// // 讀取 JSON 資料
-	// nlohmann::json origin = readJsonFile("LobbyObjectData.json");
-	//
-	// // 檢查ID是否存在
-	// if (!origin.contains(_id)) {
-	// 	LOG_ERROR("RoomObjectFactory::createRoomObject: No such ID in JSON: {}", _id);
-	// 	return roomObject;
-	// }
-	//TODO:ID系統
-
-	// auto filePath = m_ObjectDataFilePath+"/"+_id+".json";
-	// std::ifstream file(filePath);
-	// if (!file.is_open()) {
-	// 	LOG_DEBUG("Error: can't open in RoomObjectFactory: {}", filePath);
-	// 	return roomObject;
-	// }
-
-	// nlohmann::json jsonData;
-	// file >> jsonData;
 	nlohmann::json jsonData = m_Loader.lock()->LoadObjectData(_id);
 
 	// 設置Drawable
@@ -58,6 +37,13 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		LOG_WARN("RoomObjectFactory::createRoomObject: No ZIndex for {}", _id);
 		roomObject->SetZIndexType(ZIndexType::CUSTOM); // 設置默認值
 		roomObject->SetZIndex(100.0f);
+	}
+
+	// 設置posOffset
+	if (jsonData.contains("posOffset")) {
+		const auto data_posOffset = jsonData.at("posOffset");
+		const auto posOffset = glm::vec2(data_posOffset[0].get<float>(), data_posOffset[1].get<float>());
+		roomObject->SetPosOffset(posOffset);
 	}
 
 	//設置Components

@@ -4,6 +4,14 @@
 
 #include "ObserveManager/TrackingManager.hpp"
 
+#include "Components/AiComponent.hpp"
+#include "Components/AttackComponent.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/FollowerComponent.hpp"
+
+#include "Creature/Character.hpp"
+#include "Weapon/Weapon.hpp"
+
 void TrackingManager::Update() {
 	if (m_player.lock() == nullptr ||m_player.expired()) return;
 
@@ -15,6 +23,31 @@ void TrackingManager::Update() {
 
 	notifyObserver();
 }
+
+void TrackingManager::SetPlayer(const std::shared_ptr<Character> &player)
+{
+	if(player == nullptr) {
+		for(auto &enemy: m_enemies) {
+			if (const auto aiComp = enemy->GetComponent<AIComponent>(ComponentType::AI)) {
+				aiComp->RemoveTarget();
+				// LOG_DEBUG("removed");
+			}
+		}
+	}
+	m_player = player;
+}
+
+void TrackingManager::RemoveEnemy(const std::shared_ptr<Character> &enemy)
+{
+	// 通知玩家最近的enemy死掉了
+	if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+		if (const auto followerComp = attackComp->GetCurrentWeapon()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)){
+			followerComp->SetTarget(nullptr);
+		}
+	}
+	m_enemies.erase(std::remove(m_enemies.begin(), m_enemies.end(), enemy), m_enemies.end());
+}
+
 
 // 射綫檢測
 bool TrackingManager::RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) {
@@ -47,7 +80,7 @@ bool TrackingManager::HasLineOfSight(const glm::vec2& from, const glm::vec2& to)
 		if (!collisionComp) continue;
 		Rect bounds = collisionComp->GetBounds();
 		if (RayIntersectsRect(from, to, bounds)) {
-			LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain block");
+			// LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain block");
 			return false; // 有擋住
 		}
 	}

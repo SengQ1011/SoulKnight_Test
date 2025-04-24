@@ -6,9 +6,6 @@
 #define ANIMATION_HPP
 
 #include "Override/nGameObject.hpp"
-#include <vector>
-#include <string>
-#include <memory>
 #include "Util/Animation.hpp"
 
 class Animation: public nGameObject {

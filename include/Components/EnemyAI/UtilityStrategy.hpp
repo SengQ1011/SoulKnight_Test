@@ -5,35 +5,36 @@
 #ifndef ENEMYAISTRATEGY_HPP
 #define ENEMYAISTRATEGY_HPP
 
-#include "StructType.hpp"
-
+struct EnemyContext;
 class Character;
+
 //--------------------------------------------
 // Strategy Interfaces
 //--------------------------------------------
-class IUtilityStrategy {
+class IUtilityStrategy
+{
 public:
-    virtual ~IUtilityStrategy() = default;
-    virtual void Update(const EnemyContext& ctx) = 0;
+	virtual ~IUtilityStrategy() = default;
+	virtual void Update(const EnemyContext &ctx) = 0;
 };
 
 //--------------------------------------------
 // Strategy Implementations
 //--------------------------------------------
-class SummonUtility : public IUtilityStrategy {
+class SummonUtility : public IUtilityStrategy
+{
 public:
 	// 召喚類型
-    void Update(const EnemyContext& ctx) override {
-
-    }
+	void Update(const EnemyContext &ctx) override {}
 };
 
-class NoUtility : public IUtilityStrategy {
+class NoUtility : public IUtilityStrategy
+{
 public:
-    void Update(const EnemyContext& ctx) override {
-        // Nothing
-    }
+	void Update(const EnemyContext &ctx) override
+	{
+		// Nothing
+	}
 };
-
 
 #endif //ENEMYAISTRATEGY_HPP
