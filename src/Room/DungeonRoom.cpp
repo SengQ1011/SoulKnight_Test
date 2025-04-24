@@ -9,6 +9,7 @@
 
 #include "Camera.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Components/DoorComponent.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Renderer.hpp"
@@ -28,33 +29,35 @@ void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 	CreateCorridorInDirection(Direction::LEFT);
 	CreateCorridorInDirection(Direction::RIGHT);
 
-	// for (int row = 0; row < 35; row++)
-	// {
-	// 	for (int col = 0; col < 35; col++)
-	// 	{
-	// 		std::cout << m_Mark[row][col] << " ";
-	// 	}
-	// 	std::cout << std::endl;
-	// }
 
+	m_Door = m_Factory.lock()->createRoomObject("object_door_0","door");
+	m_Door->SetWorldCoord(glm::vec2(0));
+	m_CachedCamera.lock()->AddChild(m_Door);
+	m_CachedRenderer.lock()->AddChild(m_Door);
+	AddRoomObject(m_Door);
 }
 
 void DungeonRoom::Update()
 {
 	Room::Update();
 
-	if (Util::Input::IsKeyUp(Util::Keycode::O))
+	// TODO:要做onEvent了喔
+	if (Util::Input::IsKeyDown(Util::Keycode::B) && m_Door)
 	{
-		for (const auto& row: m_Grid)
+		const auto doorComp = m_Door->GetComponent<DoorComponent>(ComponentType::DOOR);
+		if (doorComp->GetCurrentState() == DoorComponent::State::OPENED)
 		{
-			for (const auto& elem: row)
-			{
-				if (!elem) continue;
-				elem->SetVisible(true ^ elem->IsVisible());
-			}
+			doorComp->DoorClosed();
+			LOG_DEBUG("close? {}",static_cast<int>(doorComp->GetCurrentState()));
 		}
-		m_Bound3535->SetVisible(true ^ m_Bound3535->IsVisible());
+		else if (doorComp->GetCurrentState() == DoorComponent::State::CLOSED)
+		{
+			doorComp->DoorOpened();
+			LOG_DEBUG("open? {}",static_cast<int>(doorComp->GetCurrentState()));
+		}
 	}
+	// TODO：可能可以刪除
+
 }
 
 void DungeonRoom::LoadFromJSON()
@@ -109,36 +112,6 @@ void DungeonRoom::CreateGridAndVisibleGrid()
 			}
 		}
 	}
-
-	// 下面都是测试可视化用的，可以删
-	// auto bound3535 = m_Factory.lock()->createRoomObject("bound3535","nGameObject");
-	// glm::vec2 pos = m_RoomSpaceInfo.m_WorldCoord;
-	// bound3535->SetWorldCoord(pos);
-	// bound3535->SetZIndex(20.5);
-	// m_CachedCamera.lock()->AddChild(bound3535);
-	// m_CachedRenderer.lock()->AddChild(bound3535);
-	// m_Bound3535 = bound3535;
-
-	// for (int row = 0; row < 35; row++)
-	// {
-	// 	for (int col = 0; col < 35; col++)
-	// 	{
-	// 		if (m_Mark[row][col] == 1)
-	// 		{
-	// 			auto bound = std::make_shared<nGameObject>();
-	// 			bound->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/BlueCollider.png"));
-	// 			glm::vec2 pos = startPos + glm::vec2(static_cast<float>(col) * tileSize, -static_cast<float>(row) * tileSize);
-	// 			bound->SetInitialScale(glm::vec2(16));
-	// 			bound->SetInitialScaleSet(true);
-	// 			bound->SetWorldCoord(pos);
-	// 			bound->SetZIndexType(CUSTOM);
-	// 			bound->SetZIndex(100);
-	// 			m_CachedCamera.lock()->AddChild(bound);
-	// 			m_CachedRenderer.lock()->AddChild(bound);
-	// 			m_Grid[row][col] = bound;
-	// 		}
-	// 	}
-	// }
 }
 
 float DungeonRoom::IntersectionArea(const Rect& a, const Rect& b) {
@@ -166,7 +139,7 @@ void DungeonRoom::CreateCorridorInDirection(Direction dir)
 	topLeftWorldCoord += m_RoomSpaceInfo.m_WorldCoord; // 轉移中心點
 
 	// 根據方向決定偏移方向與邊界終點
-	glm::ivec2 delta; // 通道方向單位向量
+	glm::vec2 delta; // 通道方向單位向量
 	glm::ivec2 limitStart, limitEnd;
 	switch (dir)
 	{
@@ -191,6 +164,9 @@ void DungeonRoom::CreateCorridorInDirection(Direction dir)
 		limitEnd = glm::ivec2(gridCount.x, center.y + corridorWidth / 2);
 		break;
 	}
+	const auto camera = m_CachedCamera.lock();
+	const auto root = m_CachedRenderer.lock();
+	const auto factory = m_Factory.lock();
 	if (delta.x == 0)
 	{
 		for (int row = limitStart.y; row < limitEnd.y; row++)
@@ -198,23 +174,23 @@ void DungeonRoom::CreateCorridorInDirection(Direction dir)
 			for (int col = limitStart.x; col < limitEnd.x; col++)
 			{
 				// TODO：墙壁动态建构的要手动调位置也 要加个offset吗？
-				m_Mark[row][col] = 1;
 				glm::vec2 pos = topLeftWorldCoord + glm::vec2(static_cast<float>(col) * tileSize.x, -static_cast<float>(row) * tileSize.y);
 				std::shared_ptr<nGameObject> object;
 				if (col == limitStart.x || col == limitEnd.x - 1)
 				{
-					pos += glm::vec2(0,1.5f);
-					object = m_Factory.lock()->createRoomObject("w604","Wall");
+					// pos += glm::vec2(0,1.5f);
+					object = factory->createRoomObject("w604","Wall");
+					m_Mark[row][col] = 1;
 				}
-				else object = m_Factory.lock()->createRoomObject("f601","Floor");
-
+				else object = factory->createRoomObject("f601","Floor");
 
 				object->SetWorldCoord(pos);
-				m_CachedCamera.lock()->AddChild(object);
-				m_CachedRenderer.lock()->AddChild(object);
+				camera->AddChild(object);
+				root->AddChild(object);
 				AddRoomObject(object);
 			}
 		}
+
 	}
 	else if (delta.y == 0)
 	{
@@ -222,24 +198,34 @@ void DungeonRoom::CreateCorridorInDirection(Direction dir)
 		{
 			for (int row = limitStart.y; row < limitEnd.y; row++)
 			{
-				m_Mark[row][col] = 1;
 				glm::vec2 pos = topLeftWorldCoord + glm::vec2(static_cast<float>(col) * tileSize.x, -static_cast<float>(row) * tileSize.y);
 				std::shared_ptr<nGameObject> object;
 				if (row == limitStart.y || row == limitEnd.y - 1)
 				{
-					pos += glm::vec2(0,1.5f);
-					object = m_Factory.lock()->createRoomObject("w604","Wall");
+					// pos += glm::vec2(0,1.5f);
+					object = factory->createRoomObject("w604","Wall");
+					m_Mark[row][col] = 1;
 				}
-				else object = m_Factory.lock()->createRoomObject("f601","Floor");
+				else object = factory->createRoomObject("f601","Floor");
 
 				object->SetWorldCoord(pos);
-				m_CachedCamera.lock()->AddChild(object);
-				m_CachedRenderer.lock()->AddChild(object);
+				camera->AddChild(object);
+				root->AddChild(object);
 				AddRoomObject(object);
 			}
 		}
 	}
 }
+
+void DungeonRoom::DebugDoorPosition()
+{
+	ImGui::Begin("Current Room Grid Viewer Can't Spawn");
+
+
+
+	ImGui::End();
+}
+
 
 
 

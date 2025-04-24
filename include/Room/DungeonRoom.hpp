@@ -53,11 +53,6 @@ public:
 	void CreateGridAndVisibleGrid();
 	void CreateCorridorInDirection(Direction dir);
 
-protected:
-
-	// 重写状态变化处理方法 TODO:給子類別
-	// void OnStateChanged(RoomState oldState, RoomState newState) override;
-
 	// 重写角色进入/离开处理
 	// void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
 	// void OnCharacterExit(const std::shared_ptr<Character>& character) override;
@@ -65,23 +60,28 @@ protected:
 	// 更新房间状态的辅助方法
 	// virtual void UpdateRoomState();
 
-	virtual void OnStateChanged(RoomState oldState, RoomState newState)
+	virtual void OnStateChanged()
 	{
-
+		m_State = RoomState::ACTIVE;
 	}  // 房间状态变化时调用
+
+	void DebugDoorPosition();
+
+protected:
+
+	// 重写状态变化处理方法 TODO:給子類別
+	// void OnStateChanged(RoomState oldState, RoomState newState) override;
 
 	// 房间状态
 	RoomState m_State = RoomState::INACTIVE;
-	std::shared_ptr<nGameObject> m_Bound3535;
-	glm::vec2 m_MapGridPos = glm::vec2(0, 0);
+	glm::vec2 m_MapGridPos = glm::vec2(0, 0); //房間在地圖的哪個位置
 
 private:
 	std::string m_RoomType = "START";
 	//網格處理
-	std::vector<std::vector<std::shared_ptr<nGameObject>>> m_Grid = std::vector<std::vector<std::shared_ptr<nGameObject>>>(
-		35,std::vector<std::shared_ptr<nGameObject>>(35)); //用來可視化debug的
 	std::vector<std::vector<int>> m_Mark = std::vector<std::vector<int>>(35,std::vector<int>(35,0)); //用來記錄處理的資料
 
+	std::shared_ptr<nGameObject> m_Door;
 	// DungeonRoom類型 - 戰鬥房間（小怪，BOSS)， 特殊房間， 寶箱， 起始， 終點
 	// Room狀態 -
 

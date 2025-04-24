@@ -20,6 +20,21 @@ void DungeonMap::Start()
 
 	m_Rooms.resize(25); //
 
+	// 十字架房間
+	// for (int i=0; i < m_Rooms.size(); ++i)
+	// {
+	// 	const int x = i % static_cast<int>(mapSizeInGrid);
+	// 	const int y = i / static_cast<int>(mapSizeInGrid);
+	// 	if (x == 2 || y == 2)
+	// 	{
+	// 		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
+	// 		const auto room = std::make_shared<DungeonRoom>(roomPosition,m_Loader.lock(),m_RoomObjectFactory.lock(),glm::vec2(x,y));
+	// 		m_Rooms[i] = room;
+	// 		m_Rooms[i]->Start(m_Player.lock());
+	// 		m_Rooms[i]->CharacterEnter(m_Player.lock());
+	// 		LOG_DEBUG("DungeonMap::Start {}",room->GetMapGridPos());
+	// 	}
+	// }
 	for (int i=0; i < m_Rooms.size(); ++i)
 	{
 		const int x = i % static_cast<int>(mapSizeInGrid);
@@ -45,27 +60,6 @@ void DungeonMap::Update()
 	// 	if (Util::Input::IsKeyPressed(Util::Keycode::NUM_1)) LOG_DEBUG("DungeonRoom {} {}", i%5, i/5);
 	// }
 	UpdateCurrentRoomIfNeeded();
-
-	// 测试成功
-	if (Util::Input::IsKeyUp(Util::Keycode::NUM_2))
-	{
-		const std::vector<std::weak_ptr<DungeonRoom>>& rooms = GetNeighborRooms();
-		LOG_DEBUG("DungeonRoom {}",rooms.size());
-		for (int i=0; i<rooms.size(); i++)
-		{
-			const auto room = rooms[i].lock();
-			if (room)
-			{
-				std::cout << room->GetMapGridPos().x << "," << room->GetMapGridPos().y << " ";
-			}
-			else
-			{
-				std::cout << "null ";
-			}
-			if ((i + 1) % 3 == 0) std::cout << std::endl;
-		}
-
-	}
 }
 
 void DungeonMap::UpdateCurrentRoomIfNeeded()
@@ -80,6 +74,7 @@ void DungeonMap::UpdateCurrentRoomIfNeeded()
 			roomSizeInPixel,
 			m_Player.lock()->GetWorldCoord());
 		m_CurrentRoom = m_Rooms[IndexInside.y * 5 + IndexInside.x];
+		if(m_CurrentRoom) m_CurrentRoom->OnStateChanged();
 	}
 }
 

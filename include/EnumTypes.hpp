@@ -11,6 +11,7 @@ enum class ComponentType
 	ANIMATION,
 	ATTACK,
 	COLLISION,
+	DOOR,
 	FOLLOWER,
 	HEALTH,
 	INPUT,

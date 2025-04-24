@@ -45,6 +45,7 @@ public:
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const { return m_CollisionLayer; }
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const { return m_CollisionMask; }
 	[[nodiscard]] std::shared_ptr<nGameObject> GetVisibleBox() { return m_ColliderVisibleBox; }
+	[[nodiscard]] bool IsActive() const { return m_IsActive; }
 	[[nodiscard]] bool IsTrigger() const { return m_IsTrigger; }
 
 	// Setter
@@ -53,6 +54,7 @@ public:
 	void ResetCollisionMask() { m_CollisionMask = CollisionLayers_None; }
 	void SetOffset(const glm::vec2 &offset) { m_Offset = offset; }
 	void SetSize(const glm::vec2 &size) { m_Size = size; }
+	void SetActive(const bool isActive) { m_IsActive = isActive; }
 	void SetTrigger(const bool isTrigger) { m_IsTrigger = isTrigger; }
 
 	void SetColliderBoxVisible(const bool isVisible) const
@@ -62,6 +64,7 @@ public:
 	void SetColliderBoxColor(const std::string &color) const; //設置碰撞箱顔色
 
 private:
+	bool m_IsActive = true;
 	glm::vec2 m_Size;
 	glm::vec2 m_Offset;
 	glm::uint8_t m_CollisionLayer; //自身碰撞層

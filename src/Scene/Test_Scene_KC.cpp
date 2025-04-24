@@ -73,13 +73,12 @@ void TestScene_KC::Update()
 	{
 		m_CurrentRoom = dungeonRoom;
 		dungeonRoom->Update();
+
 		// TODO: 之後寫到DungeonRoom cpp裏面用class包裝這裏呼叫
 		const auto mark = dungeonRoom->GetMark();
 		ImGui::Begin("Current Room Grid Viewer Can't Spawn");
 
-		// if (ImGui::CollapsingHeader("Current Room Grid Viewer"))
-		// {
-			ImVec2 tableSize = ImGui::GetContentRegionAvail();
+		ImVec2 tableSize = ImGui::GetContentRegionAvail();
 		ImGui::BeginChild("TableContainer", tableSize, false, ImGuiWindowFlags_None);
 			if (ImGui::BeginTable("RoomTable", 35,
 				ImGuiTableFlags_Borders |
@@ -110,7 +109,7 @@ void TestScene_KC::Update()
 				ImGui::EndTable();
 			}
 		ImGui::EndChild();
-		// }
+
 		ImGui::End();
 
 	}

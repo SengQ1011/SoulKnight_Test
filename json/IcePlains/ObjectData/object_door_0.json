@@ -1,0 +1,27 @@
+{
+    "id": "object_door_0",
+    "isAnimated": false,
+    "path": "/IcePlains/object_door_0.png",
+    "ZIndex": "OBJECTLOW",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                16.0,
+                16.0
+            ],
+            "Offset": [
+                0.0,
+                -6.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": ["None"],
+            "IsTrigger": false
+        },
+        {
+            "Name": "door",
+            "Class": "DOOR"
+        }
+    ]
+}

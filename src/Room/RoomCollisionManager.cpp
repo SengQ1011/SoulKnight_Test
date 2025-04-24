@@ -122,21 +122,23 @@ void RoomCollisionManager::Update()
 	}
 
 	std::for_each(std::execution::par, m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
-		auto objectA = weakObj.lock();
-		if (!objectA || !objectA->IsActive()) return;
+		const std::shared_ptr<nGameObject> objectA = weakObj.lock();
+		if (!objectA || !objectA->IsActive())
+			return;
 
-		auto colliderA = objectA->template GetComponent<CollisionComponent>(ComponentType::COLLISION);
-		if (!colliderA) return;
+		const std::shared_ptr<CollisionComponent> colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		if (!colliderA || !colliderA->IsActive())
+			return;
 
-		Rect boundA = colliderA->GetBounds();
+		const Rect boundA = colliderA->GetBounds();
 		auto nearbyObjects = m_SpatialGrid.QueryNearby(boundA);
 
 		for (const auto& objectB : nearbyObjects) {
 			if (objectA == objectB || !objectB->IsActive()) continue;
-			if (!(objectA < objectB)) continue; // 去重複
+			if (objectA >= objectB) continue; // 去重複
 
-			auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-			if (!colliderB || !colliderA->CanCollideWith(colliderB)) continue;
+			const std::shared_ptr<CollisionComponent> colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+			if (!colliderB || !colliderB->IsActive() || !colliderA->CanCollideWith(colliderB)) continue;
 
 			if (colliderA->GetBounds().Intersects(colliderB->GetBounds())) {
 				std::scoped_lock lock(mutex);

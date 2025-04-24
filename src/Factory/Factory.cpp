@@ -7,9 +7,10 @@
 #include "fstream"
 #include "Util/Logger.hpp"
 
-#include "Components/InteractableComponent.hpp"
-#include "Components/CollisionComponent.hpp"
 #include "Animation.hpp"
+#include "Components/CollisionComponent.hpp"
+#include "Components/DoorComponent.hpp"
+#include "Components/InteractableComponent.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
 	if (zIndexStr == "FLOOR") return FLOOR;
@@ -50,6 +51,13 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 			{
 				object->AddComponent<InteractableComponent>
 				(ComponentType::INTERACTABLE,json.get<StructInteractableComponent>());
+			}
+		},
+		{"DOOR",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+			{
+				object->AddComponent<DoorComponent>
+				(ComponentType::DOOR);
 			}
 		},
 	};

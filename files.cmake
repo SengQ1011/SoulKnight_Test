@@ -13,6 +13,7 @@ set(SRC_FILES
     Components/AnimationComponent.cpp
     Components/AttackComponent.cpp
     Components/CollisionComponent.cpp
+    Components/DoorComponent.cpp
     Components/EnemyAI/MoveStrategy.cpp
     Components/EnemyAI/WanderAI.cpp
     Components/FollowerComponent.cpp
@@ -36,6 +37,7 @@ set(SRC_FILES
     Room/DungeonMap.cpp
     Room/DungeonRoom.cpp
     Room/LobbyRoom.cpp
+    Room/MonsterRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
@@ -77,6 +79,7 @@ set(INCLUDE_FILES
     Components/AttackComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
+    Components/DoorComponent.hpp
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
@@ -109,6 +112,7 @@ set(INCLUDE_FILES
     Room/DungeonMap.hpp
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
+    Room/MonsterRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp

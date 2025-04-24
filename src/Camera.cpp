@@ -13,7 +13,7 @@ Camera::Camera(
 {
 	m_CameraWorldCoord.translation = {0.0f,0.0f};
 	m_CameraWorldCoord.rotation = 0.0f;
-	m_CameraWorldCoord.scale = glm::vec2{0.5f};
+	m_CameraWorldCoord.scale = glm::vec2{1.0f};
 }
 
 void Camera::onInputReceived(const std::set<char>& keys) {
@@ -91,7 +91,10 @@ void Camera::Update() {
 			child->SetVisible(false);
 			continue;
 		}
-		child->SetVisible(true);
+		if (child->GetZIndexType() != UI)
+		{
+			child->SetVisible(true);
+		}
 		UpdateChildViewportPosition(child);
 	}
 }
