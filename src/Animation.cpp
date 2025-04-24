@@ -28,11 +28,11 @@ void Animation::PlayAnimation(bool play) {
 		float interval;
 		if (frameCount <= 2) {
 			interval = 250.0f; // 每張顯示250ms (4FPS)，避免過快
-		} else if (frameCount <= 4) {
-			interval = 125.0f; // 8FPS
+		} else if (frameCount <= 5) {
+			interval = 100.0f; // 10FPS
 		} else {
-			interval = 1000.0f / frameCount; // 總時長固定1秒
-			interval = std::clamp(interval, 33.0f, 125.0f);
+			interval = 1000.0f / frameCount+5;
+			interval = std::clamp(interval, 33.0f, 100.0f);
 		}
 		animation->SetInterval(interval);
 	}else{

@@ -18,6 +18,8 @@ AttackComponent::AttackComponent(const std::shared_ptr<Weapon> &initWeapon = nul
 
 void AttackComponent::Init()
 {
+	// 初始化切換武器時間
+	m_switchTimeCounter = m_switchCooldown;
 	// 每個角色都會武器，除了部分小怪
 	if (!m_currentWeapon)
 		return;
@@ -57,10 +59,12 @@ void AttackComponent::Update()
 		m_secondWeapon->Update();
 		m_secondWeapon->UpdateCooldown(deltaTime);
 	}
+	// 更新切換冷卻時間
+	m_switchTimeCounter -= deltaTime;
 }
 
 
-void AttackComponent::AddWeapon(std::shared_ptr<Weapon> newWeapon)
+void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 {
 	auto character = GetOwner<Character>();
 	if (!character)
@@ -69,10 +73,20 @@ void AttackComponent::AddWeapon(std::shared_ptr<Weapon> newWeapon)
 	{
 		RemoveWeapon(); // 刪除舊武器
 	}
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
+	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
 
 	m_Weapons.push_back(newWeapon); // 添加新武器列表
 	m_currentWeapon = newWeapon; // 更新當前武器
 	m_currentWeapon->SetOwner(character); // 當前武器添加擁有者的指標
+	if(auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+	{
+		followerComp->SetFollower(character);
+	}
+
+	scene->GetRoot().lock()->AddChild(m_currentWeapon);
+	scene->GetCamera().lock()->AddChild(m_currentWeapon);
 }
 
 
@@ -83,25 +97,38 @@ void AttackComponent::RemoveWeapon()
 	if (it != m_Weapons.end())
 	{
 		it->get()->RemoveOwner();
+		if (auto followerComp = it->get()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		{
+			followerComp->SetFollower(nullptr);
+		}
 		m_Weapons.erase(it);
 	}
 }
 
 void AttackComponent::switchWeapon()
 {
+	if (m_switchTimeCounter > 0)
+		return;
 	if (m_Weapons.empty())
 		return;
-	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 
+	// 重置冷卻時間
+	m_switchTimeCounter = m_switchCooldown;
+
+	// OpenGL 本身是「狀態機 + 立即模式」，它不會自己管理任何物件，它只會畫你給它的東西
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
+	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+
+	// 找目前武器的位置
 	auto it = std::find(m_Weapons.begin(), m_Weapons.end(), m_currentWeapon);
-	if (it != m_Weapons.end() && std::next(it) != m_Weapons.end())
-	{
-		auto m_currentWeapon = *std::next(it);
-	}
-	else
-	{
+	if (it != m_Weapons.end() && std::next(it) != m_Weapons.end()) {
+		m_currentWeapon = *std::next(it);
+	} else {
 		m_currentWeapon = m_Weapons.front(); // 循環回到第一把武器
 	}
+	scene->GetRoot().lock()->AddChild(m_currentWeapon);
+	scene->GetCamera().lock()->AddChild(m_currentWeapon);
 }
 
 int AttackComponent::calculateDamage()
@@ -129,7 +156,7 @@ void AttackComponent::TryAttack()
 	if (!character)
 		return;
 
-	auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
+	const auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
 	if (!healthComponent)
 		return;
 	const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
@@ -169,7 +196,7 @@ void AttackComponent::TryAttack()
 		{
 			if (currentEnergy >= m_secondWeapon->GetEnergy())
 			{
-				auto damage = calculateDamage();
+				const auto damage = calculateDamage();
 				m_secondWeapon->attack(damage);
 
 				if (isPlayer)
@@ -204,3 +231,33 @@ void AttackComponent::SetDualWield(bool enable)
 	}
 }
 
+void AttackComponent::OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) {
+	if (auto locked = enemy.lock()) {
+		this->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+		// 通知目前武器最靠近的目標
+		if (const auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+			followerComp->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+		}
+		// 若有雙武器也通知
+		if(m_dualWield) {
+			if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+				followerComp2->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+			}
+		}
+	}
+}
+
+void AttackComponent::OnLostEnemy() {
+	m_Target.reset();
+	for(auto& weapon : m_Weapons) {
+		if (const auto followerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+			followerComp->SetTarget(nullptr);
+		}
+	}
+
+	if(m_dualWield) {
+		if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+			followerComp2->SetTarget(nullptr);
+		}
+	}
+}

@@ -10,8 +10,9 @@
 #include "Components/MovementComponent.hpp"
 #include "Components/SkillComponent.hpp"
 #include "Components/StateComponent.hpp"
-#include "Scene/SceneManager.hpp"
 #include "Creature/Character.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Weapon/Weapon.hpp"
 
 
 InputComponent::InputComponent() {}
@@ -59,17 +60,22 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 	// 武器/攻擊attackComponent
 	if (attackComponent)
 	{
-		auto currentWeapon = attackComponent->GetCurrentWeapon();
-		if (keys.count('J'))
+		if(auto currentWeapon = attackComponent->GetCurrentWeapon())
 		{
-			attackComponent->TryAttack();
+			if (keys.count('J'))
+			{
+				attackComponent->TryAttack();
+			}
+			if (keys.count('L'))
+			{
+				attackComponent->switchWeapon();
+			}
 		}
-		// if (keys.count('E')) attackComponent->switchWeapon();
 	}
 	// 使用技能
 	if (keys.count('U'))
 	{
-		LOG_DEBUG("Skill Try Executed");
+		// LOG_DEBUG("Skill Try Executed");
 		if (skillComponent->ExecuteSkill())
 		{
 			stateComponent->SetState(State::SKILL);

@@ -48,7 +48,6 @@ void Projectile::Init() {
 }
 
 void Projectile::UpdateObject(const float deltaTime) {
-	LOG_DEBUG("UpdateObject");
 	// 讓子彈按方向移動
 	this->m_WorldCoord += m_direction * m_speed * deltaTime;
 	if(glm::distance(this->m_WorldCoord, m_startPosition) >= 1000.0f)

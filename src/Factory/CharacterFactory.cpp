@@ -15,8 +15,8 @@
 #include "Components/InputComponent.hpp"
 #include "Components/SkillComponent.hpp"
 #include "Components/TalentComponet.hpp"
-#include "Components/EnemyAI/AttackStrategy.hpp"
 #include "Components/EnemyAI/MoveStrategy.hpp"
+#include "Components/EnemyAI/AttackStrategy.hpp"
 #include "Components/EnemyAI/UtilityStrategy.hpp"
 
 #include "Util/Logger.hpp"
@@ -130,13 +130,13 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CollisionComp->SetCollisionMask(CollisionLayers_Enemy_Bullet);
 			CollisionComp->SetSize(glm::vec2(16.0f));
 			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
-			auto FollowerComp = weapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
+			auto FollowerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
 			//FollowerComp->SetTargetMouse(true);
-			FollowerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
-			FollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
-			FollowerComp->SetZIndexOffset(0.5f);
 			LOG_DEBUG("Player created");
+
+			auto weapon2 = WeaponFactory::createWeapon(2);
+			attackComponent->AddWeapon(weapon2);
 			return player;
 		}
 	}
@@ -155,8 +155,8 @@ std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> stringToAtkStra
 	std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> strategies;
 	for (const auto& atkType : atkStrategies) {
 		if(atkType == "Collision") strategies[AttackType::COLLISION] = std::make_shared<CollisionAttack>();
-		if(atkType == "Melee") strategies[AttackType::MELEE] = std::make_shared<CollisionAttack>();
-		if(atkType == "Gun") strategies[AttackType::GUN] = std::make_shared<CollisionAttack>();
+		if(atkType == "Melee") strategies[AttackType::MELEE] = std::make_shared<MeleeAttack>();
+		if(atkType == "Gun") strategies[AttackType::GUN] = std::make_shared<GunAttack>();
 		if(atkType == "None")  strategies[AttackType::NONE] = std::make_shared<NoAttack>();
 	}
 	return strategies;
@@ -198,8 +198,8 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         		collisionDamage = characterInfo["collisionDamage"];
         	}
         	else{
-        		// const int weaponID = characterInfo["weaponID"];
-        		// weapon = WeaponFactory::createWeapon(weaponID);
+        		const int weaponID = characterInfo["weaponID"];
+        		weapon = WeaponFactory::createWeapon(weaponID);
         	}
         	auto animationComp = enemy->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);

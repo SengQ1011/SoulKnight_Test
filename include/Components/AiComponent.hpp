@@ -35,7 +35,7 @@ public:
 	//----Setter----
 	void RemoveTarget() { m_Target.reset(); }
 	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override;
-	void OnPlayerLost() override { m_Target.reset(); }
+	void OnLostPlayer() override { m_Target.reset(); }
 	void SetEnemyState(enemyState state) const;
 
 	void HandleCollision(CollisionInfo &info) override;

@@ -49,19 +49,22 @@ void TrackingManager::RemoveEnemy(const std::shared_ptr<Character> &enemy)
 }
 
 
-// 射綫檢測
+// 射綫檢測：一條線段（從 rayStart 到 rayEnd）有沒有穿過一個矩形（rect）==》簡單 AABB 判斷
 bool TrackingManager::RayIntersectsRect(const glm::vec2& rayStart, const glm::vec2& rayEnd, const Rect& rect) {
-	// 簡單 AABB 判斷線段是否穿過障礙物
+	// tmin:起點，tmax：終點
 	float tmin = 0.0f;
 	float tmax = 1.0f;
+	// 起點到終點的方向向量
 	glm::vec2 delta = rayEnd - rayStart;
 
 	for (int i = 0; i < 2; ++i) {
-		if (std::abs(delta[i]) < 1e-6f) {
+		if (std::abs(delta[i]) < 1e-6f) {	// 1e-6f = 0.000001f 代表幾乎等於0
 			if (rayStart[i] < rect.m_Position[i] || rayStart[i] > rect.m_Position[i] + rect.m_Size[i])
 				return false;
 		} else {
-			float ood = 1.0f / delta[i];
+			// t1 = 線段穿過矩形「左/下邊界」的時候t的值
+			// t2 = 穿過矩形「右上邊界」的時候t的值
+			const float ood = 1.0f / delta[i];
 			float t1 = (rect.m_Position[i] - rayStart[i]) * ood;
 			float t2 = (rect.m_Position[i] + rect.m_Size[i] - rayStart[i]) * ood;
 			if (t1 > t2) std::swap(t1, t2);
@@ -113,15 +116,17 @@ void TrackingManager::FindNearestVisibleEnemy() {
 void TrackingManager::notifyObserver() {
 	//TODO:修改（改爲使用父類的m_Observer）
 
-	// 給玩家：只傳遞可見的最近敵人
-	if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
-		if (const auto followerComp = attackComp->GetCurrentWeapon()->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-			followerComp->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
+	// 給玩家：只傳遞可見的最近敵人，若都沒有enemy視野就只通知一次玩家
+	if (!m_visibleEnemies.empty()) {
+		m_playerLostTarget = false;
+		if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+			attackComp->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
 		}
-		if(auto cloneWeapon = attackComp->GetSecondWeapon())
-		{
-			if(const auto followerComp2 = cloneWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-				followerComp2->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
+	} else {
+		if (!m_playerLostTarget) {
+			m_playerLostTarget = true;
+			if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+				attackComp->OnLostEnemy();// 失去目標
 			}
 		}
 	}
@@ -133,7 +138,7 @@ void TrackingManager::notifyObserver() {
 			if (std::find(m_visibleEnemies.begin(), m_visibleEnemies.end(), enemy) != m_visibleEnemies.end()) {
 				ai->OnPlayerPositionUpdate(m_player);
 			} else {
-				ai->OnPlayerLost(); // 丟失目標的通知
+				ai->OnLostPlayer(); // 丟失目標的通知
 			}
 		}
 	}
