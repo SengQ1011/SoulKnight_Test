@@ -41,8 +41,7 @@ void MovementComponent::Update()
 	glm::vec2 currentDir = currentSpeed > 0.01f ? m_Velocity / currentSpeed : m_LastValidDirection;
 
 	// 冰面参数查看hpp
-	if (m_IsOnIce)
-	{
+	if (m_IsOnIce) {
 		// 分軸速度處理
 		glm::vec2 velocityX = glm::vec2(m_Velocity.x, 0.0f);
 		glm::vec2 velocityY = glm::vec2(0.0f, m_Velocity.y);
@@ -130,8 +129,7 @@ void MovementComponent::Update()
 	}
 
 	// 更新接觸狀態超時
-	if (m_ContactState.inContactX || m_ContactState.inContactY)
-	{
+	if (m_ContactState.inContactX || m_ContactState.inContactY) {
 		m_ContactState.contactTime -= deltaTime;
 		if (m_ContactState.contactTime <= 0.0f)
 		{
@@ -141,33 +139,25 @@ void MovementComponent::Update()
 	}
 
 	// 根據接觸狀態限制速度
-	if (m_ContactState.inContactX && std::abs(m_ContactState.contactNormal.x) > 0.01f)
-	{
-		if (m_Velocity.x * m_ContactState.contactNormal.x < 0)
-		{
+	if (m_ContactState.inContactX && std::abs(m_ContactState.contactNormal.x) > 0.01f) {
+		if (m_Velocity.x * m_ContactState.contactNormal.x < 0) {
 			m_Velocity.x = 0.0f; // 停止X方向的運動
-		}
-		else
-		{
+		} else{
 			m_ContactState.inContactX = false;
 		}
 	}
 
 	if (m_ContactState.inContactY && std::abs(m_ContactState.contactNormal.y) > 0.01f)
 	{
-		if (m_Velocity.y * m_ContactState.contactNormal.y < 0)
-		{
+		if (m_Velocity.y * m_ContactState.contactNormal.y < 0) {
 			m_Velocity.y = 0.0f; // 停止Y方向的運動
-		}
-		else
-		{
+		} else {
 			m_ContactState.inContactY = false;
 		}
 	}
 
 	// 极速时限制（防止溢出）
-	if (glm::length(m_Velocity) > effectiveMaxSpeed)
-	{
+	if (glm::length(m_Velocity) > effectiveMaxSpeed) {
 		m_Velocity = glm::normalize(m_Velocity) * effectiveMaxSpeed;
 	}
 
@@ -184,12 +174,20 @@ void MovementComponent::Update()
 	if (owner)
 		owner->m_WorldCoord = m_Position;
 
-	// 調整面朝方向
-	if (m_LastValidDirection.x < 0 && owner->m_Transform.scale.x > 0 ||
-		m_LastValidDirection.x > 0 && owner->m_Transform.scale.x < 0)
+	// 若owner有attackComp且有目標：跟隨目標方向
+	if(auto attackComp = owner->GetComponent<AttackComponent>(ComponentType::ATTACK);
+		attackComp && attackComp->HasTarget())
 	{
-		owner->m_Transform.scale.x *= -1.0f; // 反轉X軸方向
+		glm::vec2 targetDirection = attackComp->GetTarget().lock()->GetWorldCoord() - owner->m_WorldCoord;
+		owner->m_Transform.scale.x =
+		(targetDirection.x < 0.0f) ? -std::abs(owner->m_Transform.scale.x) : std::abs(owner->m_Transform.scale.x);
 	}
+	// 若沒有目標：調整面朝方向
+	else{
+		owner->m_Transform.scale.x =
+			(m_LastValidDirection.x < 0.0f) ? -std::abs(owner->m_Transform.scale.x) : std::abs(owner->m_Transform.scale.x);
+	}
+
 }
 
 void MovementComponent::HandleCollision(CollisionInfo &info)

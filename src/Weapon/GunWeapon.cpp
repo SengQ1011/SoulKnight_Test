@@ -22,7 +22,6 @@ void GunWeapon::attack(const int damage) {
 	// 建立 Transform
 	Util::Transform bulletTransform;
 	bulletTransform.translation = this->m_WorldCoord;									// 子彈的位置
-	bulletTransform.scale = glm::vec2(1.0f, 1.0f);									// 大小
 	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
 
 	const auto characterType = m_currentOwner->GetType();

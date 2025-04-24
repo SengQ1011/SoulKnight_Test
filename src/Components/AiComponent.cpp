@@ -7,6 +7,7 @@
 #include "Components/AttackComponent.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/EnemyAI/MoveStrategy.hpp"
+#include "Components/EnemyAI/AttackStrategy.hpp"
 #include "Components/EnemyAI/UtilityStrategy.hpp"
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
@@ -28,8 +29,8 @@ void AIComponent::Init()
 	const auto enemy = GetOwner<Character>();
 	m_context.enemy = enemy;
 	m_context.moveComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
-	m_context.stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
 	m_context.attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK);
+	m_context.stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
 }
 
 
@@ -41,6 +42,10 @@ void AIComponent::Update()
 		m_moveStrategy->Update(m_context, deltaTime);
 	if (m_utilityStrategy)
 		m_utilityStrategy->Update(m_context);
+	if (!m_attackStrategy.empty())
+		for(const auto& pair : m_attackStrategy) {
+			pair.second->Update(m_context, deltaTime);
+		}
 }
 
 void AIComponent::SetEnemyState(const enemyState state) const
@@ -94,4 +99,3 @@ void AIComponent::HandleCollision(CollisionInfo &info)
 }
 
 void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }
-

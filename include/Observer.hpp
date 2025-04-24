@@ -24,8 +24,9 @@ public:
 
 	// 玩家專用：接收最近的敵人坐標=====FollowerComponent====
 	virtual void OnEnemyPositionUpdate(std::weak_ptr<Character> enemy){}
+	virtual void OnLostEnemy(){}
 	// 敵人專用：接收玩家坐標
 	virtual void OnPlayerPositionUpdate(std::weak_ptr<Character> player){}
-	virtual void OnPlayerLost(){}	// 通知失去玩家視野
+	virtual void OnLostPlayer(){}	// 通知失去玩家視野
 };
 #endif //OBSERVER_HPP

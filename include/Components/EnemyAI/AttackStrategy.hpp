@@ -13,7 +13,12 @@ class Character;
 class IAttackStrategy {
 public:
 	virtual ~IAttackStrategy() = default;
+	virtual void Update(const EnemyContext &ctx, const float deltaTime) = 0;
 	virtual void TryAttack(Character& owner) = 0;
+
+private:
+	float m_attackCooldown = 3.5f;
+	float m_attackTimer = 0.0f;
 };
 
 //--------------------------------------------
@@ -21,6 +26,10 @@ public:
 //--------------------------------------------
 class MeleeAttack final : public IAttackStrategy {
 public:
+	void Update(const EnemyContext &ctx, const float deltaTime) override
+	{
+
+	}
 	void TryAttack(Character& owner) override {
 
 	}
@@ -28,6 +37,10 @@ public:
 
 class GunAttack final : public IAttackStrategy {
 public:
+	void Update(const EnemyContext &ctx, const float deltaTime) override
+	{
+
+	}
 	void TryAttack(Character& owner) override {
 
 	}
@@ -35,6 +48,10 @@ public:
 
 class CollisionAttack final : public IAttackStrategy {
 public:
+	void Update(const EnemyContext &ctx, const float deltaTime) override
+	{
+
+	}
 	void TryAttack(Character& owner) override {
 
 	}
@@ -42,6 +59,7 @@ public:
 
 class NoAttack final : public IAttackStrategy {
 public:
+	void Update(const EnemyContext &ctx, const float deltaTime) override {}
 	// No attack
 	void TryAttack(Character& owner) override {}
 };

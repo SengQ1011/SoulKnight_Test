@@ -46,14 +46,6 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 	}
 }
 
-void WanderMove::ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const
-{
-	const float ratio = 0.2f; // 調整移動比例
-	glm::vec2 dir = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord()) * ratio;
-	ctx.moveComp->SetDesiredDirection(dir);
-	ctx.stateComp->SetState(State::MOVING);
-}
-
 
 void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime)
 {

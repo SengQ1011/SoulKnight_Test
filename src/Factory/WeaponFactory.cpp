@@ -29,17 +29,22 @@ namespace WeaponFactory {
 					float criticalRate = weapon["criticalRate"];
 					int offset = weapon["offset"];
 					float attackInterval = weapon["attackInterval"];
+					bool isSword = false;
+					std::shared_ptr<Weapon> weaponPtr;
 
 					// 根據 type 建立不同類型的武器
 					if (type == "Melee") {
 						float range = weapon["attackRange"];
-						return std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range);
+						if (const int check = weapon["isSword"]; check == 1) {
+							isSword = true;
+						}
+						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range);
 					}
 					else if (type == "Gun") {
 						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
 						float size = weapon["bulletSize"];
 						float speed = weapon["bulletSpeed"];
-						return std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackInterval, size, speed);
+						weaponPtr = std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackInterval, size, speed);
 					}
 					// else if (type == "Bow") {
 					// 	float chargeTime = weapon["chargeTime"];
@@ -49,6 +54,15 @@ namespace WeaponFactory {
 					// 	float beamDuration = weapon["beamDuration"];
 					// 	return std::make_shared<LaserGun>(name, damage, energy, criticalRate, attackSpeed, beamDuration);
 					// }
+
+					auto followerComp = weaponPtr->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
+					followerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
+					followerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
+					followerComp->SetZIndexOffset(0.5f);
+					if(isSword){
+						followerComp->SetIsSword(true);
+					}
+					return weaponPtr;
 				}
 			}
 		}

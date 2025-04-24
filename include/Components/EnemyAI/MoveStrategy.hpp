@@ -69,6 +69,9 @@ class ChaseMove final : public IMoveStrategy
 public:
 	void Update(const EnemyContext &ctx, float deltaTime) override;
 	void ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const;
+
+private:
+
 };
 
 class NoMove final : public IMoveStrategy

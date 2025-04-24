@@ -28,6 +28,7 @@ void EffectAttack::Init() {
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_Bullet);
 		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Enemy);
+		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Enemy_Bullet);
 	}
 	else if (m_type == CharacterType::ENEMY) {
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_Bullet);
@@ -37,13 +38,13 @@ void EffectAttack::Init() {
 
  	CollisionComp->SetSize(glm::vec2(m_size));
 
- 	// 測試
- 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	// TODO測試
+ 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
-void EffectAttack::UpdateObject(float deltaTime) {
+void EffectAttack::UpdateObject(const float deltaTime) {
 	if (!m_Active) return;
 	if (m_animation->IfAnimationEnds()) {
 		SetActive(false);

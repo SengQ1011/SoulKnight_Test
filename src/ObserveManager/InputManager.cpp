@@ -8,14 +8,15 @@
 #include "Util/Input.hpp"
 
 void InputManager::Update() {
-	static const std::array<std::pair<Util::Keycode, char>, 9> keys = {{
+	static const std::array<std::pair<Util::Keycode, char>, 10> keys = {{
 		{Util::Keycode::W, 'W'},	// 上
 		{Util::Keycode::S, 'S'},	// 下
 		{Util::Keycode::A, 'A'},	// 左
 		{Util::Keycode::D, 'D'},	// 右
 		{Util::Keycode::E, 'E'},	// 開啓/打開
 		{Util::Keycode::J, 'J'},	// 攻擊
-		{Util::Keycode::U, 'U'},	// 切換武器
+		{Util::Keycode::L, 'L'},	// 切換武器
+		{Util::Keycode::U, 'U'},	// 技能
 		{Util::Keycode::I, 'I'},
 		{Util::Keycode::K, 'K'}
 	}};
