@@ -78,29 +78,6 @@ namespace Tool
 		return start + glm::vec2(static_cast<float>(grid.x) * tileSize.x, -static_cast<float>(grid.y) * tileSize.y);
 	}
 
-	// glm::ivec2 FindIndexWhichGridObjectIsInside(const glm::vec2 &regionGridCount,
-	// 										   const glm::vec2 &unitGridSize,
-	// 										   const glm::vec2 &objectWorldCoord,
-	// 										   const glm::vec2 &regionCenterPointWorldCoord)
-	// {
-	// 	// 计算区域左上角（阵列最低点）的世界坐标
-	// 	glm::vec2 topLeftWorldCoord  = unitGridSize * regionGridCount / 2.0f; // 先找右上角
-	// 	topLeftWorldCoord  *= glm::vec2(-1,1); // 换成左上角
-	// 	topLeftWorldCoord  += regionCenterPointWorldCoord; // 若是特定房间则转移中心点，没有则中心不变
-	//
-	// 	// 计算以左上角为参考的坐标
-	// 	const glm::vec2 offset = (objectWorldCoord - topLeftWorldCoord) * glm::vec2(1, -1);
-	//
-	// 	// const glm::ivec2 regionIndex = glm::vec2(std::floor(offset.x/unitGridSize.x), std::floor(offset.y/unitGridSize.y));
-	// 	const glm::ivec2 regionIndex = glm::vec2(floor(offset/unitGridSize));
-	// 	if (regionIndex.x < 0 || regionIndex.x >= static_cast<int>(regionGridCount.x) ||
-	// 		regionIndex.y < 0 || regionIndex.y >= static_cast<int>(regionGridCount.y))
-	// 	{
-	// 		LOG_DEBUG("FindIndexWhichGridObjectIsInside returned false");
-	// 		return {-1, -1};
-	// 	}
-	// 	return regionIndex;
-	// }
 	glm::ivec2 FindIndexWhichGridObjectIsInside(const glm::vec2 &regionGridCount,
 											const glm::vec2 &unitGridSize,
 											const glm::vec2 &objectWorldCoord,

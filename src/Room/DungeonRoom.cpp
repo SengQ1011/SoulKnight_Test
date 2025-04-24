@@ -23,41 +23,12 @@ void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 {
 	Room::Start(player);
 
-	CreateGridAndVisibleGrid();
-	CreateCorridorInDirection(Direction::UP);
-	CreateCorridorInDirection(Direction::DOWN);
-	CreateCorridorInDirection(Direction::LEFT);
-	CreateCorridorInDirection(Direction::RIGHT);
-
-
-	m_Door = m_Factory.lock()->createRoomObject("object_door_0","door");
-	m_Door->SetWorldCoord(glm::vec2(0));
-	m_CachedCamera.lock()->AddChild(m_Door);
-	m_CachedRenderer.lock()->AddChild(m_Door);
-	AddRoomObject(m_Door);
+	CreateGrid();
 }
 
 void DungeonRoom::Update()
 {
 	Room::Update();
-
-	// TODO:要做onEvent了喔
-	if (Util::Input::IsKeyDown(Util::Keycode::B) && m_Door)
-	{
-		const auto doorComp = m_Door->GetComponent<DoorComponent>(ComponentType::DOOR);
-		if (doorComp->GetCurrentState() == DoorComponent::State::OPENED)
-		{
-			doorComp->DoorClosed();
-			LOG_DEBUG("close? {}",static_cast<int>(doorComp->GetCurrentState()));
-		}
-		else if (doorComp->GetCurrentState() == DoorComponent::State::CLOSED)
-		{
-			doorComp->DoorOpened();
-			LOG_DEBUG("open? {}",static_cast<int>(doorComp->GetCurrentState()));
-		}
-	}
-	// TODO：可能可以刪除
-
 }
 
 void DungeonRoom::LoadFromJSON()
@@ -66,7 +37,7 @@ void DungeonRoom::LoadFromJSON()
 	InitializeRoomObjects(jsonData);
 }
 
-bool DungeonRoom::IsPlayerInside() const
+bool DungeonRoom::IsPlayerInsideRegion() const
 {
 	const auto player = m_Player.lock();
 	if (!player) return false;
@@ -78,7 +49,20 @@ bool DungeonRoom::IsPlayerInside() const
 	   (player->m_WorldCoord.y > roomWorldCoord.y - roomRegionInPixel.y/2.0f);
 }
 
-void DungeonRoom::CreateGridAndVisibleGrid()
+bool DungeonRoom::IsPlayerInsideRoom() const
+{
+	const auto player = m_Player.lock();
+	if (!player) return false;
+	const auto roomWorldCoord = m_RoomSpaceInfo.m_WorldCoord;
+	const auto roomSizeInPixel = m_RoomSpaceInfo.m_RoomSize * m_RoomSpaceInfo.m_TileSize;
+	constexpr float epsilon = 16.0f; // 防止被鎖在門外 TODO:範圍有點奇怪，向下偏了
+	return (player->m_WorldCoord.x < roomWorldCoord.x + (roomSizeInPixel.x/2.0f - epsilon)) &&
+	   (player->m_WorldCoord.y < roomWorldCoord.y + (roomSizeInPixel.y/2.0f - epsilon)) &&
+	   (player->m_WorldCoord.x > roomWorldCoord.x - (roomSizeInPixel.x/2.0f - epsilon)) &&
+	   (player->m_WorldCoord.y > roomWorldCoord.y - (roomSizeInPixel.y/2.0f - epsilon));
+}
+
+void DungeonRoom::CreateGrid()
 {
 	const float gridSize = m_RoomSpaceInfo.m_RoomRegion.x;
 	const float tileSize = m_RoomSpaceInfo.m_TileSize.x;
@@ -128,102 +112,181 @@ float DungeonRoom::IntersectionArea(const Rect& a, const Rect& b) {
 
 void DungeonRoom::CreateCorridorInDirection(Direction dir)
 {
-	constexpr float corridorWidth = 7.0f;
-	const glm::vec2 gridCount = m_RoomSpaceInfo.m_RoomRegion;
-	const glm::vec2 center = gridCount / 2.0f;
-	const glm::vec2 roomSize = m_RoomSpaceInfo.m_RoomSize;
+    constexpr float corridorWidth = 7.0f;
+    const glm::vec2 center = m_RoomSpaceInfo.m_RoomRegion / 2.0f;
+    const glm::vec2 roomSize = m_RoomSpaceInfo.m_RoomSize;
 
-	const glm::vec2 tileSize = m_RoomSpaceInfo.m_TileSize;
-	glm::vec2 topLeftWorldCoord = (gridCount - glm::vec2(1)) * tileSize / 2.0f ;
-	topLeftWorldCoord *= glm::vec2(-1,1);
-	topLeftWorldCoord += m_RoomSpaceInfo.m_WorldCoord; // 轉移中心點
+    glm::ivec2 limitStart, limitEnd;
+    glm::ivec2 doorStart, doorEnd;
+    glm::vec2 delta;
+    int doorLine = 0;
 
-	// 根據方向決定偏移方向與邊界終點
-	glm::vec2 delta; // 通道方向單位向量
-	glm::ivec2 limitStart, limitEnd;
-	switch (dir)
-	{
-	case Direction::UP:
-		delta = glm::vec2(0, -1);
-		limitStart = glm::ivec2(center.x - corridorWidth / 2, 0);
-		limitEnd   = glm::ivec2(center.x + corridorWidth / 2, center.y - roomSize.y/2);
-		break;
-	case Direction::DOWN:
-		delta = glm::vec2(0, 1);
-		limitStart = glm::ivec2(center.x - corridorWidth / 2, center.y + roomSize.y/2);
-		limitEnd   = glm::ivec2(center.x + corridorWidth / 2, gridCount.y);
-		break;
-	case Direction::LEFT:
-		delta = glm::vec2(-1, 0);
-		limitStart = glm::ivec2(0, center.y - corridorWidth / 2);
-		limitEnd   = glm::ivec2(center.x - roomSize.x/2, center.y + corridorWidth / 2);
-		break;
-	case Direction::RIGHT:
-		delta = glm::vec2(1, 0);
-		limitStart = glm::ivec2(center.x + roomSize.x/2, center.y - corridorWidth / 2);
-		limitEnd = glm::ivec2(gridCount.x, center.y + corridorWidth / 2);
-		break;
-	}
-	const auto camera = m_CachedCamera.lock();
-	const auto root = m_CachedRenderer.lock();
-	const auto factory = m_Factory.lock();
-	if (delta.x == 0)
-	{
-		for (int row = limitStart.y; row < limitEnd.y; row++)
-		{
-			for (int col = limitStart.x; col < limitEnd.x; col++)
-			{
-				// TODO：墙壁动态建构的要手动调位置也 要加个offset吗？
-				glm::vec2 pos = topLeftWorldCoord + glm::vec2(static_cast<float>(col) * tileSize.x, -static_cast<float>(row) * tileSize.y);
-				std::shared_ptr<nGameObject> object;
-				if (col == limitStart.x || col == limitEnd.x - 1)
-				{
-					// pos += glm::vec2(0,1.5f);
-					object = factory->createRoomObject("w604","Wall");
-					m_Mark[row][col] = 1;
-				}
-				else object = factory->createRoomObject("f601","Floor");
+    switch (dir)
+    {
+    case Direction::UP:
+        delta = {0, -1};
+        limitStart = {center.x - corridorWidth / 2, 0};
+        limitEnd = {center.x + corridorWidth / 2, center.y - roomSize.y / 2};
+    	doorLine = static_cast<int>(center.y) - static_cast<int>(roomSize.y / 2); // 直接捨去小數-1變index0~34
+        doorStart = {center.x - (corridorWidth - 2) / 2, doorLine};
+        doorEnd = {center.x + (corridorWidth - 2) / 2, doorLine};
+        break;
+    case Direction::DOWN:
+        delta = {0, 1};
+        limitStart = {center.x - corridorWidth / 2, center.y + roomSize.y / 2};
+        limitEnd = {center.x + corridorWidth / 2, m_RoomSpaceInfo.m_RoomRegion.y};
+        doorLine = static_cast<int>(center.y) + static_cast<int>(roomSize.y / 2);
+        doorStart = {center.x - (corridorWidth - 2) / 2, doorLine};
+        doorEnd = {center.x + (corridorWidth - 2) / 2, doorLine};
+        break;
+    case Direction::LEFT:
+        delta = {-1, 0};
+        limitStart = {0, center.y - corridorWidth / 2};
+        limitEnd = {center.x - roomSize.x / 2, center.y + corridorWidth / 2};
+    	doorLine = static_cast<int>(center.x) - static_cast<int>(roomSize.x / 2);
+        doorStart = {doorLine, center.y - (corridorWidth - 2) / 2};
+        doorEnd = {doorLine, center.y + (corridorWidth - 2) / 2};
+        break;
+    case Direction::RIGHT:
+        delta = {1, 0};
+        limitStart = {center.x + roomSize.x / 2, center.y - corridorWidth / 2};
+        limitEnd = {m_RoomSpaceInfo.m_RoomRegion.x, center.y + corridorWidth / 2};
+    	doorLine = static_cast<int>(center.x) + static_cast<int>(roomSize.x / 2);
+        doorStart = {doorLine, center.y - (corridorWidth - 2) / 2};
+        doorEnd = {doorLine, center.y + (corridorWidth - 2) / 2};
+        break;
+    }
 
-				object->SetWorldCoord(pos);
-				camera->AddChild(object);
-				root->AddChild(object);
-				AddRoomObject(object);
-			}
-		}
+	// 建通道地板和墻壁
+    for (int row = limitStart.y; row < limitEnd.y; ++row)
+    {
+        for (int col = limitStart.x; col < limitEnd.x; ++col)
+        {
+            const bool isWall = (delta.x == 0) ? (col == limitStart.x || col == limitEnd.x - 1)
+                                              : (row == limitStart.y || row == limitEnd.y - 1);
+            if(isWall)
+            {
+	            CreateWall(row, col);
+            	continue;
+            }
+        	CreateFloor(row,col);
+        }
+    }
 
-	}
-	else if (delta.y == 0)
-	{
-		for (int col = limitStart.x; col < limitEnd.x; col++)
-		{
-			for (int row = limitStart.y; row < limitEnd.y; row++)
-			{
-				glm::vec2 pos = topLeftWorldCoord + glm::vec2(static_cast<float>(col) * tileSize.x, -static_cast<float>(row) * tileSize.y);
-				std::shared_ptr<nGameObject> object;
-				if (row == limitStart.y || row == limitEnd.y - 1)
-				{
-					// pos += glm::vec2(0,1.5f);
-					object = factory->createRoomObject("w604","Wall");
-					m_Mark[row][col] = 1;
-				}
-				else object = factory->createRoomObject("f601","Floor");
-
-				object->SetWorldCoord(pos);
-				camera->AddChild(object);
-				root->AddChild(object);
-				AddRoomObject(object);
-			}
-		}
-	}
+    // 建門
+    if (delta.x == 0)
+    {
+        for (int col = doorStart.x; col < doorEnd.x; ++col) CreateDoor(doorLine, col);
+    }
+    else
+    {
+        for (int row = doorStart.y; row < doorEnd.y; ++row) CreateDoor(row, doorLine);
+    }
 }
 
-void DungeonRoom::DebugDoorPosition()
+void DungeonRoom::CreateWallInDirection(Direction dir)
 {
-	ImGui::Begin("Current Room Grid Viewer Can't Spawn");
+	constexpr float corridorWidth = 7.0f;
+    const glm::vec2 center = m_RoomSpaceInfo.m_RoomRegion / 2.0f;
+    const glm::vec2 roomSize = m_RoomSpaceInfo.m_RoomSize;
 
+    glm::ivec2 wallStart, wallEnd;
+    glm::vec2 delta;
+    int doorLine = 0;
 
+    switch (dir)
+    {
+    case Direction::UP:
+        delta = {0, -1};
+    	doorLine = static_cast<int>(center.y) - static_cast<int>(roomSize.y / 2); // 直接捨去小數-1變index0~34
+        wallStart = {center.x - (corridorWidth - 2) / 2, doorLine};
+        wallEnd = {center.x + (corridorWidth - 2) / 2, doorLine};
+        break;
+    case Direction::DOWN:
+        delta = {0, 1};
+        doorLine = static_cast<int>(center.y) + static_cast<int>(roomSize.y / 2);
+        wallStart = {center.x - (corridorWidth - 2) / 2, doorLine};
+        wallEnd = {center.x + (corridorWidth - 2) / 2, doorLine};
+        break;
+    case Direction::LEFT:
+        delta = {-1, 0};
+    	doorLine = static_cast<int>(center.x) - static_cast<int>(roomSize.x / 2);
+        wallStart = {doorLine, center.y - (corridorWidth - 2) / 2};
+        wallEnd = {doorLine, center.y + (corridorWidth - 2) / 2};
+        break;
+    case Direction::RIGHT:
+        delta = {1, 0};
+    	doorLine = static_cast<int>(center.x) + static_cast<int>(roomSize.x / 2);
+        wallStart = {doorLine, center.y - (corridorWidth - 2) / 2};
+        wallEnd = {doorLine, center.y + (corridorWidth - 2) / 2};
+        break;
+    }
 
-	ImGui::End();
+    // 建門
+    if (delta.x == 0)
+    {
+        for (int col = wallStart.x; col < wallEnd.x; ++col) CreateWall(doorLine, col);
+    }
+    else
+    {
+        for (int row = wallStart.y; row < wallEnd.y; ++row) CreateWall(row, doorLine);
+    }
+}
+
+void DungeonRoom::CreateWall(int row, int col)
+{
+    auto factory = m_Factory.lock();
+    glm::vec2 pos = Tool::RoomGridToWorld({col, row}, m_RoomSpaceInfo.m_TileSize, m_RoomSpaceInfo.m_WorldCoord, m_RoomSpaceInfo.m_RoomRegion);
+
+    auto wall = factory->createRoomObject("w604", "Wall");
+	wall->SetPosOffset(wall->GetPosOffset() + glm::vec2{0,1.5f}); // 手動調整
+    wall->SetWorldCoord(pos);
+    AddRoomObject(wall);
+
+    m_Mark[row][col] = 1;
+}
+
+void DungeonRoom::CreateFloor(int row, int col)
+{
+	auto factory = m_Factory.lock();
+	glm::vec2 pos = Tool::RoomGridToWorld({col, row}, m_RoomSpaceInfo.m_TileSize, m_RoomSpaceInfo.m_WorldCoord, m_RoomSpaceInfo.m_RoomRegion);
+
+	auto object = factory->createRoomObject("f601", "Floor");
+	object->SetWorldCoord(pos);
+	AddRoomObject(object);
+}
+
+void DungeonRoom::CreateDoor(int row, int col)
+{
+    auto factory = m_Factory.lock();
+    auto camera = m_CachedCamera.lock();
+    auto root = m_CachedRenderer.lock();
+
+	m_Mark[row][col] = 1;
+
+    glm::vec2 pos = Tool::RoomGridToWorld({col, row}, m_RoomSpaceInfo.m_TileSize, m_RoomSpaceInfo.m_WorldCoord, m_RoomSpaceInfo.m_RoomRegion);
+    auto door = factory->createRoomObject("object_door_0", "door");
+    door->SetWorldCoord(pos);
+    AddRoomObject(door);
+    m_Doors.emplace_back(door);
+}
+
+void DungeonRoom::DebugDungeonRoom()
+{
+	// ImGui::Begin("Door Position Offset test");
+	// static glm::vec2 pos = {0,0};
+	// ImGui::InputFloat("positionX", &pos[0],1.0f, 1.0f, "%.3f");
+	// ImGui::InputFloat("positionY", &pos[1],1.0f, 1.0f, "%.3f");
+	// static glm::vec2 pos2 = {0,0};
+	// ImGui::InputFloat("positionColliderX", &pos2[0],1.0f, 1.0f, "%.3f");
+	// ImGui::InputFloat("positionColliderY", &pos2[1],1.0f, 1.0f, "%.3f");
+	// m_Door->SetWorldCoord(pos);
+	// if (ImGui::Button("Door"))
+	// {
+	// 	m_Door->SetWorldCoord(pos);
+	// }
+	// const auto collider = m_Door->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	// ImGui::End();
 }
 
 

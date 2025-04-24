@@ -1,0 +1,1438 @@
+{
+    "room_region_y": 35.0,
+    "room_region_x": 35.0,
+    "room_size_y": 27.0,
+    "room_size_x": 27.0,
+    "tile_height": 16.0,
+    "tile_width": 16.0,
+    "roomObject": [
+        {
+            "ID": "floor2727",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                0.0
+            ],
+            "Size": [
+                432.0,
+                432.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -192.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -176.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -160.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -144.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -80.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                80.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                144.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                160.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                176.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                192.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                209.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                193.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -192.0,
+                193.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                192.0,
+                193.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                193.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                131.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                131.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_iceMiningCart",
+            "Class": "nGameObject",
+            "Position": [
+                -122.0,
+                118.0
+            ],
+            "Size": [
+                28.0,
+                38.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                115.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                115.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                83.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                67.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                51.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -80.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                80.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -45.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -61.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -77.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_iceMiningCart",
+            "Class": "nGameObject",
+            "Position": [
+                118.0,
+                -106.0
+            ],
+            "Size": [
+                28.0,
+                38.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -190.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                -192.0,
+                -190.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce1",
+            "Class": "nGameObject",
+            "Position": [
+                192.0,
+                -190.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -190.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -208.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -192.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -176.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -160.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -144.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -112.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -80.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                80.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                112.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                144.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                160.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                176.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                192.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "nGameObject",
+            "Position": [
+                208.0,
+                -206.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        }
+    ]
+}

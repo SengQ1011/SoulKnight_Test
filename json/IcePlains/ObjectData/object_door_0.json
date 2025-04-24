@@ -3,6 +3,10 @@
     "isAnimated": false,
     "path": "/IcePlains/object_door_0.png",
     "ZIndex": "OBJECTLOW",
+    "posOffset": [
+        0.0,
+        8.0
+    ],
     "components": [
         {
             "Name": "collision_box",
@@ -13,7 +17,7 @@
             ],
             "Offset": [
                 0.0,
-                -6.5
+                -8.0
             ],
             "CollisionLayer": "Terrain",
             "CollisionMask": ["None"],

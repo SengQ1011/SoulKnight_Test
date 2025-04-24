@@ -41,6 +41,7 @@ set(SRC_FILES
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
+    Room/StartingRoom.cpp
     Room/UniformGrid.cpp
     RoomObject/ObstacleObject.cpp
     Scene/Complete_Scene.cpp
@@ -116,6 +117,7 @@ set(INCLUDE_FILES
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
+    Room/StartingRoom.hpp
     Room/UniformGrid.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp

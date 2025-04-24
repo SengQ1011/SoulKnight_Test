@@ -39,6 +39,13 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		roomObject->SetZIndex(100.0f);
 	}
 
+	// 設置posOffset
+	if (jsonData.contains("posOffset")) {
+		const auto data_posOffset = jsonData.at("posOffset");
+		const auto posOffset = glm::vec2(data_posOffset[0].get<float>(), data_posOffset[1].get<float>());
+		roomObject->SetPosOffset(posOffset);
+	}
+
 	//設置Components
 	if (!jsonData.contains("components")) return roomObject; // 沒有就跳過
 	for (auto& component : jsonData.at("components"))

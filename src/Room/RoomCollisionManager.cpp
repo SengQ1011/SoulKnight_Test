@@ -42,6 +42,7 @@ void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObje
 	);
 }
 
+// TODO： 沒有平行處理和空間分割
 // void RoomCollisionManager::Update()
 // {
 // 	if (Util::Input::IsKeyUp(Util::Keycode::O)) {
