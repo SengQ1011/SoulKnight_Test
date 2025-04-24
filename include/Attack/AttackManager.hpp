@@ -5,10 +5,11 @@
 #ifndef ATTACKMANAGER_HPP
 #define ATTACKMANAGER_HPP
 
-#include "Attack/ProjectilePool.hpp"
 #include "Attack/EffectAttackPool.hpp"
+#include "Attack/ProjectilePool.hpp"
+#include "ObserveManager/IManager.hpp"
 
-class AttackManager {
+class AttackManager : public IManager{
 public:
 	// 构造函数与析构函数
 	AttackManager() = default;
@@ -19,7 +20,7 @@ public:
 	AttackManager& operator=(const AttackManager&) = delete;
 
 	// 更新所有攻擊物件
-	void Update();
+	void Update() override;
 
 	//----Getter----
 	const std::vector<std::shared_ptr<Projectile>>& GetProjectiles() const { return m_projectiles; }

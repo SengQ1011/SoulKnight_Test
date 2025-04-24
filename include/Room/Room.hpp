@@ -11,6 +11,7 @@
 
 #include "RoomCollisionManager.hpp"
 #include "RoomInteractionManager.hpp"
+#include "ObserveManager/TrackingManager.hpp"
 
 class Scene;
 class Camera;
@@ -52,7 +53,7 @@ public:
 		return nullptr;  // 若找不到指定類型的 Manager 返回 nullptr
 	}
 
-	void AddManager(const ManagerTypes managerName, std::shared_ptr<void> manager) {
+	void AddManager(const ManagerTypes managerName, std::shared_ptr<IManager> manager) {
 		m_Managers[managerName] = manager;
 		LOG_DEBUG("Successfully added new Manager");
 	}
@@ -72,7 +73,7 @@ public:
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
     [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
     // [[nodiscard]] std::shared_ptr<BulletManager> GetBulletManager() const { return m_BulletManager; }
-    // [[nodiscard]] std::shared_ptr<TrackingManager> GetTrackingManager() const { return m_TrackingManager; }
+    [[nodiscard]] std::shared_ptr<TrackingManager> GetTrackingManager() const { return m_TrackingManager; }
 
     // Getter/Setter
     [[nodiscard]] const RoomSpaceInfo& GetRoomSpaceInfo() const { return m_RoomSpaceInfo; }
@@ -91,7 +92,7 @@ protected:
     // 房间属性
 	RoomSpaceInfo m_RoomSpaceInfo;
 
-	std::unordered_map<ManagerTypes, std::shared_ptr<void>> m_Managers;			// 存儲各種 Manager
+	std::unordered_map<ManagerTypes, std::shared_ptr<IManager>> m_Managers;			// 存儲各種 Manager
 
     // 房间内对象
     std::vector<std::shared_ptr<nGameObject>> m_RoomObjects;	  // 房间固定物体
@@ -103,6 +104,7 @@ protected:
 	 */
 	std::shared_ptr<RoomCollisionManager> m_CollisionManager = std::make_shared<RoomCollisionManager>();
 	std::shared_ptr<RoomInteractionManager> m_InteractionManager = std::make_shared<RoomInteractionManager>();
+	std::shared_ptr<TrackingManager> m_TrackingManager = std::make_shared<TrackingManager>();
 	/// @todo 未來可期
 
     // 緩存引用

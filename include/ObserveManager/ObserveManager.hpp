@@ -6,13 +6,13 @@
 #define OBSERVEMANAGER_HPP
 
 #include "Util/Logger.hpp"
+#include "IManager.hpp"
 
 class InputObserver;
 
-class ObserveManager {
+class ObserveManager : public IManager{
 public:
 	virtual ~ObserveManager() = default;
-	virtual void Update() = 0;
 
 	//----Getter-----
 	std::vector<std::shared_ptr<InputObserver>> GetListener() { return m_Observer; }

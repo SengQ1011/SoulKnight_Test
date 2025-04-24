@@ -85,7 +85,7 @@ public:
 		return nullptr;  // 若找不到指定類型的 Manager 返回 nullptr
 	}
 
-	void AddManager(const ManagerTypes managerName, std::shared_ptr<void> manager) {
+	void AddManager(const ManagerTypes managerName, std::shared_ptr<IManager> manager) {
 		m_Managers[managerName] = manager;
 		LOG_DEBUG("Successfully added new Manager");
 	}
@@ -99,7 +99,7 @@ protected:
 	std::shared_ptr<Room> m_CurrentRoom = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
-	std::unordered_map<ManagerTypes, std::shared_ptr<void>> m_Managers;			// 存儲各種 Manager
+	std::unordered_map<ManagerTypes, std::shared_ptr<IManager>> m_Managers;			// 存儲各種 Manager
 };
 
 #endif //SCENE_HPP

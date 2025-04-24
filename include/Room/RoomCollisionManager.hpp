@@ -8,11 +8,12 @@
 #define ROOMCOLLISIONMANAGER_HPP
 
 #include "Room/UniformGrid.hpp"
+#include "ObserveManager/IManager.hpp"
 
 class nGameObject;
 struct CollisionInfo;
 
-class RoomCollisionManager {
+class RoomCollisionManager : public IManager {
 public:
 	RoomCollisionManager() {m_SpatialGrid.Initialize(560, 560, 32); };
 	~RoomCollisionManager() = default;
@@ -21,7 +22,7 @@ public:
 	void RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 	void UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 
-	void Update(); // 更新碰撞情況
+	void Update() override; // 更新碰撞情況
 	void ShowColliderBox(); // 一鍵顯示當前房間碰撞箱
 
 	//是否啓動管理員

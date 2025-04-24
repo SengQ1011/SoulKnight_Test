@@ -29,8 +29,9 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 	// m_CollisionManager = std::make_shared<RoomCollisionManager>();
 	// m_InteractionManager = std::make_shared<RoomInteractionManager>();
 
-	// AddManager(ManagerTypes::ROOMCOLLISION,m_CollisionManager);
-	// AddManager(ManagerTypes::ROOMINTERACTIONMANAGER, m_InteractionManager);
+	AddManager(ManagerTypes::ROOMCOLLISION,m_CollisionManager);
+	AddManager(ManagerTypes::ROOMINTERACTIONMANAGER, m_InteractionManager);
+	AddManager(ManagerTypes::TRACKING,m_TrackingManager);
 
 	m_InteractionManager->SetPlayer(player);
 
@@ -44,11 +45,13 @@ void Room::Update() {
 		if (obj) obj->Update();
 	}
 
+	for (auto& [type, manager] : m_Managers) { manager->Update(); }
+
 	// 碰撞管理（效能暴鲤龙）
-	m_CollisionManager->Update();
+	// m_CollisionManager->Update();
 
 	// 互動管理
-	m_InteractionManager->Update();
+	// m_InteractionManager->Update();
 	if (Util::Input::IsKeyDown(Util::Keycode::F))
 		m_InteractionManager->TryInteractWithClosest();
 }
@@ -179,6 +182,7 @@ void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &o
 
 	RegisterCollisionManger(object);
 	RegisterInteractionManager(object);
+	RegisterTrackingManager(object);
 }
 
 void Room::RegisterCollisionManger(const std::shared_ptr<nGameObject>& object) const
@@ -206,6 +210,29 @@ void Room::RegisterInteractionManager(const std::shared_ptr<nGameObject> &object
 		{
 			if (renderer) renderer->AddChild(promptObj);
 			if (camera) camera->AddChild(promptObj);
+		}
+	}
+}
+
+void Room::RegisterTrackingManager(const std::shared_ptr<nGameObject> &object) const
+{
+	if (object->GetZIndexType() < ZIndexType::ATTACK) return;
+	const auto renderer = m_CachedRenderer.lock();
+	const auto camera = m_CachedCamera.lock();
+	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+		switch (collComp->GetCollisionLayer())
+		{
+		case CollisionLayers_Terrain:
+			m_TrackingManager->AddTerrainObject(object);
+			break;
+		case CollisionLayers_Enemy:
+			m_TrackingManager->AddEnemy(std::dynamic_pointer_cast<Character>(object));
+			break;
+		case CollisionLayers_Player:
+			m_TrackingManager->SetPlayer(std::dynamic_pointer_cast<Character>(object));
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -243,6 +270,7 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 			}
 		}
 	}
+	// TODO:沒有TrackingManager的自動化刪除
 }
 
 

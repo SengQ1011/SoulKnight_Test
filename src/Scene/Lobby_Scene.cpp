@@ -43,8 +43,8 @@ void LobbyScene::Start()
 
 	m_CurrentRoom = m_LobbyRoom;
 
-	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetRoomObjects());
-	m_trackingManager->AddTerrainObjects(m_LobbyRoom->GetWallColliders());
+	// m_LobbyRoom->GetTrackingManager()->AddTerrainObjects(m_LobbyRoom->GetRoomObjects());
+	// m_LobbyRoom->GetTrackingManager()->AddTerrainObjects(m_LobbyRoom->GetWallColliders());
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
@@ -53,16 +53,16 @@ void LobbyScene::Start()
 void LobbyScene::Update()
 {
 	// Input处理
-	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	inputManager->Update();
-	m_trackingManager->Update();
+	// auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
+	// inputManager->Update();
 
 	m_Player->Update();
 	m_Enemy->Update();
 
 	// 更新房间
 	m_LobbyRoom->Update();
-	m_AttackManager->Update();
+	// m_AttackManager->Update();
+	for (auto& [type,manager]: m_Managers) manager->Update();
 
 	// 更新相机
 	m_Camera->Update();
@@ -91,7 +91,7 @@ void LobbyScene::CreatePlayer()
 		m_Camera->AddChild(collision->GetVisibleBox());
 	}
 
-	m_trackingManager->SetPlayer(m_Player);
+	// m_LobbyRoom->GetTrackingManager()->SetPlayer(m_Player);
 	// 将玩家添加到场景根节点和相机
 	GetRoot().lock()->AddChild(m_Player);
 	m_Camera->AddChild(m_Player);
@@ -105,7 +105,7 @@ void LobbyScene::CreateEnemy()
 	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
 	m_Root->AddChild(collision2->GetVisibleBox());
 	m_Camera->AddChild(collision2->GetVisibleBox());
-	m_trackingManager->AddEnemy(m_Enemy);
+	// m_LobbyRoom->GetTrackingManager()->AddEnemy(m_Enemy);
 	m_Root->AddChild(m_Enemy);
 	m_Camera->AddChild(m_Enemy);
 }
@@ -120,10 +120,7 @@ void LobbyScene::InitializeSceneManagers()
 {
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
-	AddManager(ManagerTypes::ROOMCOLLISION, m_LobbyRoom->GetCollisionManager());
-	// AddManager(ManagerTypes::ATTACK,m_LobbyRoom->GetAttackManager());
 	AddManager(ManagerTypes::ATTACK,m_AttackManager);
-	AddManager(ManagerTypes::TRACKING, m_trackingManager);
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	// 注册输入观察者

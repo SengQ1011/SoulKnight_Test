@@ -76,5 +76,6 @@ void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
 		m_WallColliders.emplace_back(collider);
 
 		RegisterCollisionManger(collider);
+		RegisterTrackingManager(collider);
 	}
 }

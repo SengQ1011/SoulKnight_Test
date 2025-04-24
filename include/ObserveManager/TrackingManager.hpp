@@ -23,6 +23,7 @@ public:
     void AddEnemy(const std::shared_ptr<Character>& enemy) { m_enemies.push_back(enemy); }
     void RemoveEnemy(const std::shared_ptr<Character>& enemy);
 
+	void AddTerrainObject(const std::shared_ptr<nGameObject>& terrain){ m_terrainObjects.push_back(terrain);}
 	void AddTerrainObjects(const std::vector<std::shared_ptr<nGameObject>>& terrains){
 		for(const auto& terrain : terrains ) {
 			m_terrainObjects.push_back(terrain);

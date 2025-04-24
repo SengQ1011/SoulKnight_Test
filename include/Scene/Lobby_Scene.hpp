@@ -30,7 +30,7 @@ protected:
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 
-	std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
+	// std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
 
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
 

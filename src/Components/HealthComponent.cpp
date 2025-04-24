@@ -98,9 +98,9 @@ void HealthComponent::OnDeath() const
 	if (movementComp)
 		movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f)); // 移動向量設爲0
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	scene->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(character);
+	scene->GetCurrentRoom()->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(character);
 
-	auto trackingManager = scene->GetManager<TrackingManager>(ManagerTypes::TRACKING);
+	auto trackingManager = scene->GetCurrentRoom()->GetManager<TrackingManager>(ManagerTypes::TRACKING);
 	if (character->GetType() == CharacterType::ENEMY)
 	{
 		trackingManager->RemoveEnemy(character);
