@@ -14,6 +14,7 @@ set(SRC_FILES
     Components/AttackComponent.cpp
     Components/CollisionComponent.cpp
     Components/DoorComponent.cpp
+    Components/EnemyAI/AttackStrategy.cpp
     Components/EnemyAI/MoveStrategy.cpp
     Components/EnemyAI/WanderAI.cpp
     Components/FollowerComponent.cpp

@@ -45,6 +45,7 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         src/Attack/Attack.cpp
+        src/Components/EnemyAI/AttackStrategy.cpp
 )
 
 if(MSVC)

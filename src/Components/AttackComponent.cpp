@@ -70,11 +70,11 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	auto character = GetOwner<Character>();
 	if (!character)
 		return;
-	if (m_Weapons.size() >= m_maxWeapon)
+	if (m_Weapons.size() > m_maxWeapon)
 	{
-		RemoveWeapon(); // 刪除舊武器
+		RemoveWeapon(); // 移除舊武器
 	}
-	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
 	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
 

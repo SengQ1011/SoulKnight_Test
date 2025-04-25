@@ -78,7 +78,7 @@ void LobbyScene::CreatePlayer()
 	}
 
 	// 设置玩家的初始位置
-	m_Player->SetWorldCoord(glm::vec2(0, 16*2)); // 初始位置为右两格，上两格
+	m_Player->SetWorldCoord(glm::vec2(-16*2, 16*2)); // 初始位置为右两格，上两格
 
 	// 获取碰撞组件并添加到场景和相机
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -98,7 +98,7 @@ void LobbyScene::CreatePlayer()
 
 void LobbyScene::CreateEnemy()
 {
-	m_Enemy = CharacterFactory::GetInstance().createEnemy(1);
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(3);
 	m_Enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");

@@ -25,7 +25,8 @@
     "monsterType": "Wander",
     "animations": {
       "STANDING": ["/monster/Icefield/enemy30_crystalWorm/enemy30_4.png","/monster/Icefield/enemy30_crystalWorm/enemy30_5.png"],
-      "MOVING": ["/monster/Icefield/enemy30_crystalWorm/enemy30_0.png", "/monster/Icefield/enemy30_crystalWorm/enemy30_1.png",
+      "MOVING": ["/monster/Icefield/enemy30_crystalWorm/enemy30_0.png",
+        "/monster/Icefield/enemy30_crystalWorm/enemy30_0.png", "/monster/Icefield/enemy30_crystalWorm/enemy30_1.png",
         "/monster/Icefield/enemy30_crystalWorm/enemy30_2.png","/monster/Icefield/enemy30_crystalWorm/enemy30_3.png"],
       "DEAD": ["/monster/Icefield/enemy30_crystalWorm/enemy30_6.png"]
     },
@@ -45,12 +46,14 @@
     "animations": {
       "STANDING": ["/monster/Icefield/enemy31_miner/enemy31_4.png", "/monster/Icefield/enemy31_miner/enemy31_5.png"],
       "MOVING": ["/monster/Icefield/enemy31_miner/enemy31_0.png", "/monster/Icefield/enemy31_miner/enemy31_1.png",
-        "/monster/Icefield/enemy31_miner/enemy31_2.png","/monster/Icefield/enemy31_miner/enemy31_3.png,"],
+        "/monster/Icefield/enemy31_miner/enemy31_2.png","/monster/Icefield/enemy31_miner/enemy31_3.png"],
+      "ATTACK": ["/monster/Icefield/enemy31_miner/enemy31_0.png", "/monster/Icefield/enemy31_miner/enemy31_1.png",
+        "/monster/Icefield/enemy31_miner/enemy31_2.png","/monster/Icefield/enemy31_miner/enemy31_3.png"],
       "DEAD": ["/monster/Icefield/enemy31_miner/enemy31_6.png"]
     },
     "monsterPoint": 1,
     "maxHp": 7,
-    "speed": 1.0,
+    "speed": 0.7,
     "attackType": ["Melee"],
     "haveWeapon": 1,
     "weaponId": 501,
@@ -63,8 +66,12 @@
     "monsterType": "Attack",
     "animations": {
       "STANDING": ["/monster/Icefield/enemy32_eliteMiner/enemy32_4.png", "/monster/Icefield/enemy32_eliteMiner/enemy32_5.png"],
-      "MOVING": ["/monster/Icefield/enemy32_eliteMiner/enemy32_0.png", "/monster/Icefield/enemy32_eliteMiner/enemy32_1.png",
-        "/monster/Icefield/enemy32_eliteMiner/enemy31_2.png","/monster/Icefield/enemy32_eliteMiner/enemy32_3.png,"],
+      "MOVING": ["/monster/Icefield/enemy32_eliteMiner/enemy32_0.png",
+        "/monster/Icefield/enemy32_eliteMiner/enemy32_0.png", "/monster/Icefield/enemy32_eliteMiner/enemy32_1.png",
+        "/monster/Icefield/enemy32_eliteMiner/enemy31_2.png","/monster/Icefield/enemy32_eliteMiner/enemy32_3.png"],
+      "Attack": ["/monster/Icefield/enemy32_eliteMiner/enemy32_0.png",
+        "/monster/Icefield/enemy32_eliteMiner/enemy32_0.png", "/monster/Icefield/enemy32_eliteMiner/enemy32_1.png",
+        "/monster/Icefield/enemy32_eliteMiner/enemy31_2.png","/monster/Icefield/enemy32_eliteMiner/enemy32_3.png"],
       "DEAD": ["/monster/Icefield/enemy32_eliteMiner/enemy32_6.png"]
     },
     "monsterPoint": 1,
@@ -72,7 +79,7 @@
     "speed": 1.0,
     "attackType": ["Melee"],
     "haveWeapon": 1,
-    "weaponId": 1,
+    "weaponId": 501,
     "size": 16.0
   }
 ]

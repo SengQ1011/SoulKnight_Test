@@ -5,13 +5,14 @@
 #include "Components/AiComponent.hpp"
 
 #include "Components/AttackComponent.hpp"
-#include "Components/CollisionComponent.hpp"
-#include "Components/EnemyAI/MoveStrategy.hpp"
 #include "Components/EnemyAI/AttackStrategy.hpp"
+#include "Components/EnemyAI/MoveStrategy.hpp"
 #include "Components/EnemyAI/UtilityStrategy.hpp"
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Util/Image.hpp"
 #include "Util/Time.hpp"
 
 
@@ -26,30 +27,51 @@ AIComponent::AIComponent(const MonsterType MonsterType, const std::shared_ptr<IM
 
 void AIComponent::Init()
 {
+	m_readyAttackTimer = m_readyAttackTime;
 	const auto enemy = GetOwner<Character>();
+
+	std::string imagePath = RESOURCE_DIR"/icon/double-exclamation-mark.png";
+	m_readyAttackIcon = std::make_shared<nGameObject>();
+	m_readyAttackIcon->SetDrawable(std::make_shared<Util::Image>(imagePath));
+	m_readyAttackIcon->SetZIndexType(ZIndexType::UI);
+	m_readyAttackIcon->m_WorldCoord = GetOwner<Character>()->GetWorldCoord() + m_iconOffset;
+	// enemy->AddChild(m_readyAttackIcon);
+	HideReadyAttackIcon();
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	scene->GetRoot().lock()->AddChild(m_readyAttackIcon);
+	scene->GetCamera().lock()->AddChild(m_readyAttackIcon);
+
 	m_context.enemy = enemy;
 	m_context.moveComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
 	m_context.attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK);
 	m_context.stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
+
+	// if (auto attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+	// 	if(auto currentWeapon = attackComp->GetCurrentWeapon()) {
+	// 		// auto type = currentWeapon->GetWeaponType();
+	// 	}
+	// }
+
 }
 
 
-void AIComponent::Update()
-{
-	float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
-
+void AIComponent::Update() {
+	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+	m_readyAttackIcon->m_WorldCoord = GetOwner<Character>()->GetWorldCoord() + m_iconOffset;
 	if (m_moveStrategy)
 		m_moveStrategy->Update(m_context, deltaTime);
-	if (m_utilityStrategy)
-		m_utilityStrategy->Update(m_context);
+
 	if (!m_attackStrategy.empty())
 		for(const auto& pair : m_attackStrategy) {
 			pair.second->Update(m_context, deltaTime);
 		}
+	if (m_utilityStrategy)
+		m_utilityStrategy->Update(m_context);
 }
 
-void AIComponent::SetEnemyState(const enemyState state) const
+void AIComponent::SetEnemyState(const enemyState state)
 {
+	m_enemyState = state;
 	const auto enemy = GetOwner<Character>();
 	if (!enemy)
 		return;
@@ -64,38 +86,18 @@ void AIComponent::SetEnemyState(const enemyState state) const
 		stateComp->SetState(State::ATTACK);
 }
 
+void AIComponent::ShowReadyAttackIcon() const {
+	m_readyAttackIcon->SetVisible(true);
+}
+
+void AIComponent::HideReadyAttackIcon()
+{
+	m_readyAttackIcon->SetVisible(false);
+}
+
 void AIComponent::HandleCollision(CollisionInfo &info)
 {
-	// 攻擊后强制進入巡邏模式
-	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB()))
-	{
-		if (character->GetType() == CharacterType::PLAYER)
-		{
-			// m_enemyState = enemyState::IDLE;
-			//  m_attackTimer = m_attackCooldown;
-		}
-	}
-
-	// 碰到地形回轉
-	if (const auto type =
-			info.GetObjectB()->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetCollisionLayer();
-		type == CollisionLayers_Terrain)
-	{
-		const auto enemy = GetOwner<Character>();
-		const auto movementComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
-
-		glm::vec2 oldDir = glm::normalize(movementComp->GetLastValidDirection());
-		glm::vec2 reflectDir = glm::reflect(oldDir, info.GetCollisionNormal());
-
-		// 如果新方向與原方向夾角太小（例如反射結果幾乎沒有改變），強制稍微偏移一下
-		if (glm::dot(oldDir, reflectDir) < -0.99f)
-		{ // 夾角約179度
-			glm::vec2 tangent = glm::vec2(-info.GetCollisionNormal().y, info.GetCollisionNormal().x); // 法線的垂直方向
-			reflectDir += tangent * 0.2f; // 稍微偏一點
-			reflectDir = glm::normalize(reflectDir);
-		}
-		movementComp->SetDesiredDirection(reflectDir);
-	}
+	m_moveStrategy->CollisionAction(info, m_context);
 }
 
 void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }

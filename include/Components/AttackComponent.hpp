@@ -37,6 +37,7 @@ public:
 	//----Setter----
 	void SetMaxWeapon(const int num) { m_maxWeapon = num; }
 	void AddWeapon(const std::shared_ptr<Weapon>& weapon);
+	void RemoveAllWeapon() { m_Weapons.clear(); }
 	void RemoveWeapon();
 	void switchWeapon();
 	void SetTarget(const std::shared_ptr<nGameObject> &target) { m_Target = target; }
