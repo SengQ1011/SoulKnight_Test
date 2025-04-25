@@ -31,6 +31,8 @@ struct SceneData
 	int Point = 0;
 	Util::ms_t DungeonStartTime = 0;
 	StageTheme StageTheme = StageTheme::IcePlains;
+	int DungeonRound = 3;
+	bool inDungeon = false;
 };
 
 class Scene {
@@ -48,7 +50,8 @@ public:
 		Result,
 	};
 
-	Scene() = default;
+	// Scene() = default;
+	explicit Scene(const SceneType sceneType = SceneType::Null) : m_SceneType(sceneType) {}
 	virtual ~Scene() = default;
 
 	virtual std::shared_ptr<SceneData> Upload()
@@ -98,6 +101,7 @@ public:
 
 protected:
 	bool m_IsChange = false;
+	SceneType m_SceneType = SceneType::Null;
 	std::shared_ptr<SceneData> m_SceneData = nullptr;
 	std::shared_ptr<Room> m_CurrentRoom = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();

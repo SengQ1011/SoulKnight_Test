@@ -8,6 +8,7 @@
 #include "Util/Logger.hpp"
 
 #include "Animation.hpp"
+#include "Components/ChestComponent.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/DoorComponent.hpp"
 #include "Components/InteractableComponent.hpp"
@@ -58,6 +59,13 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 			{
 				object->AddComponent<DoorComponent>
 				(ComponentType::DOOR);
+			}
+		},
+		{"CHEST",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+			{
+				object->AddComponent<ChestComponent>
+				(ComponentType::CHEST);
 			}
 		},
 	};

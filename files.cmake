@@ -12,6 +12,7 @@ set(SRC_FILES
     Components/AiComponent.cpp
     Components/AnimationComponent.cpp
     Components/AttackComponent.cpp
+    Components/ChestComponent.cpp
     Components/CollisionComponent.cpp
     Components/DoorComponent.cpp
     Components/EnemyAI/MoveStrategy.cpp
@@ -80,6 +81,8 @@ set(INCLUDE_FILES
     Components/AllComponentInclude.hpp
     Components/AnimationComponent.hpp
     Components/AttackComponent.hpp
+    Components/ChestComponent.hpp
+    Components/CoinComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
     Components/DoorComponent.hpp

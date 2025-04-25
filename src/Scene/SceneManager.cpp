@@ -51,8 +51,10 @@ void SceneManager::ChangeCurrentScene()
 	// 	m_CurrentScene = CreateScene(m_NextSceneType);
 	// 	m_CurrentScene->Start();
 	// }
-
 	m_CurrentScene = CreateScene(m_NextSceneType);
+	// if (!m_Data->inDungeon && m_CurrentScene.Get == Scene::SceneType::DungeonLoad)
+
+
 	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }
