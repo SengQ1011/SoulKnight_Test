@@ -29,5 +29,20 @@
     "attackRange": 28.0,
     "dropLevel": 4,
     "basicPrice": 28
+  },
+  {
+    "ID": 501,
+    "weaponType": "Melee",
+    "isSword": 1,
+    "name": "Pickaxe",
+    "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_501.png",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackRange": 20.0,
+    "dropLevel": 4,
+    "basicPrice": 28
   }
 ]

@@ -9,6 +9,8 @@
 #include <glm/vec2.hpp>
 #include <memory>
 
+
+struct CollisionInfo;
 struct EnemyContext;
 class nGameObject;
 
@@ -20,6 +22,7 @@ class IMoveStrategy
 public:
 	virtual ~IMoveStrategy() = default;
 	virtual void Update(const EnemyContext &ctx, float deltaTime) = 0;
+	void CollisionAction(CollisionInfo &info, const EnemyContext &ctx);
 
 	// 獲取範圍 [min, max] 內的隨機浮點數
 	static float RandomFloatInRange(const float min, const float max)
@@ -44,6 +47,10 @@ public:
 		// 使用極座標轉換為笛卡爾座標，生成一個單位向量
 		return glm::vec2(std::cos(angle), std::sin(angle)); // 歸一化單位圓上的隨機點
 	}
+protected:
+	float m_restTimer = 0.0f; // 休息時間計時器
+	float m_moveTimer = 0; // 移動時間計時器
+	float m_detectionRange = 200.0f;
 };
 
 //--------------------------------------------
@@ -54,14 +61,8 @@ class WanderMove final : public IMoveStrategy
 public:
 	void Update(const EnemyContext &ctx, const float deltaTime) override;
 
-	// TODO 暫時功能
-	void ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const;
-
 private:
 	glm::vec2 m_wanderDirection = glm::vec2(0, 0);
-	float m_restTimer = 0.0f; // 休息時間計時器
-	float m_wanderCooldown = 0; // 移動時間計時器
-	float m_detectionRange = 200.0f;
 };
 
 class ChaseMove final : public IMoveStrategy
@@ -71,7 +72,7 @@ public:
 	void ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const;
 
 private:
-
+	float m_attackDistance = 50.0f;
 };
 
 class NoMove final : public IMoveStrategy

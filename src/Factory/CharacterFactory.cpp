@@ -188,18 +188,20 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         		moveStrategy = std::make_shared<NoMove>();
         		utilityStrategy = std::make_shared<SummonUtility>();
         	} else if (aiType == MonsterType::ATTACK) {
-        		moveStrategy = std::make_shared<WanderMove>();
+        		moveStrategy = std::make_shared<ChaseMove>();
         	} else if (aiType == MonsterType::WANDER) {
         		moveStrategy = std::make_shared<WanderMove>();
         	}
+        	else LOG_ERROR("{}'s attackType not found", id);
+
         	// 根據攻擊類型
 			int haveWeapon = characterInfo["haveWeapon"];
         	if (haveWeapon == 0) {
         		collisionDamage = characterInfo["collisionDamage"];
         	}
         	else{
-        		const int weaponID = characterInfo["weaponID"];
-        		weapon = WeaponFactory::createWeapon(weaponID);
+        		const int weaponId = characterInfo["weaponId"];
+        		weapon = WeaponFactory::createWeapon(weaponId);
         	}
         	auto animationComp = enemy->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);

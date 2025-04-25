@@ -27,12 +27,12 @@ void Animation::PlayAnimation(bool play) {
 	if (const int frameCount = m_AnimationPaths.size(); frameCount > 0) {
 		float interval;
 		if (frameCount <= 2) {
-			interval = 250.0f; // 每張顯示250ms (4FPS)，避免過快
-		} else if (frameCount <= 5) {
+			interval = 250.0f; // 2FPS
+		} else if (frameCount <= 4) {
 			interval = 100.0f; // 10FPS
 		} else {
 			interval = 1000.0f / frameCount+5;
-			interval = std::clamp(interval, 33.0f, 100.0f);
+			interval = std::clamp(interval, 33.3f, 100.0f);
 		}
 		animation->SetInterval(interval);
 	}else{
