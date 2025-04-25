@@ -8,6 +8,7 @@
 #include "Creature/Character.hpp"
 #include "Room/DungeonRoom.hpp"
 #include "Room/MonsterRoom.hpp"
+#include "Room/PortalRoom.hpp"
 #include "Room/StartingRoom.hpp"
 #include "Tool/Tool.hpp"
 #include "Util/Input.hpp"
@@ -21,25 +22,8 @@ void DungeonMap::Start()
 	startPos *= glm::vec2(-1,1); // 左上0，0房间坐标
 	const float offsetRoom = tileSize * roomRegion;
 
-	// m_Rooms.resize(25); //
-
-	// 十字架房間
-	// for (int i=0; i < m_Rooms.size(); ++i)
-	// {
-	// 	const int x = i % static_cast<int>(mapSizeInGrid);
-	// 	const int y = i / static_cast<int>(mapSizeInGrid);
-	// 	if (x == 2 || y == 2)
-	// 	{
-	// 		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
-	// 		std::shared_ptr<DungeonRoom> room;
-	// 		if (x == 2 && y == 2)  room = std::make_shared<StartingRoom>(roomPosition,m_Loader.lock(),m_RoomObjectFactory.lock(),glm::vec2(x,y));
-	// 		else room = std::make_shared<MonsterRoom>(roomPosition,m_Loader.lock(),m_RoomObjectFactory.lock(),glm::vec2(x,y));
-	// 		m_Rooms[i] = room;
-	// 		m_Rooms[i]->Start(m_Player.lock());
-	// 		m_Rooms[i]->CharacterEnter(m_Player.lock());
-	// 	}
-	// }
-	if (GenerateMainPath()) LOG_DEBUG("yes yes");
+	//产生了主要路径
+	GenerateMainPath();
 
 	for (int i = 0; i < std::size(m_RoomInfo); ++i) {
 		if (m_RoomInfo[i].m_RoomType == RoomType::EMPTY) continue;
@@ -57,7 +41,7 @@ void DungeonMap::Start()
 			room = std::make_shared<MonsterRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
 			break;
 		case RoomType::PORTAL:
-			room = std::make_shared<StartingRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+			room = std::make_shared<PortalRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
 			break;
 		default: break;
 		}
@@ -74,20 +58,6 @@ void DungeonMap::Start()
 				room->CreateWallInDirection(dir);
 		}
 	}
-	// for (int i=0; i < m_Rooms.size(); ++i)
-	// {
-	// 	const int x = i % static_cast<int>(mapSizeInGrid);
-	// 	const int y = i / static_cast<int>(mapSizeInGrid);
-	// 	if (x == 2 && y == 2)
-	// 	{
-	// 		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
-	// 		const auto room = std::make_shared<DungeonRoom>(roomPosition,m_Loader.lock(),m_RoomObjectFactory.lock(),glm::vec2(x,y));
-	// 		m_Rooms[i] = room;
-	// 		m_Rooms[i]->Start(m_Player.lock());
-	// 		m_Rooms[i]->CharacterEnter(m_Player.lock());
-	// 		LOG_DEBUG("DungeonMap::Start {}",room->GetMapGridPos());
-	// 	}
-	// }
 }
 
 void DungeonMap::Update()
@@ -103,7 +73,6 @@ bool DungeonMap::GenerateMainPath()
 	glm::ivec2 start = {2, 2};
 	int startIndex = start.y * 5 + start.x;
 	m_RoomInfo[startIndex].m_RoomType = RoomType::STARTING;
-	// InitRoomConnections(m_RoomInfo[startIndex]);
 
 	auto dir1Opt = GetRandomValidDirection(start);
 	if (!dir1Opt) return false;
@@ -111,7 +80,6 @@ bool DungeonMap::GenerateMainPath()
 	glm::ivec2 monster1 = Move(start, dir1);
 	int mon1Index = monster1.y * 5 + monster1.x;
 	m_RoomInfo[mon1Index].m_RoomType = RoomType::MONSTER;
-	// InitRoomConnections(m_RoomInfo[mon1Index]);
 	m_RoomInfo[startIndex].m_Connections[static_cast<int>(dir1)] = true;
 	m_RoomInfo[mon1Index].m_Connections[static_cast<int>(GetOppositeDirection(dir1))] = true;
 
@@ -121,7 +89,6 @@ bool DungeonMap::GenerateMainPath()
 	glm::ivec2 monster2 = Move(monster1, dir2);
 	int mon2Index = monster2.y * 5 + monster2.x;
 	m_RoomInfo[mon2Index].m_RoomType = RoomType::MONSTER;
-	// InitRoomConnections(m_RoomInfo[mon2Index]);
 	m_RoomInfo[mon1Index].m_Connections[static_cast<int>(dir2)] = true;
 	m_RoomInfo[mon2Index].m_Connections[static_cast<int>(GetOppositeDirection(dir2))] = true;
 
@@ -131,7 +98,6 @@ bool DungeonMap::GenerateMainPath()
 	glm::ivec2 portal = Move(monster2, dir3);
 	int portalIndex = portal.y * 5 + portal.x;
 	m_RoomInfo[portalIndex].m_RoomType = RoomType::PORTAL;
-	// InitRoomConnections(m_RoomInfo[portalIndex]);
 	m_RoomInfo[mon2Index].m_Connections[static_cast<int>(dir3)] = true;
 	m_RoomInfo[portalIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir3))] = true;
 
@@ -223,7 +189,7 @@ glm::ivec2 DungeonMap::Move(const glm::ivec2& pos, Direction dir) {
 std::optional<Direction> DungeonMap::GetRandomValidDirection(const glm::ivec2 &currentPos,
 															 const std::set<Direction> &exclude)
 {
-	std::vector<Direction> dirs = {Direction::UP, Direction::RIGHT, Direction::DOWN, Direction::LEFT};
+	std::vector dirs = {Direction::UP, Direction::RIGHT, Direction::DOWN, Direction::LEFT};
 	std::shuffle(dirs.begin(), dirs.end(), std::mt19937(std::random_device{}()));
 
 	for (Direction dir : dirs) {

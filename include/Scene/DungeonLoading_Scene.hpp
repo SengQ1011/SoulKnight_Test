@@ -7,6 +7,12 @@
 
 #include "Scene/Scene.hpp"
 
+#include <future>
+
+namespace Util
+{
+	class Text;
+}
 class DungeonLoadingScene : public Scene
 {
 public:
@@ -18,7 +24,10 @@ public:
 	void Exit() override;
 	SceneType Change() override;
 
-protected:
+private:
+	// std::future<void> m_GenerationTask; // 背景生成任務
+	bool m_DungeonReady = false;        // 是否完成生成
+	std::shared_ptr<nGameObject> m_Text ;
 };
 
 #endif //DUNGEONLOADING_HPP

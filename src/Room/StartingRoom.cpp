@@ -3,7 +3,9 @@
 //
 
 #include "Room/StartingRoom.hpp"
+#include "Factory/RoomObjectFactory.hpp"
 #include "Loader.hpp"
+#include "Override/nGameObject.hpp"
 
 void StartingRoom::Start(const std::shared_ptr<Character> &player)
 {

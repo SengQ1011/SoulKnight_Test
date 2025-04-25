@@ -56,37 +56,6 @@ void Room::Update() {
 		m_InteractionManager->TryInteractWithClosest();
 }
 
-// void Room::Update() {
-// 	auto start = std::chrono::high_resolution_clock::now();
-//
-// 	// === 物件更新 ===
-// 	auto objStart = std::chrono::high_resolution_clock::now();
-// 	for (auto& obj : m_RoomObjects) {
-// 		if (obj) obj->Update();
-// 	}
-// 	auto objEnd = std::chrono::high_resolution_clock::now();
-//
-// 	// === 碰撞更新 ===
-// 	auto collisionStart = std::chrono::high_resolution_clock::now();
-// 	m_CollisionManager->Update();
-// 	auto collisionEnd = std::chrono::high_resolution_clock::now();
-//
-// 	// === 互動更新 ===
-// 	auto interactionStart = std::chrono::high_resolution_clock::now();
-// 	m_InteractionManager->Update();
-// 	if (Util::Input::IsKeyDown(Util::Keycode::F))
-// 		m_InteractionManager->TryInteractWithClosest();
-// 	auto interactionEnd = std::chrono::high_resolution_clock::now();
-//
-// 	auto end = std::chrono::high_resolution_clock::now();
-//
-// 	// === 輸出時間 ===
-// 	LOG_DEBUG("[Profile] Room::Object Update:        {:>8.4f} ms", std::chrono::duration<float, std::milli>(objEnd - objStart).count());
-// 	LOG_DEBUG("[Profile] Room::CollisionManager:     {:>8.4f} ms", std::chrono::duration<float, std::milli>(collisionEnd - collisionStart).count());
-// 	LOG_DEBUG("[Profile] Room::InteractionManager:   {:>8.4f} ms", std::chrono::duration<float, std::milli>(interactionEnd - interactionStart).count());
-// 	LOG_DEBUG("[Profile] Room::Update Total:         {:>8.4f} ms", std::chrono::duration<float, std::milli>(end - start).count());
-// }
-
 void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
     if (character && !HasCharacter(character)) {
     	//加入生物组
@@ -175,10 +144,14 @@ void Room::UpdateCachedReferences()
 
 void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &object) const
 {
-	const auto renderer = m_CachedRenderer.lock();
-	const auto camera = m_CachedCamera.lock();
-	if (renderer && object->GetDrawable()) renderer->AddChild(object);
-	if (camera) camera->AddChild(object);
+	// const auto renderer = m_CachedRenderer.lock();
+	// const auto camera = m_CachedCamera.lock();
+	if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+	{
+		scene->GetPendingObjects().push_back(object);
+	}
+	// if (renderer && object->GetDrawable()) renderer->AddChild(object);
+	// if (camera) camera->AddChild(object);
 
 	RegisterCollisionManger(object);
 	RegisterInteractionManager(object);
@@ -187,29 +160,39 @@ void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &o
 
 void Room::RegisterCollisionManger(const std::shared_ptr<nGameObject>& object) const
 {
-	const auto renderer = m_CachedRenderer.lock();
-	const auto camera = m_CachedCamera.lock();
+	// const auto renderer = m_CachedRenderer.lock();
+	// const auto camera = m_CachedCamera.lock();
+
 	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
 		m_CollisionManager->RegisterNGameObject(object);
 		if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
 		{
-			if (renderer && colliderVisible->GetDrawable()) renderer->AddChild(colliderVisible);
-			if (camera) camera->AddChild(colliderVisible);
+			// if (renderer && colliderVisible->GetDrawable()) renderer->AddChild(colliderVisible);
+			// if (camera) camera->AddChild(colliderVisible);
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().push_back(colliderVisible);
+			}
+
 		}
 	}
 }
 
 void Room::RegisterInteractionManager(const std::shared_ptr<nGameObject> &object) const
 {
-	const auto renderer = m_CachedRenderer.lock();
-	const auto camera = m_CachedCamera.lock();
+	// const auto renderer = m_CachedRenderer.lock();
+	// const auto camera = m_CachedCamera.lock();
 	if (const auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
 	{
 		m_InteractionManager->RegisterInteractable(object);
 		if (const std::shared_ptr<nGameObject>& promptObj = interactComp->GetPromptObject())
 		{
-			if (renderer) renderer->AddChild(promptObj);
-			if (camera) camera->AddChild(promptObj);
+			// if (renderer) renderer->AddChild(promptObj);
+			// if (camera) camera->AddChild(promptObj);
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().push_back(promptObj);
+			}
 		}
 	}
 }

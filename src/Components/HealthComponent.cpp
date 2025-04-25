@@ -15,6 +15,7 @@
 
 #include "Attack/Attack.hpp"
 #include "Creature/Character.hpp"
+#include "Room/MonsterRoom.hpp"
 
 
 class StateComponent;
@@ -104,6 +105,9 @@ void HealthComponent::OnDeath() const
 	if (character->GetType() == CharacterType::ENEMY)
 	{
 		trackingManager->RemoveEnemy(character);
+		// TODO:因爲Lobby房間有小怪
+		auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(scene->GetCurrentRoom());
+		if (monsterRoom) monsterRoom->OnEnemyDied();
 		LOG_DEBUG("HealthComponent::remove ");
 	}
 	else

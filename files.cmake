@@ -49,7 +49,9 @@ set(SRC_FILES
     Scene/Dungeon_Scene.cpp
     Scene/Lobby_Scene.cpp
     Scene/MainMenu_Scene.cpp
+    Scene/PortalRoom.cpp
     Scene/Result_Scene.cpp
+    Scene/Scene.cpp
     Scene/SceneManager.cpp
     Scene/Test_Scene_JX.cpp
     Scene/Test_Scene_KC.cpp
@@ -115,6 +117,7 @@ set(INCLUDE_FILES
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
     Room/MonsterRoom.hpp
+    Room/PortalRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp

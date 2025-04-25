@@ -5,14 +5,12 @@
 #include "Room/DungeonRoom.hpp"
 
 #include <iostream>
-#include <map>
 
 #include "Camera.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/DoorComponent.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
-#include "Util/Renderer.hpp"
 
 #include "Creature/Character.hpp"
 #include "Factory/RoomObjectFactory.hpp"
@@ -259,9 +257,6 @@ void DungeonRoom::CreateFloor(int row, int col)
 void DungeonRoom::CreateDoor(int row, int col)
 {
     auto factory = m_Factory.lock();
-    auto camera = m_CachedCamera.lock();
-    auto root = m_CachedRenderer.lock();
-
 	m_Mark[row][col] = 1;
 
     glm::vec2 pos = Tool::RoomGridToWorld({col, row}, m_RoomSpaceInfo.m_TileSize, m_RoomSpaceInfo.m_WorldCoord, m_RoomSpaceInfo.m_RoomRegion);
@@ -273,20 +268,41 @@ void DungeonRoom::CreateDoor(int row, int col)
 
 void DungeonRoom::DebugDungeonRoom()
 {
-	// ImGui::Begin("Door Position Offset test");
-	// static glm::vec2 pos = {0,0};
-	// ImGui::InputFloat("positionX", &pos[0],1.0f, 1.0f, "%.3f");
-	// ImGui::InputFloat("positionY", &pos[1],1.0f, 1.0f, "%.3f");
-	// static glm::vec2 pos2 = {0,0};
-	// ImGui::InputFloat("positionColliderX", &pos2[0],1.0f, 1.0f, "%.3f");
-	// ImGui::InputFloat("positionColliderY", &pos2[1],1.0f, 1.0f, "%.3f");
-	// m_Door->SetWorldCoord(pos);
-	// if (ImGui::Button("Door"))
-	// {
-	// 	m_Door->SetWorldCoord(pos);
-	// }
-	// const auto collider = m_Door->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	// ImGui::End();
+	ImGui::Begin("Current Room Grid Viewer Can't Spawn");
+
+	ImVec2 tableSize = ImGui::GetContentRegionAvail();
+	ImGui::BeginChild("TableContainer", tableSize, false, ImGuiWindowFlags_None);
+	if (ImGui::BeginTable("RoomTable", 35,
+		ImGuiTableFlags_Borders |
+		ImGuiTableFlags_Resizable |
+		ImGuiTableFlags_SizingStretchProp))
+	{
+		for (int index = 0; index < 35; index++)
+			ImGui::TableSetupColumn((std::to_string(index)).c_str(), ImGuiTableColumnFlags_WidthStretch, tableSize.x);
+
+		ImGui::TableHeadersRow();
+
+		for (int row = 0; row < 35; row++)
+		{
+			ImGui::TableNextRow();
+			for (int col = 0; col < 35; col++)
+			{
+				ImGui::TableSetColumnIndex(col);
+				if (m_Mark[row][col])
+				{
+					ImGui::TextColored(ImVec4(0,0,1,1),"1");
+				}
+				else
+				{
+					ImGui::TextColored(ImVec4(1,1,1,1),"0");
+				}
+			}
+		}
+		ImGui::EndTable();
+	}
+	ImGui::EndChild();
+
+	ImGui::End();
 }
 
 

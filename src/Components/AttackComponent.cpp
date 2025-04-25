@@ -41,8 +41,9 @@ void AttackComponent::Init()
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if (!scene)
 		return;
-	scene->GetRoot().lock()->AddChild(m_currentWeapon);
-	scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	// scene->GetRoot().lock()->AddChild(m_currentWeapon);
+	// scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	scene->GetPendingObjects().push_back(m_currentWeapon); //暂时存入一次过设置渲染和镜头
 }
 
 void AttackComponent::Update()
@@ -85,8 +86,9 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 		followerComp->SetFollower(character);
 	}
 
-	scene->GetRoot().lock()->AddChild(m_currentWeapon);
-	scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	// scene->GetRoot().lock()->AddChild(m_currentWeapon);
+	// scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	scene->GetPendingObjects().push_back(m_currentWeapon);
 }
 
 
@@ -129,6 +131,7 @@ void AttackComponent::switchWeapon()
 	}
 	scene->GetRoot().lock()->AddChild(m_currentWeapon);
 	scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	// scene->GetPendingObjects().push_back(m_currentWeapon);
 }
 
 int AttackComponent::calculateDamage()
@@ -226,8 +229,9 @@ void AttackComponent::SetDualWield(bool enable)
 	}
 	else
 	{
-		scene->GetRoot().lock()->AddChild(m_secondWeapon);
-		scene->GetCamera().lock()->AddChild(m_secondWeapon);
+		// scene->GetRoot().lock()->AddChild(m_secondWeapon);
+		// scene->GetCamera().lock()->AddChild(m_secondWeapon);
+		scene->GetPendingObjects().push_back(m_secondWeapon);
 	}
 }
 

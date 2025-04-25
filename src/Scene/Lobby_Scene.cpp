@@ -43,26 +43,23 @@ void LobbyScene::Start()
 
 	m_CurrentRoom = m_LobbyRoom;
 
-	// m_LobbyRoom->GetTrackingManager()->AddTerrainObjects(m_LobbyRoom->GetRoomObjects());
-	// m_LobbyRoom->GetTrackingManager()->AddTerrainObjects(m_LobbyRoom->GetWallColliders());
-
 	// 初始化场景管理器
 	InitializeSceneManagers();
+
+	// 防止并行渲染器出事
+	FlushPendingObjectsToRendererAndCamera();
 }
 
 void LobbyScene::Update()
 {
 	// Input处理
-	// auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
-	// inputManager->Update();
+	for (auto& [type,manager]: m_Managers) manager->Update();
 
 	m_Player->Update();
 	m_Enemy->Update();
 
 	// 更新房间
 	m_LobbyRoom->Update();
-	// m_AttackManager->Update();
-	for (auto& [type,manager]: m_Managers) manager->Update();
 
 	// 更新相机
 	m_Camera->Update();
@@ -87,14 +84,16 @@ void LobbyScene::CreatePlayer()
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (collision) {
 		// 将碰撞盒添加到场景根节点和相机
-		GetRoot().lock()->AddChild(collision->GetVisibleBox());
-		m_Camera->AddChild(collision->GetVisibleBox());
+		m_PendingObjects.push_back(collision->GetVisibleBox());
+		// GetRoot().lock()->AddChild(collision->GetVisibleBox());
+		// m_Camera->AddChild(collision->GetVisibleBox());
 	}
 
 	// m_LobbyRoom->GetTrackingManager()->SetPlayer(m_Player);
 	// 将玩家添加到场景根节点和相机
-	GetRoot().lock()->AddChild(m_Player);
-	m_Camera->AddChild(m_Player);
+	m_PendingObjects.push_back(m_Player);
+	// GetRoot().lock()->AddChild(m_Player);
+	// m_Camera->AddChild(m_Player);
 }
 
 void LobbyScene::CreateEnemy()
@@ -103,11 +102,13 @@ void LobbyScene::CreateEnemy()
 	m_Enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
-	m_Root->AddChild(collision2->GetVisibleBox());
-	m_Camera->AddChild(collision2->GetVisibleBox());
+	m_PendingObjects.push_back(collision2->GetVisibleBox());
+	m_PendingObjects.push_back(m_Enemy);
+	// m_Root->AddChild(collision2->GetVisibleBox());
+	// m_Camera->AddChild(collision2->GetVisibleBox());
 	// m_LobbyRoom->GetTrackingManager()->AddEnemy(m_Enemy);
-	m_Root->AddChild(m_Enemy);
-	m_Camera->AddChild(m_Enemy);
+	// m_Root->AddChild(m_Enemy);
+	// m_Camera->AddChild(m_Enemy);
 }
 
 void LobbyScene::SetupCamera() const
@@ -120,7 +121,7 @@ void LobbyScene::InitializeSceneManagers()
 {
 	// 添加管理器到场景
 	AddManager(ManagerTypes::INPUT, std::make_shared<InputManager>());
-	AddManager(ManagerTypes::ATTACK,m_AttackManager);
+	AddManager(ManagerTypes::ATTACK,std::make_shared<AttackManager>());
 
 	auto inputManager = GetManager<InputManager>(ManagerTypes::INPUT);
 	// 注册输入观察者
@@ -142,7 +143,7 @@ Scene::SceneType LobbyScene::Change()
 	if (IsChange())
 	{
 		LOG_DEBUG("Change Main Menu");
-		return Scene::SceneType::Test_KC;
+		return Scene::SceneType::DungeonLoad;
 	}
 	return Scene::SceneType::Null;
 }

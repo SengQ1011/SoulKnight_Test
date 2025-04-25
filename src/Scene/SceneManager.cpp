@@ -20,7 +20,7 @@ SceneManager &SceneManager::GetInstance()
 
 void SceneManager::Start()
 {
-	m_CurrentScene = CreateScene(Scene::SceneType::Lobby);
+	m_CurrentScene = CreateScene(Scene::SceneType::Dungeon);
 	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }
@@ -40,24 +40,20 @@ void SceneManager::ChangeCurrentScene()
 	m_CurrentScene = nullptr;
 
 	//載入新場景 特殊處理
-	if (m_NextSceneType == Scene::SceneType::DungeonLoad)
-	{
-		m_CurrentScene = CreateScene(m_NextSceneType);
-		m_PreLoadScene = CreateScene(Scene::SceneType::Dungeon);
+	// if (m_NextSceneType == Scene::SceneType::Dungeon)
+	// {
+	// 	m_CurrentScene = DungeonScene::GetPreGenerated();
+	// 	// DungeonScene::ClearPreGenerated();
+	// 	m_CurrentScene->Start();
+	// }
+	// else
+	// {
+	// 	m_CurrentScene = CreateScene(m_NextSceneType);
+	// 	m_CurrentScene->Start();
+	// }
 
-		m_CurrentScene->Start();
-		m_PreLoadScene->Start();
-	}
-	else if (m_NextSceneType == Scene::SceneType::Dungeon)
-	{
-		m_CurrentScene = m_PreLoadScene;
-		m_PreLoadScene = nullptr;
-	}
-	else
-	{
-		m_CurrentScene = CreateScene(m_NextSceneType);
-		m_CurrentScene->Start();
-	}
+	m_CurrentScene = CreateScene(m_NextSceneType);
+	m_CurrentScene->Start();
 	m_CurrentScene->Download(m_Data);
 }
 
@@ -98,5 +94,4 @@ void SceneManager::End()
 	m_Data = nullptr;
 	m_CurrentScene->Exit();
 	m_CurrentScene = nullptr;
-	m_PreLoadScene = nullptr;
 }

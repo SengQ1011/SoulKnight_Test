@@ -68,6 +68,7 @@ public:
 	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
 	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
 	std::shared_ptr<Room> GetCurrentRoom() {return m_CurrentRoom;}
+	std::vector<std::shared_ptr<nGameObject>>& GetPendingObjects() {return m_PendingObjects;}
 	std::shared_ptr<RoomCollisionManager> GetCurrentCollisionManager()
 	{
 		std::shared_ptr<RoomCollisionManager> collisionManager;
@@ -93,12 +94,15 @@ public:
 	bool IsChange() const {return m_IsChange;}
 	void SetIsChange(const bool change) {m_IsChange = change;}
 
+	void FlushPendingObjectsToRendererAndCamera();
+
 protected:
 	bool m_IsChange = false;
 	std::shared_ptr<SceneData> m_SceneData = nullptr;
 	std::shared_ptr<Room> m_CurrentRoom = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
+	std::vector<std::shared_ptr<nGameObject>> m_PendingObjects; // DungeonScene预加载暂存
 	std::unordered_map<ManagerTypes, std::shared_ptr<IManager>> m_Managers;			// 存儲各種 Manager
 };
 

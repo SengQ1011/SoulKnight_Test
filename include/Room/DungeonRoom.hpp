@@ -98,10 +98,10 @@ protected:
 	glm::vec2 m_MapGridPos = glm::vec2(0, 0); //房間在地圖的哪個位置
 	std::vector<std::shared_ptr<nGameObject>> m_Doors;
 
-private:
-	RoomType m_RoomType;
 	//網格處理
 	std::vector<std::vector<int>> m_Mark = std::vector<std::vector<int>>(35,std::vector<int>(35,0)); //用來記錄處理的資料
+private:
+	RoomType m_RoomType;
 
 	// DungeonRoom類型 - 戰鬥房間（小怪，BOSS)， 特殊房間， 寶箱， 起始， 終點
 	// Room狀態 -

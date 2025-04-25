@@ -27,11 +27,18 @@ public:
 	void TryActivateByPlayer() override;
 	void OnStateChanged() override;
 
+	void OnEnemyDied();
+
 private:
+	std::shared_ptr<Character> SpawnEnemy(int id, glm::vec2 pos);
+	void SpawnEnemiesInRoom();
+
 	struct CombatWaveInfo {
 		int currentWave = 0;
 		int totalWaves = 0;
+		int aliveEnemyCount = 0;
 		bool isInCombat = false;
+		std::vector<std::shared_ptr<Character>> enemies;
 
 		void StartCombat(int waveCount);
 		bool IsCurrentWaveCleared() const;

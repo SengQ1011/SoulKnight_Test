@@ -44,8 +44,6 @@ protected:
 	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
 
 	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
-
-	std::shared_ptr<AttackManager> m_AttackManager = std::make_shared<AttackManager>();
 };
 
 #endif //LOBBY_SCENE_HPP

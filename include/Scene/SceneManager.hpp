@@ -35,7 +35,6 @@ private:
 
 	Scene::SceneType m_NextSceneType = Scene::SceneType::Null;
 	std::shared_ptr<Scene> m_CurrentScene = nullptr;
-	std::shared_ptr<Scene> m_PreLoadScene = nullptr;
 	std::shared_ptr<SceneData> m_Data = std::make_shared<SceneData>();
 	//TODO: Dungeon預加載指標
 };

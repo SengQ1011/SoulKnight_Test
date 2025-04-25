@@ -12,7 +12,7 @@
 
 
 class DungeonMap;
-class TestScene_KC : public Scene
+class TestScene_KC final: public Scene
 {
 public:
 	TestScene_KC() = default;
@@ -23,12 +23,11 @@ public:
 	void Exit() override;
 	SceneType Change() override;
 
-protected:
+private:
 	// 私有方法，按功能划分场景初始化流程
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
-	// std::vector<std::shared_ptr<DungeonRoom>> m_DungeonRooms = std::vector<std::shared_ptr<DungeonRoom>>(25,nullptr);
 	std::shared_ptr<Character> m_Player;
 	float m_MapHeight;
 
@@ -40,7 +39,6 @@ protected:
 
 	//test
 	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
-	std::shared_ptr<AttackManager> m_AttackManager = std::make_shared<AttackManager>();
 };
 
 #endif //TEST_SCENE_HPP
