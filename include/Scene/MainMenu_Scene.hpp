@@ -15,7 +15,7 @@ class MainMenuScene : public Scene
 {
 public:
 	MainMenuScene() = default;
-	// explicit MainMenuScene(const sceneType = SceneType::Menu) : Scene(sceneType);
+	// explicit MainMenuScene(const sceneType = SceneType:) : Scene(sceneType);
 	~MainMenuScene() override = default;
 
 	void Start() override;

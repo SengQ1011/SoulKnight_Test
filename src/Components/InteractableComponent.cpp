@@ -28,7 +28,9 @@ void InteractableComponent::Update()
 		return;
 	if (const auto owner = GetOwner<nGameObject>())
 	{
-		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f, owner->GetImageSize().y));
+		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f, owner->GetImageSize().y + std::sin(timer) * 10.0f));
+		timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
+		if (timer >= 3.1415) timer = 0.0f;
 	}
 }
 

@@ -7,6 +7,7 @@
 
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
+#include "GameMechanism/TalentDatabase.hpp"
 
 #include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
@@ -26,6 +27,7 @@
 #include "Factory/CharacterFactory.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 #include "Room/DungeonMap.hpp"
+#include "Util/Image.hpp"
 
 std::shared_ptr<DungeonScene> DungeonScene::s_PreGeneratedInstance = nullptr;
 
@@ -33,6 +35,12 @@ void DungeonScene::Start()
 {
 	LOG_DEBUG("Entering Game Scene");
 	m_Loader = std::make_shared<Loader>(m_ThemeName);
+
+	m_OnDeathText = std::make_shared<nGameObject>();
+	m_OnDeathText->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
+	m_OnDeathText->SetZIndex(100);
+	m_OnDeathText->SetVisible(false);
+	m_Root->AddChild(m_OnDeathText);
 
 	// 创建并初始化玩家
 	CreatePlayer();
@@ -79,14 +87,32 @@ void DungeonScene::Update()
 void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
+	m_BGM->Pause();
 }
 
 Scene::SceneType DungeonScene::Change()
 {
+	if (Util::Input::IsKeyUp(Util::Keycode::RETURN)) return Scene::SceneType::Menu;
+	if (!m_Player->IsActive())
+	{
+		m_ClickSound->Play();
+		m_timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
+		m_OnDeathText->SetVisible(true);
+		auto drawable = std::dynamic_pointer_cast<Util::Text>(m_OnDeathText->GetDrawable());
+		Uint8 r = 0, g = 0, b = 0, a = 0;
+		// drawabrle->SetColor()
+
+		if (m_timer >= 2.0f)
+		{
+			m_timer = 0.0f;
+			m_OnDeathText->SetVisible(false);
+			return Scene::SceneType::DungeonLoad;
+		}
+	}
 	if (m_IsChange)
 	{
 		LOG_DEBUG("Change Main Menu");
-		return Scene::SceneType::Menu;
+		return Scene::SceneType::DungeonLoad;
 	}
 	return Scene::SceneType::Null;
 }
@@ -130,6 +156,11 @@ void DungeonScene::CreatePlayer()
 {
 	// 使用 CharacterFactory 创建玩家
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
+
+	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+		talentComp->AddTalent(talentDatabase[2]);
+	}
 
 	// 设置玩家的初始位置
 	m_Player->SetWorldCoord(glm::vec2(0)); // 地图正中央

@@ -1,7 +1,7 @@
 {
     "id": "object_transferGate_0",
     "isAnimated": true,
-    "ZIndex": "OBJECTHIGH",
+    "ZIndex": "OBJECTLOW",
     "components": [
         {
             "Name": "portal",

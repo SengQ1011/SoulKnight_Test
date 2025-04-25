@@ -6,6 +6,8 @@
 #define DUNGEON_HPP
 
 #include "Scene/Scene.hpp"
+#include "Util/SFX.hpp"
+#include "Util/BGM.hpp"
 
 class DungeonMap;
 
@@ -33,11 +35,18 @@ private:
 	std::shared_ptr<DungeonMap> m_Map;
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 
+
 	std::string m_ThemeName = "IcePlains";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
 	std::shared_ptr<Loader> m_Loader;
 
+	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
+
 	//test
-	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
+	// std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
+	float m_timer = 0.0f;
+	std::shared_ptr<nGameObject> m_OnDeathText;
+	std::shared_ptr<Util::SFX> m_ClickSound = std::make_shared<Util::SFX>(RESOURCE_DIR"/UI/plankton-augh.mp3");
+
 
 	void CreatePlayer();
 	void SetupCamera() const;

@@ -86,8 +86,9 @@ void MonsterRoom::SpawnEnemiesInRoom()
 
 		glm::ivec2 grid = {col, row};
 		const glm::vec2 worldPos = Tool::RoomGridToWorld(grid, tileSize, roomCoord, region);
+		std::uniform_int_distribution<int> ID(1, 3);
 
-		if (const auto enemy = SpawnEnemy(1, worldPos)) {
+		if (const auto enemy = SpawnEnemy(ID(rng), worldPos)) {
 			m_CombatWave.enemies.push_back(enemy);
 			++m_CombatWave.aliveEnemyCount;
 			m_Mark[row][col] = 1;

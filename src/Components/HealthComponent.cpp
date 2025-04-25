@@ -113,6 +113,7 @@ void HealthComponent::OnDeath() const
 	else
 	{
 		trackingManager->SetPlayer(nullptr);
+
 	}
 	// TODO:銷毀武器
 	if (const auto attackComp = character->GetComponent<AttackComponent>(ComponentType::ATTACK))

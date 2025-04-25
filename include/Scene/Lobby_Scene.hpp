@@ -8,6 +8,7 @@
 #include "Scene/Scene.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 #include "ObserveManager/TrackingManager.hpp"
+#include "Util/BGM.hpp"
 #include "Attack/AttackManager.hpp"
 #include "Loader.hpp"
 
@@ -42,6 +43,7 @@ protected:
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 
 	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
+	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
 
 	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
 };

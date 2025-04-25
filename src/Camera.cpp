@@ -13,7 +13,7 @@ Camera::Camera(
 {
 	m_CameraWorldCoord.translation = {0.0f,0.0f};
 	m_CameraWorldCoord.rotation = 0.0f;
-	m_CameraWorldCoord.scale = glm::vec2{1.0f};
+	m_CameraWorldCoord.scale = glm::vec2{2.5f};
 }
 
 void Camera::onInputReceived(const std::set<char>& keys) {

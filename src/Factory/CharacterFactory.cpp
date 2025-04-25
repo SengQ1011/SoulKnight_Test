@@ -132,6 +132,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 			auto FollowerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
+			FollowerComp->Update(); // 直接更新一次位置
 			//FollowerComp->SetTargetMouse(true);
 			LOG_DEBUG("Player created");
 
@@ -202,6 +203,9 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	else{
         		const int weaponId = characterInfo["weaponId"];
         		weapon = WeaponFactory::createWeapon(weaponId);
+        		const auto followComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
+        		followComp->SetFollower(enemy);
+        		followComp->Update(); // 直接更新位置
         	}
         	auto animationComp = enemy->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
 			auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);

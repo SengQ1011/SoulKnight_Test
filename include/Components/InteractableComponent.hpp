@@ -65,6 +65,7 @@ protected:
 
 	// 互動提示UI元素
 	std::shared_ptr<nGameObject> m_PromptObject = nullptr;
+	float timer = 0.0f;
 
 	std::array<Uint8, 3> m_Color = {0, 0, 0};
 	Uint8 m_PromptColor = 0;
