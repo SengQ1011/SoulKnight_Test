@@ -52,6 +52,7 @@ public:
 	void SetInitialScaleSet(const bool set) { m_InitialScaleSet = set; }
 	void SetZIndexType(const ZIndexType zIndexType) {m_ZIndex = zIndexType;}
 	void SetPosOffset(const glm::vec2& offset) { m_PosOffset = offset; }
+	void SetRegisteredToScene(const bool signal) {m_RegisteredToScene = signal;}
 
 	// Getter
 	[[nodiscard]] virtual std::string GetName() const { return m_Name; }
@@ -66,6 +67,7 @@ public:
 	[[nodiscard]] bool isSetInitialScale()  const { return m_InitialScaleSet;}
 	[[nodiscard]] ZIndexType GetZIndexType() const { return m_ZIndex;}
 	[[nodiscard]] glm::vec2 GetPosOffset() const { return m_PosOffset;}
+	bool IsRegisteredToScene() const { return m_RegisteredToScene; }
 
 protected:
 	std::string m_Name;
@@ -79,6 +81,8 @@ protected:
 	bool m_InitialScaleSet = false;		// 標記是否已設置初始縮放
 
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
+
+	bool m_RegisteredToScene = false;
 
 private:
 	static int GetNextId()

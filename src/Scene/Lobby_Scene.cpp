@@ -17,12 +17,17 @@
 #include "ObserveManager/InputManager.hpp"
 #include "Creature/Character.hpp"
 
+#include "Tracy.hpp"
+
 void LobbyScene::Start()
 {
+
+	ZoneScopedN("LobbyScene::Start");
 	LOG_DEBUG("Entering Lobby Scene");
 	// 创建并初始化玩家
 	CreatePlayer();
 	CreateEnemy();
+
 
 	// 设置相机
 	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
@@ -53,19 +58,35 @@ void LobbyScene::Start()
 void LobbyScene::Update()
 {
 	// Input处理
-	for (auto& [type,manager]: m_Managers) manager->Update();
+	ZoneScopedN("LobbyScene::Update");
+	{
+		ZoneScopedN("SceneManager::Update");
+		for (auto& [type,manager]: m_Managers) manager->Update();
+	}
 
-	m_Player->Update();
-	m_Enemy->Update();
+	{
+		ZoneScopedN("Player&Enemy::Update");
+		m_Player->Update();
+		m_Enemy->Update();
+	}
 
-	// 更新房间
-	m_LobbyRoom->Update();
+	{
+		// 更新房间
+		ZoneScopedN("LobbyRoom&RoomManager::Update");
+		m_LobbyRoom->Update();
+	}
 
-	// 更新相机
-	m_Camera->Update();
+	{
+		// 更新相机
+		ZoneScopedN("Camera::Update");
+		m_Camera->Update();
+	}
 
-	// 更新场景根节点
-	m_Root->Update();
+	{
+		// 更新渲染器
+		ZoneScopedN("Renderer::Update");
+		m_Root->Update();
+	}
 }
 
 void LobbyScene::CreatePlayer()

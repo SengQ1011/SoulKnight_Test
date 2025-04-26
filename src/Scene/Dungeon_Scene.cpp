@@ -5,6 +5,8 @@
 
 #include "Scene/Dungeon_Scene.hpp"
 
+#include <Tracy.hpp>
+
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
 #include "GameMechanism/TalentDatabase.hpp"
@@ -63,25 +65,42 @@ void DungeonScene::Start()
 
 void DungeonScene::Update()
 {
-	// Input处理
-	for (auto& [type,manager]: m_Managers) manager->Update();
-	m_Player->Update();
-	// 更新房间
-	m_Map->Update();
-	const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
-	if (dungeonRoom)
 	{
-		m_CurrentRoom = dungeonRoom;
-		dungeonRoom->Update();
+		ZoneScopedN("SceneManager::Update");
+		for (auto& [type,manager]: m_Managers) manager->Update();
+	}
+	{
+		ZoneScopedN("Player::Update");
+		m_Player->Update();
+	}
+	{
+		// 更新房间
+		ZoneScopedN("Map::Update");
+		m_Map->Update();
+	}
+	{
+		ZoneScopedN("CurrentDungeonRoom::Update");
+		const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
+		if (dungeonRoom)
+		{
+			m_CurrentRoom = dungeonRoom;
+			dungeonRoom->Update();
 
-		dungeonRoom->DebugDungeonRoom();
+			dungeonRoom->DebugDungeonRoom();
+		}
 	}
 
-	// 更新相机
-	m_Camera->Update();
+	{
+		// 更新相机
+		ZoneScopedN("Camera::Update");
+		m_Camera->Update();
+	}
 
-	// 更新场景根节点
-	m_Root->Update();
+	{
+		// 更新渲染器
+		ZoneScopedN("Renderer::Update");
+		m_Root->Update();
+	}
 }
 
 void DungeonScene::Exit()

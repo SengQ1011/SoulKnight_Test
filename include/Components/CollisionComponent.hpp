@@ -12,6 +12,11 @@
 
 #include "Override/nGameObject.hpp" // TODO: refactor
 
+namespace Util
+{
+	class Image;
+}
+
 class CollisionComponent final : public Component
 {
 public:
@@ -71,6 +76,9 @@ private:
 	glm::uint8_t m_CollisionMask; //可以和哪幾層碰撞
 	bool m_IsTrigger;
 	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
+	static std::shared_ptr<Util::Image> s_RedColliderImage;
+	static std::shared_ptr<Util::Image> s_BlueColliderImage;
+	static std::shared_ptr<Util::Image> s_YellowColliderImage;
 };
 
 

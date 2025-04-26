@@ -4,6 +4,9 @@
 
 #include "Room/Room.hpp"
 
+#include <Tracy.hpp>
+
+#include <iostream>
 #include "Components/CollisionComponent.hpp"
 #include "Components/InteractableComponent.hpp"
 #include "Creature/Character.hpp"
@@ -13,7 +16,6 @@
 #include "Scene/SceneManager.hpp"
 #include "Util/Input.hpp"
 #include "fstream"
-#include <iostream>
 
 Room::~Room() {
     // 析构函数 - 确保正确清理资源
@@ -26,9 +28,6 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 	m_Player = player;
 	UpdateCachedReferences();
 
-	// m_CollisionManager = std::make_shared<RoomCollisionManager>();
-	// m_InteractionManager = std::make_shared<RoomInteractionManager>();
-
 	AddManager(ManagerTypes::ROOMCOLLISION,m_CollisionManager);
 	AddManager(ManagerTypes::ROOMINTERACTIONMANAGER, m_InteractionManager);
 	AddManager(ManagerTypes::TRACKING,m_TrackingManager);
@@ -40,20 +39,25 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 }
 
 void Room::Update() {
-	// 更新所有房间物体
-	for (auto& obj : m_RoomObjects) {
-		if (obj) obj->Update();
+	{
+		// 更新所有房间物体
+		ZoneScopedN("RoomObject::Update");
+		for (auto& obj : m_RoomObjects) {
+			if (obj) obj->Update();
+		}
 	}
 
-	for (auto& [type, manager] : m_Managers) { manager->Update(); }
+	{
+		ZoneScopedN("RoomManager::Update");
+		for (auto& [type, manager] : m_Managers) { manager->Update(); }
+	}
 
-	// 碰撞管理（效能暴鲤龙）
-	// m_CollisionManager->Update();
-
-	// 互動管理
-	// m_InteractionManager->Update();
-	if (Util::Input::IsKeyDown(Util::Keycode::F))
-		m_InteractionManager->TryInteractWithClosest();
+	{
+		// 互動管理
+		ZoneScopedN("InteractionManager::TryInteract");
+		if (Util::Input::IsKeyDown(Util::Keycode::F))
+			m_InteractionManager->TryInteractWithClosest();
+	}
 }
 
 void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
@@ -146,9 +150,14 @@ void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &o
 {
 	// const auto renderer = m_CachedRenderer.lock();
 	// const auto camera = m_CachedCamera.lock();
-	if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+	if (!object) return;
+	if (!object->IsRegisteredToScene())
 	{
-		scene->GetPendingObjects().push_back(object);
+		if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+		{
+			scene->GetPendingObjects().push_back(object);
+			object->SetRegisteredToScene(true);
+		}
 	}
 	// if (renderer && object->GetDrawable()) renderer->AddChild(object);
 	// if (camera) camera->AddChild(object);

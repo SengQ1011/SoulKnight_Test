@@ -44,6 +44,7 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
+        libs/tracy/TracyClient.cpp
         src/Attack/Attack.cpp
         src/Components/EnemyAI/AttackStrategy.cpp
 )
@@ -54,7 +55,9 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
 endif()
 
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TRACY_ENABLE TRACY_CALLSTACK TRACY_MEMORY)
     target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Resources")
     target_compile_definitions(${PROJECT_NAME} PRIVATE JSON_DIR="${CMAKE_CURRENT_SOURCE_DIR}/json")
 else()
@@ -75,11 +78,25 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/P
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/EVENTPP/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/nlohmann)
-
-target_link_libraries(${PROJECT_NAME}
-    SDL2::SDL2main
-    PTSD
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/client
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/tracy
 )
+
+if(MSVC)
+    target_link_libraries(${PROJECT_NAME}
+        SDL2::SDL2main
+            PTSD
+    )
+else()
+    target_link_libraries(${PROJECT_NAME}
+            SDL2::SDL2main
+            PTSD
+            pthread
+    )
+endif()
 
 # 定義生成 files.cmake 的函數
 function(generate_files_cmake)
@@ -149,9 +166,5 @@ function(generate_files_cmake)
 endfunction()
 
 # 改成僅在你手動設定 flag 時執行
-#if(DEFINED GENERATE_FILES AND GENERATE_FILES)
 message(STATUS "✅ GENERATE_FILES is defined and ON，將執行 generate_files_cmake()")
 generate_files_cmake()
-#else ()
-#    message(STATUS "❌ GENERATE_FILES 未定義或為 OFF，不執行 generate_files_cmake()")
-#endif()

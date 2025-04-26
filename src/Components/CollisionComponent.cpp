@@ -8,6 +8,10 @@
 
 #include "Util/Image.hpp"
 
+std::shared_ptr<Util::Image> CollisionComponent::s_RedColliderImage = nullptr;
+std::shared_ptr<Util::Image> CollisionComponent::s_BlueColliderImage = nullptr;
+std::shared_ptr<Util::Image> CollisionComponent::s_YellowColliderImage = nullptr;
+
 
 void CollisionComponent::Init()
 {
@@ -22,12 +26,20 @@ void CollisionComponent::Init()
 
 void CollisionComponent::SetColliderBoxColor(const std::string &color) const // Blue - 未定義， Yellow - 碰撞, Red - 正常
 {
-	if (color == "Blue")
-		m_ColliderVisibleBox->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/BlueCollider.png"));
-	if (color == "Red")
-		m_ColliderVisibleBox->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/RedCollider.png"));
-	if (color == "Yellow")
-		m_ColliderVisibleBox->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/YellowCollider.png"));
+	if (!s_RedColliderImage)
+		s_RedColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/RedCollider.png");
+	if (!s_BlueColliderImage)
+		s_BlueColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/BlueCollider.png");
+	if (!s_YellowColliderImage)
+		s_YellowColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/YellowCollider.png");
+
+
+	if (color == "Red" && s_RedColliderImage)
+		m_ColliderVisibleBox->SetDrawable(s_RedColliderImage);
+	if (color == "Blue" && s_BlueColliderImage)
+		m_ColliderVisibleBox->SetDrawable(s_BlueColliderImage);
+	if (color == "Yellow" && s_YellowColliderImage)
+		m_ColliderVisibleBox->SetDrawable(s_YellowColliderImage);
 }
 
 void CollisionComponent::Update()

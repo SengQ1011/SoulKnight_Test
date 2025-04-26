@@ -110,6 +110,7 @@ set(INCLUDE_FILES
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
     Loader.hpp
+    MemoryTracker.hpp
     Motion.hpp
     ObserveManager/IManager.hpp
     ObserveManager/InputManager.hpp
