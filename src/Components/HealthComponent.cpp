@@ -9,6 +9,7 @@
 #include "Components/StateComponent.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "ObserveManager/TrackingManager.hpp"
+#include "ObserveManager/EventManager.hpp"
 
 #include "Scene/SceneManager.hpp"
 #include "Util/Time.hpp"
@@ -16,6 +17,8 @@
 #include "Attack/Attack.hpp"
 #include "Creature/Character.hpp"
 #include "Room/MonsterRoom.hpp"
+#include "Structs/DeathEventInfo.hpp"
+#include "Structs/TakeDamageEventInfo.hpp"
 
 
 class StateComponent;
@@ -51,6 +54,11 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 		HandleCollision(collisionEventInfo);
 		break;
 	}
+	case EventType::TakeDamage:
+	{
+		const auto& dmgInfo = dynamic_cast<const TakeDamageEventInfo&>(eventInfo);
+		TakeDamage(dmgInfo.damage);
+	}
 	default:
 		break;
 	}
@@ -60,6 +68,7 @@ std::vector<EventType> HealthComponent::SubscribedEventTypes() const
 {
 	return {
 		EventType::Collision,
+		EventType::TakeDamage,
 	};
 }
 
@@ -67,11 +76,11 @@ std::vector<EventType> HealthComponent::SubscribedEventTypes() const
 void HealthComponent::HandleCollision(const CollisionEventInfo& info)
 {
 	// 判斷碰撞對象是不是攻擊==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
-	if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB()))
-	{
-		const int damage = attack->GetDamage();
-		this->TakeDamage(damage);
-	}
+	// if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB()))
+	// {
+	// 	const int damage = attack->GetDamage();
+	// 	this->TakeDamage(damage);
+	// }
 
 	// collisionEnemy的碰撞傷害
 	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB()))
@@ -137,6 +146,8 @@ void HealthComponent::OnDeath() const
 	{
 		trackingManager->SetPlayer(nullptr);
 
+		const DeathEventInfo deathEventInfo{character};
+		EventManager::GetInstance().Notify(deathEventInfo);
 	}
 	// TODO:銷毀武器
 	if (const auto attackComp = character->GetComponent<AttackComponent>(ComponentType::ATTACK))

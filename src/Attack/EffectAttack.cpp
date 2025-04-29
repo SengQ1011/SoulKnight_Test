@@ -3,10 +3,11 @@
 //
 
 #include "Attack/EffectAttack.hpp"
-#include "Scene/SceneManager.hpp"
 #include "Animation.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Room/RoomCollisionManager.hpp"
+#include "Scene/SceneManager.hpp"
+#include "TriggerStrategy/AttackTriggerStrategy.hpp"
 
 EffectAttack::EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,float size, int damage, bool canReflect, EffectAttackType effectType)
 				:Attack(type, attackTransform, direction, size, damage), m_reflectBullet(canReflect), m_effectType(effectType) {}
@@ -24,17 +25,21 @@ void EffectAttack::Init() {
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();
-	CollisionComp->SetTrigger(false);
+
+	//設置觸發器 和 觸發事件
+	CollisionComp->SetTrigger(true);
+	CollisionComp->SetTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Enemy);
-		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Enemy_Bullet);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy_Bullet);
 	}
 	else if (m_type == CharacterType::ENEMY) {
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Player);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Player);
 	}
-	CollisionComp->SetCollisionMask(CollisionLayers::CollisionLayers_Terrain);
+	CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Terrain);
 
  	CollisionComp->SetSize(glm::vec2(m_size));
 

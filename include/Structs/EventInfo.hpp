@@ -12,6 +12,12 @@ enum class EventType {
 
 	// 大概
 	Collision,
+	TakeDamage,
+
+	// 板機廣播用
+	TriggerEnter,
+	TriggerStay,
+	TriggerExit,
 
 	// 通用
 	Death,
@@ -45,6 +51,7 @@ struct EventInfo {
 
 	virtual std::type_index GetType() const = 0;			// 信息類型
 	EventType GetEventType() const { return m_EventType;}	// 事件名稱
+	void SetEventType(const EventType type) { m_EventType = type; } // 手動設置特定事件
 
 private:
 	EventType m_EventType = EventType::None;

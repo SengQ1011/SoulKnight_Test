@@ -5,8 +5,9 @@
 #include "Attack/Projectile.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Creature/Character.hpp"
-#include "Util/Logger.hpp"
+#include "TriggerStrategy/AttackTriggerStrategy.hpp"
 #include "Util/Image.hpp"
+#include "Util/Logger.hpp"
 
 Projectile::Projectile(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,
 					   float size, int damage, const std::string &imagePath, float speed, int numRebound)
@@ -28,16 +29,20 @@ void Projectile::Init() {
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();
-	CollisionComp->SetTrigger(false);
+
+	//設置觸發器 和 觸發事件
+	CollisionComp->SetTrigger(true);
+	CollisionComp->SetTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
+		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 	}
 	else if (m_type == CharacterType::ENEMY) {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers_Player);
+		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
-	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
 
 	// TODO:測試子彈大小
 	CollisionComp->SetSize(glm::vec2(m_size));
@@ -89,6 +94,7 @@ void Projectile::SetImage(const std::string& imagePath) {
 	m_Drawable = sharedImages[imagePath];
 }
 
+// 自身碰撞 就不是Trigger的事了 因爲Trigger是用來觸發事件的
 void Projectile::OnCollision(const CollisionEventInfo &info) {
 	const auto& other = info.GetObjectB();
 	bool hitTarget = false;

@@ -62,6 +62,7 @@ set(SRC_FILES
     StructType.cpp
     TalentDatabase.cpp
     Tool/Tool.cpp
+    TriggerStrategy/AttackTriggerStrategy.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
@@ -147,9 +148,13 @@ set(INCLUDE_FILES
     Skill/Skill.hpp
     StructType.hpp
     Structs/CollisionComponentStruct.hpp
+    Structs/DeathEventInfo.hpp
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
+    Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
+    TriggerStrategy/AttackTriggerStrategy.hpp
+    TriggerStrategy/ITriggerStrategy.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp

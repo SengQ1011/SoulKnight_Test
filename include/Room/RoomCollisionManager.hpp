@@ -34,6 +34,7 @@ public:
 protected:
 	UniformGrid m_SpatialGrid;
 	std::vector<std::weak_ptr<nGameObject>> m_NGameObjects;
+	std::vector<std::weak_ptr<nGameObject>> m_TriggerObjects; // 扳機子集局部更新
 	bool m_IsVisible = true; // 記錄碰撞箱顯示
 	bool m_IsActive = true;
 

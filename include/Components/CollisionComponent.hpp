@@ -8,9 +8,11 @@
 #define COLLISIONCOMPONENT_HPP
 
 #include "Component.hpp"
+#include "TriggerStrategy/ITriggerStrategy.hpp"
 #include "Structs/CollisionComponentStruct.hpp"
 
 #include "Override/nGameObject.hpp" // TODO: refactor
+#include <unordered_set>
 
 namespace Util
 {
@@ -45,6 +47,10 @@ public:
 	void HandleEvent(const EventInfo& eventInfo) override;
 	std::vector<EventType> SubscribedEventTypes() const override;
 
+	void SetTriggerStrategy(std::unique_ptr<ITriggerStrategy> triggerStrategy);
+	void TryTrigger(const std::shared_ptr<nGameObject>& self, const std::shared_ptr<nGameObject> &other);
+	void FinishTriggerFrame(const std::shared_ptr<nGameObject>& self);
+
 	[[nodiscard]] bool CanCollideWith(const std::shared_ptr<CollisionComponent> &other) const;
 
 	// Getter
@@ -57,7 +63,7 @@ public:
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
-	void SetCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask |= collisionMask; }
+	void AddCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask |= collisionMask; }
 	void ResetCollisionMask() { m_CollisionMask = CollisionLayers_None; }
 	void SetOffset(const glm::vec2 &offset) { m_Offset = offset; }
 	void SetSize(const glm::vec2 &size) { m_Size = size; }
@@ -72,11 +78,17 @@ public:
 
 private:
 	bool m_IsActive = true;
+
+	// 强大的扳機 可以殺光一切
+	bool m_IsTrigger;
+	std::unique_ptr<ITriggerStrategy> m_TriggerStrategy = nullptr;
+	std::unordered_set<std::shared_ptr<nGameObject>> m_PreviousTriggerTargets;
+	std::unordered_set<std::shared_ptr<nGameObject>> m_CurrentTriggerTargets;
+
 	glm::vec2 m_Size;
 	glm::vec2 m_Offset;
 	glm::uint8_t m_CollisionLayer; //自身碰撞層
 	glm::uint8_t m_CollisionMask; //可以和哪幾層碰撞
-	bool m_IsTrigger;
 	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
 	static std::shared_ptr<Util::Image> s_RedColliderImage;
 	static std::shared_ptr<Util::Image> s_BlueColliderImage;

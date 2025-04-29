@@ -125,9 +125,9 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			auto tanlentCompoent = player->AddComponent<TalentComponent>(ComponentType::TALENT);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
-			CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
-			CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
-			CollisionComp->SetCollisionMask(CollisionLayers_Enemy_Bullet);
+			CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
+			CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
+			CollisionComp->AddCollisionMask(CollisionLayers_Enemy_Bullet);
 			CollisionComp->SetSize(glm::vec2(16.0f));
 			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 			auto FollowerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
@@ -215,9 +215,9 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	auto aiComp = enemy->AddComponent<AIComponent>(ComponentType::AI, aiType, moveStrategy, attackStrategies, utilityStrategy, monsterPoint);
         	auto collisionComp = enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
         	collisionComp->SetCollisionLayer(CollisionLayers_Enemy);
-        	if (haveWeapon == 0) collisionComp->SetCollisionMask(CollisionLayers_Player);
-        	collisionComp->SetCollisionMask(CollisionLayers_Terrain);
-        	collisionComp->SetCollisionMask(CollisionLayers_Player_Bullet);
+        	if (haveWeapon == 0) collisionComp->AddCollisionMask(CollisionLayers_Player);
+        	collisionComp->AddCollisionMask(CollisionLayers_Terrain);
+        	collisionComp->AddCollisionMask(CollisionLayers_Player_Bullet);
         	collisionComp->SetSize(glm::vec2(bodySize));
         	collisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 

@@ -36,9 +36,9 @@ void CollisionComponent::SetColliderBoxColor(const std::string &color) const // 
 
 	if (color == "Red" && s_RedColliderImage)
 		m_ColliderVisibleBox->SetDrawable(s_RedColliderImage);
-	if (color == "Blue" && s_BlueColliderImage)
+	else if (color == "Blue" && s_BlueColliderImage)
 		m_ColliderVisibleBox->SetDrawable(s_BlueColliderImage);
-	if (color == "Yellow" && s_YellowColliderImage)
+	else if (color == "Yellow" && s_YellowColliderImage)
 		m_ColliderVisibleBox->SetDrawable(s_YellowColliderImage);
 }
 
@@ -75,7 +75,7 @@ Rect CollisionComponent::GetBounds() const
 
 bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent> &other) const
 {
-	return ((m_CollisionLayer & other->m_CollisionMask) != 0 || (m_CollisionMask & other->m_CollisionLayer) != 0);
+	return m_CollisionMask & other->m_CollisionLayer; // 你的"圖層"在我的判定"範圍"之上， 所以我可以侵犯你(?
 }
 
 void CollisionComponent::HandleCollision(CollisionInfo &info)
@@ -100,6 +100,38 @@ std::vector<EventType> CollisionComponent::SubscribedEventTypes() const
 		EventType::Collision,
 	};
 }
+
+void CollisionComponent::SetTriggerStrategy(std::unique_ptr<ITriggerStrategy> triggerStrategy)
+{
+	m_TriggerStrategy = std::move(triggerStrategy);
+}
+
+
+void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self, const std::shared_ptr<nGameObject>& other)
+{
+	if (!m_IsTrigger || !m_TriggerStrategy) return;
+
+	m_CurrentTriggerTargets.insert(other);
+	const bool wasTriggered = m_PreviousTriggerTargets.find(other) != m_PreviousTriggerTargets.end();
+
+	if (!wasTriggered) m_TriggerStrategy->OnTriggerEnter(self, other);
+	else m_TriggerStrategy->OnTriggerStay(self, other);
+}
+
+void CollisionComponent::FinishTriggerFrame(const std::shared_ptr<nGameObject>& self)
+{
+	if (!m_IsTrigger || !m_TriggerStrategy) return;
+	for (auto& prev : m_PreviousTriggerTargets)
+	{
+		if (m_CurrentTriggerTargets.find(prev) != m_CurrentTriggerTargets.end()) continue;
+		m_TriggerStrategy->OnTriggerExit(self, prev);
+	}
+
+	std::swap(m_PreviousTriggerTargets, m_CurrentTriggerTargets);
+	m_CurrentTriggerTargets.clear();
+}
+
+
 
 
 
