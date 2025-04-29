@@ -98,6 +98,82 @@ void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObje
 // 	}
 // }
 
+// void RoomCollisionManager::Update()
+// {
+//     ZoneScopedN("RoomManager::UpdateStart");
+//
+//     if (!m_IsActive) return;
+//
+//     std::vector<std::pair<std::shared_ptr<nGameObject>, std::shared_ptr<nGameObject>>> collisionPairs;
+//     std::mutex mutex;
+//
+//     if (Util::Input::IsKeyUp(Util::Keycode::O)) {
+//         ShowColliderBox();
+//     }
+//
+//     {
+//         ZoneScopedN("ClearSpatialGrid");
+//         m_SpatialGrid.Clear();
+//     }
+//
+//     {
+//         ZoneScopedN("InsertToGrid");
+//         for (const auto& weakObj : m_NGameObjects) {
+//             auto obj = weakObj.lock();
+//             if (!obj || !obj->IsActive())
+//                 continue;
+//
+//             const std::shared_ptr<CollisionComponent> collider = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+//             if (!collider) continue;
+//
+//             m_SpatialGrid.Insert(obj, collider->GetBounds());
+//         }
+//     }
+//
+//     {
+//         ZoneScopedN("BroadPhaseCollision");
+//         std::for_each(std::execution::par, m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
+//             ZoneScopedN("NarrowPhaseAndRecord");
+//
+//             const std::shared_ptr<nGameObject> objectA = weakObj.lock();
+//             if (!objectA || !objectA->IsActive())
+//                 return;
+//
+//             const std::shared_ptr<CollisionComponent> colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+//             if (!colliderA || !colliderA->IsActive())
+//                 return;
+//
+//             const Rect boundA = colliderA->GetBounds();
+//             auto nearbyObjects = m_SpatialGrid.QueryNearby(boundA);
+//
+//             for (const auto& objectB : nearbyObjects) {
+//                 if (objectA == objectB || !objectB->IsActive()) continue;
+//                 if (objectA >= objectB) continue; // 去重複
+//
+//                 const std::shared_ptr<CollisionComponent> colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+//                 if (!colliderB || !colliderB->IsActive() || !colliderA->CanCollideWith(colliderB)) continue;
+//
+//                 if (colliderA->GetBounds().Intersects(colliderB->GetBounds())) {
+//                     std::scoped_lock lock(mutex);
+//                     collisionPairs.emplace_back(objectA, objectB);
+//                 }
+//             }
+//         });
+//     }
+//
+//     {
+//         ZoneScopedN("HandleCollisions");
+//         for (const auto& pair : collisionPairs) {
+//             auto objectA = pair.first;
+//             auto objectB = pair.second;
+//
+//             CollisionInfo info(objectA, objectB);
+//             CalculateCollisionDetails(objectA, objectB, info);
+//             DispatchCollision(objectA, objectB, info);
+//         }
+//     }
+// }
+
 void RoomCollisionManager::Update()
 {
     ZoneScopedN("RoomManager::UpdateStart");
@@ -167,7 +243,7 @@ void RoomCollisionManager::Update()
             auto objectA = pair.first;
             auto objectB = pair.second;
 
-            CollisionInfo info(objectA, objectB);
+        	CollisionEventInfo info(objectA, objectB);
             CalculateCollisionDetails(objectA, objectB, info);
             DispatchCollision(objectA, objectB, info);
         }
@@ -186,8 +262,44 @@ void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 }
 
 
+// void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGameObject>& objectA,
+// 													 const std::shared_ptr<nGameObject>& objectB, CollisionInfo &info)
+// {
+// 	auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+// 	auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+//
+// 	if (!colliderA || !colliderB) return;
+//
+// 	Rect boundA = colliderA->GetBounds();
+// 	Rect boundB = colliderB->GetBounds();
+//
+// 	// 計算四個方向的重叠
+// 	float overlapLeft = boundB.right() - boundA.left();
+// 	float overlapRight = boundA.right() - boundB.left();
+// 	float overlapTop = boundA.top() - boundB.bottom();
+// 	float overlapBottom = boundB.top() - boundA.bottom();
+//
+// 	// 找出最小重叠方向
+// 	float minOverlapX = std::min(overlapLeft, overlapRight);
+// 	float minOverlapY = std::min(overlapTop, overlapBottom);
+//
+// 	glm::vec2 normal(0.0f);
+//
+// 	// 決定碰撞法綫的方向
+// 	if (minOverlapX < minOverlapY) {
+// 		info.penetration = minOverlapX;
+// 		normal.x = (overlapLeft < overlapRight) ? 1.0f : -1.0f;
+// 	} else {
+// 		info.penetration = minOverlapY;
+// 		normal.y = (overlapTop < overlapBottom) ? -1.0f : 1.0f;
+// 	}
+//
+// 	// 設置標準化的碰撞法綫
+// 	info.SetCollisionNormal(normal);
+// }
+
 void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGameObject>& objectA,
-													 const std::shared_ptr<nGameObject>& objectB, CollisionInfo &info)
+													 const std::shared_ptr<nGameObject>& objectB, CollisionEventInfo &info)
 {
 	auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -223,22 +335,23 @@ void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGame
 }
 
 void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> &objectA,
-											 const std::shared_ptr<nGameObject> &objectB, CollisionInfo &info)
+											 const std::shared_ptr<nGameObject> &objectB,
+											 CollisionEventInfo &info)
 {
 	const auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	const auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 
 	if ((colliderB->GetCollisionLayer() & colliderA->GetCollisionMask()) != 0) // !=運算符 優先於 &
 	{
-		objectA->onCollision(objectB, info);
+		objectA->OnEvent(info); // TODO: debug
 	}
 	if ((colliderA->GetCollisionLayer() & colliderB->GetCollisionMask()) != 0)
 	{
 		const glm::vec2 reversedNormal = -info.GetCollisionNormal();
-		CollisionInfo reversedInfo(objectB, objectA);
+		CollisionEventInfo reversedInfo(objectB, objectA);
 		reversedInfo.penetration = info.penetration;
 		reversedInfo.SetCollisionNormal(reversedNormal);
 
-		objectB->onCollision(objectA, reversedInfo);
+		objectB->OnEvent(reversedInfo);
 	}
 }

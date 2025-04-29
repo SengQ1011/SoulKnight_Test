@@ -23,6 +23,10 @@ public:
 	void Update() override;
 	void HandleCollision(CollisionInfo &info) override;
 
+	void HandleEvent(const EventInfo &eventInfo) override;
+	void HandleEventCollision(const CollisionEventInfo& eventInfo);
+	std::vector<EventType> SubscribedEventTypes() const override;
+
 	//----Getters----
 	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
 	[[nodiscard]] const glm::vec2 &GetVelocity() const { return m_Velocity; }

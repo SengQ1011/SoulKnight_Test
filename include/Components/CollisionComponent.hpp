@@ -42,6 +42,8 @@ public:
 	void Init() override;
 	void Update() override;
 	void HandleCollision(CollisionInfo &info) override;
+	void HandleEvent(const EventInfo& eventInfo) override;
+	std::vector<EventType> SubscribedEventTypes() const override;
 
 	[[nodiscard]] bool CanCollideWith(const std::shared_ptr<CollisionComponent> &other) const;
 

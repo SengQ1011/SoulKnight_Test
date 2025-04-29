@@ -233,4 +233,64 @@ void MovementComponent::HandleCollision(CollisionInfo &info)
 		owner->m_WorldCoord = m_Position;
 }
 
+void MovementComponent::HandleEvent(const EventInfo &eventInfo)
+{
+	LOG_DEBUG("MovementComponent::HandleEvent");
+	if (eventInfo.GetEventType() == EventType::Collision)
+	{
+		LOG_DEBUG("MovementComponent::HandleEvent1");
+		const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
+		HandleEventCollision(collisionInfo);
+	}
+}
 
+std::vector<EventType> MovementComponent::SubscribedEventTypes() const
+{
+	return {
+		EventType::Collision,
+	};
+}
+
+
+void MovementComponent::HandleEventCollision(const CollisionEventInfo& eventInfo)
+{
+	const auto owner = GetOwner<nGameObject>();
+	if (owner)
+	{
+		m_Position = owner->m_WorldCoord;
+	}
+
+	const std::shared_ptr<nGameObject> other = (eventInfo.GetObjectA() == owner) ? eventInfo.GetObjectB() : eventInfo.GetObjectA();
+
+	if (const std::shared_ptr<CollisionComponent> otherCollider =
+			other->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		otherCollider && otherCollider->IsTrigger())
+	{
+		return;
+	}
+
+	const glm::vec2 collisionNormal = eventInfo.GetCollisionNormal();
+
+	// 設置接觸狀態
+	if (std::abs(collisionNormal.x) > 0.01f)
+	{
+		m_ContactState.inContactX = true;
+	}
+	if (std::abs(collisionNormal.y) > 0.01f)
+	{
+		m_ContactState.inContactY = true;
+	}
+
+	if (m_ContactState.inContactX || m_ContactState.inContactY)
+	{
+		m_ContactState.contactNormal = collisionNormal;
+		m_ContactState.contactTime = m_ContactState.contactTimeout;
+	}
+
+	// 調整位置
+	m_Position += collisionNormal * eventInfo.penetration;
+
+	// 立即更新物體位置
+	if (owner)
+		owner->m_WorldCoord = m_Position;
+}

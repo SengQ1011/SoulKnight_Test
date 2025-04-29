@@ -41,7 +41,30 @@ void HealthComponent::Update()
 	}
 }
 
-void HealthComponent::HandleCollision(CollisionInfo &info)
+void HealthComponent::HandleEvent(const EventInfo &eventInfo)
+{
+	switch (eventInfo.GetEventType())
+	{
+	case EventType::Collision: // {}可以在case裏形成額外作用域，用來在裏面定義變數
+	{
+		const auto& collisionEventInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
+		HandleCollision(collisionEventInfo);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+std::vector<EventType> HealthComponent::SubscribedEventTypes() const
+{
+	return {
+		EventType::Collision,
+	};
+}
+
+
+void HealthComponent::HandleCollision(const CollisionEventInfo& info)
 {
 	// 判斷碰撞對象是不是攻擊==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
 	if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB()))
@@ -118,7 +141,7 @@ void HealthComponent::OnDeath() const
 	// TODO:銷毀武器
 	if (const auto attackComp = character->GetComponent<AttackComponent>(ComponentType::ATTACK))
 	{
-		attackComp->RemoveAllWeapon();
+		// attackComp->RemoveAllWeapon();
 	}
 }
 

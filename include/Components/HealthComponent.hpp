@@ -36,7 +36,9 @@ public:
 	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
 	void TakeDamage(int damage);
-	void HandleCollision(CollisionInfo &info) override;
+	void HandleCollision(const CollisionEventInfo &info);
+	void HandleEvent(const EventInfo &eventInfo) override;
+	std::vector<EventType> SubscribedEventTypes() const override;
 
 private:
 	int m_maxHp; // 生命上限

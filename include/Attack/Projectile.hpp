@@ -18,6 +18,8 @@ public:
 	void Init() override;
 	void UpdateObject(float deltaTime) override;
 
+	void OnEventReceived(const EventInfo &eventInfo) override;
+
 	// 靜態資源池，只載入一次同一圖片，資源共用（圖片資源共享）
 	static std::unordered_map<std::string, std::shared_ptr<Util::Image>> sharedImages;
 
@@ -30,7 +32,7 @@ public:
 	void SetImage(const std::string& imagePath);
 	void SetSpeed(const float speed) { m_speed = speed; };
 	void ResetAll(const CharacterType type, const Util::Transform &bulletTransform, glm::vec2 direction, float size, int damage, const std::string& ImagePath, float speed, int numRebound);
-	void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info) override;
+	void OnCollision(const CollisionEventInfo &info);
 
 protected:
 	std::string m_imagePath;

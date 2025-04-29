@@ -56,6 +56,16 @@ void Projectile::UpdateObject(const float deltaTime) {
 	}
 }
 
+void Projectile::OnEventReceived(const EventInfo &eventInfo)
+{
+	if (eventInfo.GetEventType() != EventType::Collision) return;
+
+	const auto& collisionEvent = static_cast<const CollisionEventInfo&>(eventInfo);
+	OnCollision(collisionEvent);
+
+}
+
+
 void Projectile::ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage,
 	const std::string& ImagePath, float speed, int numRebound) {
 	m_type = type;
@@ -79,30 +89,23 @@ void Projectile::SetImage(const std::string& imagePath) {
 	m_Drawable = sharedImages[imagePath];
 }
 
-void Projectile::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info) {
+void Projectile::OnCollision(const CollisionEventInfo &info) {
+	const auto& other = info.GetObjectB();
 	bool hitTarget = false;
-	if (const std::shared_ptr<Character> character = std::dynamic_pointer_cast<Character>(other)){
-		if(m_type != character->GetType()) hitTarget = true;
+
+	if (const auto& character = std::dynamic_pointer_cast<Character>(other)) {
+		hitTarget = (m_type != character->GetType());
 	}
-	// 檢查子彈是否還有反彈次數
-	if (m_numRebound > 0 && m_reboundCounter < m_numRebound && !hitTarget){
-		// 獲取碰撞法線
+
+	if (m_numRebound > 0 && m_reboundCounter < m_numRebound && !hitTarget) {
 		const glm::vec2 collisionNormal = info.GetCollisionNormal();
+		const float dotProduct = glm::dot(m_direction, collisionNormal);
+		m_direction = glm::normalize(m_direction - 2.0f * dotProduct * collisionNormal);
 
-		// 反彈方向 = 方向 - 2 * (方向·法線) * 法線
-		const float dotProduct = glm::dot(m_direction, collisionNormal);  // 方向和法線的點積
-		m_direction = m_direction - 2.0f * dotProduct * collisionNormal;  // 更新方向
-
-		m_direction = glm::normalize(m_direction);
-
-		// 調整旋轉角度
-		const float angle = glm::atan(m_direction.y, m_direction.x);
-		this->m_Transform.rotation = angle;
-
+		m_Transform.rotation = glm::atan(m_direction.y, m_direction.x);
 		m_reboundCounter++;
 	}
 	else {
-		// 如果沒有反彈次數了或是擊中目標，標記為移除
 		MarkForRemoval();
 	}
 }

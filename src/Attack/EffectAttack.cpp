@@ -72,6 +72,6 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
 
 void EffectAttack::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
 {
-	//TODO
+	//TODO: Override OnEventReceived 讓nGameObject處理事件
 }
 

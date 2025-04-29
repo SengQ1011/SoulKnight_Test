@@ -19,6 +19,11 @@ std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args) 
 	component->SetOwner(shared_from_this());
 	m_Components[type] = component;
 	component->Init();
+	// 讓Component註冊感興趣的事件型別
+	for (const auto& eventType : component->SubscribedEventTypes())
+	{
+		m_EventSubscribers[eventType].push_back(component.get());
+	}
 	return component;
 }
 
@@ -32,6 +37,26 @@ std::shared_ptr<T> nGameObject::GetComponent(const ComponentType type) //或許w
 	}
 	return nullptr;
 }
+
+template <typename EventT>
+void nGameObject::OnEvent(const EventT &eventInfo)
+{
+	if (!m_Active)
+		return;
+
+	// 留條後路，讓nGameObject自己處理Event的邏輯 - Projectile害的
+	OnEventReceived(eventInfo);
+
+	const EventType eventType = eventInfo.GetEventType();
+	if (const auto it = m_EventSubscribers.find(eventType); it != m_EventSubscribers.end())
+	{
+		for (auto* component : it->second)
+		{
+			component->HandleEvent(eventInfo);
+		}
+	}
+}
+
 
 
 #endif //NGAMEOBJECT_INL
