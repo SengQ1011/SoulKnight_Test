@@ -25,6 +25,9 @@ void Projectile::Init() {
 	this->SetZIndexType(ZIndexType::ATTACK);
 	SetImage(m_imagePath);
 
+	// 設定碰到就消失
+	m_disappearOnHit = true;
+
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();

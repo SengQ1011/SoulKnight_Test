@@ -38,7 +38,7 @@
     "attackType": ["Collision"],
     "haveWeapon": 0,
     "collisionDamage": 4,
-    "size": 16.0
+    "size": 28.0
   },
   {
     "ID": 3,
