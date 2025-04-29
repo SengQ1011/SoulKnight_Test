@@ -15,9 +15,7 @@ class MovementComponent final : public Component
 public:
 	explicit MovementComponent(const float &speedRatio) :
 		Component(ComponentType::MOVEMENT), m_SpeedRatio(speedRatio), m_currentSpeedRatio(speedRatio),
-		m_Position(glm::vec2(0.0f)), m_Velocity(glm::vec2(0.0f))
-	{
-	}
+		m_Position(glm::vec2(0.0f)), m_Velocity(glm::vec2(0.0f)){}
 
 	void Init() override;
 	void Update() override;

@@ -46,7 +46,6 @@ public:
 	void SetDualWield(const bool enable); // 雙武器
 	void SetSecondWeapon(const std::shared_ptr<Weapon> &weapon)
 	{
-		LOG_DEBUG("Check set weapon");
 		if (!weapon)
 			LOG_ERROR("weapon=nullptr");
 		m_secondWeapon = weapon;

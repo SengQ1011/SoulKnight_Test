@@ -113,13 +113,12 @@ void LobbyScene::CreatePlayer()
 	// m_LobbyRoom->GetTrackingManager()->SetPlayer(m_Player);
 	// 将玩家添加到场景根节点和相机
 	m_PendingObjects.push_back(m_Player);
-	// GetRoot().lock()->AddChild(m_Player);
 	// m_Camera->AddChild(m_Player);
 }
 
 void LobbyScene::CreateEnemy()
 {
-	m_Enemy = CharacterFactory::GetInstance().createEnemy(3);
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(4);
 	m_Enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");

@@ -5,6 +5,7 @@
 //TODO:refactor include
 #include "Components/InputComponent.hpp"
 
+#include "Animation.hpp"
 #include "Components/AnimationComponent.hpp"
 #include "Components/AttackComponent.hpp"
 #include "Components/MovementComponent.hpp"
@@ -29,7 +30,8 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 	auto attackComponent = character->GetComponent<AttackComponent>(ComponentType::ATTACK);
 	auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 	auto m_currentAnimation = animationComponent->GetCurrentAnimation();
-
+	auto animation = std::dynamic_pointer_cast<Util::Animation>(m_currentAnimation->GetDrawable());
+	if(keys.count('M')) LOG_DEBUG("interval=>{} & deltaTime=>{}", animation->GetInterval(), Util::Time::GetDeltaTimeMs());
 	// movement移動
 	glm::vec2 movement(0.0f, 0.0f);
 	if (keys.count('W'))

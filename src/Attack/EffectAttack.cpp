@@ -14,6 +14,7 @@ EffectAttack::EffectAttack(const CharacterType type, const Util::Transform &atta
 void EffectAttack::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
+
 	// Animation
 	const auto& imagePaths = EffectAssets::EFFECT_IMAGE_PATHS.at(m_effectType);
  	m_animation = std::make_shared<Animation>(imagePaths, false);
@@ -47,6 +48,7 @@ void EffectAttack::Init() {
 void EffectAttack::UpdateObject(const float deltaTime) {
 	if (!m_Active) return;
 	if (m_animation->IfAnimationEnds()) {
+		MarkForRemoval();
 		SetActive(false);
 		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(shared_from_this());
@@ -60,7 +62,7 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
 							float size, int damage, bool canReflect, EffectAttackType effectType)
 {
 	m_type = type;
- 	this->m_Transform = attackTransform;
+ 	m_Transform = attackTransform;
  	m_direction = direction;
  	m_size = size;
  	m_damage = damage;
@@ -68,6 +70,7 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
 	m_reflectBullet = canReflect;
  	auto& paths = EffectAssets::EFFECT_IMAGE_PATHS.at(effectType);
  	m_animation = std::make_shared<Animation>(paths, false);
+	this->m_markRemove = false;
 }
 
 void EffectAttack::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)

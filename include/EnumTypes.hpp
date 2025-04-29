@@ -51,7 +51,7 @@ enum class StatusEffect {
 enum class EffectAttackType
 {
 	SLASH,
-	STAB,
+	LUNGE,
 	SHOCKWAVE
 };
 

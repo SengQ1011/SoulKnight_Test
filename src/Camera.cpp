@@ -57,9 +57,11 @@ void Camera::RotateCamera(const float radian) // radian 是PI， degree是°
 
 void Camera::AddChild(const std::shared_ptr<nGameObject> &child) {
 	m_Children.push_back(child);
+	// 若為負的會影響物件池内的物件
+	glm::vec2 absScale = {std::abs(child->m_Transform.scale.x), std::abs(child->m_Transform.scale.y)};
 	// 如果尚未設置初始縮放
 	if (!child->isSetInitialScale()) {
-		child->SetInitialScale(child->m_Transform.scale);
+		child->SetInitialScale(absScale);
 		child->SetInitialScaleSet(true);
 	}
 }

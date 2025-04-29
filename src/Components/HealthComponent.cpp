@@ -25,13 +25,11 @@ HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const 
 {
 }
 
-void HealthComponent::Update()
-{
+void HealthComponent::Update() {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 	if (m_maxArmor == 0)
 		return;
-	if (m_currentArmor < m_maxArmor)
-	{
+	if (m_currentArmor < m_maxArmor) {
 		m_armorRecoveryTimer += deltaTime;
 		if (m_armorRecoveryTimer >= m_armorRecoveryInterval)
 		{
@@ -39,27 +37,42 @@ void HealthComponent::Update()
 			m_armorRecoveryTimer = 0.0f;
 		}
 	}
+	// 減少所有來源的冷卻時間
+	for (auto it = m_recentAttackSources.begin(); it != m_recentAttackSources.end(); ) {
+		it->second -= deltaTime;
+		if (it->second <= 0)
+			it = m_recentAttackSources.erase(it);
+		else
+			++it;
+	}
 }
 
-void HealthComponent::HandleCollision(CollisionInfo &info)
-{
+void HealthComponent::HandleCollision(CollisionInfo &info) {
+	auto collisionObject = info.GetObjectB();
+	if (!collisionObject) return;
+
+	// 冷卻中就不處理
+	if (m_recentAttackSources.count(collisionObject) > 0)
+		return;
+
+	// 記錄這次攻擊，設定冷卻時間
+	m_recentAttackSources[collisionObject] = m_invincibleDuration;
+
 	// 判斷碰撞對象是不是攻擊==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
 	if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB()))
 	{
 		const int damage = attack->GetDamage();
 		this->TakeDamage(damage);
+		LOG_DEBUG("damage = {}", damage);
 	}
 
 	// collisionEnemy的碰撞傷害
-	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB()))
-	{
-		if (character->GetType() == CharacterType::ENEMY)
-		{
-			if (const auto collisionDamage =
-					character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
-				collisionDamage > 0)
-			{
+	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB())) {
+		if (character->GetType() == CharacterType::ENEMY) {
+			if (const auto collisionDamage = character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
+				collisionDamage > 0) {
 				this->TakeDamage(collisionDamage);
+				LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
 			}
 		}
 	}
@@ -90,8 +103,10 @@ void HealthComponent::OnDeath() const
 		return;
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);
 	auto movementComp = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
-	if (!stateComponent)
-		return;
+	// TODO:銷毀武器
+	// if (const auto attackComp = character->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+	// 	attackComp->RemoveAllWeapon();
+	// }
 
 	character->SetActive(false);
 	stateComponent->SetState(State::DEAD);
@@ -113,12 +128,13 @@ void HealthComponent::OnDeath() const
 	else
 	{
 		trackingManager->SetPlayer(nullptr);
-
 	}
-	// TODO:銷毀武器
-	if (const auto attackComp = character->GetComponent<AttackComponent>(ComponentType::ATTACK))
-	{
-		attackComp->RemoveAllWeapon();
+
+	if (character->GetType() == CharacterType::ENEMY) {
+		if(auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
+		{
+			aiComp->HideReadyAttackIcon();
+		}
 	}
 }
 

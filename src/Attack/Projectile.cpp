@@ -101,6 +101,7 @@ void Projectile::onCollision(const std::shared_ptr<nGameObject> &other, Collisio
 
 		m_reboundCounter++;
 	}
+
 	else {
 		// 如果沒有反彈次數了或是擊中目標，標記為移除
 		MarkForRemoval();

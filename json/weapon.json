@@ -19,7 +19,7 @@
     "ID": 2,
     "weaponType": "Melee",
     "isSword": 1,
-    "name": "Lightsaber_Blue",
+    "name": "Light_saber_Blue",
     "weaponImagePath": "/weapon/weapons3/weapons3_92.png",
     "damage": 8,
     "energy": 0,
@@ -40,9 +40,20 @@
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,
-    "attackInterval": 0.5,
-    "attackRange": 20.0,
-    "dropLevel": 4,
-    "basicPrice": 28
+    "attackInterval": 1.0,
+    "attackRange": 20.0
+  },
+  {
+    "ID": 502,
+    "weaponType": "Melee",
+    "isSword": 0,
+    "name": "Miner's drill",
+    "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 1.0,
+    "attackRange": 20.0
   }
 ]
