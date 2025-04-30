@@ -172,6 +172,8 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	std::shared_ptr<Character> enemy = std::make_shared<Character>(name, type);
         	enemy->SetZIndexType(ZIndexType::OBJECTHIGH);
 
+        	//檢查是否是精英形態
+        	if(characterInfo["isElite"] == 1) enemy->m_Transform.scale = glm::vec2(1.4f);
         	auto animation = parseCharacterAnimations(characterInfo["animations"]);
 			MonsterType aiType = stringToMonsterType(characterInfo["monsterType"].get<std::string>());
         	int monsterPoint = characterInfo["monsterPoint"];
@@ -219,7 +221,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	collisionComp->AddCollisionMask(CollisionLayers_Terrain);
         	collisionComp->AddCollisionMask(CollisionLayers_Player_Bullet);
         	collisionComp->SetSize(glm::vec2(bodySize));
-        	collisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
+        	collisionComp->SetOffset(glm::vec2(0.0f,-6.0f));
 
         	return enemy;
         }

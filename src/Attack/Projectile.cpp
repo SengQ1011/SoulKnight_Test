@@ -26,6 +26,9 @@ void Projectile::Init() {
 	this->SetZIndexType(ZIndexType::ATTACK);
 	SetImage(m_imagePath);
 
+	// 設定碰到就消失
+	m_disappearOnHit = true;
+
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();
@@ -111,6 +114,7 @@ void Projectile::OnCollision(const CollisionEventInfo &info) {
 		m_Transform.rotation = glm::atan(m_direction.y, m_direction.x);
 		m_reboundCounter++;
 	}
+
 	else {
 		MarkForRemoval();
 	}

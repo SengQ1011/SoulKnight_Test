@@ -31,7 +31,7 @@ void Animation::PlayAnimation(bool play) {
 		} else if (frameCount <= 4) {
 			interval = 100.0f; // 10FPS
 		} else {
-			interval = 1000.0f / frameCount+5;
+			interval = 1000.0f / (frameCount+5);
 			interval = std::clamp(interval, 33.3f, 100.0f);
 		}
 		animation->SetInterval(interval);

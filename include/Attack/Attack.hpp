@@ -20,9 +20,11 @@ public:
 	glm::vec2 GetWorldPosition() const { return m_Transform.translation; }
 	int GetDamage() const {return m_damage;}
 	bool ShouldRemove() const { return m_markRemove; }
+	bool WillDisappearOnHit() { return m_disappearOnHit; }
 
 	//----Setter----
 	void MarkForRemoval() { m_markRemove = true; }
+
 
 protected:
 	CharacterType m_type;
@@ -30,6 +32,7 @@ protected:
 	bool m_markRemove = false;		// 標記是否因碰撞需移除
 	float m_size;
 	int m_damage;
+	bool m_disappearOnHit = false;
 };
 
 #endif //ATTACK_HPP

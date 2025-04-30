@@ -10,38 +10,45 @@
 #include "StructType.hpp"
 
 //============================= (Base) =============================
+void ReflectMovement(CollisionInfo &info, const EnemyContext &ctx)
+{
+	glm::vec2 oldDir = glm::normalize(ctx.moveComp->GetLastValidDirection());
+	glm::vec2 reflectDir = glm::reflect(oldDir, info.GetCollisionNormal());
+
+	// 如果新方向與原方向夾角太小（例如反射結果幾乎沒有改變），強制稍微偏移一下
+	if (glm::dot(oldDir, reflectDir) < -0.99f)
+	{ // 夾角約179度
+		glm::vec2 tangent = glm::vec2(-info.GetCollisionNormal().y, info.GetCollisionNormal().x); // 法線的垂直方向
+		reflectDir += tangent * 0.2f; // 稍微偏一點
+		reflectDir = glm::normalize(reflectDir);
+	}
+	ctx.moveComp->SetDesiredDirection(reflectDir);
+}
+
+
 void IMoveStrategy::CollisionAction(CollisionInfo &info, const EnemyContext &ctx)
 {
-	// ememy與玩家碰撞后强制進入閑置狀態
+	// ememy與玩家碰撞后:
+	// 攻擊模式：反彈繼續走
+	// 其他模式：强制進入閑置狀態
 	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB()))
 	{
 		if (character->GetType() == CharacterType::PLAYER){
 			auto aiComp = ctx.GetAIComp();
-			aiComp->SetEnemyState(enemyState::IDLE);
-			ctx.moveComp->SetDesiredDirection(glm::vec2(0,0));
-			m_restTimer = RandomFloatInRange(0.3f, 1.0f); // 設定休息時間
+			if(aiComp->GetEnemyState() == enemyState::WANDERING || aiComp->GetEnemyState() == enemyState::READY_ATTACK) {
+				ReflectMovement(info, ctx);
+			} else {
+				aiComp->SetEnemyState(enemyState::IDLE);
+				ctx.moveComp->SetDesiredDirection(glm::vec2(0,0));
+				m_restTimer = RandomFloatInRange(0.3f, 1.0f); // 設定休息時間
+			}
 		}
 	}
 
 	// 碰到地形回轉
-	if (const auto type =
-			info.GetObjectB()->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetCollisionLayer();
+	if (const auto type = info.GetObjectB()->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetCollisionLayer();
 		type == CollisionLayers_Terrain)
-	{
-		const auto movementComp = ctx.enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
-
-		glm::vec2 oldDir = glm::normalize(movementComp->GetLastValidDirection());
-		glm::vec2 reflectDir = glm::reflect(oldDir, info.GetCollisionNormal());
-
-		// 如果新方向與原方向夾角太小（例如反射結果幾乎沒有改變），強制稍微偏移一下
-		if (glm::dot(oldDir, reflectDir) < -0.99f)
-		{ // 夾角約179度
-			glm::vec2 tangent = glm::vec2(-info.GetCollisionNormal().y, info.GetCollisionNormal().x); // 法線的垂直方向
-			reflectDir += tangent * 0.2f; // 稍微偏一點
-			reflectDir = glm::normalize(reflectDir);
-		}
-		movementComp->SetDesiredDirection(reflectDir);
-	}
+		ReflectMovement(info, ctx);
 }
 
 //============================= (Wander) =============================

@@ -16,7 +16,7 @@ MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string &name, 
 void MeleeWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
 
-	// TODO:揮刀動作
+	// 揮刀動作
 	if (const auto followerComp = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
 		followerComp->StartAttackAction();
 	}
@@ -25,10 +25,13 @@ void MeleeWeapon::attack(int damage) {
 	const auto slashDirection = glm::vec2(cos(this->m_Transform.rotation), sin(this->m_Transform.rotation));
 	// 建立 Transform
 	Util::Transform slashTransform;
-
+	slashTransform.scale = glm::vec2(1.0f);
 	glm::vec2 offset = (m_currentOwner->m_Transform.scale.x > 0) ? glm::vec2(16.0f, 0.0f) : glm::vec2(-24.0f, 0.0f);
 	slashTransform.translation = this->m_WorldCoord + offset;							// 揮擊的位置
 	slashTransform.rotation = glm::atan(slashDirection.y, slashDirection.x);			// 刀揮擊的中心角度
+	// y軸翻轉
+	slashTransform.scale.y = (m_currentOwner->m_Transform.scale.x > 0) ?
+		std::abs(slashTransform.scale.y): -std::abs(slashTransform.scale.y);
 
 	const auto characterType = m_currentOwner->GetType();
 

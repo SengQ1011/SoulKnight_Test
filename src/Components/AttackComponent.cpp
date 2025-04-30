@@ -147,7 +147,7 @@ int AttackComponent::calculateDamage()
 
 	// 傷害計算公式
 	int baseDamage = m_currentWeapon->GetDamage();
-	int finalDamage = isCrit ? baseDamage * (2) // 暴擊傷害==>200%
+	int finalDamage = isCrit ? baseDamage * (1.5) // 暴擊傷害==>150%
 							 : baseDamage; // 普通傷害
 
 	return finalDamage;
