@@ -5,8 +5,9 @@
 #include "Attack/Projectile.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Creature/Character.hpp"
-#include "Util/Logger.hpp"
+#include "TriggerStrategy/AttackTriggerStrategy.hpp"
 #include "Util/Image.hpp"
+#include "Util/Logger.hpp"
 
 Projectile::Projectile(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,
 					   float size, int damage, const std::string &imagePath, float speed, int numRebound)
@@ -28,16 +29,20 @@ void Projectile::Init() {
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
 	CollisionComp->ResetCollisionMask();
-	CollisionComp->SetTrigger(false);
+
+	//設置觸發器 和 觸發事件
+	CollisionComp->SetTrigger(true);
+	CollisionComp->SetTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers_Enemy);
+		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 	}
 	else if (m_type == CharacterType::ENEMY) {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Bullet);
-		CollisionComp->SetCollisionMask(CollisionLayers_Player);
+		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
-	CollisionComp->SetCollisionMask(CollisionLayers_Terrain);
+	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
 
 	// TODO:測試子彈大小
 	CollisionComp->SetSize(glm::vec2(m_size));
@@ -55,6 +60,16 @@ void Projectile::UpdateObject(const float deltaTime) {
 		this->MarkForRemoval();
 	}
 }
+
+void Projectile::OnEventReceived(const EventInfo &eventInfo)
+{
+	if (eventInfo.GetEventType() != EventType::Collision) return;
+
+	const auto& collisionEvent = static_cast<const CollisionEventInfo&>(eventInfo);
+	OnCollision(collisionEvent);
+
+}
+
 
 void Projectile::ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage,
 	const std::string& ImagePath, float speed, int numRebound) {
@@ -79,30 +94,24 @@ void Projectile::SetImage(const std::string& imagePath) {
 	m_Drawable = sharedImages[imagePath];
 }
 
-void Projectile::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info) {
+// 自身碰撞 就不是Trigger的事了 因爲Trigger是用來觸發事件的
+void Projectile::OnCollision(const CollisionEventInfo &info) {
+	const auto& other = info.GetObjectB();
 	bool hitTarget = false;
-	if (const std::shared_ptr<Character> character = std::dynamic_pointer_cast<Character>(other)){
-		if(m_type != character->GetType()) hitTarget = true;
+
+	if (const auto& character = std::dynamic_pointer_cast<Character>(other)) {
+		hitTarget = (m_type != character->GetType());
 	}
-	// 檢查子彈是否還有反彈次數
-	if (m_numRebound > 0 && m_reboundCounter < m_numRebound && !hitTarget){
-		// 獲取碰撞法線
+
+	if (m_numRebound > 0 && m_reboundCounter < m_numRebound && !hitTarget) {
 		const glm::vec2 collisionNormal = info.GetCollisionNormal();
+		const float dotProduct = glm::dot(m_direction, collisionNormal);
+		m_direction = glm::normalize(m_direction - 2.0f * dotProduct * collisionNormal);
 
-		// 反彈方向 = 方向 - 2 * (方向·法線) * 法線
-		const float dotProduct = glm::dot(m_direction, collisionNormal);  // 方向和法線的點積
-		m_direction = m_direction - 2.0f * dotProduct * collisionNormal;  // 更新方向
-
-		m_direction = glm::normalize(m_direction);
-
-		// 調整旋轉角度
-		const float angle = glm::atan(m_direction.y, m_direction.x);
-		this->m_Transform.rotation = angle;
-
+		m_Transform.rotation = glm::atan(m_direction.y, m_direction.x);
 		m_reboundCounter++;
 	}
 	else {
-		// 如果沒有反彈次數了或是擊中目標，標記為移除
 		MarkForRemoval();
 	}
 }

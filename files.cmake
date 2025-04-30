@@ -9,6 +9,7 @@ set(SRC_FILES
     Attack/ProjectilePool.cpp
     Beacon.cpp
     Camera.cpp
+    CollisionComponentStruct.cpp
     Components/AiComponent.cpp
     Components/AnimationComponent.cpp
     Components/AttackComponent.cpp
@@ -61,10 +62,12 @@ set(SRC_FILES
     StructType.cpp
     TalentDatabase.cpp
     Tool/Tool.cpp
+    TriggerStrategy/AttackTriggerStrategy.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
     main.cpp
+    nGameObject.cpp
 )
 
 set(INCLUDE_FILES
@@ -112,6 +115,7 @@ set(INCLUDE_FILES
     Loader.hpp
     MemoryTracker.hpp
     Motion.hpp
+    ObserveManager/EventManager.hpp
     ObserveManager/IManager.hpp
     ObserveManager/InputManager.hpp
     ObserveManager/ObserveManager.hpp
@@ -144,8 +148,13 @@ set(INCLUDE_FILES
     Skill/Skill.hpp
     StructType.hpp
     Structs/CollisionComponentStruct.hpp
+    Structs/DeathEventInfo.hpp
+    Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
+    Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
+    TriggerStrategy/AttackTriggerStrategy.hpp
+    TriggerStrategy/ITriggerStrategy.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp

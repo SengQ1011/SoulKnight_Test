@@ -9,6 +9,7 @@
 
 #include "EnumTypes.hpp"
 #include "Structs/CollisionComponentStruct.hpp"
+#include "Util/Logger.hpp"
 
 class nGameObject;
 
@@ -22,6 +23,20 @@ public:
 	virtual void Init() {} // nGameObject在AddComponent就會自動執行 -- nGameObject.inl
 	virtual void Update() {} // n
 	virtual void HandleCollision(CollisionInfo &info) {}
+
+	// template <typename EventT,typename... Args>
+	virtual void HandleEvent(const EventInfo& eventInfo) { LOG_DEBUG("HandleEvent");}
+
+	// template<typename T>
+	// void HandleEventAs(const EventInfo& eventInfo) {
+	// 	const auto& typedEvent = static_cast<const T&>(eventInfo);
+	// 	HandleTypedEvent(typedEvent);
+	// }
+	//
+	// // 子類覆寫這個
+	// virtual void HandleTypedEvent(const CollisionEventInfo& eventInfo) { LOG_DEBUG("HandleCollisionEvent"); }
+
+	virtual std::vector<EventType> SubscribedEventTypes() const {return {};}
 
 	void SetOwner(const std::shared_ptr<nGameObject> &owner)
 	{

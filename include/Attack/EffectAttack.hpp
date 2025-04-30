@@ -45,7 +45,7 @@ public:
 	//----Setter----
 	void ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect,EffectAttackType effectType);
 
-	void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info) override;
+	void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info);
 
 protected:
 	EffectAttackType m_effectType;

@@ -7,16 +7,18 @@
 #ifndef ROOMCOLLISIONMANAGER_HPP
 #define ROOMCOLLISIONMANAGER_HPP
 
-#include "Room/UniformGrid.hpp"
 #include "ObserveManager/IManager.hpp"
+#include "Room/UniformGrid.hpp"
 
+
+struct CollisionEventInfo;
 class nGameObject;
 struct CollisionInfo;
 
 class RoomCollisionManager : public IManager {
 public:
 	RoomCollisionManager() {m_SpatialGrid.Initialize(560, 560, 32); };
-	~RoomCollisionManager() = default;
+	~RoomCollisionManager() override = default;
 
 	// 注冊監聽成員
 	void RegisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
@@ -32,18 +34,27 @@ public:
 protected:
 	UniformGrid m_SpatialGrid;
 	std::vector<std::weak_ptr<nGameObject>> m_NGameObjects;
+	std::vector<std::weak_ptr<nGameObject>> m_TriggerObjects; // 扳機子集局部更新
 	bool m_IsVisible = true; // 記錄碰撞箱顯示
 	bool m_IsActive = true;
 
 private:
 	// 計算碰撞詳情
+	// static void CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,
+	// 									  const std::shared_ptr<nGameObject> &objectB, CollisionInfo &info);
+
 	static void CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,
-										  const std::shared_ptr<nGameObject> &objectB, CollisionInfo &info);
+										  const std::shared_ptr<nGameObject> &objectB,
+										  CollisionEventInfo &info);
 
 	// 分發碰撞處理
+	// static void DispatchCollision(const std::shared_ptr<nGameObject>& objectA,
+	// 					  const std::shared_ptr<nGameObject>& objectB,
+	// 					  CollisionInfo& info);
+
 	static void DispatchCollision(const std::shared_ptr<nGameObject>& objectA,
-						  const std::shared_ptr<nGameObject>& objectB,
-						  CollisionInfo& info);
+								  const std::shared_ptr<nGameObject>& objectB,
+								  CollisionEventInfo & info);
 };
 
 #endif //ROOMCOLLISIONMANAGER_HPP

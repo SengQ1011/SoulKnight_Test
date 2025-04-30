@@ -5,12 +5,13 @@
 #ifndef COLLISIONCOMPONENTSTRUCT_HPP
 #define COLLISIONCOMPONENTSTRUCT_HPP
 
-
-#include "json.hpp"
+#include <unordered_map>
 #include "EnumTypes.hpp"
 #include "glm/fwd.hpp" // glm::uint8_t
 #include "glm/vec2.hpp"
-#include <unordered_map>
+#include "json.hpp"
+
+#include "EventInfo.hpp"
 
 class nGameObject;
 
@@ -70,6 +71,35 @@ inline void from_json(const nlohmann::ordered_json& j, StructCollisionComponent 
 	j.at("IsTrigger").get_to(c.m_IsTrigger);
 }
 
+// TODO: 嘗試重構中
+struct CollisionEventInfo final : TypedEventInfo<CollisionEventInfo>
+{
+private:
+	glm::vec2 collisionNormal;
+	//確定碰撞方向， 反彈角度 Ex摩檫力作用方向=切綫方向
+	//必須通過Set和Get來設定
+
+public:
+	std::weak_ptr<nGameObject> objectA; //避免循環引用 不要因爲這個Info而導致objectA因爲被引用而無法銷毀
+	std::weak_ptr<nGameObject> objectB;
+	float penetration;
+
+	CollisionEventInfo(const std::shared_ptr<nGameObject> &objectA, const std::shared_ptr<nGameObject> &objectB) :
+		TypedEventInfo(EventType::Collision),
+		collisionNormal(0),
+		objectA(objectA),
+		objectB(objectB),
+		penetration(0) {}
+	~CollisionEventInfo() override = default;
+
+	[[nodiscard]] std::shared_ptr<nGameObject> GetObjectA() const {return objectA.lock();}//lock可以暫時取得std::shared_ptr
+	[[nodiscard]] std::shared_ptr<nGameObject> GetObjectB() const {return objectB.lock();}
+
+	//標準化碰撞法綫 ->只有方向信息，不含大小
+	void SetCollisionNormal (const glm::vec2& normal);
+	[[nodiscard]] glm::vec2 GetCollisionNormal() const;
+};
+// TODO: 保佑通過
 
 struct CollisionInfo
 {

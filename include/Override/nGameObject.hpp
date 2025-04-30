@@ -13,9 +13,8 @@
 class nGameObject : public Util::GameObject, public std::enable_shared_from_this<nGameObject> //爲了讓Component可以指向nGameObject
 {
 public:
-	explicit nGameObject(const std::string& objectName = "")
-		: m_Name(objectName.empty() ? "GameObject_" + std::to_string(GetNextId()) : objectName ) {}
-
+	explicit nGameObject(const std::string& baseName = "")
+		: m_Name(GenerateUniqueName(baseName)) {}
 	~nGameObject() override = default;
 
 	glm::vec2 m_WorldCoord = {0,0};
@@ -26,24 +25,28 @@ public:
 	template <typename T>
 	std::shared_ptr<T> GetComponent(ComponentType type);
 
-	virtual void Update()
-	{
-		if (!m_Active) return;
+	/**
+	 * @brief 對nGameObject内部的事件分發
+	 * @tparam EventT EventInfo類別
+	 * @param eventInfo 事件資料
+	 */
+	template <typename EventT>
+	void OnEvent(const EventT &eventInfo);
 
-		for (auto& [type, component] : m_Components) {
-			component->Update();  // 更新每個組件
-		}
-	}
-	virtual void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
-	{
-		if (!m_Active) return;
+	virtual void OnEventReceived(const EventInfo& eventInfo) {};
 
-		for (const auto& pair : m_Components) {
-			// pair.first 是 ComponentType 键
-			// pair.second 是 std::shared_ptr<Component> 值
-			pair.second->HandleCollision(info);
-		}
-	}
+	virtual void Update();
+
+	// virtual void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
+	// {
+	// 	if (!m_Active) return;
+	//
+	// 	for (const auto& pair : m_Components) {
+	// 		// pair.first 是 ComponentType 键
+	// 		// pair.second 是 std::shared_ptr<Component> 值
+	// 		pair.second->HandleCollision(info);
+	// 	}
+	// }
 
 	//Setter
 	void SetWorldCoord(const glm::vec2 coord) {m_WorldCoord = coord + m_PosOffset;} // 圖片位移補償
@@ -77,19 +80,16 @@ protected:
 	ZIndexType m_ZIndex = ZIndexType::OBJECTHIGH; // 設置ZIndex層，動態調整
 
 
-	glm::vec2 m_InitialScale;			// 儲存初始縮放
+	glm::vec2 m_InitialScale{};			// 儲存初始縮放
 	bool m_InitialScaleSet = false;		// 標記是否已設置初始縮放
 
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
+	std::unordered_map<EventType, std::vector<Component*>> m_EventSubscribers;
 
 	bool m_RegisteredToScene = false;
 
 private:
-	static int GetNextId()
-	{
-		static int gameObjectCounter = 0;
-		return gameObjectCounter++;
-	}
+	static std::string GenerateUniqueName(const std::string& baseName);
 };
 
 #include "nGameObject.inl" //必須先完成定義后才能包含
