@@ -7,6 +7,7 @@
 
 #include <typeindex>
 
+// EventManager 和 Component分兩類？
 enum class EventType {
 	None,
 
@@ -21,26 +22,26 @@ enum class EventType {
 
 	// 通用
 	Death,
-	HealthChanged,
-	EnergyChanged,
-	ArmorBroken,
+	// HealthChanged,
+	// EnergyChanged,
+	// ArmorBroken,
 
 	// 角色動作
-	PlayerDeath,
-	EnemyDeath,
-	PlayerSpawned,
-	EnemySpawned,
-	UseSkill,
+	// PlayerDeath,
+	// EnemyDeath,
+	// PlayerSpawned,
+	// EnemySpawned,
+	// UseSkill,
 
 	// 房間
-	RoomCleared,
-	BossDefeated,
-	RoomEntered,
+	// RoomCleared,
+	// BossDefeated,
+	// RoomEntered,
 
 	// UI
-	UpdateHealthUI,
-	UpdateEnergyUI,
-	ShowGameOverScreen,
+	// UpdateHealthUI,
+	// UpdateEnergyUI,
+	// ShowGameOverScreen,
 
 	// 自由擴充...
 };
