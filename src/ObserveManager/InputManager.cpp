@@ -8,7 +8,7 @@
 #include "Util/Input.hpp"
 
 void InputManager::Update() {
-	static const std::array<std::pair<Util::Keycode, char>, 10> keys = {{
+	static const std::array<std::pair<Util::Keycode, char>, 12> keys = {{
 		{Util::Keycode::W, 'W'},	// 上
 		{Util::Keycode::S, 'S'},	// 下
 		{Util::Keycode::A, 'A'},	// 左
@@ -18,7 +18,9 @@ void InputManager::Update() {
 		{Util::Keycode::L, 'L'},	// 切換武器
 		{Util::Keycode::U, 'U'},	// 技能
 		{Util::Keycode::I, 'I'},
-		{Util::Keycode::K, 'K'}
+		{Util::Keycode::K, 'K'},
+		{Util::Keycode::P, 'P'},	// 暫停
+		{Util::Keycode::M, 'M'}
 	}};
 
 	for (const auto& [keycode, key] : keys) {

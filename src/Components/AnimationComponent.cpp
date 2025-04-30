@@ -40,10 +40,8 @@ void AnimationComponent::Init()
 
 void AnimationComponent::Update()
 {
-	if (m_useSkillEffect)
-	{
-		if (auto character = GetOwner<nGameObject>())
-		{
+	if (m_useSkillEffect) {
+		if (auto character = GetOwner<nGameObject>()) {
 			m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
 			m_effectAnimation->SetZIndexType(ZIndexType::CUSTOM); //可能不該在Update的，但是方便確認
 			m_effectAnimation->SetZIndex(character->GetZIndex() - 0.5f);
@@ -66,7 +64,6 @@ void AnimationComponent::SetAnimation(State state)
 			{
 				m_currentAnimation->PlayAnimation(false);
 				m_currentAnimation->SetVisible(false);
-				// character->RemoveChild(m_currentAnimation);  // 使用 owner 訪問 RemoveChild
 			}
 
 			// 設定新動畫

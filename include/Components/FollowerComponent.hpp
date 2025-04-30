@@ -63,12 +63,13 @@ protected:
 	float m_ZIndexOffset = 0.0f;
 	float m_HoldingRotation = 0;
 	bool m_UseMousePosition = false;
-	bool m_IsSword;
+	bool m_IsSword = false;
 	bool m_attackAction = false;
 	float m_attackTimer = 0.0f;
 	float m_attackDuration = 0.45f;
-	std::weak_ptr<nGameObject> m_Follower; // 此物件會跟隨的物件
-	std::weak_ptr<nGameObject> m_Target; // 此物件會跟隨目標旋轉							//指向目標 -> 用來取位置
+	float m_baseRotationDegrees = 35.0f;	// 揮刀前的擺角
+	std::weak_ptr<nGameObject> m_Follower;	// 此物件會跟隨的物件
+	std::weak_ptr<nGameObject> m_Target;	// 此物件會跟隨目標旋轉
 };
 
 

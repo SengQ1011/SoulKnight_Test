@@ -12,15 +12,13 @@ std::shared_ptr<EffectAttack> EffectAttackPool::Acquire(const CharacterType type
 	if (!pool.empty()) {
 		// 從池中取出子彈並重置屬性
 		auto effectAttack = pool.back();
-		if (!effectAttack) {
-		}
+		if (!effectAttack) LOG_ERROR("effectAttack = nullptr");
 		effectAttack->ResetAll(type, bulletTransform, direction, size, damage, canReflect, effectType);
 		pool.pop_back();  // 從池中移除
 		effectAttack->SetActive(true);   // 激活子彈
 		effectAttack->SetVisible(true);
 		return effectAttack;
 	}
-
 	// 如果池是空的，創建一個新的子彈
 	auto newEffectAttack = std::make_shared<EffectAttack>(type, bulletTransform, direction, size, damage, canReflect, effectType);
 	return newEffectAttack;

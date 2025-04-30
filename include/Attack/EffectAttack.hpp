@@ -20,9 +20,24 @@ namespace EffectAssets {
 			ResourcePath("/Sprite/attackUI/slash/slash_2.png"),
 			ResourcePath("/Sprite/attackUI/slash/slash_3.png")
 		}},
-		{EffectAttackType::STAB, {
-			//"/Sprite/attackUI/thrust/thrust_0.png",
-			//...
+		{EffectAttackType::LUNGE, {
+			ResourcePath("/Sprite/attackUI/lunge/lunge_0.png"),
+			ResourcePath("/Sprite/attackUI/lunge/lunge_1.png"),
+			ResourcePath("/Sprite/attackUI/lunge/lunge_2.png"),
+			ResourcePath("/Sprite/attackUI/lunge/lunge_3.png"),
+			ResourcePath("/Sprite/attackUI/lunge/lunge_4.png"),
+			ResourcePath("/Sprite/attackUI/lunge/lunge_5.png"),
+			ResourcePath("/Sprite/attackUI/lunge/lunge_6.png")
+		}},
+		{EffectAttackType::SHOCKWAVE,{
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_0.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_1.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_2.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_3.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_4.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_5.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_6.png"),
+			ResourcePath("/Sprite/attackUI/shockwave/shockwave_7.png")
 		}}
 	};
 }

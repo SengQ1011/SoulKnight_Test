@@ -29,17 +29,6 @@ void GunWeapon::attack(const int damage) {
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 
-	// if (const auto currentRoom = currentScene->GetCurrentRoom();
-	// 	currentRoom != nullptr)
-	// {
-	// 	LOG_DEBUG("HAS ROOM");
-	// 	attackManager = currentRoom->GetAttackManager();
-	// 	}
-	// else
-	// {
-	// 	LOG_DEBUG("NO ROOM");
-	// 	attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-	// }
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
 	attackManager->spawnProjectile(characterType, bulletTransform, bulletDirection, m_bulletSize, damage, m_bulletImagePath, m_bulletSpeed, numRebound);
  }
