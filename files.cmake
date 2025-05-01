@@ -100,6 +100,7 @@ set(INCLUDE_FILES
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
+    Components/TriggerComponent.hpp
     Creature/Character.hpp
     Cursor.hpp
     EnumTypes.hpp

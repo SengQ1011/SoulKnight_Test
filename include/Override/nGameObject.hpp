@@ -79,12 +79,12 @@ protected:
 	glm::vec2 m_PosOffset = glm::vec2(0.0f);
 	ZIndexType m_ZIndex = ZIndexType::OBJECTHIGH; // 設置ZIndex層，動態調整
 
-
 	glm::vec2 m_InitialScale{};			// 儲存初始縮放
 	bool m_InitialScaleSet = false;		// 標記是否已設置初始縮放
 
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
 	std::unordered_map<EventType, std::vector<Component*>> m_EventSubscribers;
+	// std::vector<void(*)(int)> g;
 
 	bool m_RegisteredToScene = false;
 

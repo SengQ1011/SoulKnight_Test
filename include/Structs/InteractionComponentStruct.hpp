@@ -37,14 +37,18 @@ struct StructPrompt
 inline std::shared_ptr<nGameObject> CreatePromptObject(const StructPrompt& object)
 {
 	auto objectPtr = std::make_shared<nGameObject>("InteractionPrompt");
-	objectPtr->SetDrawable(std::make_shared<Util::Text>(
+	auto prompt = std::make_shared<Util::Text>(
 		RESOURCE_DIR+object.s_PromptFontPath,
 		object.s_PromptFontSize,
 		object.s_PromptText,
-		Util::Color(object.s_PromptColor[0],object.s_PromptColor[1],object.s_PromptColor[2])));
+		Util::Color(object.s_PromptColor[0],object.s_PromptColor[1],object.s_PromptColor[2]));
+	objectPtr->SetDrawable(prompt);
 	objectPtr->SetZIndexType(ZIndexType::UI);
 	objectPtr->SetZIndex(10.0f);
 	objectPtr->SetVisible(object.s_IsPromptVisible);
+	objectPtr->SetInitialScale(glm::vec2(0.5f));
+	objectPtr->SetInitialScaleSet(true);
+	LOG_DEBUG("Prompt object created {}",prompt->GetSize());
 	return objectPtr;
 };
 
