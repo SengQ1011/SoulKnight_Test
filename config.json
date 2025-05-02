@@ -1,0 +1,7 @@
+{
+  "title": "SoulKnight",
+  "window_width": 1280,
+  "window_height": 720,
+  "default_log_level": 1,
+  "fps_cap": 120
+}

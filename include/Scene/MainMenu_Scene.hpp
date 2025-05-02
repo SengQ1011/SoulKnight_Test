@@ -7,10 +7,11 @@
 
 #include "Scene/Scene.hpp"
 
-#include "Util/SFX.hpp"
 #include "Util/BGM.hpp"
+#include "Util/SFX.hpp"
 
 
+class UIPanel;
 class MainMenuScene : public Scene
 {
 public:
@@ -27,14 +28,15 @@ protected:
 	std::shared_ptr<Util::GameObject> m_Background = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Title = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_RedShawl = std::make_shared<Util::GameObject>();
+	// std::shared_ptr<Util::GameObject> m_MainMenu = std::make_shared<Util::GameObject>();
 
-	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
-	std::shared_ptr<Util::SFX> m_ClickSound = std::make_shared<Util::SFX>(RESOURCE_DIR"/UI/fx_btn1.wav");
+	// std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
+	// std::shared_ptr<Util::SFX> m_ClickSound = std::make_shared<Util::SFX>(RESOURCE_DIR"/UI/fx_btn1.wav");
 
 	std::shared_ptr<Util::GameObject> m_Text = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Version = std::make_shared<Util::GameObject>();
 
-	Util::Renderer m_Root;
+	// Util::Renderer m_Root;
 };
 
 #endif //MAINMENU_SCENE_HPP

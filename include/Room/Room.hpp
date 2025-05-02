@@ -72,7 +72,6 @@ public:
     // 碰撞体管理
     [[nodiscard]] std::shared_ptr<RoomCollisionManager> GetCollisionManager() const { return m_CollisionManager; }
     [[nodiscard]] std::shared_ptr<RoomInteractionManager> GetInteractionManager() const { return m_InteractionManager; }
-    // [[nodiscard]] std::shared_ptr<BulletManager> GetBulletManager() const { return m_BulletManager; }
     [[nodiscard]] std::shared_ptr<TrackingManager> GetTrackingManager() const { return m_TrackingManager; }
 
     // Getter/Setter

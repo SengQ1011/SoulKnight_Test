@@ -41,14 +41,14 @@ inline std::shared_ptr<nGameObject> CreatePromptObject(const StructPrompt& objec
 		RESOURCE_DIR+object.s_PromptFontPath,
 		object.s_PromptFontSize,
 		object.s_PromptText,
-		Util::Color(object.s_PromptColor[0],object.s_PromptColor[1],object.s_PromptColor[2]));
+		Util::Color(object.s_PromptColor[0],object.s_PromptColor[1],object.s_PromptColor[2])
+		,false);
 	objectPtr->SetDrawable(prompt);
 	objectPtr->SetZIndexType(ZIndexType::UI);
 	objectPtr->SetZIndex(10.0f);
 	objectPtr->SetVisible(object.s_IsPromptVisible);
 	objectPtr->SetInitialScale(glm::vec2(0.5f));
 	objectPtr->SetInitialScaleSet(true);
-	LOG_DEBUG("Prompt object created {}",prompt->GetSize());
 	return objectPtr;
 };
 

@@ -34,6 +34,7 @@ set(SRC_FILES
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
     Loader.cpp
+    ObserveManager/AudioManager.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
     Room/DungeonMap.cpp
@@ -62,6 +63,9 @@ set(SRC_FILES
     TalentDatabase.cpp
     Tool/Tool.cpp
     TriggerStrategy/AttackTriggerStrategy.cpp
+    UIPanel/SettingPanel.cpp
+    UIPanel/UIManager.cpp
+    UIPanel/UIPanel.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
@@ -114,6 +118,7 @@ set(INCLUDE_FILES
     Loader.hpp
     MemoryTracker.hpp
     Motion.hpp
+    ObserveManager/AudioManager.hpp
     ObserveManager/EventManager.hpp
     ObserveManager/IManager.hpp
     ObserveManager/InputManager.hpp
@@ -154,6 +159,9 @@ set(INCLUDE_FILES
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp
     TriggerStrategy/ITriggerStrategy.hpp
+    UIPanel/SettingPanel.hpp
+    UIPanel/UIManager.hpp
+    UIPanel/UIPanel.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp

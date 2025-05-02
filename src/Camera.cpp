@@ -128,7 +128,7 @@ void Camera::UpdateZIndex(const std::shared_ptr<nGameObject> &child) const
 	if (ZIndexLayer == ZIndexType::UI)
 	{
 		const auto ZIndexNum = child->GetZIndex();
-		if (child->GetZIndex() < ZIndexType::UI) child->SetZIndex(ZIndexType::UI + ZIndexNum);
+		if (child->GetZIndex() < ZIndexType::UI) child->SetZIndex(ZIndexType::UI + ZIndexNum * 0.2f);
 		return;
 	}
 

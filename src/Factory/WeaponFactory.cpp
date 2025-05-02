@@ -20,30 +20,30 @@ namespace WeaponFactory {
 			// 根據武器 ID 查找對應的武器資料
 			for (const auto& weapon : weaponData) {
 				if (weapon["ID"] == weaponID) {
-					std::string type = weapon["weaponType"];
+					std::string type = weapon["weaponType"].get<std::string>();
 					std::string weaponImagePath = RESOURCE_DIR + weapon["weaponImagePath"].get<std::string>();
 
-					std::string name = weapon["name"];
-					int damage = weapon["damage"];
-					int energy = weapon["energy"];
-					float criticalRate = weapon["criticalRate"];
-					int offset = weapon["offset"];
-					float attackInterval = weapon["attackInterval"];
+					std::string name = weapon["name"].get<std::string>();
+					int damage = weapon["damage"].get<int>();
+					int energy = weapon["energy"].get<int>();
+					float criticalRate = weapon["criticalRate"].get<float>();
+					int offset = weapon["offset"].get<int>();
+					float attackInterval = weapon["attackInterval"].get<float>();
 					bool isSword = false;
 					std::shared_ptr<Weapon> weaponPtr;
 
 					// 根據 type 建立不同類型的武器
 					if (type == "Melee") {
-						float range = weapon["attackRange"];
-						if (const int check = weapon["isSword"]; check == 1) {
+						float range = weapon["attackRange"].get<float>();
+						if (const int check = weapon["isSword"].get<int>(); check == 1) {
 							isSword = true;
 						}
 						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range);
 					}
 					else if (type == "Gun") {
 						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
-						float size = weapon["bulletSize"];
-						float speed = weapon["bulletSpeed"];
+						float size = weapon["bulletSize"].get<float>();
+						float speed = weapon["bulletSpeed"].get<float>();
 						weaponPtr = std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackInterval, size, speed);
 					}
 					// else if (type == "Bow") {

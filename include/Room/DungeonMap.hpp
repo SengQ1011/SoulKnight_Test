@@ -7,10 +7,10 @@
 
 #include <memory>
 #include <vector>
+#include <optional>
 
 #include "DungeonRoom.hpp"
 #include "glm/vec2.hpp"
-
 
 enum class RoomType;
 class Loader;

@@ -57,6 +57,8 @@ public:
 	void SetPosOffset(const glm::vec2& offset) { m_PosOffset = offset; }
 	void SetRegisteredToScene(const bool signal) {m_RegisteredToScene = signal;}
 
+	// void SetOutWindow(bool signal) {m}
+
 	// Getter
 	[[nodiscard]] virtual std::string GetName() const { return m_Name; }
 	[[nodiscard]] virtual std::string GetClassName() const { return "nGameObject"; }
@@ -75,6 +77,8 @@ public:
 protected:
 	std::string m_Name;
 	bool m_Active = true;
+	bool m_IsOutWindow = false;		// 在視窗範圍外自動關閉顯示
+	bool m_IsControlVisible = true; // 在視窗内控制的可視化
 
 	glm::vec2 m_PosOffset = glm::vec2(0.0f);
 	ZIndexType m_ZIndex = ZIndexType::OBJECTHIGH; // 設置ZIndex層，動態調整
