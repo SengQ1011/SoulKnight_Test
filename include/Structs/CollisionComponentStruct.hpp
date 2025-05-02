@@ -126,7 +126,7 @@ public:
 
 struct Rect //AABB的矩形結構
 {
-	glm::vec2 m_Position;	//左下角世界坐標
+	glm::vec2 m_Position;	//物體中心世界坐標
 	glm::vec2 m_Size;		//矩形長寬
 	// 需要旋轉嗎？
 
