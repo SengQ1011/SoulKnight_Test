@@ -57,7 +57,8 @@ public:
 	void SetPosOffset(const glm::vec2& offset) { m_PosOffset = offset; }
 	void SetRegisteredToScene(const bool signal) {m_RegisteredToScene = signal;}
 
-	// void SetOutWindow(bool signal) {m}
+	// void SetOutWindow(bool signal) {m_IsOutWindow = signal;}
+	// void SetControlVisible(bool signal) {m_IsControlVisible = signal;}
 
 	// Getter
 	[[nodiscard]] virtual std::string GetName() const { return m_Name; }
