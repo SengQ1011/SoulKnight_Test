@@ -80,32 +80,7 @@ std::vector<EventType> HealthComponent::SubscribedEventTypes() const
 	};
 }
 
-
-void HealthComponent::HandleCollision(const CollisionEventInfo& info)
-{
-	// 判斷碰撞對象是不是攻擊==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
-	// if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB()))
-	// {
-	// 	const int damage = attack->GetDamage();
-	// 	this->TakeDamage(damage);
-	// }
-
-	// collisionEnemy的碰撞傷害
-	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB()))
-	{
-		if (character->GetType() == CharacterType::ENEMY)
-		{
-			if (const auto collisionDamage =
-					character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
-				collisionDamage > 0)
-			{
-				this->TakeDamage(collisionDamage);
-			}
-		}
-	}
-}
-/*
-void HealthComponent::HandleCollision(CollisionInfo &info) {
+void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 	auto collisionObject = info.GetObjectB();
 	if (!collisionObject) return;
 	nGameObject* rawPtr = collisionObject.get();// 取出 raw pointer
@@ -137,7 +112,7 @@ void HealthComponent::HandleCollision(CollisionInfo &info) {
 		}
 	}
 }
-*/
+
 void HealthComponent::TakeDamage(int damage)
 {
 	// 天賦：破甲保護

@@ -45,8 +45,6 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         libs/tracy/TracyClient.cpp
-        src/Attack/Attack.cpp
-        src/Components/EnemyAI/AttackStrategy.cpp
 )
 
 if(MSVC)

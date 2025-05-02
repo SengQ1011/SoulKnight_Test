@@ -24,10 +24,7 @@ namespace EffectAssets {
 			ResourcePath("/Sprite/attackUI/lunge/lunge_0.png"),
 			ResourcePath("/Sprite/attackUI/lunge/lunge_1.png"),
 			ResourcePath("/Sprite/attackUI/lunge/lunge_2.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_3.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_4.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_5.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_6.png")
+			ResourcePath("/Sprite/attackUI/lunge/lunge_3.png")
 		}},
 		{EffectAttackType::SHOCKWAVE,{
 			ResourcePath("/Sprite/attackUI/shockwave/shockwave_0.png"),

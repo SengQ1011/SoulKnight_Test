@@ -10,7 +10,7 @@
 #include <memory>
 
 
-struct CollisionInfo;
+struct CollisionEventInfo;
 struct EnemyContext;
 class nGameObject;
 
@@ -22,7 +22,7 @@ class IMoveStrategy
 public:
 	virtual ~IMoveStrategy() = default;
 	virtual void Update(const EnemyContext &ctx, float deltaTime) = 0;
-	void CollisionAction(CollisionInfo &info, const EnemyContext &ctx);
+	void CollisionAction(const CollisionEventInfo &info, const EnemyContext &ctx);
 
 	// 獲取範圍 [min, max] 內的隨機浮點數
 	static float RandomFloatInRange(const float min, const float max)

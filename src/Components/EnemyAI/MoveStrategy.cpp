@@ -10,7 +10,7 @@
 #include "StructType.hpp"
 
 //============================= (Base) =============================
-void ReflectMovement(CollisionInfo &info, const EnemyContext &ctx)
+void ReflectMovement(const CollisionEventInfo &info, const EnemyContext &ctx)
 {
 	glm::vec2 oldDir = glm::normalize(ctx.moveComp->GetLastValidDirection());
 	glm::vec2 reflectDir = glm::reflect(oldDir, info.GetCollisionNormal());
@@ -26,7 +26,7 @@ void ReflectMovement(CollisionInfo &info, const EnemyContext &ctx)
 }
 
 
-void IMoveStrategy::CollisionAction(CollisionInfo &info, const EnemyContext &ctx)
+void IMoveStrategy::CollisionAction(const CollisionEventInfo &info, const EnemyContext &ctx)
 {
 	// ememy與玩家碰撞后:
 	// 攻擊模式：反彈繼續走

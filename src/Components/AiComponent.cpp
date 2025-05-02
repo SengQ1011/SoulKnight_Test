@@ -95,9 +95,22 @@ void AIComponent::HideReadyAttackIcon()
 	m_readyAttackIcon->SetVisible(false);
 }
 
-void AIComponent::HandleCollision(CollisionInfo &info)
+void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }
+
+std::vector<EventType> AIComponent::SubscribedEventTypes() const
 {
-	m_moveStrategy->CollisionAction(info, m_context);
+	return {
+		EventType::Collision
+	};
 }
 
-void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }
+// void AIComponent::HandleCollision(CollisionInfo &info)
+// {
+//	m_moveStrategy->CollisionAction(info, m_context);
+// }
+
+void AIComponent::HandleEvent(const EventInfo &eventInfo)
+{
+	const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
+	m_moveStrategy->CollisionAction(collisionInfo, m_context);
+}

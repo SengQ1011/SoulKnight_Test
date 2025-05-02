@@ -11,6 +11,12 @@
 
 #include "Util/Logger.hpp"
 
+EffectAttackType stringToEffectAttackType(const std::string& stateStr) {
+	if (stateStr == "SLASH") return EffectAttackType::SLASH;
+	if (stateStr == "LUNGE") return EffectAttackType::LUNGE;
+	if (stateStr == "SHOCKWAVE") return EffectAttackType::SHOCKWAVE;
+}
+
 namespace WeaponFactory {
 	std::shared_ptr<Weapon> createWeapon(int weaponID) {
 		try {
@@ -35,10 +41,11 @@ namespace WeaponFactory {
 					// 根據 type 建立不同類型的武器
 					if (type == "Melee") {
 						float range = weapon["attackRange"];
+						auto type = stringToEffectAttackType(weapon["EffectAttackType"]);
 						if (const int check = weapon["isSword"]; check == 1) {
 							isSword = true;
 						}
-						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range);
+						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range, type);
 					}
 					else if (type == "Gun") {
 						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();

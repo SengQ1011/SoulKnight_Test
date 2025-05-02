@@ -78,10 +78,10 @@ bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent
 	return m_CollisionMask & other->m_CollisionLayer; // 你的"圖層"在我的判定"範圍"之上， 所以我可以侵犯你(?
 }
 
-void CollisionComponent::HandleCollision(CollisionInfo &info)
-{
-	SetColliderBoxColor("Yellow"); //碰撞變色
-}
+// void CollisionComponent::HandleCollision(CollisionInfo &info)
+// {
+// 	SetColliderBoxColor("Yellow"); //碰撞變色
+// }
 
 void CollisionComponent::HandleEvent(const EventInfo& eventInfo)
 {

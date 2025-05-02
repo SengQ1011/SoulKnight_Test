@@ -36,7 +36,7 @@ public:
 	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
 	void TakeDamage(int damage);
-	void HandleCollision(const CollisionEventInfo &info);
+	void HandleCollision(const CollisionEventInfo &info) override;
 	void HandleEvent(const EventInfo &eventInfo) override;
 	std::vector<EventType> SubscribedEventTypes() const override;
 
@@ -52,7 +52,6 @@ private:
 	bool m_breakProtection = false; // 天賦：破甲保護
 	std::unordered_map<nGameObject*, float> m_recentAttackSources;	// 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
 	float m_invincibleDuration = 0.5f; // 碰撞後對於同一個物件無敵時間（秒）
-
 
 	// 通知 StateComponent 角色死亡
 	void OnDeath() const;
