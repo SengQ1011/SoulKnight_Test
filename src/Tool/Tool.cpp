@@ -21,8 +21,8 @@ namespace Tool
 	glm::vec2 Sdl2Glm(int x, int y)
 	{
 		glm::vec2 glmCoord;
-		glmCoord.x = WINDOW_WIDTH * 0.5f - x;
-		glmCoord.y = y - WINDOW_HEIGHT * 0.5f;
+		glmCoord.x = PTSD_Config::WINDOW_WIDTH * 0.5f - x;
+		glmCoord.y = y - PTSD_Config::WINDOW_HEIGHT * 0.5f;
 		return glmCoord;
 	};
 

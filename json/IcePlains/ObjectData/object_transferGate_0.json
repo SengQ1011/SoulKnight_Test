@@ -10,7 +10,7 @@
             "InteractableFunctionName": "Portal",
             "PromptObject": {
                 "PromptFontPath": "/Font/zpix.ttf",
-                "PromptFontSize": 10.0,
+                "PromptFontSize": 32.0,
                 "PromptText": "下一關",
                 "PromptColor": [
                     255,

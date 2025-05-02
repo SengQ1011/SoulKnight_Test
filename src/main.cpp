@@ -12,7 +12,6 @@ int main(int, char**) {
 	context->SetWindowIcon(RESOURCE_DIR "/pet00icon.png");
 	App app;
 
-
 	while (!context->GetExit()) {
 		ZoneScopedN("mainUpdate"); // 一幀完整
 		switch (app.GetCurrentState()) {

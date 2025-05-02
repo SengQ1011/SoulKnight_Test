@@ -94,23 +94,23 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 	for (const auto& characterInfo : characterData) {
 		if (characterInfo["ID"] == id) {
 			CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
-			std::string name = characterInfo["name"];
+			std::string name = characterInfo["name"].get<std::string>();
 			auto player = std::make_shared<Character>(name, type);
 			player->SetZIndexType(ZIndexType::OBJECTHIGH); // 設置對應的ZIndexLayer
 
 			auto animation = parseCharacterAnimations(characterInfo["animations"]);
-			int maxHp = characterInfo["maxHp"];
-			int maxArmor = characterInfo["maxArmor"];
-			int maxEnergy = characterInfo["maxEnergy"];
+			int maxHp = characterInfo["maxHp"].get<int>();
+			int maxArmor = characterInfo["maxArmor"].get<int>();
+			int maxEnergy = characterInfo["maxEnergy"].get<int>();
 
-			float moveSpeed = characterInfo["speed"];
+			float moveSpeed = characterInfo["speed"].get<float>();
 
 			// 解析武器名稱並創建武器
-			const int weaponID = characterInfo["weaponID"];
+			const int weaponID = characterInfo["weaponID"].get<int>();
 			auto weapon = WeaponFactory::createWeapon(weaponID);
 
-			double criticalRate = characterInfo["criticalRate"];
-			int handBladeDamage = characterInfo["handBladeDamage"];
+			double criticalRate = characterInfo["criticalRate"].get<double>();
+			int handBladeDamage = characterInfo["handBladeDamage"].get<int>();
 
 			// 讀取技能
 			auto skill = createSkill(player, characterInfo["skill"]);
@@ -167,7 +167,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
     // 在 JSON 陣列中搜尋符合名稱的角色
     for (const auto& characterInfo : enemyJsonData) {
         if (characterInfo["ID"] == id) {
-        	std::string name = characterInfo["name"];
+        	std::string name = characterInfo["name"].get<std::string>();
         	CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
         	std::shared_ptr<Character> enemy = std::make_shared<Character>(name, type);
         	enemy->SetZIndexType(ZIndexType::OBJECTHIGH);
@@ -176,10 +176,10 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	if(characterInfo["isElite"] == 1) enemy->m_Transform.scale = glm::vec2(1.4f);
         	auto animation = parseCharacterAnimations(characterInfo["animations"]);
 			MonsterType aiType = stringToMonsterType(characterInfo["monsterType"].get<std::string>());
-        	int monsterPoint = characterInfo["monsterPoint"];
-        	int maxHp = characterInfo["maxHp"];
-            float moveSpeed = characterInfo["speed"];
-        	float bodySize = characterInfo["size"];
+        	int monsterPoint = characterInfo["monsterPoint"].get<int>();
+        	int maxHp = characterInfo["maxHp"].get<int>();
+            float moveSpeed = characterInfo["speed"].get<float>();
+        	float bodySize = characterInfo["size"].get<float>();
         	std::shared_ptr<Weapon> weapon = nullptr;
         	int collisionDamage = 0;
 
@@ -198,12 +198,12 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	else LOG_ERROR("{}'s attackType not found", id);
 
         	// 根據攻擊類型
-			int haveWeapon = characterInfo["haveWeapon"];
+			int haveWeapon = characterInfo["haveWeapon"].get<int>();
         	if (haveWeapon == 0) {
-        		collisionDamage = characterInfo["collisionDamage"];
+        		collisionDamage = characterInfo["collisionDamage"].get<int>();
         	}
         	else{
-        		const int weaponId = characterInfo["weaponId"];
+        		const int weaponId = characterInfo["weaponId"].get<int>();
         		weapon = WeaponFactory::createWeapon(weaponId);
         		const auto followComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
         		followComp->SetFollower(enemy);

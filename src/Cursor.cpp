@@ -28,7 +28,7 @@ glm::vec2 Cursor::GetCursorWindowCoord()
 	SDL_GetMouseState(&x,&y);
 
 	//SDL_coord => OpenGL_coord
-	m_WindowCoord = glm::vec2(x,y) - glm::vec2(WINDOW_WIDTH/2,WINDOW_HEIGHT/2);
+	m_WindowCoord = glm::vec2(x,y) - glm::vec2(PTSD_Config::WINDOW_WIDTH/2,PTSD_Config::WINDOW_HEIGHT/2);
 	m_WindowCoord.y *= -1;
 	return m_WindowCoord;
 }
