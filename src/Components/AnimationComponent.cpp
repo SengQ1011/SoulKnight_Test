@@ -63,12 +63,12 @@ void AnimationComponent::SetAnimation(State state)
 			if (m_currentAnimation)
 			{
 				m_currentAnimation->PlayAnimation(false);
-				m_currentAnimation->SetVisible(false);
+				m_currentAnimation->SetControlVisible(false);
 			}
 
 			// 設定新動畫
 			m_currentAnimation = it->second;
-			m_currentAnimation->SetVisible(true);
+			m_currentAnimation->SetControlVisible(true);
 			m_currentAnimation->PlayAnimation(true);
 
 			// 新動畫設為 Character drawable
@@ -101,7 +101,7 @@ void AnimationComponent::SetSkillEffect(bool play)
 			if (it != m_Animations.end())
 			{
 				m_effectAnimation = it->second;
-				m_effectAnimation->SetVisible(true);
+				m_effectAnimation->SetControlVisible(true);
 				m_effectAnimation->PlayAnimation(true);
 
 				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -115,7 +115,7 @@ void AnimationComponent::SetSkillEffect(bool play)
 	else
 	{
 		m_useSkillEffect = false;
-		m_effectAnimation->SetVisible(false);
+		m_effectAnimation->SetControlVisible(false);
 		m_effectAnimation->PlayAnimation(false);
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);

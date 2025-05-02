@@ -38,11 +38,13 @@ void DungeonScene::Start()
 	LOG_DEBUG("Entering Game Scene");
 	m_Loader = std::make_shared<Loader>(m_ThemeName);
 
-	m_OnDeathText = std::make_shared<nGameObject>();
-	m_OnDeathText->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
-	m_OnDeathText->SetZIndex(100);
-	m_OnDeathText->SetVisible(false);
-	m_Root->AddChild(m_OnDeathText);
+	// m_OnDeathText = std::make_shared<nGameObject>();
+	// m_OnDeathText->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
+	// m_OnDeathText->SetZIndex(100);
+	// m_OnDeathText->SetZIndexType(CUSTOM);
+	// m_OnDeathText->SetControlVisible(false);
+	// m_Root->AddChild(m_OnDeathText);
+	// m_Camera->AddChild(m_OnDeathText);
 
 	// 创建并初始化玩家
 	CreatePlayer();
@@ -72,6 +74,7 @@ void DungeonScene::Update()
 	{
 		ZoneScopedN("Player::Update");
 		m_Player->Update();
+		// m_OnDeathText->SetWorldCoord(m_Player->GetWorldCoord() + glm::vec2(0,m_Player->GetImageSize().y/2.0f) + glm::vec2(0,m_OnDeathText->GetImageSize().y/2.0f));
 	}
 	{
 		// 更新房间
@@ -116,15 +119,12 @@ Scene::SceneType DungeonScene::Change()
 	{
 		m_ClickSound->Play();
 		m_timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
-		m_OnDeathText->SetVisible(true);
-		auto drawable = std::dynamic_pointer_cast<Util::Text>(m_OnDeathText->GetDrawable());
-		Uint8 r = 0, g = 0, b = 0, a = 0;
-		// drawabrle->SetColor()
+		// m_OnDeathText->SetControlVisible(true);
 
 		if (m_timer >= 2.0f)
 		{
 			m_timer = 0.0f;
-			m_OnDeathText->SetVisible(false);
+			// m_OnDeathText->SetControlVisible(false);
 			return Scene::SceneType::DungeonLoad;
 		}
 	}

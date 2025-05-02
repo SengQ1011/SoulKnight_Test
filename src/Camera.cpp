@@ -87,16 +87,21 @@ void Camera::Update() {
 	// 對每個Object調位置
 	for (const auto& child : m_Children)
 	{
-		// TODO:需要变数调解？
+		// IsInsideWindow來專門管理是否在視窗内
 		if (NotShouldBeVisible(child))
 		{
-			child->SetVisible(false);
-			continue;
+			child->SetIsInsideWindow(false);
 		}
-		if (child->GetZIndexType() != UI)
+		else
 		{
-			child->SetVisible(true);
+			child->SetIsInsideWindow(true);
 		}
+
+		// 判斷是否顯示
+		// child->SetVisible(false);
+
+		child->SetVisible(child->IsInsideWindow() && child->IsControlVisible());
+		if (!child->IsVisible()) continue; // 沒顯示就不移動了
 		UpdateChildViewportPosition(child);
 	}
 }

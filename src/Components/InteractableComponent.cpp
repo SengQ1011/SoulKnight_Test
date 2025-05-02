@@ -48,7 +48,7 @@ void InteractableComponent::ShowPrompt(bool show)
 {
 	if (m_PromptObject)
 	{
-		m_PromptObject->SetVisible(show);
+		m_PromptObject->SetControlVisible(show);
 		m_IsPromptVisible = show;
 	}
 }

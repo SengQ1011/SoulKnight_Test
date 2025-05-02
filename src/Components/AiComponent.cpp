@@ -87,12 +87,12 @@ void AIComponent::SetEnemyState(const enemyState state)
 }
 
 void AIComponent::ShowReadyAttackIcon() const {
-	m_readyAttackIcon->SetVisible(true);
+	m_readyAttackIcon->SetControlVisible(true);
 }
 
 void AIComponent::HideReadyAttackIcon()
 {
-	m_readyAttackIcon->SetVisible(false);
+	m_readyAttackIcon->SetControlVisible(false);
 }
 
 void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }

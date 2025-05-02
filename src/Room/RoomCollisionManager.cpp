@@ -290,7 +290,7 @@ void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 	{
 		if (const auto sharedPtr = object.lock())
 			sharedPtr->GetComponent<CollisionComponent>(ComponentType::COLLISION)
-			->GetVisibleBox()->SetVisible(m_IsVisible);
+			->GetVisibleBox()->SetControlVisible(m_IsVisible);
 	}
 }
 

@@ -57,8 +57,8 @@ public:
 	void SetPosOffset(const glm::vec2& offset) { m_PosOffset = offset; }
 	void SetRegisteredToScene(const bool signal) {m_RegisteredToScene = signal;}
 
-	// void SetOutWindow(bool signal) {m_IsOutWindow = signal;}
-	// void SetControlVisible(bool signal) {m_IsControlVisible = signal;}
+	void SetIsInsideWindow(bool signal) {m_IsInsideWindow = signal;}
+	void SetControlVisible(bool signal) {m_IsControlVisible = signal;}
 
 	// Getter
 	[[nodiscard]] virtual std::string GetName() const { return m_Name; }
@@ -73,12 +73,15 @@ public:
 	[[nodiscard]] bool isSetInitialScale()  const { return m_InitialScaleSet;}
 	[[nodiscard]] ZIndexType GetZIndexType() const { return m_ZIndex;}
 	[[nodiscard]] glm::vec2 GetPosOffset() const { return m_PosOffset;}
-	bool IsRegisteredToScene() const { return m_RegisteredToScene; }
+	[[nodiscard]] bool IsRegisteredToScene() const { return m_RegisteredToScene; }
+
+	[[nodiscard]] bool IsInsideWindow() const { return m_IsInsideWindow; }
+	[[nodiscard]] bool IsControlVisible() const { return m_IsControlVisible; }
 
 protected:
 	std::string m_Name;
 	bool m_Active = true;
-	bool m_IsOutWindow = false;		// 在視窗範圍外自動關閉顯示
+	bool m_IsInsideWindow = true;	// 在視窗範圍外自動關閉顯示
 	bool m_IsControlVisible = true; // 在視窗内控制的可視化
 
 	glm::vec2 m_PosOffset = glm::vec2(0.0f);

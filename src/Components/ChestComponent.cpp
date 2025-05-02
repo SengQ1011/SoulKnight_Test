@@ -15,7 +15,7 @@ void ChestComponent::Init()
 	const std::shared_ptr<nGameObject> chest = GetOwner<nGameObject>();
 	if (!chest) return;
 	chest->SetActive(false);
-	chest->SetVisible(false);
+	chest->SetControlVisible(false);
 	chest->SetDrawable(drawable0);
 }
 

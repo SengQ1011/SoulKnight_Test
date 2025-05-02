@@ -18,7 +18,7 @@ std::shared_ptr<Projectile> ProjectilePool::Acquire(const CharacterType type, co
 		bullet->ResetAll(type, bulletTransform, direction, size, damage, ImagePath, speed, numRebound);
 		pool.pop_back();  // 從池中移除
 		bullet->SetActive(true);   // 激活子彈
-		bullet->SetVisible(true);
+		bullet->SetControlVisible(true);
 		//LOG_DEBUG("use old bullet");
 		return bullet;
 	}

@@ -40,7 +40,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		else
 		{
 			roomObject = std::make_shared<nGameObject>(_id);
-			roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+jsonData.at("path").get<std::string>()));
+			roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+jsonData.at("path").get<std::string>(),false));
 		}
 	} else {
 		LOG_WARN("RoomObjectFactory::createRoomObject: No path for {}", _id);

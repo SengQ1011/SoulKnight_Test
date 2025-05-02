@@ -16,7 +16,7 @@ std::shared_ptr<EffectAttack> EffectAttackPool::Acquire(const CharacterType type
 		effectAttack->ResetAll(type, bulletTransform, direction, size, damage, canReflect, effectType);
 		pool.pop_back();  // 從池中移除
 		effectAttack->SetActive(true);   // 激活子彈
-		effectAttack->SetVisible(true);
+		effectAttack->SetControlVisible(true);
 		return effectAttack;
 	}
 	// 如果池是空的，創建一個新的子彈

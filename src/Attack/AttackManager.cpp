@@ -66,7 +66,7 @@ void AttackManager::Update() {
         for (auto& bullet : m_projectiles) {
             if (bullet->ShouldRemove()) {
                 bullet->SetActive(false);
-                bullet->SetVisible(false);
+                bullet->SetControlVisible(false);
                 m_projectileRemovalQueue.push_back(bullet);
             } else {
                 activeBullets.push_back(bullet);
@@ -84,7 +84,7 @@ void AttackManager::Update() {
         for (auto& effect : m_effects) {
             if (effect->ShouldRemove()) {
                 effect->SetActive(false);
-                effect->SetVisible(false);
+                effect->SetControlVisible(false);
                 m_effectRemovalQueue.push_back(effect);
             } else {
                 activeEffects.push_back(effect);

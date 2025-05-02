@@ -46,7 +46,7 @@ inline std::shared_ptr<nGameObject> CreatePromptObject(const StructPrompt& objec
 	objectPtr->SetDrawable(prompt);
 	objectPtr->SetZIndexType(ZIndexType::UI);
 	objectPtr->SetZIndex(10.0f);
-	objectPtr->SetVisible(object.s_IsPromptVisible);
+	objectPtr->SetControlVisible(object.s_IsPromptVisible);
 	objectPtr->SetInitialScale(glm::vec2(0.5f));
 	objectPtr->SetInitialScaleSet(true);
 	return objectPtr;

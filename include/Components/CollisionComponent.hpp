@@ -72,7 +72,7 @@ public:
 
 	void SetColliderBoxVisible(const bool isVisible) const
 	{
-		m_ColliderVisibleBox->SetVisible(isVisible);
+		m_ColliderVisibleBox->SetControlVisible(isVisible);
 	} //設置碰撞箱可視化
 	void SetColliderBoxColor(const std::string &color) const; //設置碰撞箱顔色
 
