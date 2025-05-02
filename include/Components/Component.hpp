@@ -22,7 +22,7 @@ public:
 
 	virtual void Init() {} // nGameObject在AddComponent就會自動執行 -- nGameObject.inl
 	virtual void Update() {} // n
-	virtual void HandleCollision(CollisionInfo &info) {}
+	virtual void HandleCollision(const CollisionEventInfo &info) {}
 
 	// template <typename EventT,typename... Args>
 	virtual void HandleEvent(const EventInfo& eventInfo) { LOG_DEBUG("HandleEvent");}

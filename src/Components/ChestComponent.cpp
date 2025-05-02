@@ -23,7 +23,22 @@ void ChestComponent::Update()
 {
 }
 
-void ChestComponent::HandleCollision(CollisionInfo &info)
+void ChestComponent::HandleEvent(const EventInfo &eventInfo)
+{
+	if (eventInfo.GetEventType() == EventType::Collision)
+	{
+		const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
+		HandleCollision(collisionInfo);  // 呼叫已有的碰撞處理函數
+	}
+	// else if (eventInfo.GetEventType() == EventType::)
+	// {
+	// 	打開箱子的事件
+	// 	ChestOpened();
+	// }
+}
+
+
+void ChestComponent::HandleCollision(const CollisionEventInfo &info)
 {
 	const auto owner = GetOwner<nGameObject>();
 	if (!owner->IsActive() || !owner->IsVisible()) return;

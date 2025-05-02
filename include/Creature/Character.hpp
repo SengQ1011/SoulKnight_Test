@@ -21,7 +21,6 @@ public:
 
 	/* ---Getter--- */
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Transform.translation; }		// 回傳角色當前的位置
-	[[nodiscard]] bool GetVisibility() const { return m_Visible; }								// 確認角色是否可見
 	[[nodiscard]] CharacterType GetType() const { return m_type; }
 	[[nodiscard]] std::string GetCharacterName() const { return m_name; }
 

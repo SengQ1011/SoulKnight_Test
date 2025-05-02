@@ -45,9 +45,9 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
- 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {

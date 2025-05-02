@@ -19,10 +19,10 @@ public:
 
 	void Init() override;
 	void Update() override;
-	void HandleCollision(CollisionInfo &info) override;
 
+	// EventManager廣播時被動接收的統一interface
 	void HandleEvent(const EventInfo &eventInfo) override;
-	void HandleEventCollision(const CollisionEventInfo& eventInfo);
+	void HandleCollision(const CollisionEventInfo& eventInfo) override;
 	std::vector<EventType> SubscribedEventTypes() const override;
 
 	//----Getters----

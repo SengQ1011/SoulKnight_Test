@@ -21,7 +21,8 @@ public:
 
 	void Init() override;
 	void Update() override;
-	void HandleCollision(CollisionInfo &info) override;
+	void HandleEvent(const EventInfo& eventInfo) override;
+	void HandleCollision(const CollisionEventInfo &info) override;
 
 	/* ---Getter--- */
 	[[nodiscard]] State GetCurrentState() const { return m_currentState; }

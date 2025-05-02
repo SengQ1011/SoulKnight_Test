@@ -27,6 +27,10 @@ public:
 	void Init() override;
 	void Update() override;
 
+	void HandleEvent(const EventInfo &eventInfo) override;
+	void HandleEventCollision(const CollisionEventInfo& eventInfo);
+	std::vector<EventType> SubscribedEventTypes() const override;
+
 	//----Getter----
 	[[nodiscard]] MonsterType GetMonsterType() const { return m_aiType; }
 	[[nodiscard]] int GetMonsterPoint() const { return m_monsterPoint; }
@@ -42,7 +46,6 @@ public:
 		return nullptr;
 	}
 
-
 	//----Setter----
 	void RemoveTarget() { m_Target.reset(); }
 	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override;
@@ -53,7 +56,7 @@ public:
 
 	void ShowReadyAttackIcon() const;
 	void HideReadyAttackIcon();
-	void HandleCollision(CollisionInfo &info) override;
+
 
 protected:
 	MonsterType m_aiType;
