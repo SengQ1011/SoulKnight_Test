@@ -9,10 +9,10 @@
 #include "Scene/SceneManager.hpp"
 
 GunWeapon::GunWeapon(const std::string &ImagePath, const std::string& bulletImagePath,const std::string &name, int damage, int energy, float criticalRate,
-						int offset, float attackInterval, float size, float speed)
+						int offset, float attackInterval, float size, float speed, bool bulletCanReboundBySword, bool bulletIsBubble, bool haveBubbleTrail, const std::string &bubbleImagePath)
 						: Weapon(ImagePath, name, damage, energy, criticalRate, offset, attackInterval),
-							m_bulletImagePath(bulletImagePath), m_bulletSize(size), m_bulletSpeed(speed){}
-
+							m_bulletImagePath(bulletImagePath), m_bulletSize(size), m_bulletSpeed(speed), m_bulletCanReboundBySword(bulletCanReboundBySword), m_bulletIsBubble(bulletIsBubble),
+							m_bulletHaveBubbleTrail(haveBubbleTrail), m_bubbleImagePath(bubbleImagePath){}
 
 void GunWeapon::attack(const int damage) {
 	ResetAttackTimer();  // 重置冷卻
@@ -30,5 +30,5 @@ void GunWeapon::attack(const int damage) {
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-	attackManager->spawnProjectile(characterType, bulletTransform, bulletDirection, m_bulletSize, damage, m_bulletImagePath, m_bulletSpeed, numRebound);
+	attackManager->spawnProjectile(characterType, bulletTransform, bulletDirection, m_bulletSize, damage, m_bulletImagePath, m_bulletSpeed, numRebound, m_bulletCanReboundBySword, m_bulletIsBubble, m_bulletHaveBubbleTrail, m_bubbleImagePath);
  }

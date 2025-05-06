@@ -18,3 +18,14 @@ void MeleeAttack::Update(const EnemyContext &ctx, const float deltaTime)
 		aiComp->ResetReadyAttackTimer();
 	}
 }
+
+void GunAttack::Update(const EnemyContext &ctx, const float deltaTime)
+{
+	auto aiComp = ctx.GetAIComp();
+	if (aiComp->GetReadyAttackTimer() <= 0.0f)
+	{
+		aiComp->HideReadyAttackIcon();
+		ctx.attackComp->TryAttack();
+		aiComp->ResetReadyAttackTimer();
+	}
+}

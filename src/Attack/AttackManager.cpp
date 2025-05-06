@@ -9,9 +9,9 @@
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
 
-void AttackManager::spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed, int numRebound)
+void AttackManager::spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed, int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath)
 {
-	const auto bullet = m_projectilePool.Acquire(type, bulletImagePath, transform, direction, size, damage, speed, numRebound);
+	const auto bullet = m_projectilePool.Acquire(type, bulletImagePath, transform, direction, size, damage, speed, numRebound, canReboundBySword, isBubble, bubbleTrail, bubbleImagePath);
 	if (bullet == nullptr) {LOG_ERROR("bullet from pool is nullptr!");}
 	bullet->Init(); // 只初始化碰撞組件，不處理渲染
 
@@ -44,19 +44,24 @@ void AttackManager::spawnEffectAttack(const CharacterType type, const Util::Tran
 
 void AttackManager::Update() {
     if (m_projectiles.empty() && m_projectileRemovalQueue.empty() &&
-        m_effects.empty() && m_effectRemovalQueue.empty()) {
-    	return;
-    }
+        m_effects.empty() && m_effectRemovalQueue.empty()) return;
 
-    const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 
     // 更新子彈與特效
     for (auto& bullet : m_projectiles) {
-        bullet->UpdateObject(deltaTime);
+    	bullet->UpdateObject(deltaTime);
     }
     for (auto& effect : m_effects) {
         effect->UpdateObject(deltaTime);
     }
+
+	// 執行所有延遲的 spawn 操作
+	for (auto& fn : m_spawnQueue) {
+		fn();
+	}
+	m_spawnQueue.clear();
+
 
     // 處理要移除的子彈
     {

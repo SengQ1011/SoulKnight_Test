@@ -31,10 +31,7 @@ public:
 
 class GunAttack final : public IAttackStrategy {
 public:
-	void Update(const EnemyContext &ctx, const float deltaTime) override
-	{
-
-	}
+	void Update(const EnemyContext &ctx, const float deltaTime) override;
 
 };
 

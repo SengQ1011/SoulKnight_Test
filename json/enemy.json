@@ -125,7 +125,7 @@
     "speed": 0.7,
     "attackType": ["Melee"],
     "haveWeapon": 1,
-    "weaponId": 502,
+    "weaponId": 503,
     "size": 28.0
   },
   {
