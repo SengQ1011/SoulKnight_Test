@@ -82,8 +82,8 @@ private:
 	// 强大的扳機 可以殺光一切
 	bool m_IsTrigger;
 	std::unique_ptr<ITriggerStrategy> m_TriggerStrategy = nullptr;
-	std::unordered_set<std::shared_ptr<nGameObject>> m_PreviousTriggerTargets;
-	std::unordered_set<std::shared_ptr<nGameObject>> m_CurrentTriggerTargets;
+	std::unordered_set<std::shared_ptr<nGameObject>> m_PreviousTriggerTargets;	// 本幀（frame）裡所有經由 TryTrigger(self, other) 檢測到與這個 Trigger 物件發生交集的其他物件集合
+	std::unordered_set<std::shared_ptr<nGameObject>> m_CurrentTriggerTargets;	// （上一幀）結束時，紀錄下那些「還在觸發」的物件集合
 
 	glm::vec2 m_Size;
 	glm::vec2 m_Offset;

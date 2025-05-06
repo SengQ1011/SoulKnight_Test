@@ -83,6 +83,14 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 			stateComponent->SetState(State::SKILL);
 		}
 	}
+	if (keys.count('Z'))
+	{
+		if(auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH))
+		{
+			LOG_DEBUG("HP= {}, armor = {}", healthComponent->GetCurrentHp(), healthComponent->GetCurrentArmor());
+		}
+	}
+
 }
 
 

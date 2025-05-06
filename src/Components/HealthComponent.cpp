@@ -30,16 +30,6 @@ HealthComponent::HealthComponent(const int maxHp, const int maxArmor = 0, const 
 
 void HealthComponent::Update() {
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
-	if (m_maxArmor == 0)
-		return;
-	if (m_currentArmor < m_maxArmor) {
-		m_armorRecoveryTimer += deltaTime;
-		if (m_armorRecoveryTimer >= m_armorRecoveryInterval)
-		{
-			AddCurrentArmor(1);
-			m_armorRecoveryTimer = 0.0f;
-		}
-	}
 	// 減少所有來源的冷卻時間
 	for (auto it = m_recentAttackSources.begin(); it != m_recentAttackSources.end(); ) {
 		it->second -= deltaTime;
@@ -50,13 +40,25 @@ void HealthComponent::Update() {
 		else
 			++it;
 	}
+
+	if (m_maxArmor == 0)
+		return;
+	if (m_currentArmor < m_maxArmor) {
+		m_armorRecoveryTimer += deltaTime;
+		if (m_armorRecoveryTimer >= m_armorRecoveryInterval)
+		{
+			AddCurrentArmor(1);
+			m_armorRecoveryTimer = 0.0f;
+		}
+	}
 }
 
 void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 {
+	// {}可以在case裏形成額外作用域，用來在裏面定義變數
 	switch (eventInfo.GetEventType())
 	{
-	case EventType::Collision: // {}可以在case裏形成額外作用域，用來在裏面定義變數
+	case EventType::Collision: // 僅處理碰撞傷害
 	{
 		const auto& collisionEventInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
 		HandleCollision(collisionEventInfo);
@@ -80,41 +82,34 @@ std::vector<EventType> HealthComponent::SubscribedEventTypes() const
 	};
 }
 
+// 只處理碰撞傷害 - 被怪物撞、陷阱、尖刺
 void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 	auto collisionObject = info.GetObjectB();
 	if (!collisionObject) return;
+
 	nGameObject* rawPtr = collisionObject.get();// 取出 raw pointer
 
 	// 冷卻中就不處理
 	if (m_recentAttackSources.count(rawPtr) > 0) return;
-
-	// 判斷碰撞對象是不是攻擊==>因爲碰撞manager已經檢查是否為敵方子彈，所以不需要再判斷
-	if (const auto attack = std::dynamic_pointer_cast<Attack>(info.GetObjectB()))
-	{
-		const int damage = attack->GetDamage();
-		this->TakeDamage(damage);
-		LOG_DEBUG("damage = {}==>", damage, collisionObject->GetName());
-		// 只有當攻擊物件不會馬上消失，才進入冷卻判斷
-		if (!attack->WillDisappearOnHit()) {
-			m_recentAttackSources[rawPtr] = m_invincibleDuration;
-		}
-
-	}
+	m_recentAttackSources[rawPtr] = m_invincibleDuration;
 
 	// collisionEnemy的碰撞傷害
 	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB())) {
 		if (character->GetType() == CharacterType::ENEMY) {
 			if (const auto collisionDamage = character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
 				collisionDamage > 0) {
-				this->TakeDamage(collisionDamage);
 				LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
+				this->TakeDamage(collisionDamage);
 				}
 		}
 	}
+
+	//TODO-尖刺
 }
 
 void HealthComponent::TakeDamage(int damage)
 {
+	LOG_DEBUG("take damage {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
 	{

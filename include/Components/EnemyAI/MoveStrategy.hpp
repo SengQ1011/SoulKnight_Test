@@ -47,10 +47,13 @@ public:
 		// 使用極座標轉換為笛卡爾座標，生成一個單位向量
 		return glm::vec2(std::cos(angle), std::sin(angle)); // 歸一化單位圓上的隨機點
 	}
+
 protected:
 	float m_restTimer = 0.0f; // 休息時間計時器
 	float m_moveTimer = 0; // 移動時間計時器
-	float m_detectionRange = 200.0f;
+	float m_detectionRange = 250.0f;
+
+	void changeToIdle(const EnemyContext &ctx);
 };
 
 //--------------------------------------------
@@ -60,9 +63,6 @@ class WanderMove final : public IMoveStrategy
 {
 public:
 	void Update(const EnemyContext &ctx, const float deltaTime) override;
-
-private:
-	glm::vec2 m_wanderDirection = glm::vec2(0, 0);
 };
 
 class ChaseMove final : public IMoveStrategy
@@ -72,7 +72,8 @@ public:
 	void ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const;
 
 private:
-	float m_attackDistance = 50.0f;
+	const float m_meleeAttackDistance = 50.0f;
+	const float m_gunAttackDistance = 200.0f;
 };
 
 class NoMove final : public IMoveStrategy

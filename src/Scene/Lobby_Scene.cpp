@@ -18,6 +18,7 @@
 #include "Creature/Character.hpp"
 
 #include "Tracy.hpp"
+#include "Weapon/Weapon.hpp"
 
 void LobbyScene::Start()
 {
@@ -118,17 +119,12 @@ void LobbyScene::CreatePlayer()
 
 void LobbyScene::CreateEnemy()
 {
-	m_Enemy = CharacterFactory::GetInstance().createEnemy(6);
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(4);
 	m_Enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
 	m_PendingObjects.push_back(collision2->GetVisibleBox());
 	m_PendingObjects.push_back(m_Enemy);
-	// m_Root->AddChild(collision2->GetVisibleBox());
-	// m_Camera->AddChild(collision2->GetVisibleBox());
-	// m_LobbyRoom->GetTrackingManager()->AddEnemy(m_Enemy);
-	// m_Root->AddChild(m_Enemy);
-	// m_Camera->AddChild(m_Enemy);
 }
 
 void LobbyScene::SetupCamera() const

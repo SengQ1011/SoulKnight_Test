@@ -3,7 +3,6 @@
 //
 #include "Components/EnemyAI/MoveStrategy.hpp"
 #include "Components/AiComponent.hpp"
-#include "Components/EnemyAI/AttackStrategy.hpp"
 #include "Components/MovementComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Override/nGameObject.hpp"
@@ -61,9 +60,8 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 			m_restTimer -= deltaTime;
 			if (m_restTimer <= 0) {
 				// 休息結束，開始移動
-				m_wanderDirection = RandomDirectionInsideUnitCircle();
 				constexpr float ratio = 0.2f;
-				const glm::vec2 deltaDisplacement = glm::normalize(m_wanderDirection) * ratio;
+				const glm::vec2 deltaDisplacement = glm::normalize(RandomDirectionInsideUnitCircle()) * ratio;
 				ctx.moveComp->SetDesiredDirection(deltaDisplacement);
 				// 設定移動持續時間
 				m_moveTimer = RandomFloatInRange(2.0f, 6.5f);
@@ -87,6 +85,22 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 
 
 //============================= (ChaseMove) =============================
+void checkHasTarget(const EnemyContext &ctx) {
+	auto AiComp = ctx.GetAIComp();
+	if (const auto target = AiComp->GetTarget().lock(); target != nullptr)
+	{
+		AiComp->SetEnemyState(enemyState::CHASING);
+	}
+}
+
+void IMoveStrategy::changeToIdle(const EnemyContext &ctx) {
+	const auto aiComp = ctx.GetAIComp();
+	// 移動結束，開始休息
+	ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0)); // 停止移動
+	m_restTimer = RandomFloatInRange(1.0f, 3.0f); // 設定休息時間
+	aiComp->SetEnemyState(enemyState::IDLE);
+}
+
 void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime)
 {
 	auto aiComp = ctx.GetAIComp();
@@ -94,32 +108,35 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime)
 	switch (auto State = ctx.GetAIComp()->GetEnemyState()) {
 		case enemyState::IDLE:
 			m_restTimer -= deltaTime;
+			checkHasTarget(ctx);
 			if (m_restTimer <= 0) {
+				constexpr float ratio = 0.2f;
+				const glm::vec2 deltaDisplacement = glm::normalize(RandomDirectionInsideUnitCircle()) * ratio;
+				ctx.moveComp->SetDesiredDirection(deltaDisplacement);
 				m_moveTimer = RandomFloatInRange(5.0f, 10.0f);
-				aiComp->SetEnemyState(enemyState::CHASING);
+				aiComp->SetEnemyState(enemyState::WANDERING);
 			}
 			break;
 
-		case enemyState::CHASING:
+		case enemyState::WANDERING:
+			// 移動狀態
 			m_moveTimer -= deltaTime;
+			checkHasTarget(ctx);
 			if (m_moveTimer <= 0) {
-				aiComp->SetEnemyState(enemyState::IDLE);
-				m_restTimer = RandomFloatInRange(0.5f, 1.0f);
-			} else {
-				if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr){
-					ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0));
-					// LOG_DEBUG("chasing");
-					ChasePlayerLogic(ctx, target);
-					if (const auto distance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-						distance < m_attackDistance)
-					{
-						LOG_DEBUG("can attack");
-						aiComp->ShowReadyAttackIcon();
-						aiComp->SetEnemyState(enemyState::READY_ATTACK);
-					}
-				} else break;
+				changeToIdle(ctx);
 			}
-
+			break;
+		case enemyState::CHASING:
+			if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr){
+				ChasePlayerLogic(ctx, target);
+				if (const auto distance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
+					distance < m_meleeAttackDistance)
+				{
+					// LOG_DEBUG("can attack");
+					aiComp->ShowReadyAttackIcon();
+					aiComp->SetEnemyState(enemyState::READY_ATTACK);
+				}
+			} else changeToIdle(ctx);
 			break;
 
 		case enemyState::READY_ATTACK:
@@ -138,8 +155,7 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime)
 						//TODO
 					}
 				}else {
-					// m_restTimer = RandomFloatInRange(0.3f, 1.0f);
-					// aiComp->SetEnemyState(enemyState::IDLE);
+					ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0));
 				}
 			}
 			break;
@@ -155,5 +171,3 @@ void ChaseMove::ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameO
 	glm::vec2 dir = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord()) * ratio;
 	ctx.moveComp->SetDesiredDirection(dir);
 }
-
-

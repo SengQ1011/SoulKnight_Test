@@ -32,15 +32,14 @@ void EffectAttack::Init() {
 	CollisionComp->SetTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
 
 	if(m_type == CharacterType::PLAYER) {
-		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_Bullet);
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_EffectAttack);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy);
-		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy_Bullet);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy_Projectile);
 	}
 	else if (m_type == CharacterType::ENEMY) {
-		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_Bullet);
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_EffectAttack);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Player);
 	}
-	CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Terrain);
 
  	CollisionComp->SetSize(glm::vec2(m_size));
 

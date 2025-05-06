@@ -38,18 +38,17 @@ void Projectile::Init() {
 	CollisionComp->SetTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
 
 	if(m_type == CharacterType::PLAYER) {
-		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Bullet);
+		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 	}
 	else if (m_type == CharacterType::ENEMY) {
-		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Bullet);
+		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
 	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
 
 	// TODO:測試子彈大小
 	CollisionComp->SetSize(glm::vec2(m_size));
-
 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
 	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());

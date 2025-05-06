@@ -85,10 +85,10 @@ bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent
 
 void CollisionComponent::HandleEvent(const EventInfo& eventInfo)
 {
-	LOG_DEBUG("OnEvent3");
+	// LOG_DEBUG("OnEvent3");
 	if (eventInfo.GetEventType() == EventType::Collision)
 	{
-		LOG_DEBUG("OnEvent4");
+		// LOG_DEBUG("OnEvent4");
 		const auto& collision = dynamic_cast<const CollisionEventInfo&>(eventInfo);
 		SetColliderBoxColor("Yellow"); //碰撞變色
 	}
@@ -111,10 +111,12 @@ void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self, co
 {
 	if (!m_IsTrigger || !m_TriggerStrategy) return;
 
-	m_CurrentTriggerTargets.insert(other);
-	const bool wasTriggered = m_PreviousTriggerTargets.find(other) != m_PreviousTriggerTargets.end();
+	// 如果同一幀已經處理過 other，就跳過
+	auto [it, inserted] = m_CurrentTriggerTargets.insert(other);
+	if (!inserted) return;
 
-	if (!wasTriggered) m_TriggerStrategy->OnTriggerEnter(self, other);
+	if (const bool wasTriggered = m_PreviousTriggerTargets.find(other) != m_PreviousTriggerTargets.end();
+		!wasTriggered) m_TriggerStrategy->OnTriggerEnter(self, other);
 	else m_TriggerStrategy->OnTriggerStay(self, other);
 }
 
@@ -130,8 +132,3 @@ void CollisionComponent::FinishTriggerFrame(const std::shared_ptr<nGameObject>& 
 	std::swap(m_PreviousTriggerTargets, m_CurrentTriggerTargets);
 	m_CurrentTriggerTargets.clear();
 }
-
-
-
-
-

@@ -74,9 +74,7 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	{
 		RemoveWeapon(); // 移除舊武器
 	}
-	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	if(m_currentWeapon) m_currentWeapon->SetControlVisible(false);
 
 	m_Weapons.push_back(newWeapon); // 添加新武器列表
 	m_currentWeapon = newWeapon; // 更新當前武器
@@ -85,9 +83,8 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	{
 		followerComp->SetFollower(character);
 	}
-
-	// scene->GetRoot().lock()->AddChild(m_currentWeapon);
-	// scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	m_currentWeapon->SetControlVisible(true);
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetPendingObjects().push_back(m_currentWeapon);
 }
 
@@ -118,9 +115,7 @@ void AttackComponent::switchWeapon()
 	m_switchTimeCounter = m_switchCooldown;
 
 	// OpenGL 本身是「狀態機 + 立即模式」，它不會自己管理任何物件，它只會畫你給它的東西
-	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	m_currentWeapon->SetControlVisible(false);
 
 	// 找目前武器的位置
 	auto it = std::find(m_Weapons.begin(), m_Weapons.end(), m_currentWeapon);
@@ -129,8 +124,7 @@ void AttackComponent::switchWeapon()
 	} else {
 		m_currentWeapon = m_Weapons.front(); // 循環回到第一把武器
 	}
-	scene->GetRoot().lock()->AddChild(m_currentWeapon);
-	scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	m_currentWeapon->SetControlVisible(true);
 	// scene->GetPendingObjects().push_back(m_currentWeapon);
 }
 

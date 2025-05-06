@@ -127,17 +127,18 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 			CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
 			CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
-			CollisionComp->AddCollisionMask(CollisionLayers_Enemy_Bullet);
+			CollisionComp->AddCollisionMask(CollisionLayers_Enemy_Projectile);
+			CollisionComp->AddCollisionMask(CollisionLayers_Enemy_EffectAttack);
 			CollisionComp->SetSize(glm::vec2(16.0f));
 			CollisionComp->SetOffset(glm::vec2(6.0f,-6.0f));
 			auto FollowerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			FollowerComp->SetFollower(player);
 			FollowerComp->Update(); // 直接更新一次位置
 			//FollowerComp->SetTargetMouse(true);
-			LOG_DEBUG("Player created");
 
 			auto weapon2 = WeaponFactory::createWeapon(2);
 			attackComponent->AddWeapon(weapon2);
+			LOG_DEBUG("Player created");
 			return player;
 		}
 	}
@@ -219,7 +220,8 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	collisionComp->SetCollisionLayer(CollisionLayers_Enemy);
         	if (haveWeapon == 0) collisionComp->AddCollisionMask(CollisionLayers_Player);
         	collisionComp->AddCollisionMask(CollisionLayers_Terrain);
-        	collisionComp->AddCollisionMask(CollisionLayers_Player_Bullet);
+        	collisionComp->AddCollisionMask(CollisionLayers_Player_Projectile);
+        	collisionComp->AddCollisionMask(CollisionLayers_Player_EffectAttack);
         	collisionComp->SetSize(glm::vec2(bodySize));
         	collisionComp->SetOffset(glm::vec2(0.0f,-6.0f));
 

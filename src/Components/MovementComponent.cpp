@@ -191,10 +191,10 @@ void MovementComponent::Update()
 }
 void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 {
-	LOG_DEBUG("MovementComponent::HandleEvent");
+	// LOG_DEBUG("MovementComponent::HandleEvent");
 	if (eventInfo.GetEventType() == EventType::Collision)
 	{
-		LOG_DEBUG("MovementComponent::HandleEvent1");
+		// LOG_DEBUG("MovementComponent::HandleEvent1");
 		const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
 		HandleCollision(collisionInfo);
 	}
