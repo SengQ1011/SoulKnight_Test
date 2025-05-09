@@ -16,7 +16,6 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
-#include <execution>
 #include <iostream>
 
 #include "Components/InputComponent.hpp"

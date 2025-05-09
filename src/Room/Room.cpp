@@ -4,7 +4,7 @@
 
 #include "Room/Room.hpp"
 
-#include <Tracy.hpp>
+// #include <Tracy.hpp>
 
 #include <iostream>
 #include "Components/CollisionComponent.hpp"
@@ -41,20 +41,20 @@ void Room::Start(const std::shared_ptr<Character>& player) {
 void Room::Update() {
 	{
 		// 更新所有房间物体
-		ZoneScopedN("RoomObject::Update");
+		// ZoneScopedN("RoomObject::Update");
 		for (auto& obj : m_RoomObjects) {
 			if (obj) obj->Update();
 		}
 	}
 
 	{
-		ZoneScopedN("RoomManager::Update");
+		// ZoneScopedN("RoomManager::Update");
 		for (auto& [type, manager] : m_Managers) { manager->Update(); }
 	}
 
 	{
 		// 互動管理
-		ZoneScopedN("InteractionManager::TryInteract");
+		// ZoneScopedN("InteractionManager::TryInteract");
 		if (Util::Input::IsKeyDown(Util::Keycode::F))
 			m_InteractionManager->TryInteractWithClosest();
 	}

@@ -17,12 +17,12 @@
 #include "ObserveManager/InputManager.hpp"
 #include "Creature/Character.hpp"
 
-#include "Tracy.hpp"
+// #include "Tracy.hpp"
 
 void LobbyScene::Start()
 {
 
-	ZoneScopedN("LobbyScene::Start");
+	// ZoneScopedN("LobbyScene::Start");
 	LOG_DEBUG("Entering Lobby Scene");
 	// 创建并初始化玩家
 	CreatePlayer();
@@ -58,33 +58,33 @@ void LobbyScene::Start()
 void LobbyScene::Update()
 {
 	// Input处理
-	ZoneScopedN("LobbyScene::Update");
+	// ZoneScopedN("LobbyScene::Update");
 	{
-		ZoneScopedN("SceneManager::Update");
+		// ZoneScopedN("SceneManager::Update");
 		for (auto& [type,manager]: m_Managers) manager->Update();
 	}
 
 	{
-		ZoneScopedN("Player&Enemy::Update");
+		// ZoneScopedN("Player&Enemy::Update");
 		m_Player->Update();
 		m_Enemy->Update();
 	}
 
 	{
 		// 更新房间
-		ZoneScopedN("LobbyRoom&RoomManager::Update");
+		// ZoneScopedN("LobbyRoom&RoomManager::Update");
 		m_LobbyRoom->Update();
 	}
 
 	{
 		// 更新相机
-		ZoneScopedN("Camera::Update");
+		// ZoneScopedN("Camera::Update");
 		m_Camera->Update();
 	}
 
 	{
 		// 更新渲染器
-		ZoneScopedN("Renderer::Update");
+		// ZoneScopedN("Renderer::Update");
 		m_Root->Update();
 	}
 }

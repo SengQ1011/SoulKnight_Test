@@ -92,7 +92,6 @@ protected:
 
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
 	std::unordered_map<EventType, std::vector<Component*>> m_EventSubscribers;
-	// std::vector<void(*)(int)> g;
 
 	bool m_RegisteredToScene = false;
 

@@ -73,8 +73,5 @@ public:
 	 */
 	virtual bool ContainsPoint(const glm::vec2& other) const = 0;
 
-
 };
-
-
 #endif //IAREASHAPE_HPP

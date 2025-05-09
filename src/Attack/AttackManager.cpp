@@ -3,8 +3,6 @@
 //
 
 #include "Attack/AttackManager.hpp"
-#include <execution>
-#include <thread>
 
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
