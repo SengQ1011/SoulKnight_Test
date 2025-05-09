@@ -59,6 +59,8 @@ set(SRC_FILES
     Scene/Test_Scene_JX.cpp
     Scene/Test_Scene_KC.cpp
     Skill/FullFirepower.cpp
+    Struct/CircleShape.cpp
+    Struct/RectShape.cpp
     StructType.cpp
     TalentDatabase.cpp
     Tool/Tool.cpp
@@ -151,10 +153,13 @@ set(INCLUDE_FILES
     Skill/FullFirepower.hpp
     Skill/Skill.hpp
     StructType.hpp
+    Structs/AreaShape.hpp
+    Structs/CircleShape.hpp
     Structs/CollisionComponentStruct.hpp
     Structs/DeathEventInfo.hpp
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
+    Structs/RectShape.hpp
     Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp

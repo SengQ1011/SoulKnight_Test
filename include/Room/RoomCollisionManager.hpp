@@ -29,7 +29,7 @@ public:
 
 	//是否啓動管理員
 	void SetIsActive(const bool isActive) {m_IsActive = isActive;}
-	[[nodiscard]] bool IsActive() const {return m_IsActive;}
+	[[nodiscard]] bool IsActive() const { return m_IsActive; }
 
 protected:
 	UniformGrid m_SpatialGrid;

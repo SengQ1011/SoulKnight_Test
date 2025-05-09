@@ -40,9 +40,9 @@ void MainMenuScene::Start()
 	// m_MainMenu->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/UI/MenuPanel.png"));
 	// m_MainMenu->SetZIndex(100);
 	// m_MainMenu->m_Transform.translation = glm::vec2(140,80);
-	std::shared_ptr<SettingPanel>settingPanel = std::make_shared<SettingPanel>();
-	settingPanel->Start();
-	UIManager::GetInstance().RegisterPanel("setting", settingPanel);
+	// std::shared_ptr<SettingPanel>settingPanel = std::make_shared<SettingPanel>();
+	// settingPanel->Start();
+	// UIManager::GetInstance().RegisterPanel("setting", settingPanel);
 
 
 	// m_BGM->FadeIn(1);
@@ -63,9 +63,9 @@ void MainMenuScene::Update()
 	m_Root->Update();
 	AudioManager::GetInstance().DrawDebugUI(); //測試用的
 	UIManager::GetInstance().Update();
-	if (Util::Input::IsKeyUp(Util::Keycode::T)) UIManager::GetInstance().TogglePanel("setting");
-	if (Util::Input::IsKeyUp(Util::Keycode::O)) UIManager::GetInstance().ShowPanel("setting");
-	if (Util::Input::IsKeyUp(Util::Keycode::H)) UIManager::GetInstance().HidePanel("setting");
+	// if (Util::Input::IsKeyUp(Util::Keycode::T)) UIManager::GetInstance().TogglePanel("setting");
+	// if (Util::Input::IsKeyUp(Util::Keycode::O)) UIManager::GetInstance().ShowPanel("setting");
+	// if (Util::Input::IsKeyUp(Util::Keycode::H)) UIManager::GetInstance().HidePanel("setting");
 }
 
 void MainMenuScene::Exit()

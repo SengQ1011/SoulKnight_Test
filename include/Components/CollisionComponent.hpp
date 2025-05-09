@@ -11,14 +11,19 @@
 #include "TriggerStrategy/ITriggerStrategy.hpp"
 #include "Structs/CollisionComponentStruct.hpp"
 
-#include "Override/nGameObject.hpp" // TODO: refactor
 #include <unordered_set>
+#include "Override/nGameObject.hpp" // TODO: refactor
+#include "Structs/AreaShape.hpp"
 
+
+enum class ShapeType;
+class AreaShape;
 namespace Util
 {
 	class Image;
 }
 
+// TODO: SAT旋轉矩形還沒實現，在GetAreaShape裏面沒有Rect更改碰撞箱Rotate
 class CollisionComponent final : public Component
 {
 public:
@@ -55,11 +60,15 @@ public:
 
 	// Getter
 	[[nodiscard]] Rect GetBounds() const;
+	[[nodiscard]] std::shared_ptr<AreaShape> GetAreaShape() const; // 新添加
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const { return m_CollisionLayer; }
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const { return m_CollisionMask; }
 	[[nodiscard]] std::shared_ptr<nGameObject> GetVisibleBox() { return m_ColliderVisibleBox; }
 	[[nodiscard]] bool IsActive() const { return m_IsActive; }
 	[[nodiscard]] bool IsTrigger() const { return m_IsTrigger; }
+	[[nodiscard]] bool IsCollider() const { return m_IsCollider; }
+	std::shared_ptr<AreaShape> GetTriggerAreaShape() const;
+	std::shared_ptr<AreaShape> GetColliderAreaShape() const;
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
@@ -69,6 +78,7 @@ public:
 	void SetSize(const glm::vec2 &size) { m_Size = size; }
 	void SetActive(const bool isActive) { m_IsActive = isActive; }
 	void SetTrigger(const bool isTrigger) { m_IsTrigger = isTrigger; }
+	void SetCollider(const bool isCollider) { m_IsCollider = isCollider; }
 
 	void SetColliderBoxVisible(const bool isVisible) const
 	{
@@ -81,15 +91,24 @@ private:
 
 	// 强大的扳機 可以殺光一切
 	bool m_IsTrigger;
+	ShapeType m_TriggerShapeType = ShapeType::Null; // 當Trigger沒有範圍卻又IsTrigger==True,自動跟隨Collider範圍
+	std::shared_ptr<AreaShape> m_TriggerAreaShape = nullptr;
 	std::unique_ptr<ITriggerStrategy> m_TriggerStrategy = nullptr;
 	std::unordered_set<std::shared_ptr<nGameObject>> m_PreviousTriggerTargets;
 	std::unordered_set<std::shared_ptr<nGameObject>> m_CurrentTriggerTargets;
 
+	bool m_IsCollider = true;
+	ShapeType m_ColliderShapeType = ShapeType::Null;
+	std::shared_ptr<AreaShape> m_ColliderAreaShape = nullptr;
+
+	// 原本的先不動
 	glm::vec2 m_Size;
 	glm::vec2 m_Offset;
 	glm::uint8_t m_CollisionLayer; //自身碰撞層
 	glm::uint8_t m_CollisionMask; //可以和哪幾層碰撞
 	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
+
+	// 共用
 	static std::shared_ptr<Util::Image> s_RedColliderImage;
 	static std::shared_ptr<Util::Image> s_BlueColliderImage;
 	static std::shared_ptr<Util::Image> s_YellowColliderImage;

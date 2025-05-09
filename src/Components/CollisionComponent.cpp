@@ -6,7 +6,10 @@
 
 #include "Components/CollisionComponent.hpp"
 
+#include "Structs/RectShape.hpp"
+#include "Structs/CircleShape.hpp"
 #include "Util/Image.hpp"
+#include "spdlog/fmt/bundled/chrono.h"
 
 std::shared_ptr<Util::Image> CollisionComponent::s_RedColliderImage = nullptr;
 std::shared_ptr<Util::Image> CollisionComponent::s_BlueColliderImage = nullptr;
@@ -31,8 +34,7 @@ void CollisionComponent::SetColliderBoxColor(const std::string &color) const // 
 	if (!s_BlueColliderImage)
 		s_BlueColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/BlueCollider.png");
 	if (!s_YellowColliderImage)
-		s_YellowColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/YellowCollider.png");
-
+		s_YellowColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/yellowCircle.png");
 
 	if (color == "Red" && s_RedColliderImage)
 		m_ColliderVisibleBox->SetDrawable(s_RedColliderImage);
@@ -72,6 +74,44 @@ Rect CollisionComponent::GetBounds() const
 	}
 	return {objectPosition + m_Offset, m_Size};
 }
+
+std::shared_ptr<AreaShape> CollisionComponent::GetColliderAreaShape() const
+{
+	glm::vec2 objectPosition = {0.0f, 0.0f};
+	if (const std::shared_ptr<nGameObject> owner = GetOwner<nGameObject>())
+	{
+		objectPosition = owner->GetWorldCoord();
+		glm::vec2 adjustedOffset = m_Offset;
+		//反向處理
+		if (owner->m_Transform.scale.x < 0.0f)
+		{
+			adjustedOffset.x = -adjustedOffset.x; // 如果角色反向，X轴偏移需要镜像
+		}
+		m_ColliderAreaShape->SetCenter(objectPosition + adjustedOffset);
+	}
+	m_ColliderAreaShape->SetCenter(objectPosition + m_Offset);
+	return m_ColliderAreaShape;
+}
+
+std::shared_ptr<AreaShape> CollisionComponent::GetTriggerAreaShape() const
+{
+	glm::vec2 objectPosition = {0.0f, 0.0f};
+	if (const std::shared_ptr<nGameObject> owner = GetOwner<nGameObject>())
+	{
+		objectPosition = owner->GetWorldCoord();
+		glm::vec2 adjustedOffset = m_Offset;
+		//反向處理
+		if (owner->m_Transform.scale.x < 0.0f)
+		{
+			adjustedOffset.x = -adjustedOffset.x; // 如果角色反向，X轴偏移需要镜像
+		}
+		m_TriggerAreaShape->SetCenter(objectPosition + adjustedOffset);
+	}
+	m_TriggerAreaShape->SetCenter(objectPosition + m_Offset);
+	return m_TriggerAreaShape;
+}
+
+
 
 bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent> &other) const
 {
