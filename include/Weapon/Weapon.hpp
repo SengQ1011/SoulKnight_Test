@@ -22,6 +22,7 @@ public:
 	float GetCriticalRate() const { return m_criticalRate; }
 	float GetAttackInterval() const { return m_attackInterval; }
 	int GetOffset() const { return m_offset; }
+	std::shared_ptr<Character> GetWeaponOwner() const { return m_currentOwner;}
 
 	//----Setter----
 	void SetImage(const std::string& ImagePath);

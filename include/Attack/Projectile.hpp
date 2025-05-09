@@ -18,7 +18,7 @@ public:
 	void Init() override;
 	void UpdateObject(float deltaTime) override;
 
-	void OnEventReceived(const EventInfo &eventInfo) override;
+	// void OnEventReceived(const EventInfo &eventInfo) override;
 
 	// 靜態資源池，只載入一次同一圖片，資源共用（圖片資源共享）
 	static std::unordered_map<std::string, std::shared_ptr<Util::Image>> sharedImages;
@@ -32,12 +32,14 @@ public:
 	//----Setter----
 	void SetImage(const std::string& imagePath);
 	void SetSpeed(const float speed) { m_speed = speed; }
+	void SetNumRebound(const int numRebound) { m_numRebound = numRebound; }
+	void AddReboundCounter() { m_reboundCounter++; }
 	void SetIsBubble(const bool yes) { m_isBubble = yes; }
 	void ResetAll(const CharacterType type, const Util::Transform &bulletTransform, glm::vec2 direction, float size, int damage, const std::string& ImagePath, float speed,
 					int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath);
 
-	void OnCollision(const CollisionEventInfo &info);
-	void CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulletDirection);
+
+	void CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulletDirection) const;
 
 protected:
 	std::string m_imagePath;
@@ -45,7 +47,7 @@ protected:
 	float m_speed;
 	int m_numRebound = 0;
 	int m_reboundCounter = 0;
-	bool m_canReboundBySword;
+	bool m_canReboundBySword = false;
 	bool m_isBubble = false;
 
 	// 是否啟用泡泡尾跡

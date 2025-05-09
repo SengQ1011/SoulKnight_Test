@@ -26,8 +26,8 @@ void AttackManager::spawnProjectile(const CharacterType type, const Util::Transf
 	m_projectiles.push_back(bullet);
 }
 
-void AttackManager::spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, EffectAttackType effectType) {
-	auto effectAttack = m_effectPool.Acquire(type, transform, direction, size, damage, canReflect, effectType);
+void AttackManager::spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, bool isSword, EffectAttackType effectType) {
+	auto effectAttack = m_effectPool.Acquire(type, transform, direction, size, damage, canReflect, isSword,effectType);
 	effectAttack->Init();
 
 	// 加入渲染樹

@@ -10,7 +10,7 @@
     "criticalRate": 0.0,
     "offset": 5,
     "attackInterval": 0.333,
-    "bulletSize": 10.0,
+    "bulletSize": 8.0,
     "bulletSpeed": 400.0,
     "bulletCanRebound": true,
     "bulletIsBubble": false,

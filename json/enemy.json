@@ -116,14 +116,53 @@
       "STANDING": ["/monster/Icefield/enemy31_miner/enemy31_4.png", "/monster/Icefield/enemy31_miner/enemy31_5.png"],
       "MOVING": ["/monster/Icefield/enemy31_miner/enemy31_0.png", "/monster/Icefield/enemy31_miner/enemy31_1.png",
         "/monster/Icefield/enemy31_miner/enemy31_2.png","/monster/Icefield/enemy31_miner/enemy31_3.png"],
-      "ATTACK": ["/monster/Icefield/enemy31_miner/enemy31_0.png", "/monster/Icefield/enemy31_miner/enemy31_1.png",
-        "/monster/Icefield/enemy31_miner/enemy31_2.png","/monster/Icefield/enemy31_miner/enemy31_3.png"],
+      "ATTACK": ["/monster/Icefield/enemy31_miner/enemy31_4.png", "/monster/Icefield/enemy31_miner/enemy31_5.png"],
       "DEAD": ["/monster/Icefield/enemy31_miner/enemy31_6.png"]
     },
     "monsterPoint": 2,
     "maxHp": 32,
     "speed": 0.7,
-    "attackType": ["Melee"],
+    "attackType": ["Gun"],
+    "haveWeapon": 1,
+    "weaponId": 503,
+    "size": 28.0
+  },
+  {
+    "ID": 7,
+    "Type": "ENEMY",
+    "name": "",
+    "monsterType": "Attack",
+    "isElite": 0,
+    "animations": {
+      "STANDING": [""],
+      "MOVING": [""],
+      "ATTACK": [""],
+      "DEAD": [""]
+    },
+    "monsterPoint": 2,
+    "maxHp": 1,
+    "speed": 0.7,
+    "attackType": ["Gun"],
+    "haveWeapon": 1,
+    "weaponId": 503,
+    "size": 28.0
+  },
+  {
+    "ID": 8,
+    "Type": "ENEMY",
+    "name": "",
+    "monsterType": "Attack",
+    "isElite": 1,
+    "animations": {
+      "STANDING": [""],
+      "MOVING": [""],
+      "ATTACK": [""],
+      "DEAD": [""]
+    },
+    "monsterPoint": 2,
+    "maxHp": 1,
+    "speed": 0.7,
+    "attackType": ["Gun"],
     "haveWeapon": 1,
     "weaponId": 503,
     "size": 28.0

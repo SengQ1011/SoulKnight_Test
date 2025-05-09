@@ -95,7 +95,32 @@ void AIComponent::HideReadyAttackIcon()
 	m_readyAttackIcon->SetControlVisible(false);
 }
 
-void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player) { m_Target = player; }
+void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player)
+{
+	m_Target = player;
+	if(m_aiType != MonsterType::WANDER)
+	{
+		if (!m_AttackComponent) {
+			if (auto owner = GetOwner<Character>()) {
+				m_AttackComponent = owner->GetComponent<AttackComponent>(ComponentType::ATTACK);
+			}
+		}else m_AttackComponent->OnTargetPositionUpdate(player);
+	}
+}
+
+void AIComponent::OnLostPlayer()
+{
+	m_Target.reset();
+	if(m_aiType != MonsterType::WANDER)
+	{
+		if (!m_AttackComponent) {
+			if (auto owner = GetOwner<Character>()) {
+				m_AttackComponent = owner->GetComponent<AttackComponent>(ComponentType::ATTACK);
+			}
+		}else m_AttackComponent->OnLostTarget();
+	}
+}
+
 
 std::vector<EventType> AIComponent::SubscribedEventTypes() const
 {

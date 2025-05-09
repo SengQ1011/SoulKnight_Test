@@ -68,6 +68,7 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 	{
 		const auto& dmgInfo = dynamic_cast<const TakeDamageEventInfo&>(eventInfo);
 		TakeDamage(dmgInfo.damage);
+		break;
 	}
 	default:
 		break;

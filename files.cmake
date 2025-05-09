@@ -23,6 +23,7 @@ set(SRC_FILES
     Components/InputComponent.cpp
     Components/InteractableComponent.cpp
     Components/MovementComponent.cpp
+    Components/ProjectileComponent.cpp
     Components/SkillComponent.cpp
     Components/StateComponent.cpp
     Components/TalentComponent.cpp
@@ -63,6 +64,8 @@ set(SRC_FILES
     TalentDatabase.cpp
     Tool/Tool.cpp
     TriggerStrategy/AttackTriggerStrategy.cpp
+    TriggerStrategy/BlockProjectileStrategy.cpp
+    TriggerStrategy/ReflectTriggerStrategy.cpp
     UIPanel/SettingPanel.cpp
     UIPanel/UIManager.cpp
     UIPanel/UIPanel.cpp
@@ -101,6 +104,7 @@ set(INCLUDE_FILES
     Components/InputComponent.hpp
     Components/InteractableComponent.hpp
     Components/MovementComponent.hpp
+    Components/ProjectileComponent.hpp
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
@@ -151,14 +155,18 @@ set(INCLUDE_FILES
     Skill/FullFirepower.hpp
     Skill/Skill.hpp
     StructType.hpp
+    Structs/BlockProjectileEventInfo.hpp
     Structs/CollisionComponentStruct.hpp
     Structs/DeathEventInfo.hpp
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
+    Structs/ReflectProjectileEventInfo.hpp
     Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp
+    TriggerStrategy/BlockProjectileStrategy.hpp
     TriggerStrategy/ITriggerStrategy.hpp
+    TriggerStrategy/ReflectTriggerStrategy.hpp
     UIPanel/SettingPanel.hpp
     UIPanel/UIManager.hpp
     UIPanel/UIPanel.hpp

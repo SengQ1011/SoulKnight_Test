@@ -9,9 +9,9 @@
 #include "Scene/SceneManager.hpp"
 
 MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string &name, int damage, int energy, float criticalRate,
-						int offset, float attackInterval, float attackRange, const EffectAttackType type)
+						int offset, float attackInterval, float attackRange, bool isSword, const EffectAttackType type)
 						: Weapon(ImagePath, name, damage, energy, criticalRate, offset, attackInterval),
-							m_attackRange(attackRange), m_effectAttackType(type){}
+							m_attackRange(attackRange), m_IsSword(isSword), m_effectAttackType(type){}
 
 void MeleeWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
@@ -55,7 +55,7 @@ void MeleeWeapon::attack(int damage) {
 
 	if(const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock()) {
 		const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-		attackManager->spawnEffectAttack(characterType, slashTransform, slashDirection, m_attackRange, damage, canReflect, m_effectAttackType);
+		attackManager->spawnEffectAttack(characterType, slashTransform, slashDirection, m_attackRange, damage, canReflect, m_IsSword, m_effectAttackType);
 	} else {
 		LOG_ERROR("Can't find currentScene");
 	}

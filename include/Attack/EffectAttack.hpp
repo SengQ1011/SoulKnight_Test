@@ -43,7 +43,7 @@ class EffectAttack : public Attack {
 public:
 	// 因爲斬擊/刺擊/震蕩波都是使用統一的動畫
 	// 不需要在建構子中加入animation
-	explicit EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect, EffectAttackType effectType);
+	explicit EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType);
 
 	//================ 提醒 ==============//
 	void Init() override;
@@ -55,7 +55,7 @@ public:
 	[[nodiscard]] bool checkCanReflect() const { return m_reflectBullet; }
 
 	//----Setter----
-	void ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect,EffectAttackType effectType);
+	void ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType);
 
 	void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info);
 
@@ -63,6 +63,7 @@ protected:
 	EffectAttackType m_effectType;
 	std::shared_ptr<Animation> m_animation;
 	bool m_reflectBullet = false;
+	bool m_bulletBlocking = false;
 };
 
 #endif //EFFECTATTACK_HPP

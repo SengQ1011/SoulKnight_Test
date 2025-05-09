@@ -101,34 +101,44 @@ std::vector<EventType> CollisionComponent::SubscribedEventTypes() const
 	};
 }
 
-void CollisionComponent::SetTriggerStrategy(std::unique_ptr<ITriggerStrategy> triggerStrategy)
-{
-	m_TriggerStrategy = std::move(triggerStrategy);
+void CollisionComponent::AddTriggerStrategy(std::unique_ptr<ITriggerStrategy> strategy) {
+	m_TriggerStrategies.push_back(std::move(strategy));
+}
+
+void CollisionComponent::ClearTriggerStrategies() {
+	m_TriggerStrategies.clear();
 }
 
 
-void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self, const std::shared_ptr<nGameObject>& other)
-{
-	if (!m_IsTrigger || !m_TriggerStrategy) return;
-
+void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self,
+									const std::shared_ptr<nGameObject>& other) {
+	if (!m_IsTrigger || m_TriggerStrategies.empty()) return;
 	// 如果同一幀已經處理過 other，就跳過
 	auto [it, inserted] = m_CurrentTriggerTargets.insert(other);
 	if (!inserted) return;
 
-	if (const bool wasTriggered = m_PreviousTriggerTargets.find(other) != m_PreviousTriggerTargets.end();
-		!wasTriggered) m_TriggerStrategy->OnTriggerEnter(self, other);
-	else m_TriggerStrategy->OnTriggerStay(self, other);
+	bool wasTriggered = m_PreviousTriggerTargets.find(other) != m_PreviousTriggerTargets.end();
+	for (auto& strategy : m_TriggerStrategies) {
+		if (!wasTriggered) strategy->OnTriggerEnter(self, other);
+		else           strategy->OnTriggerStay(self, other);
+	}
 }
 
 void CollisionComponent::FinishTriggerFrame(const std::shared_ptr<nGameObject>& self)
 {
-	if (!m_IsTrigger || !m_TriggerStrategy) return;
-	for (auto& prev : m_PreviousTriggerTargets)
-	{
-		if (m_CurrentTriggerTargets.find(prev) != m_CurrentTriggerTargets.end()) continue;
-		m_TriggerStrategy->OnTriggerExit(self, prev);
+	if (!m_IsTrigger || m_TriggerStrategies.empty()) return;
+
+	// 對上一幀有觸發但本幀已經沒有的 other，觸發 OnTriggerExit
+	for (auto& prev : m_PreviousTriggerTargets) {
+		if (m_CurrentTriggerTargets.find(prev) == m_CurrentTriggerTargets.end()) {
+			for (auto& strategy : m_TriggerStrategies)
+			{
+				strategy->OnTriggerExit(self, prev);
+			}
+		}
 	}
 
+	// 交換集合：上一幀 ← 本幀，然後清空本幀集合
 	std::swap(m_PreviousTriggerTargets, m_CurrentTriggerTargets);
 	m_CurrentTriggerTargets.clear();
 }

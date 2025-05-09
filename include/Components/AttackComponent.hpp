@@ -53,8 +53,8 @@ public:
 
 	int calculateDamage();
 	void TryAttack(); // 使用當前武器攻擊敵人
-	void OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) override;
-	void OnLostEnemy() override;
+	void OnTargetPositionUpdate(std::weak_ptr<Character> enemy) override;
+	void OnLostTarget() override;
 
 private:
 	float m_aimRange;					// 自動瞄準範圍

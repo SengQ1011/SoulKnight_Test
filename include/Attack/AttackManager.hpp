@@ -33,7 +33,7 @@ public:
 	// 射出子彈類 OR 斬擊動畫
 	void spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed,
 		int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath);
-	void spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, EffectAttackType effectType);
+	void spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, bool isSword, EffectAttackType effectType);
 
 
 private:

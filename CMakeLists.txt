@@ -45,6 +45,10 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         libs/tracy/TracyClient.cpp
+        src/TriggerStrategy/ReflectTriggerStrategy.cpp
+        include/Structs/ReflectProjectileEventInfo.hpp
+        src/TriggerStrategy/BlockProjectileStrategy.cpp
+        include/Structs/BlockProjectileEventInfo.hpp
 )
 
 if(MSVC)

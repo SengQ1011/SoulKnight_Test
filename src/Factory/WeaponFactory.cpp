@@ -45,7 +45,7 @@ namespace WeaponFactory {
 						if (const bool check = weapon["isSword"].get<bool>(); check == true) {
 							isSword = true;
 						}
-						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range, type);
+						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range, isSword, type);
 					}
 					else if (type == "Gun") {
 						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
