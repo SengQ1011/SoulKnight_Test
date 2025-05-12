@@ -88,6 +88,9 @@ void Camera::Update() {
 	for (const auto& child : m_Children)
 	{
 		// IsInsideWindow來專門管理是否在視窗内
+		if (!child) continue;
+		//TODO:技能的火爲什麽會empty?(或是開技能後的子彈/斬擊)
+
 		if (NotShouldBeVisible(child))
 		{
 			child->SetIsInsideWindow(false);
@@ -102,6 +105,7 @@ void Camera::Update() {
 
 		child->SetVisible(child->IsInsideWindow() && child->IsControlVisible());
 		if (!child->IsVisible()) continue; // 沒顯示就不移動了
+		child->Update();
 		UpdateChildViewportPosition(child);
 	}
 }

@@ -47,13 +47,7 @@ void CollisionComponent::SetColliderBoxColor(const std::string &color) const // 
 	m_ColliderVisibleBox->SetInitialScale(m_Size / m_ColliderVisibleBox->GetImageSize());
 }
 
-void CollisionComponent::Update()
-{
-	auto owner = GetOwner<nGameObject>();
-	if (!owner)
-		return;
-	m_ColliderVisibleBox->Update();
-}
+void CollisionComponent::Update() {}
 
 Rect CollisionComponent::GetBounds() const
 {

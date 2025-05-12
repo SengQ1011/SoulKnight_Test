@@ -47,9 +47,9 @@ public:
 	}
 
 	//----Setter----
-	void RemoveTarget() { m_Target.reset(); }
+	void RemoveTarget() {m_Target.reset();}
 	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override;
-	void OnLostPlayer() override { m_Target.reset(); }
+	void OnLostPlayer() override {m_Target.reset();}
 	void SetEnemyState(enemyState state);
 	void ResetReadyAttackTimer() { m_readyAttackTimer = m_readyAttackTime; }
 	void DeductionReadyAttackTimer(const float time) { m_readyAttackTimer -= time; }

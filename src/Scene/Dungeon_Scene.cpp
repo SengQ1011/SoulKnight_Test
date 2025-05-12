@@ -73,7 +73,7 @@ void DungeonScene::Update()
 	}
 	{
 		// ZoneScopedN("Player::Update");
-		m_Player->Update();
+		// m_Player->Update();
 		// m_OnDeathText->SetWorldCoord(m_Player->GetWorldCoord() + glm::vec2(0,m_Player->GetImageSize().y/2.0f) + glm::vec2(0,m_OnDeathText->GetImageSize().y/2.0f));
 	}
 	{
@@ -187,13 +187,14 @@ void DungeonScene::CreatePlayer()
 	// 获取碰撞组件并添加到场景和相机
 	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
 		// 将碰撞盒添加到场景根节点和相机
-		m_PendingObjects.emplace_back(collision->GetVisibleBox());
-		// m_Camera->AddChild(collision->GetVisibleBox());
+		const auto playerVisibleBox = collision->GetVisibleBox();
+		m_PendingObjects.emplace_back(playerVisibleBox);
+		playerVisibleBox->SetRegisteredToScene(true);
 	}
 
 	// 将玩家添加到场景根节点和相机
 	m_PendingObjects.emplace_back(m_Player);
-	// m_Camera->AddChild(m_Player);
+	m_Player->SetRegisteredToScene(true);
 }
 
 void DungeonScene::SetupCamera() const
