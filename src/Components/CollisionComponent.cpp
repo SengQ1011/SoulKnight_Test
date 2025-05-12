@@ -25,27 +25,26 @@ void CollisionComponent::Init()
 	SetColliderBoxColor("Red");
 	m_ColliderVisibleBox->SetZIndex(0.1);
 	m_ColliderVisibleBox->SetZIndexType(ZIndexType::UI);
+	m_ColliderVisibleBox->SetInitialScaleSet(true);
 }
 
 void CollisionComponent::SetColliderBoxColor(const std::string &color) const // Blue - 未定義， Yellow - 碰撞, Red - 正常
 {
 	if (!s_RedColliderImage)
-		s_RedColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/yellowCircle.png");
+		s_RedColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/redCircle.png");
 	if (!s_BlueColliderImage)
 		s_BlueColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/BlueCollider.png");
 	if (!s_YellowColliderImage)
 		s_YellowColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/yellowCircle.png");
 
 	if (color == "Red" && s_RedColliderImage)
-	{
 		m_ColliderVisibleBox->SetDrawable(s_RedColliderImage);
-	}
 	else if (color == "Blue" && s_BlueColliderImage)
 		m_ColliderVisibleBox->SetDrawable(s_BlueColliderImage);
 	else if (color == "Yellow" && s_YellowColliderImage)
-	{
 		m_ColliderVisibleBox->SetDrawable(s_YellowColliderImage);
-	}
+
+	m_ColliderVisibleBox->SetInitialScale(m_Size / m_ColliderVisibleBox->GetImageSize());
 }
 
 void CollisionComponent::Update()
@@ -65,11 +64,6 @@ Rect CollisionComponent::GetBounds() const
 	{
 		objectPosition = owner->m_WorldCoord;
 		glm::vec2 adjustedOffset = m_Offset;
-
-		//處理可視化矩形大小和位置
-		glm::vec2 size = m_Size / m_ColliderVisibleBox->GetImageSize();//m_Size
-		// LOG_DEBUG("size {}", m_ColliderVisibleBox->GetName());
-		m_ColliderVisibleBox->SetInitialScale(m_Size / m_ColliderVisibleBox->GetImageSize());
 
 		if (owner->m_Transform.scale.x < 0.0f)
 		{
