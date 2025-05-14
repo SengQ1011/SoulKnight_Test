@@ -11,8 +11,10 @@
 MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string &name, int damage, int energy, float criticalRate,
 						int offset, float attackInterval, float attackRange, bool isSword, const EffectAttackType type)
 						: Weapon(ImagePath, name, damage, energy, criticalRate, offset, attackInterval),
-							m_attackRange(attackRange), m_IsSword(isSword), m_effectAttackType(type){}
-
+							m_attackRange(attackRange),  m_effectAttackType(type)
+{
+	SetIsSword(isSword);
+}
 void MeleeWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
 
@@ -21,36 +23,65 @@ void MeleeWeapon::attack(int damage) {
 		followerComp->StartAttackAction();
 	}
 
+	// 原始旋轉角度
+	float rawRotation = this->m_Transform.rotation;
+
+	// 還原初始角度偏移（只對劍適用）
+	if (m_IsSword) {
+		const bool facingLeft = m_currentOwner->m_Transform.scale.x < 0.0f;
+		if (const auto follower = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+			const float prepOffset = glm::radians(follower->GetBaseRotationDegrees());
+			rawRotation -= facingLeft ? -prepOffset : prepOffset;
+		}
+	}
 	// 計算攻擊方向的中心點（使用旋轉角度）
-	const auto slashDirection = glm::vec2(cos(this->m_Transform.rotation), sin(this->m_Transform.rotation));
+	const auto slashDirection = glm::vec2(cos(rawRotation), sin(rawRotation));
+	// normalize rotation to [-π, π]
+	const float angle = glm::atan(slashDirection.y, slashDirection.x);
+
 	// 建立 Transform
 	Util::Transform slashTransform;
-	slashTransform.scale = glm::vec2(1.0f);
+	float distance = 0.0f;
+	if(m_effectAttackType == EffectAttackType::SLASH) distance = 16.0f;
+	else if (m_effectAttackType == EffectAttackType::LUNGE) distance = 16.0f;
+	else if (m_effectAttackType == EffectAttackType::SHOCKWAVE) distance = 25.0f;
+	// facingLeft
+	if(std::cos(angle) < 0.0f)distance += 5.0f;
+
 	glm::vec2 offset;
-	// normalize rotation to [-π, π]
-	const float angle = glm::atan(slashDirection.y, slashDirection.x);  // already normalized
+
 	// 定義方向閾值
-	if (angle > -glm::pi<float>() / 4 && angle <= glm::pi<float>() / 4) {
-		// → 右
-		offset = glm::vec2(16.0f, 0.0f);
-	} else if (angle > glm::pi<float>() / 4 && angle <= 3 * glm::pi<float>() / 4) {
-		// ↑ 上
-		offset = glm::vec2(0.0f, 16.0f);
-	} else if (angle <= -glm::pi<float>() / 4 && angle > -3 * glm::pi<float>() / 4) {
-		// ↓ 下
-		offset = glm::vec2(0.0f, -16.0f);
+	if (angle > -glm::pi<float>() / 8 && angle <= glm::pi<float>() / 8) {
+		offset = glm::vec2(distance, 0.0f);  // 右→
+	} else if (angle > glm::pi<float>() / 8 && angle <= 3 * glm::pi<float>() / 8) {
+		offset = glm::vec2(distance, distance);  // 右上↗
+	} else if (angle > 3 * glm::pi<float>() / 8 && angle <= 5 * glm::pi<float>() / 8) {
+		offset = glm::vec2(0.0f, distance);  // 上↑
+	} else if (angle > 5 * glm::pi<float>() / 8 && angle <= 7 * glm::pi<float>() / 8) {
+		offset = glm::vec2(-distance, distance);  // 左上↖
+	} else if (angle > 7 * glm::pi<float>() / 8 || angle <= -7 * glm::pi<float>() / 8) {
+		offset = glm::vec2(-distance, 0.0f);  // 左←
+	} else if (angle > -7 * glm::pi<float>() / 8 && angle <= -5 * glm::pi<float>() / 8) {
+		offset = glm::vec2(-distance, -distance);  // 左下↙
+	} else if (angle > -5 * glm::pi<float>() / 8 && angle <= -3 * glm::pi<float>() / 8) {
+		offset = glm::vec2(0.0f, -distance);  // 下↓
 	} else {
-		// ← 左
-		offset = glm::vec2(-18.0f, 0.0f);
+		offset = glm::vec2(distance, -distance);  // 右下↘
 	}
 	slashTransform.translation = this->m_WorldCoord + offset;							// 揮擊的位置
-	slashTransform.rotation = glm::atan(slashDirection.y, slashDirection.x);			// 刀揮擊的中心角度
-	// y軸翻轉
-	slashTransform.scale.y = (m_currentOwner->m_Transform.scale.x > 0) ?
-		std::abs(slashTransform.scale.y): -std::abs(slashTransform.scale.y);
+
+	if (m_effectAttackType == EffectAttackType::SHOCKWAVE){
+		slashTransform.rotation = 0.0f;
+		slashTransform.scale.y = std::abs(slashTransform.scale.y);
+	}
+	else {
+		slashTransform.rotation = glm::atan(slashDirection.y, slashDirection.x);		// 武器揮擊的中心角度
+		// y軸翻轉
+		slashTransform.scale.y = (m_currentOwner->m_Transform.scale.x > 0) ?
+			std::abs(slashTransform.scale.y): -std::abs(slashTransform.scale.y);
+	}
 
 	const auto characterType = m_currentOwner->GetType();
-
 	auto canReflect = m_currentOwner->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetReflectBullet();
 
 	if(const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock()) {

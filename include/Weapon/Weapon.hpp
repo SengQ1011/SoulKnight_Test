@@ -23,12 +23,14 @@ public:
 	float GetAttackInterval() const { return m_attackInterval; }
 	int GetOffset() const { return m_offset; }
 	std::shared_ptr<Character> GetWeaponOwner() const { return m_currentOwner;}
+	[[nodiscard]] bool GetIsSword() const { return m_IsSword; }
 
 	//----Setter----
 	void SetImage(const std::string& ImagePath);
 	void SetLastAttackTime(const float time) { lastAttackTime = time; }
 	void SetOwner(std::shared_ptr<Character> owner) { m_currentOwner = owner; }
 	void RemoveOwner() { m_currentOwner = nullptr; }
+	void SetIsSword(const bool is) { m_IsSword = is; }
 	void SetAttackDelay(float delay) {
 		m_attackDelay = delay;
 		lastAttackTime = m_attackDelay;
@@ -54,6 +56,7 @@ protected:
 	float m_attackInterval;			// 攻擊頻率
 	int m_offset;					// 攻擊偏移量
 	float m_attackDelay = 0.0f;		// 開始攻擊延遲
+	bool m_IsSword = false;
 	std::shared_ptr<Character> m_currentOwner;
 
 	float lastAttackTime = 0.0f;  // 上次攻擊的時間

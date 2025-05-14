@@ -28,6 +28,7 @@ public:
 	void SetDirection(const glm::vec2 &direction) { m_direction = direction; }
 	void MarkForRemoval() { m_markRemove = true; }
 	void SetDisappearOnHit(const bool disappear) { m_disappearOnHit = disappear; }
+	void SetAttackCharacterType(const CharacterType type) { m_type = type; }
 
 protected:
 	CharacterType m_type;

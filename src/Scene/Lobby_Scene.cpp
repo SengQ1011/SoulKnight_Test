@@ -96,7 +96,7 @@ void LobbyScene::CreatePlayer()
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
 	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
 	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
-		talentComp->AddTalent(talentDatabase[2]);
+		talentComp->AddTalent(talentDatabase[3]);
 	}
 
 	// 设置玩家的初始位置

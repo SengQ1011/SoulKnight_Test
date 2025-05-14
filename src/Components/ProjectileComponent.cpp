@@ -10,6 +10,7 @@ std::vector<EventType> ProjectileComponent::SubscribedEventTypes() const
 	return {
 		EventType::Collision,
 		EventType::BlockedProjectileBySword,
+		EventType::ReflectProjectile
 	};
 }
 
@@ -29,6 +30,11 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 			if (const auto projectile = GetOwner<Projectile>())
 				projectile->MarkForRemoval();
 			else LOG_WARN("projectile is NULL");
+			break;
+		}
+		case EventType::ReflectProjectile:
+		{
+			HandleReflectEvent();
 			break;
 		}
 		default:
@@ -60,4 +66,24 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 		projectile->m_Transform.rotation = glm::atan(direction.y, direction.x);
 		projectile->AddReboundCounter();
 	}else projectile->MarkForRemoval();
+}
+
+void ProjectileComponent::HandleReflectEvent()
+{
+	LOG_DEBUG("reflect");
+	const auto proj = GetOwner<Projectile>();
+	if (!proj) return;
+	bool canReflect = proj->GetCanReboundBySword();
+	if (!canReflect) {
+		LOG_DEBUG("projectile can't reflect");
+		proj->MarkForRemoval();
+		return;
+	}
+
+	auto direction = proj->GetAttackDirection();
+	// 以原本方向做反射
+	proj->SetDirection(-direction);
+
+	// TODO:把擁有者換成斬擊者
+	proj->ReflectChangeAttackCharacterType(CharacterType::PLAYER);
 }

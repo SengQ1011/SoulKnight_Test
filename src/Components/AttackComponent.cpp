@@ -129,7 +129,6 @@ void AttackComponent::switchWeapon()
 		m_currentWeapon = m_Weapons.front(); // 循環回到第一把武器
 	}
 	m_currentWeapon->SetControlVisible(true);
-	// scene->GetPendingObjects().push_back(m_currentWeapon);
 }
 
 int AttackComponent::calculateDamage()
@@ -227,9 +226,9 @@ void AttackComponent::SetDualWield(bool enable)
 	}
 	else
 	{
-		// scene->GetRoot().lock()->AddChild(m_secondWeapon);
-		// scene->GetCamera().lock()->AddChild(m_secondWeapon);
-		scene->GetPendingObjects().push_back(m_secondWeapon);
+		scene->GetRoot().lock()->AddChild(m_secondWeapon);
+		scene->GetCamera().lock()->AddChild(m_secondWeapon);
+		// scene->GetPendingObjects().push_back(m_secondWeapon);
 	}
 }
 

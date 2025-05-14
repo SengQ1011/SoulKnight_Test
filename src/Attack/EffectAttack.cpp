@@ -35,8 +35,8 @@ void EffectAttack::Init() {
 	CollisionComp->ClearTriggerStrategies();
 	CollisionComp->SetTrigger(true);
 	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
-	CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
 	if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
+	else CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
 
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_EffectAttack);

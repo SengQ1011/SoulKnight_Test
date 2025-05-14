@@ -31,6 +31,7 @@ public:
 
 	//----Setter----
 	void SetImage(const std::string& imagePath);
+	void ReflectChangeAttackCharacterType(CharacterType type);
 	void SetSpeed(const float speed) { m_speed = speed; }
 	void SetNumRebound(const int numRebound) { m_numRebound = numRebound; }
 	void AddReboundCounter() { m_reboundCounter++; }
@@ -57,7 +58,7 @@ protected:
 	float m_bubbleTimer = 0.0f;
 	// 泡泡子彈的屬性
 	std::string m_bubbleImagePath;
-	float m_bubbleSize = 0.6f;
+	float m_bubbleSize = 4.0f;
 	int m_bubbleDamage = 2;
 	float m_bubbleSpeed = 3.0f;
 	float m_bubbleStayTime = 3.0f;

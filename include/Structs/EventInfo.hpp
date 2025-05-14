@@ -23,6 +23,7 @@ enum class EventType {
 	// AttackTrigger
 	BlockedProjectileBySword,
 	ReflectProjectile,
+	KnockOff,
 
 	// 通用
 	Death,

@@ -38,13 +38,6 @@ void Projectile::Init() {
 	auto ProjectileComp = this->GetComponent<ProjectileComponent>(ComponentType::PROJECTILE);
 	if (!ProjectileComp) { ProjectileComp = this->AddComponent<ProjectileComponent>(ComponentType::PROJECTILE); }
 
-	// auto projectileComp = this->GetComponent<ProjectileComponent>(ComponentType::PROJECTILE);
-	// if(projectileComp) LOG_DEBUG("Projectile::have comp");
-	// else LOG_ERROR("Projectile::have no comp");
-	auto owner = ProjectileComp->GetOwner<nGameObject>();
-	if(owner) LOG_DEBUG("Projectile::have relationship");
-	else LOG_DEBUG("Projectile::have no relationship");
-
 	// 加入碰撞組件
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
@@ -75,7 +68,6 @@ void Projectile::Init() {
 void Projectile::UpdateObject(const float deltaTime) {
 	// 讓子彈按方向移動
 	this->m_WorldCoord += m_direction * m_speed * deltaTime;
-
 	if (m_isBubble) {
 		m_bubbleStayTime -= deltaTime;
 		if (m_bubbleStayTime <= 0.0f) {
@@ -109,6 +101,23 @@ void Projectile::UpdateObject(const float deltaTime) {
 		this->MarkForRemoval();
 	}
 }
+
+void Projectile::ReflectChangeAttackCharacterType(CharacterType type)
+{
+	m_type = type;
+	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	CollisionComp->ResetCollisionMask();
+	if(m_type == CharacterType::PLAYER) {
+		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
+		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
+	}
+	else if (m_type == CharacterType::ENEMY) {
+		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Projectile);
+		CollisionComp->AddCollisionMask(CollisionLayers_Player);
+	}
+	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
+}
+
 
 void Projectile::ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage,
 	const std::string& ImagePath, float speed, int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath) {

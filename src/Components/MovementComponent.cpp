@@ -191,7 +191,6 @@ void MovementComponent::Update()
 }
 void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 {
-	// LOG_DEBUG("MovementComponent::HandleEvent");
 	if (eventInfo.GetEventType() == EventType::Collision)
 	{
 		// LOG_DEBUG("MovementComponent::HandleEvent1");

@@ -124,7 +124,7 @@
     "speed": 0.7,
     "attackType": ["Gun"],
     "haveWeapon": 1,
-    "weaponId": 503,
+    "weaponId": 1,
     "size": 28.0
   },
   {
