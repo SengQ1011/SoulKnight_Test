@@ -6,7 +6,7 @@
 
 #include "Components/FollowerComponent.hpp"
 #include "Components/MovementComponent.hpp"
-#include "Creature/Character.hpp"
+#include "Override/nGameObject.hpp"
 #include "Cursor.hpp"
 #include "Util/Time.hpp"
 
@@ -18,8 +18,10 @@ void FollowerComponent::StartAttackAction() {
 void FollowerComponent::BaseTargetRotate() {
 	// weapon
 	const auto owner = GetOwner<nGameObject>();
-	if (!owner)
+	if (!owner){
+		LOG_ERROR("FollowerComponent::BaseTargetRotate: Owner is null");
 		return;
+	}
 
 	// 獲取角色的朝向
 	bool facingLeft = false;
@@ -28,12 +30,16 @@ void FollowerComponent::BaseTargetRotate() {
 	}
 
 	glm::vec2 targetWorldCoord;
+	bool hasTarget = false;
 	// 方式1：自動攻擊
 	if (auto target = m_Target.lock()){
-		targetWorldCoord = target->GetWorldCoord();}
+		targetWorldCoord = target->GetWorldCoord();
+		hasTarget = true;
+	}
 	// 方式二：鼠標追蹤
 	else if (m_UseMousePosition){
 		targetWorldCoord = Cursor::GetCursorWorldCoord(owner->m_Transform.scale.x);
+		hasTarget = true;
 	}
 	// 沒有目標時，使用移動方向作為旋轉參考
 	else{
@@ -48,11 +54,10 @@ void FollowerComponent::BaseTargetRotate() {
 				}
 			}
 		}
-		// 即使沒有方向也繼續執行，以應用劍的偏移角度
 	}
 
 	// 如果有目標，則計算朝向目標的角度
-	if (auto target = m_Target.lock() || m_UseMousePosition) {
+	if (hasTarget) {
 		const glm::vec2 direction = targetWorldCoord - owner->m_WorldCoord;
 		m_HoldingRotation = std::atan2(direction.y, direction.x);
 	}
@@ -62,6 +67,7 @@ void FollowerComponent::BaseTargetRotate() {
 		const float prepOffset = glm::radians(m_baseRotationDegrees);
 		m_HoldingRotation += facingLeft ? -prepOffset : prepOffset;
 	}
+	m_baseRotation = m_HoldingRotation;
 }
 
 void FollowerComponent::Update() {

@@ -4,6 +4,7 @@
 
 #include "UIPanel/SettingPanel.hpp"
 
+#include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Util/GameObject.hpp"
@@ -13,7 +14,7 @@ void SettingPanel::Start()
 {
 	std::shared_ptr<nGameObject> gameObject = std::make_shared<nGameObject>();
 	LOG_DEBUG("SettingPanel::Start1");
-	gameObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/MenuPanel.png"));
+	gameObject->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/MenuPanel.png"));
 	gameObject->SetZIndexType(CUSTOM);
 	gameObject->SetZIndex(80.0f);
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();

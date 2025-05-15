@@ -17,14 +17,18 @@ public:
 	virtual void UpdateObject(float deltaTime) = 0;
 
 	//----Getter----
-	glm::vec2 GetWorldPosition() const { return m_Transform.translation; }
-	int GetDamage() const {return m_damage;}
-	bool ShouldRemove() const { return m_markRemove; }
-	bool WillDisappearOnHit() { return m_disappearOnHit; }
+	[[nodiscard]] glm::vec2 GetWorldPosition() const { return m_Transform.translation; }
+	[[nodiscard]] CharacterType GetAttackLayerType() const { return m_type; }
+	[[nodiscard]] glm::vec2 GetAttackDirection() const { return m_direction; }
+	[[nodiscard]] int GetDamage() const {return m_damage;}
+	[[nodiscard]] bool ShouldRemove() const { return m_markRemove; }
+	[[nodiscard]] bool WillDisappearOnHit() { return m_disappearOnHit; }
 
 	//----Setter----
+	void SetDirection(const glm::vec2 &direction) { m_direction = direction; }
 	void MarkForRemoval() { m_markRemove = true; }
-
+	void SetDisappearOnHit(const bool disappear) { m_disappearOnHit = disappear; }
+	void SetAttackCharacterType(const CharacterType type) { m_type = type; }
 
 protected:
 	CharacterType m_type;
@@ -32,7 +36,7 @@ protected:
 	bool m_markRemove = false;		// 標記是否因碰撞需移除
 	float m_size;
 	int m_damage;
-	bool m_disappearOnHit = false;
+	bool m_disappearOnHit = true;
 };
 
 #endif //ATTACK_HPP

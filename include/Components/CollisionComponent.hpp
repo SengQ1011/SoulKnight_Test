@@ -47,7 +47,6 @@ public:
 	void HandleEvent(const EventInfo& eventInfo) override;
 	std::vector<EventType> SubscribedEventTypes() const override;
 
-	void SetTriggerStrategy(std::unique_ptr<ITriggerStrategy> triggerStrategy);
 	void TryTrigger(const std::shared_ptr<nGameObject>& self, const std::shared_ptr<nGameObject> &other);
 	void FinishTriggerFrame(const std::shared_ptr<nGameObject>& self);
 
@@ -69,6 +68,9 @@ public:
 	void SetSize(const glm::vec2 &size) { m_Size = size; }
 	void SetActive(const bool isActive) { m_IsActive = isActive; }
 	void SetTrigger(const bool isTrigger) { m_IsTrigger = isTrigger; }
+	void AddTriggerStrategy(std::unique_ptr<ITriggerStrategy> strategy);
+	void ClearTriggerStrategies();
+	void ClearTriggerTargets();
 
 	void SetColliderBoxVisible(const bool isVisible) const
 	{
@@ -81,7 +83,7 @@ private:
 
 	// 强大的扳機 可以殺光一切
 	bool m_IsTrigger;
-	std::unique_ptr<ITriggerStrategy> m_TriggerStrategy = nullptr;
+	std::vector<std::unique_ptr<ITriggerStrategy>> m_TriggerStrategies;
 	std::unordered_set<std::shared_ptr<nGameObject>> m_PreviousTriggerTargets;	// 本幀（frame）裡所有經由 TryTrigger(self, other) 檢測到與這個 Trigger 物件發生交集的其他物件集合
 	std::unordered_set<std::shared_ptr<nGameObject>> m_CurrentTriggerTargets;	// （上一幀）結束時，紀錄下那些「還在觸發」的物件集合
 
@@ -90,9 +92,9 @@ private:
 	glm::uint8_t m_CollisionLayer; //自身碰撞層
 	glm::uint8_t m_CollisionMask; //可以和哪幾層碰撞
 	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
-	static std::shared_ptr<Util::Image> s_RedColliderImage;
-	static std::shared_ptr<Util::Image> s_BlueColliderImage;
-	static std::shared_ptr<Util::Image> s_YellowColliderImage;
+	static std::shared_ptr<Core::Drawable> s_RedColliderImage;
+	static std::shared_ptr<Core::Drawable> s_BlueColliderImage;
+	static std::shared_ptr<Core::Drawable> s_YellowColliderImage;
 };
 
 

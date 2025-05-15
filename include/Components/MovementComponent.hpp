@@ -21,9 +21,10 @@ public:
 	void Update() override;
 
 	// EventManager廣播時被動接收的統一interface
+	std::vector<EventType> SubscribedEventTypes() const override;
 	void HandleEvent(const EventInfo &eventInfo) override;
 	void HandleCollision(const CollisionEventInfo& eventInfo) override;
-	std::vector<EventType> SubscribedEventTypes() const override;
+	void ResolveOverlap(glm::vec2 collisionNormal, float penetration);
 
 	//----Getters----
 	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
@@ -35,6 +36,7 @@ public:
 	void SetPosition(const glm::vec2 &position) { m_Position = position; }
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
 	void SetVelocity(const glm::vec2 &velocity) { m_Velocity = velocity; }
+	void SetImpulseVelocity(const glm::vec2 &velocity) { m_ImpulseVelocity = velocity; }
 	void SetOnIce(bool isOnIce) { m_IsOnIce = isOnIce; }
 	// 控制移動
 	void SetDesiredDirection(const glm::vec2 &direction) { m_DesiredDirection = direction; }
@@ -47,6 +49,8 @@ private:
 	glm::vec2 m_Position; // 當前位置
 	glm::vec2 m_DesiredDirection; // 移動方向向量（輸入）
 	glm::vec2 m_Velocity; // 當前速度向量
+	glm::vec2 m_ImpulseVelocity = glm::vec2(0.0f);  // 外部施加的推力
+	float m_ImpulseDamping = 8.0f;						// 衰減速度
 	// 冰面專用參數()
 	float m_IceAcceleration = 4.0f; // 冰面加速度--》值越小，加速越慢（需要更長時間提速）
 	float m_IceFriction = 15.0f; // 冰面摩擦力==》值越大，減速越快（滑行距離短）

@@ -89,8 +89,7 @@ void AnimationComponent::SetAnimation(State state)
 
 void AnimationComponent::SetSkillEffect(bool play)
 {
-	if (play)
-	{
+	if (play) {
 		m_useSkillEffect = true;
 		auto character = GetOwner<nGameObject>();
 		if (character)
@@ -114,6 +113,7 @@ void AnimationComponent::SetSkillEffect(bool play)
 	}
 	else
 	{
+		LOG_DEBUG("end");
 		m_useSkillEffect = false;
 		m_effectAnimation->SetControlVisible(false);
 		m_effectAnimation->PlayAnimation(false);

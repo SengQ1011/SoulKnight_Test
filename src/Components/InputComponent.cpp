@@ -13,6 +13,7 @@
 #include "Components/StateComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Skill/Skill.hpp"
 #include "Weapon/Weapon.hpp"
 
 
@@ -71,6 +72,8 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 			if (keys.count('L'))
 			{
 				attackComponent->switchWeapon();
+				if (skillComponent) skillComponent->GetSkill()->SetRemainingDuration(0);
+
 			}
 		}
 	}

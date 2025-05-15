@@ -4,6 +4,7 @@
 
 #include "Scene/MainMenu_Scene.hpp"
 
+#include "ImagePoolManager.hpp"
 #include "ObserveManager/AudioManager.hpp"
 #include "Tool/Tool.hpp"
 #include "UIPanel/SettingPanel.hpp"
@@ -18,26 +19,27 @@
 void MainMenuScene::Start()
 {
 	LOG_DEBUG("Entering Main Menu");
-	m_Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
+	auto& imagePoolManager = ImagePoolManager::GetInstance();
+	m_Background->SetDrawable(imagePoolManager.GetImage(RESOURCE_DIR"/MainMenu/MainMenuBackground.png"));
 	m_Background->SetZIndex(0);
 
-	m_Title->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/Title.png"));
+	m_Title->SetDrawable(imagePoolManager.GetImage(RESOURCE_DIR"/MainMenu/Title.png"));
 	m_Title->SetZIndex(2);
 	m_Title->SetPivot({234,-221.5});
 
-	m_RedShawl->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/MainMenu/RedShawl.png"));
+	m_RedShawl->SetDrawable(imagePoolManager.GetImage(RESOURCE_DIR"/MainMenu/RedShawl.png"));
 	m_RedShawl->SetZIndex(1);
 	m_RedShawl->SetPivot({-237,-22});
 
-	m_Text->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",20,"點擊開始OwOb",Util::Color(255,255,255)));
+	m_Text->SetDrawable(imagePoolManager.GetText(RESOURCE_DIR"/Font/zpix.ttf",20,"點擊開始OwOb",Util::Color(255,255,255)));
 	m_Text->SetZIndex(2);
 	m_Text->SetPivot({-11,300});
 
-	m_Version->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",20,"版本號 v1.0.0",Util::Color(255,255,255)));
+	m_Version->SetDrawable(imagePoolManager.GetText(RESOURCE_DIR"/Font/zpix.ttf",20,"版本號 v1.0.0",Util::Color(255,255,255)));
 	m_Version->SetZIndex(2);
 	m_Version->SetPivot({-450,300});
 
-	// m_MainMenu->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR"/UI/MenuPanel.png"));
+	// m_MainMenu->SetDrawable(imagePoolManager.GetImage(RESOURCE_DIR"/UI/MenuPanel.png"));
 	// m_MainMenu->SetZIndex(100);
 	// m_MainMenu->m_Transform.translation = glm::vec2(140,80);
 	std::shared_ptr<SettingPanel>settingPanel = std::make_shared<SettingPanel>();

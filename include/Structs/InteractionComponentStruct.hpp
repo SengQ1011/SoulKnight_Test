@@ -10,6 +10,7 @@
 #include "EnumTypes.hpp"
 
 // TODO: refactor
+#include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Util/Text.hpp"
 
@@ -37,7 +38,7 @@ struct StructPrompt
 inline std::shared_ptr<nGameObject> CreatePromptObject(const StructPrompt& object)
 {
 	auto objectPtr = std::make_shared<nGameObject>("InteractionPrompt");
-	auto prompt = std::make_shared<Util::Text>(
+	auto prompt = ImagePoolManager::GetInstance().GetText(
 		RESOURCE_DIR+object.s_PromptFontPath,
 		object.s_PromptFontSize,
 		object.s_PromptText,

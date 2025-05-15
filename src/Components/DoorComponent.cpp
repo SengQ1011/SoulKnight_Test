@@ -9,8 +9,9 @@
 
 void DoorComponent::Init()
 {
-	const auto drawable0 = std::make_shared<Util::Image>(RESOURCE_DIR"/IcePlains/object_door_0.png");
-	const auto drawable1 = std::make_shared<Util::Image>(RESOURCE_DIR"/IcePlains/object_door_1.png");
+	auto& imagePoolManger = ImagePoolManager::GetInstance();
+	const auto drawable0 = imagePoolManger.GetImage(RESOURCE_DIR"/IcePlains/object_door_0.png");
+	const auto drawable1 = imagePoolManger.GetImage(RESOURCE_DIR"/IcePlains/object_door_1.png");
 	m_drawables.emplace_back(drawable0);
 	m_drawables.emplace_back(drawable1);
 	DoorOpened();

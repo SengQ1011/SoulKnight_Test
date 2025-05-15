@@ -33,7 +33,9 @@ std::shared_ptr<T> nGameObject::GetComponent(const ComponentType type) //或許w
 	// unordermap搜索法：unordered_map.find()
 	auto it = m_Components.find(type);
 	if (it != m_Components.end()) {
-		return std::dynamic_pointer_cast<T>(it->second);
+		auto casted = std::dynamic_pointer_cast<T>(it->second);
+		if (casted) return casted;
+		else LOG_WARN("GetComponent failed: type mismatch for {}", static_cast<int>(type));
 	}
 	return nullptr;
 }
@@ -45,7 +47,7 @@ void nGameObject::OnEvent(const EventT &eventInfo)
 		return;
 
 	// 留條後路，讓nGameObject自己處理Event的邏輯 - Projectile害的
-	OnEventReceived(eventInfo);
+	// OnEventReceived(eventInfo);
 
 	const EventType eventType = eventInfo.GetEventType();
 	if (const auto it = m_EventSubscribers.find(eventType); it != m_EventSubscribers.end())

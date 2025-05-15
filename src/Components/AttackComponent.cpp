@@ -26,6 +26,10 @@ void AttackComponent::Init()
 	AddWeapon(m_currentWeapon);
 	// 武器記錄擁有者
 	auto character = GetOwner<Character>();
+	if (!character) {
+		LOG_ERROR("AttackComp::character is null");
+		return;
+	}
 	m_currentWeapon->SetOwner(character);
 
 	if (character->GetType() == CharacterType::ENEMY)
@@ -125,7 +129,6 @@ void AttackComponent::switchWeapon()
 		m_currentWeapon = m_Weapons.front(); // 循環回到第一把武器
 	}
 	m_currentWeapon->SetControlVisible(true);
-	// scene->GetPendingObjects().push_back(m_currentWeapon);
 }
 
 int AttackComponent::calculateDamage()
@@ -223,29 +226,29 @@ void AttackComponent::SetDualWield(bool enable)
 	}
 	else
 	{
-		// scene->GetRoot().lock()->AddChild(m_secondWeapon);
-		// scene->GetCamera().lock()->AddChild(m_secondWeapon);
-		scene->GetPendingObjects().push_back(m_secondWeapon);
+		scene->GetRoot().lock()->AddChild(m_secondWeapon);
+		scene->GetCamera().lock()->AddChild(m_secondWeapon);
+		// scene->GetPendingObjects().push_back(m_secondWeapon);
 	}
 }
 
-void AttackComponent::OnEnemyPositionUpdate(std::weak_ptr<Character> enemy) {
+void AttackComponent::OnTargetPositionUpdate(std::weak_ptr<Character> enemy) {
 	if (auto locked = enemy.lock()) {
-		this->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+		this->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
 		// 通知目前武器最靠近的目標
 		if (const auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-			followerComp->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+			followerComp->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
 		}
 		// 若有雙武器也通知
 		if(m_dualWield) {
 			if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-				followerComp2->SetTarget(std::static_pointer_cast<nGameObject>(locked));
+				followerComp2->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
 			}
 		}
 	}
 }
 
-void AttackComponent::OnLostEnemy() {
+void AttackComponent::OnLostTarget() {
 	m_Target.reset();
 	for(auto& weapon : m_Weapons) {
 		if (const auto followerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {

@@ -24,4 +24,7 @@ std::string nGameObject::GenerateUniqueName(const std::string &baseName)
 	return baseName + std::to_string(id);
 }
 
-
+int nGameObject::GenerateUniqueID() {
+	static int currentId = 0;
+	return currentId++;
+}

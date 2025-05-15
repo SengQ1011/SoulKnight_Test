@@ -120,13 +120,13 @@ void TrackingManager::notifyObserver() {
 	if (!m_visibleEnemies.empty()) {
 		m_playerLostTarget = false;
 		if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
-			attackComp->OnEnemyPositionUpdate(m_nearestVisibleEnemy);
+			attackComp->OnTargetPositionUpdate(m_nearestVisibleEnemy);
 		}
 	} else {
 		if (!m_playerLostTarget) {
 			m_playerLostTarget = true;
 			if (const auto attackComp = m_player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
-				attackComp->OnLostEnemy();// 失去目標
+				attackComp->OnLostTarget();// 失去目標
 			}
 		}
 	}

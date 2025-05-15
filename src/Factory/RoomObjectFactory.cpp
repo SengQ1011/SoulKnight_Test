@@ -5,6 +5,7 @@
 #include "Factory/RoomObjectFactory.hpp"
 
 #include "Animation.hpp"
+#include "ImagePoolManager.hpp"
 #include "Loader.hpp"
 #include "Override/nGameObject.hpp"
 #include "RoomObject/ObstacleObject.hpp"
@@ -40,7 +41,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		else
 		{
 			roomObject = std::make_shared<nGameObject>(_id);
-			roomObject->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR+jsonData.at("path").get<std::string>(),false));
+			roomObject->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR+jsonData.at("path").get<std::string>()));
 		}
 	} else {
 		LOG_WARN("RoomObjectFactory::createRoomObject: No path for {}", _id);

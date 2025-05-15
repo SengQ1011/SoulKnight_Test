@@ -136,7 +136,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			FollowerComp->Update(); // 直接更新一次位置
 			//FollowerComp->SetTargetMouse(true);
 
-			auto weapon2 = WeaponFactory::createWeapon(2);
+			auto weapon2 = WeaponFactory::createWeapon(3);
 			attackComponent->AddWeapon(weapon2);
 			LOG_DEBUG("Player created");
 			return player;
@@ -164,6 +164,16 @@ std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> stringToAtkStra
 	return strategies;
 }
 
+bool JsonArrayContains(const nlohmann::json& array, const std::string& target) {
+	if (!array.is_array()) return false;
+
+	return std::any_of(array.begin(), array.end(),
+		[&target](const auto& item) {
+			return item.is_string() && item.get<std::string>() == target;
+		}
+	);
+}
+
 std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
     // 在 JSON 陣列中搜尋符合名稱的角色
     for (const auto& characterInfo : enemyJsonData) {
@@ -187,6 +197,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	// AIComponent
         	std::shared_ptr<IMoveStrategy> moveStrategy;
         	auto attackStrategies = stringToAtkStrategies(characterInfo["attackType"]);
+        	bool isCollisionAttack = JsonArrayContains(characterInfo["attackType"], "Collision");
         	std::shared_ptr<IUtilityStrategy> utilityStrategy = nullptr;
         	if (aiType == MonsterType::SUMMON) {
         		moveStrategy = std::make_shared<NoMove>();
@@ -196,12 +207,13 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	} else if (aiType == MonsterType::WANDER) {
         		moveStrategy = std::make_shared<WanderMove>();
         	}
-        	else LOG_ERROR("{}'s attackType not found", id);
+        	else LOG_ERROR("{}'s moveType not found", id);
 
         	// 根據攻擊類型
 			int haveWeapon = characterInfo["haveWeapon"].get<int>();
         	if (haveWeapon == 0) {
-        		collisionDamage = characterInfo["collisionDamage"].get<int>();
+        		if (isCollisionAttack)
+        			collisionDamage = characterInfo["collisionDamage"].get<int>();
         	}
         	else{
         		const int weaponId = characterInfo["weaponId"].get<int>();
@@ -218,7 +230,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	auto aiComp = enemy->AddComponent<AIComponent>(ComponentType::AI, aiType, moveStrategy, attackStrategies, utilityStrategy, monsterPoint);
         	auto collisionComp = enemy->AddComponent<CollisionComponent>(ComponentType::COLLISION);
         	collisionComp->SetCollisionLayer(CollisionLayers_Enemy);
-        	if (haveWeapon == 0) collisionComp->AddCollisionMask(CollisionLayers_Player);
+        	if (haveWeapon == 0 && isCollisionAttack) collisionComp->AddCollisionMask(CollisionLayers_Player);
         	collisionComp->AddCollisionMask(CollisionLayers_Terrain);
         	collisionComp->AddCollisionMask(CollisionLayers_Player_Projectile);
         	collisionComp->AddCollisionMask(CollisionLayers_Player_EffectAttack);

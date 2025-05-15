@@ -14,7 +14,7 @@ class nGameObject : public Util::GameObject, public std::enable_shared_from_this
 {
 public:
 	explicit nGameObject(const std::string& baseName = "")
-		: m_Name(GenerateUniqueName(baseName)) {}
+		: m_Id(GenerateUniqueID()), m_Name(GenerateUniqueName(baseName)) {}
 	~nGameObject() override = default;
 
 	glm::vec2 m_WorldCoord = {0,0};
@@ -61,6 +61,7 @@ public:
 	void SetControlVisible(bool signal) {m_IsControlVisible = signal;}
 
 	// Getter
+	[[nodiscard]] int GetID() const { return m_Id; }
 	[[nodiscard]] virtual std::string GetName() const { return m_Name; }
 	[[nodiscard]] virtual std::string GetClassName() const { return "nGameObject"; }
 	[[nodiscard]] glm::vec2 GetPivot() const { return m_Pivot;}
@@ -79,6 +80,7 @@ public:
 	[[nodiscard]] bool IsControlVisible() const { return m_IsControlVisible; }
 
 protected:
+	int m_Id;
 	std::string m_Name;
 	bool m_Active = true;
 	bool m_IsInsideWindow = true;	// 在視窗範圍外自動關閉顯示
@@ -98,6 +100,7 @@ protected:
 
 private:
 	static std::string GenerateUniqueName(const std::string& baseName);
+	static int GenerateUniqueID();
 };
 
 #include "nGameObject.inl" //必須先完成定義后才能包含
