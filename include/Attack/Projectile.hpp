@@ -18,6 +18,8 @@ public:
 	void Init() override;
 	void UpdateObject(float deltaTime) override;
 
+	std::string GetName() const override { return "Projectile"; }
+
 	void OnEventReceived(const EventInfo &eventInfo) override;
 
 	// 靜態資源池，只載入一次同一圖片，資源共用（圖片資源共享）

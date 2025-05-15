@@ -119,7 +119,9 @@ void AnimationComponent::SetSkillEffect(bool play)
 		m_effectAnimation->PlayAnimation(false);
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
-		scene->GetCamera().lock()->RemoveChild(m_effectAnimation);
+		const auto camera = scene->GetCamera().lock();
+		// camera->RemoveChild(m_effectAnimation);
+		camera->MarkForRemoval(m_effectAnimation);
 	}
 }
 

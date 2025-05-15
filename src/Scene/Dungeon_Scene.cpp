@@ -96,7 +96,9 @@ void DungeonScene::Update()
 	{
 		// 更新相机
 		// ZoneScopedN("Camera::Update");
+		LOG_DEBUG("A2");
 		m_Camera->Update();
+		LOG_DEBUG("A3");
 	}
 
 	{

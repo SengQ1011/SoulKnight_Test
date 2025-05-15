@@ -113,7 +113,8 @@ void AttackManager::Update() {
         m_projectileRemovalQueue.pop_front();
 
         root->RemoveChild(bullet);
-        camera->RemoveChild(bullet);
+        // camera->RemoveChild(bullet);
+    	camera->MarkForRemoval(bullet);
         collisionManager->UnregisterNGameObject(bullet);
         m_projectilePool.Release(bullet);
         processedCount++;
@@ -129,7 +130,8 @@ void AttackManager::Update() {
         m_effectRemovalQueue.pop_front();
 
         root->RemoveChild(effect);
-        camera->RemoveChild(effect);
+        // camera->RemoveChild(effect);
+    	camera->MarkForRemoval(effect);
         m_effectPool.Release(effect);
         processedCount++;
 

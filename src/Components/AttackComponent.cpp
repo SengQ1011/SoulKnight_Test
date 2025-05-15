@@ -76,7 +76,8 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	}
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	// scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	scene->GetCamera().lock()->MarkForRemoval(m_currentWeapon);
 
 	m_Weapons.push_back(newWeapon); // 添加新武器列表
 	m_currentWeapon = newWeapon; // 更新當前武器
@@ -120,7 +121,8 @@ void AttackComponent::switchWeapon()
 	// OpenGL 本身是「狀態機 + 立即模式」，它不會自己管理任何物件，它只會畫你給它的東西
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-	scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	// scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	scene->GetCamera().lock()->MarkForRemoval(m_currentWeapon);
 
 	// 找目前武器的位置
 	auto it = std::find(m_Weapons.begin(), m_Weapons.end(), m_currentWeapon);
@@ -224,7 +226,8 @@ void AttackComponent::SetDualWield(bool enable)
 	if (!enable)
 	{
 		scene->GetRoot().lock()->RemoveChild(m_secondWeapon);
-		scene->GetCamera().lock()->RemoveChild(m_secondWeapon);
+		// scene->GetCamera().lock()->RemoveChild(m_secondWeapon);
+		scene->GetCamera().lock()->MarkForRemoval(m_secondWeapon);
 		m_secondWeapon = nullptr;
 	}
 	else

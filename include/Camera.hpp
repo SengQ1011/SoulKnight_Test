@@ -26,6 +26,8 @@ public:
 	void AddChild(const std::shared_ptr<nGameObject> &child);
 	void AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
 	void RemoveChild(const std::shared_ptr<nGameObject>& child);
+	void MarkForRemoval(const std::shared_ptr<nGameObject>& child);
+	bool FindChild(const std::shared_ptr<nGameObject>& child);
 
 	void Update();
 	void UpdateZIndex(const std::shared_ptr<nGameObject> &child) const;
@@ -41,6 +43,7 @@ protected:
 private:
 	std::weak_ptr<nGameObject> m_FollowTarget;
 	std::vector<std::shared_ptr<nGameObject>> m_Children;
+	std::vector<std::weak_ptr<nGameObject>> m_ToRemoveList;
 
 	void UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child);
 	bool NotShouldBeVisible(const std::shared_ptr<nGameObject> &child) const;

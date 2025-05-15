@@ -23,6 +23,7 @@ public:
 	[[nodiscard]] const glm::vec2& GetPosition() const { return m_Transform.translation; }		// 回傳角色當前的位置
 	[[nodiscard]] CharacterType GetType() const { return m_type; }
 	[[nodiscard]] std::string GetCharacterName() const { return m_name; }
+	std::string GetName() const override { return m_name; }
 
 	/* ---Setter--- */
 	void SetPosition(const glm::vec2& Position) { m_Transform.translation = Position; }			// 設定角色的新位置

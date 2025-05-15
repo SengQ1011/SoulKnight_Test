@@ -57,7 +57,8 @@ void EffectAttack::UpdateObject(const float deltaTime) {
 		SetActive(false);
 		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(shared_from_this());
-		scene->GetCamera().lock()->RemoveChild(shared_from_this());
+		// scene->GetCamera().lock()->RemoveChild(shared_from_this());
+		scene->GetCamera().lock()->MarkForRemoval(shared_from_this());
 		scene->GetCurrentRoom()->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(shared_from_this());
 	}
 }

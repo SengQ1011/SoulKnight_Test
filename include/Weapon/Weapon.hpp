@@ -16,7 +16,7 @@ public:
 
 	//----Getter----
 	std::string GetImagePath() const { return m_ImagePath; }
-	std::string GetName() const { return m_weaponName; }
+	std::string GetName() const override { return m_weaponName; }
 	int GetDamage() const{ return m_damage; }
 	int GetEnergy() const { return m_energy; }
 	float GetCriticalRate() const { return m_criticalRate; }

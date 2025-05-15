@@ -16,6 +16,8 @@ public:
 	virtual void Init() = 0;
 	virtual void UpdateObject(float deltaTime) = 0;
 
+	std::string GetName() const override { return "Attack";}
+
 	//----Getter----
 	glm::vec2 GetWorldPosition() const { return m_Transform.translation; }
 	int GetDamage() const {return m_damage;}

@@ -216,7 +216,8 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 	const auto camera = scene->GetCamera().lock();
 	if (scene) {
 		if (renderer) renderer->RemoveChild(object);
-		if (camera) camera->RemoveChild(object);
+		// if (camera) camera->RemoveChild(object);
+		if (camera) camera->MarkForRemoval(object);
 	}
 
 	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
@@ -226,7 +227,8 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 			if (scene)
 			{
 				if (renderer) renderer->RemoveChild(colliderVisible);
-				if (camera) camera->RemoveChild(colliderVisible);
+				// if (camera) camera->RemoveChild(colliderVisible);
+				if (camera) camera->MarkForRemoval(colliderVisible);
 			}
 		}
 	}
@@ -238,7 +240,8 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 		{
 			if (scene) {
 				if (renderer) renderer->RemoveChild(promptObj);
-				if (camera) camera->RemoveChild(promptObj);
+				// if (camera) camera->RemoveChild(promptObj);
+				if (camera) camera->MarkForRemoval(promptObj);
 			}
 		}
 	}
