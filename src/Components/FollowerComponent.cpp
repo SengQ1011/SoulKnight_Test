@@ -67,6 +67,7 @@ void FollowerComponent::BaseTargetRotate() {
 		const float prepOffset = glm::radians(m_baseRotationDegrees);
 		m_HoldingRotation += facingLeft ? -prepOffset : prepOffset;
 	}
+	m_baseRotation = m_HoldingRotation;
 }
 
 void FollowerComponent::Update() {

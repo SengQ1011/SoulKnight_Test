@@ -70,6 +70,7 @@ public:
 	void SetTrigger(const bool isTrigger) { m_IsTrigger = isTrigger; }
 	void AddTriggerStrategy(std::unique_ptr<ITriggerStrategy> strategy);
 	void ClearTriggerStrategies();
+	void ClearTriggerTargets();
 
 	void SetColliderBoxVisible(const bool isVisible) const
 	{
@@ -91,9 +92,9 @@ private:
 	glm::uint8_t m_CollisionLayer; //自身碰撞層
 	glm::uint8_t m_CollisionMask; //可以和哪幾層碰撞
 	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
-	static std::shared_ptr<Util::Image> s_RedColliderImage;
-	static std::shared_ptr<Util::Image> s_BlueColliderImage;
-	static std::shared_ptr<Util::Image> s_YellowColliderImage;
+	static std::shared_ptr<Core::Drawable> s_RedColliderImage;
+	static std::shared_ptr<Core::Drawable> s_BlueColliderImage;
+	static std::shared_ptr<Core::Drawable> s_YellowColliderImage;
 };
 
 

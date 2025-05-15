@@ -11,7 +11,7 @@ void ReflectTriggerStrategy::OnTriggerEnter(std::shared_ptr<nGameObject> self, s
 	if (!self || !other) return;
 	// 確認 other 是子彈
 	auto target = std::dynamic_pointer_cast<Projectile>(other);
-	if (!target || !target->GetCanReboundBySword()) return;
+	if (!target) return;
 
 	// 發送反彈事件
 	const ReflectProjectileEventInfo reflectEvent;

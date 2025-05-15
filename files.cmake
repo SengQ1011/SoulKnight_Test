@@ -34,6 +34,7 @@ set(SRC_FILES
     Factory/RoomFactory.cpp
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
+    ImagePoolManager.cpp
     Loader.cpp
     ObserveManager/AudioManager.cpp
     ObserveManager/InputManager.cpp
@@ -65,6 +66,7 @@ set(SRC_FILES
     Tool/Tool.cpp
     TriggerStrategy/AttackTriggerStrategy.cpp
     TriggerStrategy/BlockProjectileStrategy.cpp
+    TriggerStrategy/KnockOffTriggerStrategy.cpp
     TriggerStrategy/ReflectTriggerStrategy.cpp
     UIPanel/SettingPanel.cpp
     UIPanel/UIManager.cpp
@@ -119,6 +121,7 @@ set(INCLUDE_FILES
     Factory/WeaponFactory.hpp
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
+    ImagePoolManager.hpp
     Loader.hpp
     MemoryTracker.hpp
     Motion.hpp
@@ -160,12 +163,14 @@ set(INCLUDE_FILES
     Structs/DeathEventInfo.hpp
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
+    Structs/KnockOffEventInfo.hpp
     Structs/ReflectProjectileEventInfo.hpp
     Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp
     TriggerStrategy/BlockProjectileStrategy.hpp
     TriggerStrategy/ITriggerStrategy.hpp
+    TriggerStrategy/KnockOffTriggerStrategy.hpp
     TriggerStrategy/ReflectTriggerStrategy.hpp
     UIPanel/SettingPanel.hpp
     UIPanel/UIManager.hpp

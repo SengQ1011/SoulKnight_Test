@@ -18,15 +18,16 @@ MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string &name, 
 void MeleeWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
 
-	// 揮刀動作
-	if (const auto followerComp = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-		followerComp->StartAttackAction();
-	}
-
 	// 原始旋轉角度
 	float rawRotation = this->m_Transform.rotation;
 
-	// 還原初始角度偏移（只對劍適用）
+	// 揮刀動作
+	if (const auto followerComp = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
+		followerComp->StartAttackAction();
+		rawRotation = followerComp->GetBaseRotation();
+	}
+
+	// 還原初始角度偏移（只對劍/錘子適用）
 	if (m_IsSword) {
 		const bool facingLeft = m_currentOwner->m_Transform.scale.x < 0.0f;
 		if (const auto follower = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {

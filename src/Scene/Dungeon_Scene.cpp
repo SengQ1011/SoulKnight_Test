@@ -39,7 +39,7 @@ void DungeonScene::Start()
 	m_Loader = std::make_shared<Loader>(m_ThemeName);
 
 	// m_OnDeathText = std::make_shared<nGameObject>();
-	// m_OnDeathText->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
+	// m_OnDeathText->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
 	// m_OnDeathText->SetZIndex(100);
 	// m_OnDeathText->SetZIndexType(CUSTOM);
 	// m_OnDeathText->SetControlVisible(false);

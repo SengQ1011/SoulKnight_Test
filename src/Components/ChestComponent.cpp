@@ -3,13 +3,16 @@
 //
 
 #include "Components/ChestComponent.hpp"
+
+#include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Util/Image.hpp"
 
 void ChestComponent::Init()
 {
-	const auto drawable0 = std::make_shared<Util::Image>(RESOURCE_DIR"/IcePlains/object_chest_0.png");
-	const auto drawable1 = std::make_shared<Util::Image>(RESOURCE_DIR"/IcePlains/object_chest_1.png");
+	auto& imagePoolManager = ImagePoolManager::GetInstance();
+	const auto drawable0 = imagePoolManager.GetImage(RESOURCE_DIR"/IcePlains/object_chest_0.png");
+	const auto drawable1 = imagePoolManager.GetImage(RESOURCE_DIR"/IcePlains/object_chest_1.png");
 	m_drawables.emplace_back(drawable0);
 	m_drawables.emplace_back(drawable1);
 	const std::shared_ptr<nGameObject> chest = GetOwner<nGameObject>();

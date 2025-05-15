@@ -8,6 +8,7 @@
 #include "Components/CollisionComponent.hpp"
 #include "Components/ProjectileComponent.hpp"
 #include "Creature/Character.hpp"
+#include "ImagePoolManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "TriggerStrategy/AttackTriggerStrategy.hpp"
 #include "Util/Image.hpp"
@@ -20,9 +21,6 @@ Projectile::Projectile(const CharacterType type, const Util::Transform &attackTr
 								m_isBubble(isBubble), m_enableBubbleTrail(bubbleTrail), m_bubbleImagePath(bubbleImagePath) {}
 
 //=========================== (實作) ================================//
-// 靜態成員變數
-std::unordered_map<std::string, std::shared_ptr<Util::Image>> Projectile::sharedImages;
-
 void Projectile::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
@@ -142,11 +140,7 @@ void Projectile::ResetAll(const CharacterType type, const Util::Transform &attac
 
 
 void Projectile::SetImage(const std::string& imagePath) {
-	m_imagePath = imagePath;
-	if (sharedImages.find(imagePath) == sharedImages.end()) {
-		sharedImages[imagePath] = std::make_shared<Util::Image>(imagePath);
-	}
-	m_Drawable = sharedImages[imagePath];
+	m_Drawable = ImagePoolManager::GetInstance().GetImage(imagePath);
 }
 
 // void Projectile::OnEventReceived(const EventInfo &eventInfo)

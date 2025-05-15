@@ -4,7 +4,7 @@
     "weaponType": "Gun",
     "name": "Old_worn_pistol",
     "weaponImagePath": "/weapon/weapons/weapons_19.png",
-    "bulletImagePath": "/bullet/bullet_34.png",
+    "bulletImagePath": "/attackUI/bullet/bullet_34.png",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
@@ -87,7 +87,7 @@
     "weaponType": "Gun",
     "name": "Electric_drill",
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
-    "bulletImagePath": "/bullet/bullet_109.png",
+    "bulletImagePath": "/attackUI/bullet/bullet_109.png",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
@@ -100,6 +100,6 @@
     "dropLevel": 0,
     "basicPrice": 0,
     "bubbleTrail": true,
-    "bubbleImagePath": "/bullet/bullet_107.png"
+    "bubbleImagePath": "/attackUI/bullet/bullet_107.png"
   }
 ]

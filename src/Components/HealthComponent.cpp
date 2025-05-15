@@ -67,6 +67,14 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 	case EventType::TakeDamage:
 	{
 		const auto& dmgInfo = dynamic_cast<const TakeDamageEventInfo&>(eventInfo);
+		const auto ObjectID = dmgInfo.m_Id;
+		// 冷卻中就不處理
+		if (m_recentAttackSources.count(ObjectID) > 0)
+		{
+			LOG_DEBUG("skip");
+			break;
+		}
+		m_recentAttackSources[ObjectID] = m_invincibleDuration;
 		TakeDamage(dmgInfo.damage);
 		break;
 	}
@@ -86,13 +94,14 @@ std::vector<EventType> HealthComponent::SubscribedEventTypes() const
 // 只處理碰撞傷害 - 被怪物撞、陷阱、尖刺
 void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 	auto collisionObject = info.GetObjectB();
-	if (!collisionObject) return;
+	if (!collisionObject)
+		return;
 
-	nGameObject* rawPtr = collisionObject.get();// 取出 raw pointer
+	const auto ObjectID = collisionObject->GetID();
 
 	// 冷卻中就不處理
-	if (m_recentAttackSources.count(rawPtr) > 0) return;
-	m_recentAttackSources[rawPtr] = m_invincibleDuration;
+	if (m_recentAttackSources.count(ObjectID) > 0) return;
+	m_recentAttackSources[ObjectID] = m_invincibleDuration;
 
 	// collisionEnemy的碰撞傷害
 	if (const auto character = std::dynamic_pointer_cast<Character>(info.GetObjectB())) {
@@ -110,7 +119,7 @@ void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 
 void HealthComponent::TakeDamage(int damage)
 {
-	LOG_DEBUG("take damage {}", damage);
+	// LOG_DEBUG("take damage {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
 	{

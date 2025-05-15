@@ -11,10 +11,10 @@
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
 #include "Creature/Character.hpp"
+#include "ImagePoolManager.hpp"
 #include "Scene/SceneManager.hpp"
-#include "Util/Image.hpp"
+#include "ImagePoolManager.hpp"
 #include "Util/Time.hpp"
-
 
 AIComponent::AIComponent(const MonsterType MonsterType, const std::shared_ptr<IMoveStrategy> &moveStrategy,
 						 const std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> &attackStrategies,
@@ -32,7 +32,7 @@ void AIComponent::Init()
 
 	std::string imagePath = RESOURCE_DIR"/icon/double-exclamation-mark.png";
 	m_readyAttackIcon = std::make_shared<nGameObject>();
-	m_readyAttackIcon->SetDrawable(std::make_shared<Util::Image>(imagePath));
+	m_readyAttackIcon->SetDrawable(ImagePoolManager::GetInstance().GetImage(imagePath));
 	m_readyAttackIcon->SetZIndexType(ZIndexType::UI);
 	m_readyAttackIcon->m_WorldCoord = GetOwner<Character>()->GetWorldCoord() + m_iconOffset;
 	// enemy->AddChild(m_readyAttackIcon);
@@ -129,13 +129,11 @@ std::vector<EventType> AIComponent::SubscribedEventTypes() const
 	};
 }
 
-// void AIComponent::HandleCollision(CollisionInfo &info)
-// {
-//	m_moveStrategy->CollisionAction(info, m_context);
-// }
-
 void AIComponent::HandleEvent(const EventInfo &eventInfo)
 {
-	const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
-	m_moveStrategy->CollisionAction(collisionInfo, m_context);
+	if (eventInfo.GetEventType() == EventType::Collision)
+	{
+		const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
+		m_moveStrategy->CollisionAction(collisionInfo, m_context);
+	}
 }

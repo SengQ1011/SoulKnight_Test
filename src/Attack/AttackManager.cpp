@@ -100,7 +100,7 @@ void AttackManager::Update() {
     }
 
     // 處理移除隊列（子彈 + 特效）
-    constexpr size_t MAX_PROCESS_PER_FRAME = 3;
+    constexpr size_t MAX_PROCESS_PER_FRAME = 5;
     constexpr int MAX_PROCESS_TIME_US = 1000;
 
     auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -137,6 +137,7 @@ void AttackManager::Update() {
 
         root->RemoveChild(effect);
         camera->RemoveChild(effect);
+    	collisionManager->UnregisterNGameObject(effect);
         m_effectPool.Release(effect);
         processedCount++;
 

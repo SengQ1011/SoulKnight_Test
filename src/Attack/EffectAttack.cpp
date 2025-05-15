@@ -9,6 +9,7 @@
 #include "Scene/SceneManager.hpp"
 #include "TriggerStrategy/AttackTriggerStrategy.hpp"
 #include "TriggerStrategy/BlockProjectileStrategy.hpp"
+#include "TriggerStrategy/KnockOffTriggerStrategy.hpp"
 #include "TriggerStrategy/ReflectTriggerStrategy.hpp"
 
 EffectAttack::EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,float size,
@@ -33,10 +34,12 @@ void EffectAttack::Init() {
 
 	//設置觸發器 和 觸發事件
 	CollisionComp->ClearTriggerStrategies();
+	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
 	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
 	if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
 	else CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
+	if(m_effectType == EffectAttackType::SHOCKWAVE) CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_EffectAttack);
@@ -51,9 +54,9 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
- 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {
@@ -61,10 +64,6 @@ void EffectAttack::UpdateObject(const float deltaTime) {
 	if (m_animation->IfAnimationEnds()) {
 		MarkForRemoval();
 		SetActive(false);
-		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-		scene->GetRoot().lock()->RemoveChild(shared_from_this());
-		scene->GetCamera().lock()->RemoveChild(shared_from_this());
-		scene->GetCurrentRoom()->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(shared_from_this());
 	}
 }
 
@@ -84,9 +83,3 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
  	m_animation = std::make_shared<Animation>(paths, false);
 	this->m_markRemove = false;
 }
-
-void EffectAttack::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
-{
-	//TODO: Override OnEventReceived 讓nGameObject處理事件
-}
-

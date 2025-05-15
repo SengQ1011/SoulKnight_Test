@@ -8,9 +8,9 @@
 
 #include "Util/Image.hpp"
 
-std::shared_ptr<Util::Image> CollisionComponent::s_RedColliderImage = nullptr;
-std::shared_ptr<Util::Image> CollisionComponent::s_BlueColliderImage = nullptr;
-std::shared_ptr<Util::Image> CollisionComponent::s_YellowColliderImage = nullptr;
+std::shared_ptr<Core::Drawable> CollisionComponent::s_RedColliderImage = nullptr;
+std::shared_ptr<Core::Drawable> CollisionComponent::s_BlueColliderImage = nullptr;
+std::shared_ptr<Core::Drawable> CollisionComponent::s_YellowColliderImage = nullptr;
 
 
 void CollisionComponent::Init()
@@ -26,12 +26,13 @@ void CollisionComponent::Init()
 
 void CollisionComponent::SetColliderBoxColor(const std::string &color) const // Blue - 未定義， Yellow - 碰撞, Red - 正常
 {
+	auto& imagePoolManger = ImagePoolManager::GetInstance();
 	if (!s_RedColliderImage)
-		s_RedColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/RedCollider.png");
+		s_RedColliderImage = imagePoolManger.GetImage(RESOURCE_DIR "/RedCollider.png");
 	if (!s_BlueColliderImage)
-		s_BlueColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/BlueCollider.png");
+		s_BlueColliderImage = imagePoolManger.GetImage(RESOURCE_DIR "/BlueCollider.png");
 	if (!s_YellowColliderImage)
-		s_YellowColliderImage = std::make_shared<Util::Image>(RESOURCE_DIR "/YellowCollider.png");
+		s_YellowColliderImage = imagePoolManger.GetImage(RESOURCE_DIR "/YellowCollider.png");
 
 
 	if (color == "Red" && s_RedColliderImage)
@@ -109,6 +110,10 @@ void CollisionComponent::ClearTriggerStrategies() {
 	m_TriggerStrategies.clear();
 }
 
+void CollisionComponent::ClearTriggerTargets() {
+	m_PreviousTriggerTargets.clear();
+	m_CurrentTriggerTargets.clear();
+}
 
 void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self,
 									const std::shared_ptr<nGameObject>& other) {
@@ -120,7 +125,11 @@ void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self,
 	bool wasTriggered = m_PreviousTriggerTargets.find(other) != m_PreviousTriggerTargets.end();
 	for (auto& strategy : m_TriggerStrategies) {
 		if (!wasTriggered) strategy->OnTriggerEnter(self, other);
-		else           strategy->OnTriggerStay(self, other);
+		else
+		{
+
+			strategy->OnTriggerStay(self, other);
+		}
 	}
 }
 

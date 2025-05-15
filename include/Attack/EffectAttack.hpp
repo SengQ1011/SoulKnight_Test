@@ -15,26 +15,26 @@ namespace EffectAssets {
 
 	inline const std::unordered_map<EffectAttackType, std::vector<std::string>> EFFECT_IMAGE_PATHS = {
 		{EffectAttackType::SLASH, {
-			ResourcePath("/Sprite/attackUI/slash/slash_0.png"),
-			ResourcePath("/Sprite/attackUI/slash/slash_1.png"),
-			ResourcePath("/Sprite/attackUI/slash/slash_2.png"),
-			ResourcePath("/Sprite/attackUI/slash/slash_3.png")
+			ResourcePath("/attackUI/slash/slash_0.png"),
+			ResourcePath("/attackUI/slash/slash_1.png"),
+			ResourcePath("/attackUI/slash/slash_2.png"),
+			ResourcePath("/attackUI/slash/slash_3.png")
 		}},
 		{EffectAttackType::LUNGE, {
-			ResourcePath("/Sprite/attackUI/lunge/lunge_0.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_1.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_2.png"),
-			ResourcePath("/Sprite/attackUI/lunge/lunge_3.png")
+			ResourcePath("/attackUI/lunge/lunge_0.png"),
+			ResourcePath("/attackUI/lunge/lunge_1.png"),
+			ResourcePath("/attackUI/lunge/lunge_2.png"),
+			ResourcePath("/attackUI/lunge/lunge_3.png")
 		}},
 		{EffectAttackType::SHOCKWAVE,{
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_0.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_1.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_2.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_3.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_4.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_5.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_6.png"),
-			ResourcePath("/Sprite/attackUI/shockwave/shockwave_7.png")
+			ResourcePath("/attackUI/shockwave/shockwave_0.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_1.png"),
+			//ResourcePath("/attackUI/shockwave/shockwave_2.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_3.png"),
+			//ResourcePath("/attackUI/shockwave/shockwave_4.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_5.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_6.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_7.png")
 		}}
 	};
 }
@@ -57,13 +57,12 @@ public:
 	//----Setter----
 	void ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType);
 
-	void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info);
-
 protected:
 	EffectAttackType m_effectType;
 	std::shared_ptr<Animation> m_animation;
 	bool m_reflectBullet = false;
-	bool m_bulletBlocking = false;
+	bool m_bulletBlocking = true;
+	float m_shockwaveForce = 100.0f;
 };
 
 #endif //EFFECTATTACK_HPP
