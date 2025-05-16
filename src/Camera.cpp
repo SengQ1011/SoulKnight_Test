@@ -119,7 +119,7 @@ void Camera::Update() {
 		i++;
 	}
 
-	if (count == 10000)
+	if (count == 100)
 	{
 		LOG_DEBUG("Camera::Update {} {} ", m_Children.size(), i);
 		count = 0;

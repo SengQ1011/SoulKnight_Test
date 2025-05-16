@@ -26,13 +26,13 @@ public:
 private:
 	// 私有方法，按功能划分场景初始化流程
 	void CreatePlayer();
+	void CreateEnemy();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	std::shared_ptr<Character> m_Player;
-	float m_MapHeight;
+	std::vector<std::shared_ptr<Character>> m_Enemies;
 
-	std::shared_ptr<DungeonMap> m_Map;
-	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
+	float m_MapHeight;
 
 	std::string m_ThemeName = "IcePlains";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
 	std::shared_ptr<Loader> m_Loader;
