@@ -193,6 +193,8 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 	const bool canBHitA  = colliderB->CanCollideWith(colliderA);
 	const bool aIsTrigger = colliderA->IsTrigger();
 	const bool bIsTrigger = colliderB->IsTrigger();
+	const bool aIsCollider = colliderA->IsCollider();
+	const bool bIsCollider = colliderB->IsCollider();
 
 	// 扳機碰撞觸發
 	if (aIsTrigger || bIsTrigger)
@@ -200,12 +202,15 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 		if (aIsTrigger && canAHitB) colliderA->TryTrigger(objectA, objectB);
 		if (bIsTrigger && canBHitA) colliderB->TryTrigger(objectB, objectA);
 	}
-	if (canAHitB) objectA->OnEvent(info);
-	if (canBHitA) {
-		const glm::vec2 reversedNormal = -info.GetCollisionNormal();
-		CollisionEventInfo reversedInfo(objectB, objectA);
-		reversedInfo.penetration = info.penetration;
-		reversedInfo.SetCollisionNormal(reversedNormal);
-		objectB->OnEvent(reversedInfo);
+	if (aIsCollider && bIsCollider)
+	{
+		if (canAHitB) objectA->OnEvent(info);
+		if (canBHitA) {
+			const glm::vec2 reversedNormal = -info.GetCollisionNormal();
+			CollisionEventInfo reversedInfo(objectB, objectA);
+			reversedInfo.penetration = info.penetration;
+			reversedInfo.SetCollisionNormal(reversedNormal);
+			objectB->OnEvent(reversedInfo);
+		}
 	}
 }

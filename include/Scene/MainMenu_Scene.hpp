@@ -16,7 +16,6 @@ class MainMenuScene : public Scene
 {
 public:
 	MainMenuScene() = default;
-	// explicit MainMenuScene(const sceneType = SceneType:) : Scene(sceneType);
 	~MainMenuScene() override = default;
 
 	void Start() override;
@@ -28,15 +27,9 @@ protected:
 	std::shared_ptr<Util::GameObject> m_Background = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Title = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_RedShawl = std::make_shared<Util::GameObject>();
-	// std::shared_ptr<Util::GameObject> m_MainMenu = std::make_shared<Util::GameObject>();
-
-	// std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
-	// std::shared_ptr<Util::SFX> m_ClickSound = std::make_shared<Util::SFX>(RESOURCE_DIR"/UI/fx_btn1.wav");
 
 	std::shared_ptr<Util::GameObject> m_Text = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Version = std::make_shared<Util::GameObject>();
-
-	// Util::Renderer m_Root;
 };
 
 #endif //MAINMENU_SCENE_HPP

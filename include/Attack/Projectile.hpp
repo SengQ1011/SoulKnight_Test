@@ -39,7 +39,6 @@ public:
 	void ResetAll(const CharacterType type, const Util::Transform &bulletTransform, glm::vec2 direction, float size, int damage, const std::string& ImagePath, float speed,
 					int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath);
 
-
 	void CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulletDirection) const;
 
 protected:

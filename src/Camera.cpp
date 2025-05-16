@@ -113,7 +113,7 @@ void Camera::Update() {
 		// child->SetVisible(false);
 
 		child->SetVisible(child->IsInsideWindow() && child->IsControlVisible());
-		if (!child->IsVisible()) continue; // 沒顯示就不移動了
+		if (!child->IsInsideWindow()) continue; // 沒顯示就不移動了
 		child->Update();
 		UpdateChildViewportPosition(child);
 		i++;

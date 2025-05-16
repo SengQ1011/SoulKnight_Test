@@ -36,6 +36,7 @@ void EffectAttack::Init() {
 	CollisionComp->ClearTriggerStrategies();
 	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
+	CollisionComp->SetCollider(false);
 	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
 	if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
 	else CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
@@ -54,9 +55,9 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
- 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {

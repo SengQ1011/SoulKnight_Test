@@ -46,7 +46,6 @@ void TestScene_KC::Start()
 
 void TestScene_KC::Update()
 {
-
 	// Input处理
 	for (auto& [type,manager]: m_Managers) manager->Update();
 
@@ -60,7 +59,6 @@ void TestScene_KC::Update()
 
 	// 更新场景根节点
 	m_Root->Update();
-
 }
 
 void TestScene_KC::CreatePlayer()
@@ -78,7 +76,6 @@ void TestScene_KC::CreatePlayer()
 		const auto visibleBox = collision->GetVisibleBox();
 		m_PendingObjects.push_back(visibleBox);
 		visibleBox->SetRegisteredToScene(true);
-
 	}
 
 	// 将玩家添加到场景根节点和相机
