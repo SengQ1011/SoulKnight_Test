@@ -70,7 +70,6 @@ void Projectile::OnEventReceived(const EventInfo &eventInfo)
 
 	const auto& collisionEvent = static_cast<const CollisionEventInfo&>(eventInfo);
 	OnCollision(collisionEvent);
-
 }
 
 

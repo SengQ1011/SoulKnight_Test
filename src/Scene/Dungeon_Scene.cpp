@@ -72,11 +72,6 @@ void DungeonScene::Update()
 		for (auto& [type,manager]: m_Managers) manager->Update();
 	}
 	{
-		// ZoneScopedN("Player::Update");
-		// m_Player->Update();
-		// m_OnDeathText->SetWorldCoord(m_Player->GetWorldCoord() + glm::vec2(0,m_Player->GetImageSize().y/2.0f) + glm::vec2(0,m_OnDeathText->GetImageSize().y/2.0f));
-	}
-	{
 		// 更新房间
 		// ZoneScopedN("Map::Update");
 		m_Map->Update();
@@ -96,9 +91,7 @@ void DungeonScene::Update()
 	{
 		// 更新相机
 		// ZoneScopedN("Camera::Update");
-		LOG_DEBUG("A2");
 		m_Camera->Update();
-		LOG_DEBUG("A3");
 	}
 
 	{

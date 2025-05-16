@@ -79,8 +79,3 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
 	this->m_markRemove = false;
 }
 
-void EffectAttack::onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
-{
-	//TODO: Override OnEventReceived 讓nGameObject處理事件
-}
-

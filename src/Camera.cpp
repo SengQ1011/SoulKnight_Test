@@ -91,6 +91,7 @@ bool Camera::FindChild(const std::shared_ptr<nGameObject> &child)
 
 
 void Camera::Update() {
+	static int count = 0;
 	if (auto target = m_FollowTarget.lock()) {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
@@ -118,6 +119,12 @@ void Camera::Update() {
 		i++;
 	}
 
+	if (count == 10000)
+	{
+		LOG_DEBUG("Camera::Update {} {} ", m_Children.size(), i);
+		count = 0;
+	}
+	count++;
 	for (auto & weakObject : m_ToRemoveList)
 	{
 		if (auto obj = weakObject.lock())

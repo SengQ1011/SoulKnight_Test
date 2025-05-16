@@ -11,11 +11,12 @@
 #include "Components/CollisionComponent.hpp"
 #include "Components/InputComponent.hpp"
 
-#include "Room/LobbyRoom.hpp"
-#include "Factory/CharacterFactory.hpp"
-#include "Room/RoomCollisionManager.hpp"
-#include "ObserveManager/InputManager.hpp"
 #include "Creature/Character.hpp"
+#include "Factory/CharacterFactory.hpp"
+#include "ObserveManager/InputManager.hpp"
+#include "Room/LobbyRoom.hpp"
+#include "Room/RoomCollisionManager.hpp"
+#include "Util/Input.hpp"
 
 // #include "Tracy.hpp"
 
@@ -26,8 +27,6 @@ void LobbyScene::Start()
 	LOG_DEBUG("Entering Lobby Scene");
 	// 创建并初始化玩家
 	CreatePlayer();
-	CreateEnemy();
-
 
 	// 设置相机
 	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
@@ -44,7 +43,6 @@ void LobbyScene::Start()
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
-	m_LobbyRoom->CharacterEnter(m_Enemy);
 
 	m_CurrentRoom = m_LobbyRoom;
 
@@ -59,15 +57,13 @@ void LobbyScene::Update()
 {
 	// Input处理
 	// ZoneScopedN("LobbyScene::Update");
+	if (Util::Input::IsKeyDown(Util::Keycode::B))
+	{
+		for (int i=0; i<10; i++) CreateEnemy();
+	}
 	{
 		// ZoneScopedN("SceneManager::Update");
 		for (auto& [type,manager]: m_Managers) manager->Update();
-	}
-
-	{
-		// ZoneScopedN("Player&Enemy::Update");
-		m_Player->Update();
-		m_Enemy->Update();
 	}
 
 	{
@@ -105,30 +101,31 @@ void LobbyScene::CreatePlayer()
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (collision) {
 		// 将碰撞盒添加到场景根节点和相机
-		m_PendingObjects.push_back(collision->GetVisibleBox());
-		// GetRoot().lock()->AddChild(collision->GetVisibleBox());
-		// m_Camera->AddChild(collision->GetVisibleBox());
+		const auto visibleBox = collision->GetVisibleBox();
+		m_PendingObjects.push_back(visibleBox);
+		visibleBox->SetRegisteredToScene(true);
+
 	}
 
-	// m_LobbyRoom->GetTrackingManager()->SetPlayer(m_Player);
 	// 将玩家添加到场景根节点和相机
 	m_PendingObjects.push_back(m_Player);
-	// m_Camera->AddChild(m_Player);
+	m_Player->SetRegisteredToScene(true);
 }
 
 void LobbyScene::CreateEnemy()
 {
-	m_Enemy = CharacterFactory::GetInstance().createEnemy(6);
-	m_Enemy->m_WorldCoord = {32,16*2};
-	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
-	m_PendingObjects.push_back(collision2->GetVisibleBox());
-	m_PendingObjects.push_back(m_Enemy);
-	// m_Root->AddChild(collision2->GetVisibleBox());
-	// m_Camera->AddChild(collision2->GetVisibleBox());
-	// m_LobbyRoom->GetTrackingManager()->AddEnemy(m_Enemy);
-	// m_Root->AddChild(m_Enemy);
-	// m_Camera->AddChild(m_Enemy);
+	const auto enemy = CharacterFactory::GetInstance().createEnemy(1);
+	enemy->m_WorldCoord = {32,16*2};
+	auto collision2 = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	const auto visibleBox = collision2->GetVisibleBox();
+	if(!visibleBox)LOG_ERROR("collision2->GetBlackBox()");
+	m_PendingObjects.push_back(visibleBox);
+	visibleBox->SetRegisteredToScene(true);
+	m_PendingObjects.push_back(enemy);
+	enemy->SetRegisteredToScene(true);
+	m_Enemies.push_back(enemy);
+	m_LobbyRoom->CharacterEnter(enemy);
+	FlushPendingObjectsToRendererAndCamera();
 }
 
 void LobbyScene::SetupCamera() const
