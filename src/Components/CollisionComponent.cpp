@@ -15,7 +15,6 @@ std::shared_ptr<Core::Drawable> CollisionComponent::s_RedColliderImage = nullptr
 std::shared_ptr<Core::Drawable> CollisionComponent::s_BlueColliderImage = nullptr;
 std::shared_ptr<Core::Drawable> CollisionComponent::s_YellowColliderImage = nullptr;
 
-
 void CollisionComponent::Init()
 {
 	auto owner = GetOwner<nGameObject>();

@@ -66,6 +66,7 @@ void Projectile::Init() {
 void Projectile::UpdateObject(const float deltaTime) {
 	// 讓子彈按方向移動
 	this->m_WorldCoord += m_direction * m_speed * deltaTime;
+
 	if (m_isBubble) {
 		m_bubbleStayTime -= deltaTime;
 		if (m_bubbleStayTime <= 0.0f) {
@@ -94,11 +95,13 @@ void Projectile::UpdateObject(const float deltaTime) {
 			CreateBubbleBullet(rightPos, rightDir);
 		}
 	}
+
 	if(glm::distance(this->m_WorldCoord, m_startPosition) >= 1000.0f)
 	{
 		this->MarkForRemoval();
 	}
 }
+
 
 void Projectile::ReflectChangeAttackCharacterType(CharacterType type)
 {

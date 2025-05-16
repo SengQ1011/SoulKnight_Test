@@ -37,6 +37,7 @@ protected:
 
 	std::shared_ptr<Character> m_Player;
 	std::vector<std::shared_ptr<Character>> m_Enemies;
+	std::shared_ptr<Character> m_Enemy;
 
 	float m_MapHeight = 0.0f;
 

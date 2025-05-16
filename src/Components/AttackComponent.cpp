@@ -78,10 +78,11 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	{
 		RemoveWeapon(); // 移除舊武器
 	}
-	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-	// scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
-	scene->GetCamera().lock()->MarkForRemoval(m_currentWeapon);
+	if (m_currentWeapon) m_currentWeapon->SetControlVisible(false);
+	// const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	// scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
+	// // scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
+	// scene->GetCamera().lock()->MarkForRemoval(m_currentWeapon);
 
 	m_Weapons.push_back(newWeapon); // 添加新武器列表
 	m_currentWeapon = newWeapon; // 更新當前武器
@@ -91,8 +92,10 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 		followerComp->SetFollower(character);
 	}
 	m_currentWeapon->SetControlVisible(true);
+
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetPendingObjects().push_back(m_currentWeapon);
+	m_currentWeapon->SetRegisteredToScene(true);
 }
 
 

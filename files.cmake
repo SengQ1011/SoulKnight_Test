@@ -161,15 +161,15 @@ set(INCLUDE_FILES
     Skill/Skill.hpp
     StructType.hpp
     Structs/AreaShape.hpp
-    Structs/CircleShape.hpp
     Structs/BlockProjectileEventInfo.hpp
+    Structs/CircleShape.hpp
     Structs/CollisionComponentStruct.hpp
     Structs/DeathEventInfo.hpp
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
     Structs/KnockOffEventInfo.hpp
-    Structs/ReflectProjectileEventInfo.hpp
     Structs/RectShape.hpp
+    Structs/ReflectProjectileEventInfo.hpp
     Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp

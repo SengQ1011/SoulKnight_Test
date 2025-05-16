@@ -20,8 +20,6 @@ public:
 
 	std::string GetName() const override { return "Projectile"; }
 
-	void OnEventReceived(const EventInfo &eventInfo) override;
-
 	// 靜態資源池，只載入一次同一圖片，資源共用（圖片資源共享）
 	static std::unordered_map<std::string, std::shared_ptr<Util::Image>> sharedImages;
 

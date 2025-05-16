@@ -29,6 +29,7 @@ void LobbyScene::Start()
 	LOG_DEBUG("Entering Lobby Scene");
 	// 创建并初始化玩家
 	CreatePlayer();
+	CreateEnemy();
 
 	// 设置相机
 	m_MapHeight = 480.0f ; //大廳場景的地圖高度 480.0f
@@ -45,6 +46,7 @@ void LobbyScene::Start()
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
+	m_LobbyRoom->CharacterEnter(m_Enemy);
 
 	m_CurrentRoom = m_LobbyRoom;
 
@@ -116,24 +118,18 @@ void LobbyScene::CreatePlayer()
 
 void LobbyScene::CreateEnemy()
 {
+	LOG_DEBUG("Entering Lobby Scene1");
 	m_Enemy = CharacterFactory::GetInstance().createEnemy(6);
 	m_Enemy->m_WorldCoord = {32,16*2};
+	LOG_DEBUG("Entering Lobby Scene2");
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
-	m_PendingObjects.push_back(collision2->GetVisibleBox());
-	m_PendingObjects.push_back(m_Enemy);
-	const auto enemy = CharacterFactory::GetInstance().createEnemy(1);
-	enemy->m_WorldCoord = {32,16*2};
-	auto collision2 = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if(!collision2->GetVisibleBox()) LOG_ERROR("collision2->GetBlackBox()");
 	const auto visibleBox = collision2->GetVisibleBox();
-	if(!visibleBox)LOG_ERROR("collision2->GetBlackBox()");
+	if(!visibleBox) LOG_ERROR("collision2->GetBlackBox()");
 	m_PendingObjects.push_back(visibleBox);
 	visibleBox->SetRegisteredToScene(true);
-	m_PendingObjects.push_back(enemy);
-	enemy->SetRegisteredToScene(true);
-	m_Enemies.push_back(enemy);
-	m_LobbyRoom->CharacterEnter(enemy);
-	FlushPendingObjectsToRendererAndCamera();
+	m_PendingObjects.push_back(m_Enemy);
+	m_Enemy->SetRegisteredToScene(true);
 }
 
 void LobbyScene::SetupCamera() const
