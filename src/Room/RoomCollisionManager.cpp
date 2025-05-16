@@ -357,25 +357,3 @@ void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> 
 		objectB->OnEvent(reversedInfo);
 	}
 }
-
-// void RoomCollisionManager::DispatchCollision(const std::shared_ptr<nGameObject> &objectA,
-// 											 const std::shared_ptr<nGameObject> &objectB,
-// 											 CollisionEventInfo &info)
-// {
-// 	const auto colliderA = objectA->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-// 	const auto colliderB = objectB->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-//
-// 	if ((colliderB->GetCollisionLayer() & colliderA->GetCollisionMask()) != 0) // !=運算符 優先於 &
-// 	{
-// 		objectA->OnEvent(info); // TODO: debug
-// 	}
-// 	if ((colliderA->GetCollisionLayer() & colliderB->GetCollisionMask()) != 0)
-// 	{
-// 		const glm::vec2 reversedNormal = -info.GetCollisionNormal();
-// 		CollisionEventInfo reversedInfo(objectB, objectA);
-// 		reversedInfo.penetration = info.penetration;
-// 		reversedInfo.SetCollisionNormal(reversedNormal);
-//
-// 		objectB->OnEvent(reversedInfo);
-// 	}
-// }

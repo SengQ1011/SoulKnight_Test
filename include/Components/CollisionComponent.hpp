@@ -92,7 +92,7 @@ private:
 	bool m_IsActive = true;
 
 	// 强大的扳機 可以殺光一切
-	bool m_IsTrigger;
+	bool m_IsTrigger = false;
 	ShapeType m_TriggerShapeType = ShapeType::Null; // 當Trigger沒有範圍卻又IsTrigger==True,自動跟隨Collider範圍
 	std::shared_ptr<AreaShape> m_TriggerAreaShape = nullptr;
 	std::vector<std::unique_ptr<ITriggerStrategy>> m_TriggerStrategies;

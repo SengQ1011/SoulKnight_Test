@@ -43,11 +43,9 @@ void AttackComponent::Init()
 
 	// 加入渲染樹
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	if (!scene)
-		return;
-	// scene->GetRoot().lock()->AddChild(m_currentWeapon);
-	// scene->GetCamera().lock()->AddChild(m_currentWeapon);
+	if (!scene) return;
 	scene->GetPendingObjects().push_back(m_currentWeapon); //暂时存入一次过设置渲染和镜头
+	m_currentWeapon->SetRegisteredToScene(true);
 }
 
 void AttackComponent::Update()
@@ -56,12 +54,10 @@ void AttackComponent::Update()
 	// Weapon中的followerComponent更新
 	if (m_currentWeapon)
 	{
-		m_currentWeapon->Update();
 		m_currentWeapon->UpdateCooldown(deltaTime);
 	}
 	if (m_secondWeapon)
 	{
-		m_secondWeapon->Update();
 		m_secondWeapon->UpdateCooldown(deltaTime);
 	}
 	// 更新切換冷卻時間
@@ -79,10 +75,6 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 		RemoveWeapon(); // 移除舊武器
 	}
 	if (m_currentWeapon) m_currentWeapon->SetControlVisible(false);
-	// const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	// scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-	// // scene->GetCamera().lock()->RemoveChild(m_currentWeapon);
-	// scene->GetCamera().lock()->MarkForRemoval(m_currentWeapon);
 
 	m_Weapons.push_back(newWeapon); // 添加新武器列表
 	m_currentWeapon = newWeapon; // 更新當前武器

@@ -52,7 +52,7 @@ void TestScene_KC::Update()
 
 	if (Util::Input::IsKeyDown(Util::Keycode::B))
 	{
-		for (int i = 0; i < 10; i++) CreateEnemy();
+		CreateEnemy();
 	}
 
 	// 更新相机
