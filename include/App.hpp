@@ -18,9 +18,6 @@ public:
     void End(); // NOLINT(readability-convert-member-functions-to-static)
 
 private:
-    void ValidTask();
-
-private:
     State m_CurrentState = State::START;
 	//TODO: Dungeon預加載指標
 };

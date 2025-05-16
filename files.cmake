@@ -125,7 +125,6 @@ set(INCLUDE_FILES
     GameMechanism/TalentDatabase.hpp
     ImagePoolManager.hpp
     Loader.hpp
-    MemoryTracker.hpp
     Motion.hpp
     ObserveManager/AudioManager.hpp
     ObserveManager/EventManager.hpp

@@ -18,8 +18,6 @@
 #include "Room/RoomCollisionManager.hpp"
 #include "Util/Input.hpp"
 
-// #include "Tracy.hpp"
-#include "Tracy.hpp"
 #include "Weapon/Weapon.hpp"
 
 void LobbyScene::Start()
@@ -60,33 +58,21 @@ void LobbyScene::Start()
 void LobbyScene::Update()
 {
 	// Input处理
-	// ZoneScopedN("LobbyScene::Update");
 	if (Util::Input::IsKeyDown(Util::Keycode::B))
 	{
 		for (int i=0; i<10; i++) CreateEnemy();
 	}
-	{
-		// ZoneScopedN("SceneManager::Update");
-		for (auto& [type,manager]: m_Managers) manager->Update();
-	}
 
-	{
-		// 更新房间
-		// ZoneScopedN("LobbyRoom&RoomManager::Update");
-		m_LobbyRoom->Update();
-	}
+	for (auto& [type,manager]: m_Managers) manager->Update();
 
-	{
-		// 更新相机
-		// ZoneScopedN("Camera::Update");
-		m_Camera->Update();
-	}
+	// 更新房间
+	m_LobbyRoom->Update();
 
-	{
-		// 更新渲染器
-		// ZoneScopedN("Renderer::Update");
-		m_Root->Update();
-	}
+	// 更新相机
+	m_Camera->Update();
+
+	// 更新渲染器
+	m_Root->Update();
 }
 
 void LobbyScene::CreatePlayer()
