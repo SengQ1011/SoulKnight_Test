@@ -8,9 +8,14 @@
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "TriggerStrategy/AttackTriggerStrategy.hpp"
+#include "TriggerStrategy/BlockProjectileStrategy.hpp"
+#include "TriggerStrategy/KnockOffTriggerStrategy.hpp"
+#include "TriggerStrategy/ReflectTriggerStrategy.hpp"
 
-EffectAttack::EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,float size, int damage, bool canReflect, EffectAttackType effectType)
-				:Attack(type, attackTransform, direction, size, damage), m_reflectBullet(canReflect), m_effectType(effectType) {}
+EffectAttack::EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,float size,
+							int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType)
+							:Attack(type, attackTransform, direction, size, damage),
+							m_reflectBullet(canReflect), m_bulletBlocking(bulletBlocking), m_effectType(effectType) {}
 
 void EffectAttack::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
@@ -28,26 +33,30 @@ void EffectAttack::Init() {
 	CollisionComp->ResetCollisionMask();
 
 	//設置觸發器 和 觸發事件
+	CollisionComp->ClearTriggerStrategies();
+	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
-	CollisionComp->SetTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+	if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
+	else CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
+	if(m_effectType == EffectAttackType::SHOCKWAVE) CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 
 	if(m_type == CharacterType::PLAYER) {
-		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_Bullet);
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_EffectAttack);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy);
-		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy_Bullet);
+		if(m_bulletBlocking) CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy_Projectile);
 	}
 	else if (m_type == CharacterType::ENEMY) {
-		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_Bullet);
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_EffectAttack);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Player);
 	}
-	CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Terrain);
 
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
- 	auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {
@@ -65,7 +74,7 @@ void EffectAttack::UpdateObject(const float deltaTime) {
 
 
 void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,
-							float size, int damage, bool canReflect, EffectAttackType effectType)
+							float size, int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType)
 {
 	m_type = type;
  	m_Transform = attackTransform;
@@ -74,6 +83,7 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
  	m_damage = damage;
  	m_effectType = effectType;
 	m_reflectBullet = canReflect;
+	m_bulletBlocking = bulletBlocking;
  	auto& paths = EffectAssets::EFFECT_IMAGE_PATHS.at(effectType);
  	m_animation = std::make_shared<Animation>(paths, false);
 	this->m_markRemove = false;

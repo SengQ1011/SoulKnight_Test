@@ -5,8 +5,11 @@
 //MovementComponent.cpp
 
 #include "Components/MovementComponent.hpp"
+#include "Attack/EffectAttack.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Structs/KnockOffEventInfo.hpp"
 #include "Util/Time.hpp"
+
 
 void MovementComponent::Init() {}
 
@@ -170,9 +173,21 @@ void MovementComponent::Update()
 	}
 
 	// 更新位置
-	m_Position += m_Velocity * deltaTime;
+	glm::vec2 totalVelocity = m_Velocity + m_ImpulseVelocity;
+	m_Position += totalVelocity * deltaTime;
 	if (owner)
 		owner->m_WorldCoord = m_Position;
+
+	// ImpulseVelocity 自然衰減
+	if (glm::length(m_ImpulseVelocity) > 0.01f)
+	{
+		m_ImpulseVelocity = glm::mix(m_ImpulseVelocity, glm::vec2(0.0f), m_ImpulseDamping * deltaTime);
+	}
+	else
+	{
+		m_ImpulseVelocity = glm::vec2(0.0f); // 避免浮點數誤差導致抖動
+	}
+
 
 	// 若owner有attackComp且有目標：跟隨目標方向
 	if(auto attackComp = owner->GetComponent<AttackComponent>(ComponentType::ATTACK);
@@ -191,12 +206,24 @@ void MovementComponent::Update()
 }
 void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 {
-	LOG_DEBUG("MovementComponent::HandleEvent");
-	if (eventInfo.GetEventType() == EventType::Collision)
+	switch (eventInfo.GetEventType())
 	{
-		LOG_DEBUG("MovementComponent::HandleEvent1");
-		const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
-		HandleCollision(collisionInfo);
+		case EventType::Collision:
+		{
+			// LOG_DEBUG("MovementComponent::HandleEvent1");
+			const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
+			HandleCollision(collisionInfo);
+			break;
+		}
+		case EventType::KnockOff:
+		{
+			LOG_DEBUG("KnockOff");
+			const auto& knockOffInfo = dynamic_cast<const KnockOffEventInfo&>(eventInfo);
+			SetImpulseVelocity(knockOffInfo.impulseVelocity);
+			break;
+		}
+		default:
+			break;
 	}
 }
 
@@ -204,6 +231,7 @@ std::vector<EventType> MovementComponent::SubscribedEventTypes() const
 {
 	return {
 		EventType::Collision,
+		EventType::KnockOff
 	};
 }
 
@@ -222,10 +250,24 @@ void MovementComponent::HandleCollision(const CollisionEventInfo& eventInfo)
 			other->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 		otherCollider && otherCollider->IsTrigger())
 	{
+		// if (const auto otherIsShockwave = std::dynamic_pointer_cast<EffectAttack>(other);
+		// 	otherIsShockwave && otherIsShockwave->GetEffectAttackType() == EffectAttackType::SHOCKWAVE)
+		// {
+		// 	// LOG_DEBUG("Shockwave");
+		// }
+		// else return;
 		return;
 	}
 
 	const glm::vec2 collisionNormal = eventInfo.GetCollisionNormal();
+	auto penetration = eventInfo.penetration;
+	ResolveOverlap(collisionNormal, penetration);
+}
+
+void MovementComponent::ResolveOverlap(glm::vec2 collisionNormal, float penetration)
+{
+	const auto owner = GetOwner<nGameObject>();
+	if (!owner) return;
 
 	// 設置接觸狀態
 	if (std::abs(collisionNormal.x) > 0.01f)
@@ -244,7 +286,7 @@ void MovementComponent::HandleCollision(const CollisionEventInfo& eventInfo)
 	}
 
 	// 調整位置
-	m_Position += collisionNormal * eventInfo.penetration;
+	m_Position += collisionNormal * penetration;
 
 	// 立即更新物體位置
 	if (owner)

@@ -19,6 +19,9 @@ public:
 
 	void Update() override;
 
+	//----Getter----
+	[[nodiscard]] std::shared_ptr<Skill> GetSkill() const { return m_skill; }
+
 	bool ExecuteSkill();
 
 private:

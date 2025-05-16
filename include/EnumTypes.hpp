@@ -18,6 +18,7 @@ enum class ComponentType
 	INPUT,
 	INTERACTABLE,
 	MOVEMENT,
+	PROJECTILE,
 	SKILL,
 	STATE,
 	TALENT

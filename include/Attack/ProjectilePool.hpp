@@ -11,7 +11,8 @@
 class ProjectilePool {
 public:
 	std::shared_ptr<Projectile> Acquire(const CharacterType type, const std::string& ImagePath, const Util::Transform &bulletTransform,
-								const glm::vec2 direction, const float size, const int damage, const float speed, const int numRebound);
+								const glm::vec2 direction, const float size, const int damage, const float speed,
+								const int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath);
 
 	void Release(const std::shared_ptr<Projectile>& bullet) {
 		pool.push_back(std::move(bullet));

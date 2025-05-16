@@ -47,9 +47,9 @@ public:
 	}
 
 	//----Setter----
-	void RemoveTarget() {m_Target.reset();}
+	void RemoveTarget() { m_Target.reset(); }
 	void OnPlayerPositionUpdate(std::weak_ptr<Character> player) override;
-	void OnLostPlayer() override {m_Target.reset();}
+	void OnLostPlayer() override;
 	void SetEnemyState(enemyState state);
 	void ResetReadyAttackTimer() { m_readyAttackTimer = m_readyAttackTime; }
 	void DeductionReadyAttackTimer(const float time) { m_readyAttackTimer -= time; }
@@ -63,6 +63,7 @@ protected:
 	enemyState m_enemyState;
 	EnemyContext m_context;
 	int m_monsterPoint;
+	std::shared_ptr<AttackComponent> m_AttackComponent;	// 缓存 AttackComponent
 	std::weak_ptr<nGameObject> m_Target; // enemy鎖定目標的位置
 	float m_attackRange = 0;
 	const float m_readyAttackTime = 1.5f;

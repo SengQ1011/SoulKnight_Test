@@ -5,11 +5,12 @@
 #ifndef MOVESTRATEGY_HPP
 #define MOVESTRATEGY_HPP
 
-#include <random>
 #include <glm/vec2.hpp>
 #include <memory>
+#include <random>
 
 
+class IAttackStrategy;
 struct CollisionEventInfo;
 struct EnemyContext;
 class nGameObject;
@@ -47,10 +48,14 @@ public:
 		// 使用極座標轉換為笛卡爾座標，生成一個單位向量
 		return glm::vec2(std::cos(angle), std::sin(angle)); // 歸一化單位圓上的隨機點
 	}
+
 protected:
+	bool m_mandatoryRest = false;
 	float m_restTimer = 0.0f; // 休息時間計時器
 	float m_moveTimer = 0; // 移動時間計時器
-	float m_detectionRange = 200.0f;
+	float m_detectionRange = 250.0f;
+
+	void changeToIdle(const EnemyContext &ctx);
 };
 
 //--------------------------------------------
@@ -60,9 +65,6 @@ class WanderMove final : public IMoveStrategy
 {
 public:
 	void Update(const EnemyContext &ctx, const float deltaTime) override;
-
-private:
-	glm::vec2 m_wanderDirection = glm::vec2(0, 0);
 };
 
 class ChaseMove final : public IMoveStrategy
@@ -70,9 +72,12 @@ class ChaseMove final : public IMoveStrategy
 public:
 	void Update(const EnemyContext &ctx, float deltaTime) override;
 	void ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const;
+	void MaintainOptimalRangeForGun(const EnemyContext &ctx, std::shared_ptr<nGameObject> target, std::shared_ptr<IAttackStrategy> gunStrategy) const;
+	void checkAttackCondition(const EnemyContext &ctx) const;
 
 private:
-	float m_attackDistance = 50.0f;
+	const float m_meleeAttackDistance = 50.0f;
+	const float m_gunAttackDistance = 250.0f;
 };
 
 class NoMove final : public IMoveStrategy

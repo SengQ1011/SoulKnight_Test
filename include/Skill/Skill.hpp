@@ -50,6 +50,7 @@ public:
 	[[nodiscard]] bool GetSkillActive() const { return isActive; }
 
 	//----Setter----
+	void SetRemainingDuration(const float cd) { m_remainingDuration = cd; }
 	void SetCoolDownTime(float cooldownTime) { m_CDTime = cooldownTime; }
 	void SetSkillActive(bool active) { isActive = active; }
 

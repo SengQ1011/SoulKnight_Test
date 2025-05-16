@@ -19,10 +19,12 @@ enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子�
 	CollisionLayers_None = 0,				//00000000
 	CollisionLayers_Player = 1 << 0,		//00000001 玩家層
 	CollisionLayers_Enemy = 1 << 1,			//00000010 敵人層
-	CollisionLayers_Player_Bullet = 1 << 2,	//00000100 玩家子彈層
-	CollisionLayers_Enemy_Bullet = 1 << 3,	//00001000 玩家子彈層
-	CollisionLayers_Pickup = 1 << 4,		//00010000 拾取物層
-	CollisionLayers_Terrain = 1 << 5,		//00100000 地形層
+	CollisionLayers_Player_Projectile = 1 << 2,	//00000100 玩家子彈層
+	CollisionLayers_Enemy_Projectile = 1 << 3,	//00001000 敵人子彈層
+	CollisionLayers_Player_EffectAttack = 1 << 4,	//00010000 玩家子彈層
+	CollisionLayers_Enemy_EffectAttack = 1 << 5,	//00100000 敵人子彈層
+	CollisionLayers_Pickup = 1 << 6,		// 拾取物層
+	CollisionLayers_Terrain = 1 << 7,		// 地形層
 };
 
 struct StructCollisionComponent
@@ -40,8 +42,10 @@ inline std::unordered_map<std::string, CollisionLayers> m_String2CollisionLayer 
 	{"None", CollisionLayers_None},
 	{"Player", CollisionLayers_Player},
 	{"Enemy", CollisionLayers_Enemy},
-	{"Player_Bullet", CollisionLayers_Player_Bullet},
-	{"Enemy_Bullet", CollisionLayers_Enemy_Bullet},
+	{"Player_Projectile", CollisionLayers_Player_Projectile},
+	{"Enemy_Projectile", CollisionLayers_Enemy_Projectile},
+	{"Player_EffectAttack", CollisionLayers_Player_EffectAttack},
+	{"Enemy_EffectAttack", CollisionLayers_Enemy_EffectAttack},
 	{"Pickup", CollisionLayers_Pickup},
 	{"Terrain", CollisionLayers_Terrain},
 };

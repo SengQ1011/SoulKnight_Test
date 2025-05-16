@@ -20,6 +20,11 @@ enum class EventType {
 	TriggerStay,
 	TriggerExit,
 
+	// AttackTrigger
+	BlockedProjectileBySword,
+	ReflectProjectile,
+	KnockOff,
+
 	// 通用
 	Death,
 	// HealthChanged,

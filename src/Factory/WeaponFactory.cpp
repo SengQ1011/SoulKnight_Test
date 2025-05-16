@@ -42,16 +42,24 @@ namespace WeaponFactory {
 					if (type == "Melee") {
 						float range = weapon["attackRange"].get<float>();
 						auto type = stringToEffectAttackType(weapon["EffectAttackType"].get<std::string>());
-						if (const int check = weapon["isSword"].get<int>(); check == 1) {
+						if (const bool check = weapon["isSword"].get<bool>(); check == true) {
 							isSword = true;
 						}
-						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range, type);
+						weaponPtr =  std::make_shared<MeleeWeapon>(weaponImagePath,  name, damage, energy, criticalRate, offset, attackInterval, range, isSword, type);
 					}
 					else if (type == "Gun") {
 						std::string bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
 						float size = weapon["bulletSize"].get<float>();
 						float speed = weapon["bulletSpeed"].get<float>();
-						weaponPtr = std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackInterval, size, speed);
+						bool bulletCanRebound = weapon["bulletCanRebound"].get<bool>();
+						bool bulletIsBubble = weapon["bulletIsBubble"].get<bool>();
+						bool check = false;
+						std::string bubbleImagePath = "";
+						if(check = weapon["bubbleTrail"].get<bool>(); check == true)
+						{
+							bubbleImagePath = RESOURCE_DIR + weapon["bubbleImagePath"].get<std::string>();
+						}
+						weaponPtr = std::make_shared<GunWeapon>(weaponImagePath, bulletImagePath, name, damage, energy, criticalRate, offset, attackInterval, size, speed, bulletCanRebound, bulletIsBubble, check, bubbleImagePath);
 					}
 					// else if (type == "Bow") {
 					// 	float chargeTime = weapon["chargeTime"];

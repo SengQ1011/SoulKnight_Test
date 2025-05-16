@@ -7,6 +7,7 @@
 #include <chrono>
 #include <thread>
 
+#include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Scene/Dungeon_Scene.hpp"
 #include "Util/Logger.hpp"
@@ -26,7 +27,7 @@ void DungeonLoadingScene::Start()
 	// 	LOG_DEBUG("[DungeonLoadingScene] Dungeon Generation Finished");
 	// });
 	m_Text = std::make_shared<nGameObject>("DungeonLoadingScene");
-	m_Text->SetDrawable(std::make_shared<Util::Text>(
+	m_Text->SetDrawable(ImagePoolManager::GetInstance().GetText(
 		RESOURCE_DIR"/Font/zpix.ttf",
 		20,
 		"地牢加载中...",

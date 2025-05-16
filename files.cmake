@@ -23,6 +23,7 @@ set(SRC_FILES
     Components/InputComponent.cpp
     Components/InteractableComponent.cpp
     Components/MovementComponent.cpp
+    Components/ProjectileComponent.cpp
     Components/SkillComponent.cpp
     Components/StateComponent.cpp
     Components/TalentComponent.cpp
@@ -33,6 +34,7 @@ set(SRC_FILES
     Factory/RoomFactory.cpp
     Factory/RoomObjectFactory.cpp
     Factory/WeaponFactory.cpp
+    ImagePoolManager.cpp
     Loader.cpp
     ObserveManager/AudioManager.cpp
     ObserveManager/InputManager.cpp
@@ -65,6 +67,9 @@ set(SRC_FILES
     TalentDatabase.cpp
     Tool/Tool.cpp
     TriggerStrategy/AttackTriggerStrategy.cpp
+    TriggerStrategy/BlockProjectileStrategy.cpp
+    TriggerStrategy/KnockOffTriggerStrategy.cpp
+    TriggerStrategy/ReflectTriggerStrategy.cpp
     UIPanel/SettingPanel.cpp
     UIPanel/UIManager.cpp
     UIPanel/UIPanel.cpp
@@ -103,6 +108,7 @@ set(INCLUDE_FILES
     Components/InputComponent.hpp
     Components/InteractableComponent.hpp
     Components/MovementComponent.hpp
+    Components/ProjectileComponent.hpp
     Components/SkillComponent.hpp
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
@@ -117,6 +123,7 @@ set(INCLUDE_FILES
     Factory/WeaponFactory.hpp
     GameMechanism/Talent.hpp
     GameMechanism/TalentDatabase.hpp
+    ImagePoolManager.hpp
     Loader.hpp
     MemoryTracker.hpp
     Motion.hpp
@@ -155,15 +162,21 @@ set(INCLUDE_FILES
     StructType.hpp
     Structs/AreaShape.hpp
     Structs/CircleShape.hpp
+    Structs/BlockProjectileEventInfo.hpp
     Structs/CollisionComponentStruct.hpp
     Structs/DeathEventInfo.hpp
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
+    Structs/KnockOffEventInfo.hpp
+    Structs/ReflectProjectileEventInfo.hpp
     Structs/RectShape.hpp
     Structs/TakeDamageEventInfo.hpp
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp
+    TriggerStrategy/BlockProjectileStrategy.hpp
     TriggerStrategy/ITriggerStrategy.hpp
+    TriggerStrategy/KnockOffTriggerStrategy.hpp
+    TriggerStrategy/ReflectTriggerStrategy.hpp
     UIPanel/SettingPanel.hpp
     UIPanel/UIManager.hpp
     UIPanel/UIPanel.hpp

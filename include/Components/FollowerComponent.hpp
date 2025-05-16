@@ -33,9 +33,12 @@ public:
 
 	//----Getter----
 	[[nodiscard]] std::shared_ptr<nGameObject> GetFollower() const { return m_Follower.lock(); }
+	[[nodiscard]] float GetBaseRotation() const { return m_baseRotation; }
 	[[nodiscard]] float GetHoldingRotation() const { return m_HoldingRotation; }
 	[[nodiscard]] bool GetUseMouse() const { return m_UseMousePosition; }
 	[[nodiscard]] float GetZIndexOffset() const { return m_ZIndexOffset; }
+	[[nodiscard]] float GetBaseRotationDegrees() const { return m_baseRotationDegrees; }
+
 
 	// Setter
 	void SetFollower(const std::shared_ptr<nGameObject> &follower) { m_Follower = follower; }
@@ -61,12 +64,13 @@ protected:
 	glm::vec2 m_HandOffset = glm::vec2(0, 0); //不完全以世界坐標為Pivot,有一點Offset
 	glm::vec2 m_HoldingOffset = glm::vec2(0, 0); //武器也是
 	float m_ZIndexOffset = 0.0f;
+	float m_baseRotation = 0.0f;
 	float m_HoldingRotation = 0;
 	bool m_UseMousePosition = false;
 	bool m_IsSword = false;
 	bool m_attackAction = false;
 	float m_attackTimer = 0.0f;
-	float m_attackDuration = 0.45f;
+	float m_attackDuration = 0.4f;
 	float m_baseRotationDegrees = 35.0f;	// 揮刀前的擺角
 	std::weak_ptr<nGameObject> m_Follower;	// 此物件會跟隨的物件
 	std::weak_ptr<nGameObject> m_Target;	// 此物件會跟隨目標旋轉

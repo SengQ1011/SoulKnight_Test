@@ -45,6 +45,11 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         libs/tracy/TracyClient.cpp
+        include/ImagePoolManager.hpp
+        src/ImagePoolManager.cpp
+        include/Structs/KnockOffEventInfo.hpp
+        include/TriggerStrategy/KnockOffTriggerStrategy.hpp
+        src/TriggerStrategy/KnockOffTriggerStrategy.cpp
 )
 
 if(MSVC)

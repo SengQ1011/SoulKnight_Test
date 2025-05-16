@@ -24,5 +24,5 @@ bool Weapon::CanAttack() {
 
 void Weapon::SetImage(const std::string& ImagePath) {
 	m_ImagePath = ImagePath;
-	m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
+	m_Drawable = ImagePoolManager::GetInstance().GetImage(m_ImagePath);
 }

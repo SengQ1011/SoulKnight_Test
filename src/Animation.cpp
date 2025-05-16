@@ -6,10 +6,23 @@
 #include "Util/Logger.hpp"
 
 Animation::Animation(std::vector<std::string> AnimationPaths, bool needLoop)
-	: m_AnimationPaths(std::move(AnimationPaths)), m_Looping(needLoop) {
-	m_Drawable = std::make_shared<Util::Animation>(m_AnimationPaths, false, 500, false, 0);
+	: m_AnimationPaths(std::move(AnimationPaths)), m_Looping(needLoop)
+{
+	float interval;
+	if (const int frameCount = m_AnimationPaths.size(); frameCount > 0) {
+		if (frameCount <= 2) {
+			interval = 250.0f; // 2FPS
+		} else if (frameCount <= 4) {
+			interval = 100.0f; // 10FPS
+		} else {
+			interval = 1000.0f / (frameCount+3);
+			interval = std::clamp(interval, 33.3f, 100.0f);
+		}
+	}else{
+		LOG_ERROR("Animation::PlayAnimation: AnimationPaths is empty");
+	}
+	m_Drawable = std::make_shared<Util::Animation>(m_AnimationPaths, false, interval, m_Looping, 0);
 	this->SetZIndexType(ZIndexType::CUSTOM);
-	SetLooping(m_Looping);
 }
 
 bool Animation::IfAnimationEnds() const {
@@ -19,25 +32,9 @@ bool Animation::IfAnimationEnds() const {
 		   animation->GetState() == Util::Animation::State::ENDED;      // 播放狀態為 ENDED（代表播放完畢）
 }
 
-
 // 自动播放（内部控制更新频率）
 void Animation::PlayAnimation(bool play) {
 	const auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
-
-	if (const int frameCount = m_AnimationPaths.size(); frameCount > 0) {
-		float interval;
-		if (frameCount <= 2) {
-			interval = 250.0f; // 2FPS
-		} else if (frameCount <= 4) {
-			interval = 100.0f; // 10FPS
-		} else {
-			interval = 1000.0f / (frameCount+5);
-			interval = std::clamp(interval, 33.3f, 100.0f);
-		}
-		animation->SetInterval(interval);
-	}else{
-		LOG_ERROR("Animation::PlayAnimation: AnimationPaths is empty");
-	}
 
 	if (animation && animation->GetState() != Util::Animation::State::PLAY && play) {
 		animation->Play();  // 開始播放動畫

@@ -19,6 +19,8 @@
 #include "Util/Input.hpp"
 
 // #include "Tracy.hpp"
+#include "Tracy.hpp"
+#include "Weapon/Weapon.hpp"
 
 void LobbyScene::Start()
 {
@@ -91,7 +93,7 @@ void LobbyScene::CreatePlayer()
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
 	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
 	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
-		talentComp->AddTalent(talentDatabase[2]);
+		talentComp->AddTalent(talentDatabase[3]);
 	}
 
 	// 设置玩家的初始位置
@@ -114,6 +116,12 @@ void LobbyScene::CreatePlayer()
 
 void LobbyScene::CreateEnemy()
 {
+	m_Enemy = CharacterFactory::GetInstance().createEnemy(6);
+	m_Enemy->m_WorldCoord = {32,16*2};
+	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if(!collision2->GetVisibleBox())LOG_ERROR("collision2->GetBlackBox()");
+	m_PendingObjects.push_back(collision2->GetVisibleBox());
+	m_PendingObjects.push_back(m_Enemy);
 	const auto enemy = CharacterFactory::GetInstance().createEnemy(1);
 	enemy->m_WorldCoord = {32,16*2};
 	auto collision2 = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);

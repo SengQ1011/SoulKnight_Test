@@ -44,7 +44,7 @@ private:
     std::vector<std::shared_ptr<Character>> m_enemies;
 	std::vector<std::shared_ptr<Character>> m_visibleEnemies;
 	std::vector<std::shared_ptr<nGameObject>> m_terrainObjects;
-    float m_maxSightRange = 1000.0f; // 無視障礙物的強制檢測範圍
+    float m_maxSightRange = 350.0f; // 無視障礙物的強制檢測範圍
 	bool m_playerLostTarget = false;
 };
 

@@ -9,11 +9,20 @@
 void AttackTriggerStrategy::OnTriggerEnter(std::shared_ptr<nGameObject> self, std::shared_ptr<nGameObject> other)
 {
 	if (!self || !other) return;
+	int ID = self->GetID();
 
+	// 角色/可被破壞箱子
 	auto target = std::dynamic_pointer_cast<Character>(other);
-	if (!target) return;
+	if (!target)
+	{
+		// TODO:箱子class
+		// if(auto target = std::dynamic_pointer_cast<Character>(other);
+		// 	target != nullptr)
+			return;
+	}
+	if (const auto healthComp = target->GetComponent<HealthComponent>(ComponentType::HEALTH);
+		!healthComp) return;
 
-	// 發送受傷事件
-	const TakeDamageEventInfo dmgEvent(m_Damage);
+	const TakeDamageEventInfo dmgEvent(ID, m_Damage);
 	other->OnEvent(dmgEvent);
 }
