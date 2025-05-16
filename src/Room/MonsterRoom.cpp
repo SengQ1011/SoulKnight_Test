@@ -33,7 +33,9 @@ void MonsterRoom::Update()
 		if (m_CombatWave.HasNextWave()) m_CombatWave.NextWave();
 		else m_CombatWave.EndCombat();
 	}
-	if (m_CombatWave.isInCombat) for (const auto& enemy: m_CombatWave.enemies) enemy->Update();
+	// if (m_CombatWave.isInCombat) for (const auto& enemy: m_CombatWave.enemies) enemy->Update();
+	// TODO: 回合 SetActive是一次性
+	// if (m_CombatWave.isInCombat) for (const auto& enemy: m_CombatWave.enemies) enemy->SetActive(true);
 }
 
 void MonsterRoom::LoadFromJSON()
@@ -89,6 +91,7 @@ void MonsterRoom::SpawnEnemiesInRoom()
 		std::uniform_int_distribution<int> ID(1, 3);
 
 		if (const auto enemy = SpawnEnemy(ID(rng), worldPos)) {
+			enemy->SetActive(false);
 			m_CombatWave.enemies.push_back(enemy);
 			++m_CombatWave.aliveEnemyCount;
 			m_Mark[row][col] = 1;
@@ -126,6 +129,7 @@ void MonsterRoom::OnStateChanged()
 		for (const auto& door : m_Doors) {
 			auto doorComp = door->GetComponent<DoorComponent>(ComponentType::DOOR);
 			if (doorComp) doorComp->DoorClosed();
+			for (const auto& enemy: m_CombatWave.enemies) enemy->SetActive(true);
 		}
 		break;
 
@@ -156,6 +160,7 @@ void MonsterRoom::CombatWaveInfo::StartCombat(int waveCount)
 	totalWaves = waveCount;
 	currentWave = 1;
 	isInCombat = true;
+
 }
 
 bool MonsterRoom::CombatWaveInfo::IsCurrentWaveCleared() const

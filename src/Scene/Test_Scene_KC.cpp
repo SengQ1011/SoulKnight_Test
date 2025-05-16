@@ -16,7 +16,6 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 
-#include <execution>
 #include <iostream>
 
 #include "Components/InputComponent.hpp"
@@ -38,10 +37,6 @@ void TestScene_KC::Start()
 	SetupCamera();
 
 	//設置工廠
-	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
-
-	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory,m_Loader,m_Player);
-	m_Map->Start();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
@@ -55,17 +50,9 @@ void TestScene_KC::Update()
 	// Input处理
 	for (auto& [type,manager]: m_Managers) manager->Update();
 
-	m_Player->Update();
-
-	// 更新房间
-	m_Map->Update();
-	const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
-	if (dungeonRoom)
+	if (Util::Input::IsKeyDown(Util::Keycode::B))
 	{
-		m_CurrentRoom = dungeonRoom;
-		dungeonRoom->Update();
-
-		dungeonRoom->DebugDungeonRoom();
+		for (int i = 0; i < 10; i++) CreateEnemy();
 	}
 
 	// 更新相机
@@ -82,21 +69,37 @@ void TestScene_KC::CreatePlayer()
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
 
 	// 设置玩家的初始位置
-	m_Player->SetWorldCoord(glm::vec2(0, 16*2)); // 初始位置为右两格，上两格
+	m_Player->SetWorldCoord(glm::vec2(-16*2, 16*2)); // 初始位置为右两格，上两格
 
 	// 获取碰撞组件并添加到场景和相机
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (collision) {
 		// 将碰撞盒添加到场景根节点和相机
-		// GetRoot().lock()->AddChild(collision->GetVisibleBox());
-		// m_Camera->AddChild(collision->GetVisibleBox());
-		m_PendingObjects.push_back(collision->GetVisibleBox());
+		const auto visibleBox = collision->GetVisibleBox();
+		m_PendingObjects.push_back(visibleBox);
+		visibleBox->SetRegisteredToScene(true);
+
 	}
 
 	// 将玩家添加到场景根节点和相机
-	// GetRoot().lock()->AddChild(m_Player);
-	// m_Camera->AddChild(m_Player);
 	m_PendingObjects.push_back(m_Player);
+	m_Player->SetRegisteredToScene(true);
+}
+
+void TestScene_KC::CreateEnemy()
+{
+	const auto enemy = CharacterFactory::GetInstance().createEnemy(6);
+	enemy->m_WorldCoord = {0,0};
+	auto collision2 = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	if(!collision2->GetVisibleBox()) LOG_ERROR("collision2->GetBlackBox()");
+	const auto visibleBox = collision2->GetVisibleBox();
+	if(!visibleBox) LOG_ERROR("collision2->GetBlackBox()");
+	m_PendingObjects.push_back(visibleBox);
+	visibleBox->SetRegisteredToScene(true);
+	m_PendingObjects.push_back(enemy);
+	enemy->SetRegisteredToScene(true);
+	m_Enemies.push_back(enemy);
+	FlushPendingObjectsToRendererAndCamera();
 }
 
 void TestScene_KC::SetupCamera() const

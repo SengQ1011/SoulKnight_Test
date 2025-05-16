@@ -18,6 +18,11 @@ public:
 	void Init() override;
 	void UpdateObject(float deltaTime) override;
 
+	std::string GetName() const override { return "Projectile"; }
+
+	// 靜態資源池，只載入一次同一圖片，資源共用（圖片資源共享）
+	static std::unordered_map<std::string, std::shared_ptr<Util::Image>> sharedImages;
+
 	//----Getter----
 	[[nodiscard]] float GetSpeed() const{ return m_speed; };
 	[[nodiscard]]int GetNumRebound() const{ return m_numRebound; };

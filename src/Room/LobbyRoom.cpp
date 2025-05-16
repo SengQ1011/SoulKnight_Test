@@ -24,9 +24,9 @@ void LobbyRoom::Update() {
     Room::Update();
 
 	// 更新所有墙壁碰撞体
-	for (auto& wall : m_WallColliders) {
-		if (wall) wall->Update();
-	}
+	// for (auto& wall : m_WallColliders) {
+	// 	if (wall) wall->Update();
+	// }
 }
 
 void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character>& character) {

@@ -5,7 +5,7 @@
 
 #include "Scene/Dungeon_Scene.hpp"
 
-#include <Tracy.hpp>
+// #include <Tracy.hpp>
 
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
@@ -68,21 +68,16 @@ void DungeonScene::Start()
 void DungeonScene::Update()
 {
 	{
-		ZoneScopedN("SceneManager::Update");
+		// ZoneScopedN("SceneManager::Update");
 		for (auto& [type,manager]: m_Managers) manager->Update();
 	}
 	{
-		ZoneScopedN("Player::Update");
-		m_Player->Update();
-		// m_OnDeathText->SetWorldCoord(m_Player->GetWorldCoord() + glm::vec2(0,m_Player->GetImageSize().y/2.0f) + glm::vec2(0,m_OnDeathText->GetImageSize().y/2.0f));
-	}
-	{
 		// 更新房间
-		ZoneScopedN("Map::Update");
+		// ZoneScopedN("Map::Update");
 		m_Map->Update();
 	}
 	{
-		ZoneScopedN("CurrentDungeonRoom::Update");
+		// ZoneScopedN("CurrentDungeonRoom::Update");
 		const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
 		if (dungeonRoom)
 		{
@@ -95,13 +90,13 @@ void DungeonScene::Update()
 
 	{
 		// 更新相机
-		ZoneScopedN("Camera::Update");
+		// ZoneScopedN("Camera::Update");
 		m_Camera->Update();
 	}
 
 	{
 		// 更新渲染器
-		ZoneScopedN("Renderer::Update");
+		// ZoneScopedN("Renderer::Update");
 		m_Root->Update();
 	}
 }
@@ -187,13 +182,14 @@ void DungeonScene::CreatePlayer()
 	// 获取碰撞组件并添加到场景和相机
 	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
 		// 将碰撞盒添加到场景根节点和相机
-		m_PendingObjects.emplace_back(collision->GetVisibleBox());
-		// m_Camera->AddChild(collision->GetVisibleBox());
+		const auto playerVisibleBox = collision->GetVisibleBox();
+		m_PendingObjects.emplace_back(playerVisibleBox);
+		playerVisibleBox->SetRegisteredToScene(true);
 	}
 
 	// 将玩家添加到场景根节点和相机
 	m_PendingObjects.emplace_back(m_Player);
-	// m_Camera->AddChild(m_Player);
+	m_Player->SetRegisteredToScene(true);
 }
 
 void DungeonScene::SetupCamera() const

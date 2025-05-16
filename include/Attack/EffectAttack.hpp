@@ -49,6 +49,8 @@ public:
 	void Init() override;
 	void UpdateObject(float deltaTime) override;
 
+	std::string GetName() const override { return "EffectAttack"; }
+
 	//----Getter----
 	[[nodiscard]] EffectAttackType GetEffectAttackType() const { return m_effectType; }
 	[[nodiscard]] std::shared_ptr<Animation> GetAnimation()const { return m_animation; }

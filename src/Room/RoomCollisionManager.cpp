@@ -6,8 +6,8 @@
 
 #include "Room/RoomCollisionManager.hpp"
 
-#include <Tracy.hpp>
-#include <execution>
+// #include <Tracy.hpp>
+// #include <execution>
 #include <iostream>
 #include "Components/CollisionComponent.hpp"
 #include "Util/Input.hpp"
@@ -190,7 +190,7 @@ void RoomCollisionManager::UnregisterNGameObject(const std::shared_ptr<nGameObje
 
 void RoomCollisionManager::Update()
 {
-    ZoneScopedN("RoomManager::UpdateStart");
+    // ZoneScopedN("RoomManager::UpdateStart");
 
     if (!m_IsActive) return;
 
@@ -202,12 +202,12 @@ void RoomCollisionManager::Update()
     }
 
     {
-        ZoneScopedN("ClearSpatialGrid");
+        // ZoneScopedN("ClearSpatialGrid");
         m_SpatialGrid.Clear();
     }
 
     {
-        ZoneScopedN("InsertToGrid");
+        // ZoneScopedN("InsertToGrid");
         for (const auto& weakObj : m_NGameObjects) {
             auto obj = weakObj.lock();
             if (!obj || !obj->IsActive())
@@ -221,9 +221,10 @@ void RoomCollisionManager::Update()
     }
 
     {
-        ZoneScopedN("BroadPhaseCollision");
-        std::for_each(std::execution::par, m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
-            ZoneScopedN("NarrowPhaseAndRecord");
+        // ZoneScopedN("BroadPhaseCollision");
+        // std::for_each(std::execution::par, m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
+        std::for_each(m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
+            // ZoneScopedN("NarrowPhaseAndRecord");
 
             const std::shared_ptr<nGameObject> objectA = weakObj.lock();
             if (!objectA || !objectA->IsActive())
@@ -257,7 +258,7 @@ void RoomCollisionManager::Update()
     }
 
     {
-        ZoneScopedN("HandleCollisions");
+        // ZoneScopedN("HandleCollisions");
         for (const auto& pair : collisionPairs) {
             auto objectA = pair.first;
             auto objectB = pair.second;
@@ -268,7 +269,7 @@ void RoomCollisionManager::Update()
         }
     }
     {
-	    ZoneScopedN("TriggerExitCheck");
+	    // ZoneScopedN("TriggerExitCheck");
     	for (const auto& weakObj : m_TriggerObjects)
     	{
     		if (const auto obj = weakObj.lock())

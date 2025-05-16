@@ -73,17 +73,29 @@ void Camera::RemoveChild(const std::shared_ptr<nGameObject>& child) {
 	);
 }
 
-void Camera::AddChildren(
-		const std::vector<std::shared_ptr<nGameObject>> &children) {
+void Camera::AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children) {
 	m_Children.reserve(m_Children.size() + children.size());
 	m_Children.insert(m_Children.end(), children.begin(), children.end());
 }
 
+void Camera::MarkForRemoval(const std::shared_ptr<nGameObject> &child)
+{
+	m_ToRemoveList.emplace_back(child);
+}
+
+
+bool Camera::FindChild(const std::shared_ptr<nGameObject> &child)
+{
+	return std::find(m_Children.begin(), m_Children.end(), child) != m_Children.end();
+}
+
+
 void Camera::Update() {
+	static int count = 0;
 	if (auto target = m_FollowTarget.lock()) {
 		m_CameraWorldCoord.translation = target->m_WorldCoord;
 	}
-
+	int i = 0;
 	// 對每個Object調位置
 	for (const auto& child : m_Children)
 	{
@@ -102,8 +114,25 @@ void Camera::Update() {
 
 		child->SetVisible(child->IsInsideWindow() && child->IsControlVisible());
 		if (!child->IsVisible()) continue; // 沒顯示就不移動了
+		child->Update();
 		UpdateChildViewportPosition(child);
+		i++;
 	}
+
+	if (count == 100)
+	{
+		LOG_DEBUG("Camera::Update {} {} ", m_Children.size(), i);
+		count = 0;
+	}
+	count++;
+	for (auto & weakObject : m_ToRemoveList)
+	{
+		if (auto obj = weakObject.lock())
+		{
+			RemoveChild(obj);
+		}
+	}
+	m_ToRemoveList.clear();
 }
 
 void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child)

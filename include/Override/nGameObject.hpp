@@ -37,17 +37,6 @@ public:
 
 	virtual void Update();
 
-	// virtual void onCollision(const std::shared_ptr<nGameObject> &other, CollisionInfo &info)
-	// {
-	// 	if (!m_Active) return;
-	//
-	// 	for (const auto& pair : m_Components) {
-	// 		// pair.first 是 ComponentType 键
-	// 		// pair.second 是 std::shared_ptr<Component> 值
-	// 		pair.second->HandleCollision(info);
-	// 	}
-	// }
-
 	//Setter
 	void SetWorldCoord(const glm::vec2 coord) {m_WorldCoord = coord + m_PosOffset;} // 圖片位移補償
 	void SetActive(const bool active) { m_Active = active; }
@@ -94,7 +83,6 @@ protected:
 
 	std::unordered_map<ComponentType, std::shared_ptr<Component>> m_Components;
 	std::unordered_map<EventType, std::vector<Component*>> m_EventSubscribers;
-	// std::vector<void(*)(int)> g;
 
 	bool m_RegisteredToScene = false;
 

@@ -6,12 +6,14 @@
 
 #include "Components/CollisionComponent.hpp"
 
+#include "Structs/RectShape.hpp"
+#include "Structs/CircleShape.hpp"
 #include "Util/Image.hpp"
+#include "spdlog/fmt/bundled/chrono.h"
 
 std::shared_ptr<Core::Drawable> CollisionComponent::s_RedColliderImage = nullptr;
 std::shared_ptr<Core::Drawable> CollisionComponent::s_BlueColliderImage = nullptr;
 std::shared_ptr<Core::Drawable> CollisionComponent::s_YellowColliderImage = nullptr;
-
 
 void CollisionComponent::Init()
 {
@@ -22,6 +24,7 @@ void CollisionComponent::Init()
 	SetColliderBoxColor("Red");
 	m_ColliderVisibleBox->SetZIndex(0.1);
 	m_ColliderVisibleBox->SetZIndexType(ZIndexType::UI);
+	m_ColliderVisibleBox->SetInitialScaleSet(true);
 }
 
 void CollisionComponent::SetColliderBoxColor(const std::string &color) const // Blue - 未定義， Yellow - 碰撞, Red - 正常
@@ -41,15 +44,11 @@ void CollisionComponent::SetColliderBoxColor(const std::string &color) const // 
 		m_ColliderVisibleBox->SetDrawable(s_BlueColliderImage);
 	else if (color == "Yellow" && s_YellowColliderImage)
 		m_ColliderVisibleBox->SetDrawable(s_YellowColliderImage);
+
+	m_ColliderVisibleBox->SetInitialScale(m_Size / m_ColliderVisibleBox->GetImageSize());
 }
 
-void CollisionComponent::Update()
-{
-	auto owner = GetOwner<nGameObject>();
-	if (!owner)
-		return;
-	m_ColliderVisibleBox->Update();
-}
+void CollisionComponent::Update() {}
 
 Rect CollisionComponent::GetBounds() const
 {
@@ -61,8 +60,6 @@ Rect CollisionComponent::GetBounds() const
 		objectPosition = owner->m_WorldCoord;
 		glm::vec2 adjustedOffset = m_Offset;
 
-		//處理可視化矩形大小和位置
-		m_ColliderVisibleBox->SetInitialScale(m_Size);
 		if (owner->m_Transform.scale.x < 0.0f)
 		{
 			adjustedOffset.x = -adjustedOffset.x; // 如果角色反向，X轴偏移需要镜像
@@ -74,15 +71,48 @@ Rect CollisionComponent::GetBounds() const
 	return {objectPosition + m_Offset, m_Size};
 }
 
+std::shared_ptr<AreaShape> CollisionComponent::GetColliderAreaShape() const
+{
+	glm::vec2 objectPosition = {0.0f, 0.0f};
+	if (const std::shared_ptr<nGameObject> owner = GetOwner<nGameObject>())
+	{
+		objectPosition = owner->GetWorldCoord();
+		glm::vec2 adjustedOffset = m_Offset;
+		//反向處理
+		if (owner->m_Transform.scale.x < 0.0f)
+		{
+			adjustedOffset.x = -adjustedOffset.x; // 如果角色反向，X轴偏移需要镜像
+		}
+		m_ColliderAreaShape->SetCenter(objectPosition + adjustedOffset);
+	}
+	m_ColliderAreaShape->SetCenter(objectPosition + m_Offset);
+	return m_ColliderAreaShape;
+}
+
+std::shared_ptr<AreaShape> CollisionComponent::GetTriggerAreaShape() const
+{
+	glm::vec2 objectPosition = {0.0f, 0.0f};
+	if (const std::shared_ptr<nGameObject> owner = GetOwner<nGameObject>())
+	{
+		objectPosition = owner->GetWorldCoord();
+		glm::vec2 adjustedOffset = m_Offset;
+		//反向處理
+		if (owner->m_Transform.scale.x < 0.0f)
+		{
+			adjustedOffset.x = -adjustedOffset.x; // 如果角色反向，X轴偏移需要镜像
+		}
+		m_TriggerAreaShape->SetCenter(objectPosition + adjustedOffset);
+	}
+	m_TriggerAreaShape->SetCenter(objectPosition + m_Offset);
+	return m_TriggerAreaShape;
+}
+
+
+
 bool CollisionComponent::CanCollideWith(const std::shared_ptr<CollisionComponent> &other) const
 {
 	return m_CollisionMask & other->m_CollisionLayer; // 你的"圖層"在我的判定"範圍"之上， 所以我可以侵犯你(?
 }
-
-// void CollisionComponent::HandleCollision(CollisionInfo &info)
-// {
-// 	SetColliderBoxColor("Yellow"); //碰撞變色
-// }
 
 void CollisionComponent::HandleEvent(const EventInfo& eventInfo)
 {

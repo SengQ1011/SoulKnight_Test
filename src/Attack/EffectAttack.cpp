@@ -64,6 +64,11 @@ void EffectAttack::UpdateObject(const float deltaTime) {
 	if (m_animation->IfAnimationEnds()) {
 		MarkForRemoval();
 		SetActive(false);
+		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		scene->GetRoot().lock()->RemoveChild(shared_from_this());
+		// scene->GetCamera().lock()->RemoveChild(shared_from_this());
+		scene->GetCamera().lock()->MarkForRemoval(shared_from_this());
+		scene->GetCurrentRoom()->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)->UnregisterNGameObject(shared_from_this());
 	}
 }
 
@@ -83,3 +88,4 @@ void EffectAttack::ResetAll(const CharacterType type, const Util::Transform &att
  	m_animation = std::make_shared<Animation>(paths, false);
 	this->m_markRemove = false;
 }
+
