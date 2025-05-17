@@ -7,11 +7,14 @@
 
 #include "Weapon.hpp"
 
+struct MeleeWeaponInfo : public BaseWeaponInfo {
+	float attackRange = 0.0f;
+	EffectAttackType attackEffectType;
+};
+
 class MeleeWeapon : public Weapon {
 public:
-	explicit MeleeWeapon(const std::string& ImagePath, const std::string& name, int damage,
-		int energy, float criticalRate, int offset, float attackInterval, float attackRange,
-		bool isSword, const EffectAttackType type);
+	explicit MeleeWeapon(const MeleeWeaponInfo& meleeWeaponInfo);
 	~MeleeWeapon() override = default;
 
 	void attack(int damage) override;

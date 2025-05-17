@@ -56,12 +56,10 @@ void AttackComponent::Update()
 	// Weapon中的followerComponent更新
 	if (m_currentWeapon)
 	{
-		m_currentWeapon->Update();
 		m_currentWeapon->UpdateCooldown(deltaTime);
 	}
 	if (m_secondWeapon)
 	{
-		m_secondWeapon->Update();
 		m_secondWeapon->UpdateCooldown(deltaTime);
 	}
 	// 更新切換冷卻時間

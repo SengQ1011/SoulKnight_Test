@@ -63,6 +63,24 @@ enum class AttackType {
 	NONE
 };
 
+enum class WeaponType {
+	NONE,
+	// Melee
+	SWORD,				// 刀劍
+	HAMMER,				// 錘子
+	AXEnCLUB,			// 斧頭or棍棒
+	SPEAR,				// 長槍/長矛
+	// Gun
+	PISTOL,				// 手槍
+	RIFLE,				// 步槍
+	SNIPER,				// 狙擊槍
+	SHOTGUN,			// 霰彈槍
+	ROCKET_LAUNCHER,	// 火箭炮
+	BOWnCROSSBOW,		// 弓or弩
+	STAFF,				// 法杖
+};
+
+
 enum class MonsterType {
 	ATTACK,		// 追蹤玩家
 	SUMMON,		// 召喚

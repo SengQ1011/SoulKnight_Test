@@ -8,13 +8,13 @@
 #include "Creature/Character.hpp"
 #include "Scene/SceneManager.hpp"
 
-MeleeWeapon::MeleeWeapon(const std::string &ImagePath, const std::string &name, int damage, int energy, float criticalRate,
-						int offset, float attackInterval, float attackRange, bool isSword, const EffectAttackType type)
-						: Weapon(ImagePath, name, damage, energy, criticalRate, offset, attackInterval),
-							m_attackRange(attackRange),  m_effectAttackType(type)
+MeleeWeapon::MeleeWeapon(const MeleeWeaponInfo& meleeWeaponInfo)
+						: Weapon(meleeWeaponInfo),
+							m_attackRange(meleeWeaponInfo.attackRange),  m_effectAttackType(meleeWeaponInfo.attackEffectType)
 {
-	SetIsSword(isSword);
+	m_AttackType = AttackType::MELEE;
 }
+
 void MeleeWeapon::attack(int damage) {
 	ResetAttackTimer();  // 重置冷卻
 
@@ -28,7 +28,7 @@ void MeleeWeapon::attack(int damage) {
 	}
 
 	// 還原初始角度偏移（只對劍/錘子適用）
-	if (m_IsSword) {
+	if (Weapon::weaponHasOffset(m_AttackType, m_weaponType)) {
 		const bool facingLeft = m_currentOwner->m_Transform.scale.x < 0.0f;
 		if (const auto follower = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
 			const float prepOffset = glm::radians(follower->GetBaseRotationDegrees());
@@ -87,7 +87,7 @@ void MeleeWeapon::attack(int damage) {
 
 	if(const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock()) {
 		const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-		attackManager->spawnEffectAttack(characterType, slashTransform, slashDirection, m_attackRange, damage, canReflect, m_IsSword, m_effectAttackType);
+		attackManager->spawnEffectAttack(characterType, slashTransform, slashDirection, m_attackRange, damage, canReflect, Weapon::weaponHasOffset(m_AttackType, m_weaponType), m_effectAttackType);
 	} else {
 		LOG_ERROR("Can't find currentScene");
 	}

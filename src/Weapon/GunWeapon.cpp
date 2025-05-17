@@ -8,11 +8,15 @@
 #include "Creature/Character.hpp"
 #include "Scene/SceneManager.hpp"
 
-GunWeapon::GunWeapon(const std::string &ImagePath, const std::string& bulletImagePath,const std::string &name, int damage, int energy, float criticalRate,
-						int offset, float attackInterval, float size, float speed, bool bulletCanReboundBySword, bool bulletIsBubble, bool haveBubbleTrail, const std::string &bubbleImagePath)
-						: Weapon(ImagePath, name, damage, energy, criticalRate, offset, attackInterval),
-							m_bulletImagePath(bulletImagePath), m_bulletSize(size), m_bulletSpeed(speed), m_bulletCanReboundBySword(bulletCanReboundBySword), m_bulletIsBubble(bulletIsBubble),
-							m_bulletHaveBubbleTrail(haveBubbleTrail), m_bubbleImagePath(bubbleImagePath){}
+GunWeapon::GunWeapon(const GunWeaponInfo& gunWeaponInfo)
+		: Weapon(gunWeaponInfo),
+			m_bulletImagePath(gunWeaponInfo.bulletImagePath), m_bulletSize(gunWeaponInfo.bulletSize),
+			m_bulletSpeed(gunWeaponInfo.bulletSpeed), m_bulletCanReboundBySword(gunWeaponInfo.bulletCanReboundBySword),
+			m_bulletIsBubble(gunWeaponInfo.bulletIsBubble), m_bulletHaveBubbleTrail(gunWeaponInfo.haveBubbleTrail),
+			m_bubbleImagePath(gunWeaponInfo.bubbleImagePath)
+{
+	m_AttackType = AttackType::GUN;
+}
 
 void GunWeapon::attack(const int damage) {
 	ResetAttackTimer();  // 重置冷卻

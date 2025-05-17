@@ -7,10 +7,19 @@
 
 #include "Weapon/Weapon.hpp"
 
+struct GunWeaponInfo : public BaseWeaponInfo {
+	std::string bulletImagePath;
+	float bulletSize = 1.0f;
+	float bulletSpeed = 1.0f;
+	bool bulletCanReboundBySword = false;
+	bool bulletIsBubble = false;
+	bool haveBubbleTrail = false;
+	std::string bubbleImagePath = std::string(RESOURCE_DIR) + "/attackUI/bullet/bullet_107.png";
+};
+
 class GunWeapon final : public Weapon {
 public:
-	explicit GunWeapon(const std::string& ImagePath, const std::string& bulletImagePath,const std::string& name, int damage, int energy, float criticalRate, int offset, float attackInterval,
-		float size, float speed, bool bulletCanReboundBySword, bool bulletIsBubble, bool haveBubbleTrail = false, const std::string& bubbleImagePath = "");
+	explicit GunWeapon(const GunWeaponInfo& gunWeaponInfo);
 	~GunWeapon() override = default;
 
 	void attack(int damage) override;

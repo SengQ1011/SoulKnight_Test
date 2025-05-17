@@ -119,7 +119,7 @@ void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 
 void HealthComponent::TakeDamage(int damage)
 {
-	// LOG_DEBUG("take damage {}", damage);
+	LOG_DEBUG("take damage {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
 	{
@@ -164,6 +164,10 @@ void HealthComponent::OnDeath() const
 		auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(scene->GetCurrentRoom());
 		if (monsterRoom) monsterRoom->OnEnemyDied();
 		LOG_DEBUG("HealthComponent::remove ");
+		if(auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
+		{
+			aiComp->HideReadyAttackIcon();
+		}
 	}
 	else
 	{
@@ -173,10 +177,7 @@ void HealthComponent::OnDeath() const
 	}
 
 	if (character->GetType() == CharacterType::ENEMY) {
-		if(auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
-		{
-			aiComp->HideReadyAttackIcon();
-		}
+
 	}
 }
 
