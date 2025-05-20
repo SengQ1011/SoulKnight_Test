@@ -9,16 +9,16 @@
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
 
-void AttackManager::spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed, int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath)
+void AttackManager::spawnProjectile(const ProjectileInfo& projectileInfo)
 {
-	const auto bullet = m_projectilePool.Acquire(type, bulletImagePath, transform, direction, size, damage, speed, numRebound, canReboundBySword, isBubble, bubbleTrail, bubbleImagePath);
+	const auto bullet = m_projectilePool.Acquire(projectileInfo);
 	if (bullet == nullptr) {LOG_ERROR("bullet from pool is nullptr!");}
 	bullet->Init(); // 只初始化碰撞組件，不處理渲染
 
 	// 加入渲染樹
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	currentScene->GetRoot().lock()->AddChild(bullet);  // 由 AttackManager 的 shared_ptr 加入
-	currentScene->GetCamera().lock()->AddChild(bullet);
+	currentScene->GetCamera().lock()->SafeAddChild(bullet);
 
 	// 注冊到碰撞管理器
 	const std::shared_ptr<RoomCollisionManager> collisionManager = currentScene->GetCurrentCollisionManager();
@@ -26,14 +26,14 @@ void AttackManager::spawnProjectile(const CharacterType type, const Util::Transf
 	m_projectiles.push_back(bullet);
 }
 
-void AttackManager::spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, bool isSword, EffectAttackType effectType) {
-	auto effectAttack = m_effectPool.Acquire(type, transform, direction, size, damage, canReflect, isSword,effectType);
+void AttackManager::spawnEffectAttack(const EffectAttackInfo &effectAttackInfo) {
+	auto effectAttack = m_effectPool.Acquire(effectAttackInfo);
 	effectAttack->Init();
 
 	// 加入渲染樹
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	currentScene->GetRoot().lock()->AddChild(effectAttack);  // 由 AttackManager 的 shared_ptr 加入
-	currentScene->GetCamera().lock()->AddChild(effectAttack);
+	currentScene->GetCamera().lock()->SafeAddChild(effectAttack);
 
 	// 注冊到碰撞管理器
 	const std::shared_ptr<RoomCollisionManager> collisionManager = currentScene->GetCurrentCollisionManager();

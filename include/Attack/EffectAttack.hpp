@@ -8,6 +8,13 @@
 #include "Attack/Attack.hpp"
 class Animation;
 
+struct  EffectAttackInfo : public AttackInfo
+{
+	EffectAttackType effectType;
+	bool canReflectBullet = false;
+	bool canBlockingBullet = true;
+};
+
 namespace EffectAssets {
 	inline std::string ResourcePath(const std::string& relative) {
 		return std::string(RESOURCE_DIR) + relative;
@@ -29,13 +36,38 @@ namespace EffectAssets {
 		{EffectAttackType::SHOCKWAVE,{
 			ResourcePath("/attackUI/shockwave/shockwave_0.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_1.png"),
-			//ResourcePath("/attackUI/shockwave/shockwave_2.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_2.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_3.png"),
-			//ResourcePath("/attackUI/shockwave/shockwave_4.png"),
+			ResourcePath("/attackUI/shockwave/shockwave_4.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_5.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_6.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_7.png")
-		}}
+		}},
+		{EffectAttackType::ENERGY_WAVE,{
+			ResourcePath("/attackUI/energy_wave/energy_wave_0.png"),
+			ResourcePath("/attackUI/energy_wave/energy_wave_1.png"),
+			ResourcePath("/attackUI/energy_wave/energy_wave_2.png"),
+			ResourcePath("/attackUI/energy_wave/energy_wave_3.png"),
+			ResourcePath("/attackUI/energy_wave/energy_wave_4.png")
+		}},
+		{EffectAttackType::LARGE_BOOM,{
+			ResourcePath("/attackUI/boom/large_boom/element_exploded_fire_large_0.png"),
+			ResourcePath("/attackUI/boom/large_boom/element_exploded_fire_large_1.png"),
+			ResourcePath("/attackUI/boom/large_boom/element_exploded_fire_large_2.png"),
+			ResourcePath("/attackUI/boom/large_boom/element_exploded_fire_large_3.png"),
+			ResourcePath("/attackUI/boom/large_boom/element_exploded_fire_large_4.png")
+		}},
+		{EffectAttackType::MEDIUM_BOOM,{
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_1.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_2.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_3.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_4.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_5.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_6.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_7.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_8.png"),
+			ResourcePath("/attackUI/boom/medium_boom/effect_explode_9.png")
+		}},
 	};
 }
 
@@ -43,28 +75,28 @@ class EffectAttack : public Attack {
 public:
 	// 因爲斬擊/刺擊/震蕩波都是使用統一的動畫
 	// 不需要在建構子中加入animation
-	explicit EffectAttack(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType);
+	explicit EffectAttack(const EffectAttackInfo &effect_attack_info);
+	~EffectAttack() override = default;
 
 	//================ 提醒 ==============//
 	void Init() override;
 	void UpdateObject(float deltaTime) override;
 
-	std::string GetName() const override { return "EffectAttack"; }
-
 	//----Getter----
+	std::string GetName() const override { return "EffectAttack"; }
 	[[nodiscard]] EffectAttackType GetEffectAttackType() const { return m_effectType; }
 	[[nodiscard]] std::shared_ptr<Animation> GetAnimation()const { return m_animation; }
 	[[nodiscard]] bool checkCanReflect() const { return m_reflectBullet; }
 
 	//----Setter----
-	void ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage, bool canReflect, bool bulletBlocking, EffectAttackType effectType);
+	void ResetAll(const EffectAttackInfo &effectAttackInfo);
 
 protected:
 	EffectAttackType m_effectType;
 	std::shared_ptr<Animation> m_animation;
 	bool m_reflectBullet = false;
 	bool m_bulletBlocking = true;
-	float m_shockwaveForce = 100.0f;
+	float m_shockwaveForce = 120.0f;
 };
 
 #endif //EFFECTATTACK_HPP

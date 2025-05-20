@@ -47,11 +47,8 @@ void FollowerComponent::BaseTargetRotate() {
 			if (const auto moveComp = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT)) {
 				if (const glm::vec2 moveDir = moveComp->GetLastValidDirection(); glm::length(moveDir) > 0.01f) {
 					// 計算基礎角度
-					float baseRotation = std::atan2(moveDir.y, moveDir.x);
-
-					// 保存基礎角度
-					m_HoldingRotation = baseRotation;
-				}
+					m_HoldingRotation = std::atan2(moveDir.y, moveDir.x);
+				}else m_HoldingRotation = 0.0f;
 			}
 		}
 	}

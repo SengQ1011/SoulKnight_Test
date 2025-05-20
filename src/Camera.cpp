@@ -99,6 +99,7 @@ void Camera::Update() {
 	// 對每個Object調位置
 	for (const auto& child : m_Children)
 	{
+		if (!child) continue;
 		// IsInsideWindow來專門管理是否在視窗内
 		if (NotShouldBeVisible(child))
 		{
@@ -121,18 +122,26 @@ void Camera::Update() {
 
 	if (count == 100)
 	{
-		LOG_DEBUG("Camera::Update {} {} ", m_Children.size(), i);
+		// LOG_DEBUG("Camera::Update {} {} ", m_Children.size(), i);
 		count = 0;
 	}
 	count++;
-	for (auto & weakObject : m_ToRemoveList)
-	{
-		if (auto obj = weakObject.lock())
-		{
+
+	// 延後處理移除
+	for (auto& weakObject : m_ToRemoveList) {
+		if (auto obj = weakObject.lock()) {
 			RemoveChild(obj);
 		}
 	}
 	m_ToRemoveList.clear();
+
+	// 延後處理加入的child
+	for (auto& weakObject : m_ToAddList) {
+		if (auto obj = weakObject.lock()) {
+			AddChild(obj);
+		}
+	}
+	m_ToAddList.clear();
 }
 
 void Camera::UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child)

@@ -2,8 +2,11 @@
 // Created by tjx20 on 5/9/2025.
 //
 #include "Components/ProjectileComponent.hpp"
+
+#include "Attack/AttackManager.hpp"
 #include "Attack/Projectile.hpp"
 #include "Creature/Character.hpp"
+#include "Scene/SceneManager.hpp"
 
 std::vector<EventType> ProjectileComponent::SubscribedEventTypes() const
 {
@@ -65,7 +68,31 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 
 		projectile->m_Transform.rotation = glm::atan(direction.y, direction.x);
 		projectile->AddReboundCounter();
-	}else projectile->MarkForRemoval();
+	}else {
+		projectile->MarkForRemoval();
+		if( projectile->GetHaveEffectAttack())
+		{
+			const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+			if (const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK))
+			{
+				EffectAttackInfo effectAttackInfo;
+				effectAttackInfo.type = projectile->GetAttackLayerType();
+				effectAttackInfo.attackTransform = projectile->GetTransform();
+				effectAttackInfo.attackTransform.translation = projectile->GetWorldCoord();
+				effectAttackInfo.attackTransform.scale = glm::vec2(1.0f, 1.0f);
+				effectAttackInfo.direction = glm::vec2(0.0f, 0.0f);
+				effectAttackInfo.size = projectile->GetBulletEffectAttackSize();
+				LOG_DEBUG("size:{}",effectAttackInfo.size);
+				effectAttackInfo.damage = projectile->GetBulletEffectAttackDamage();
+
+				effectAttackInfo.canReflectBullet = false;
+				effectAttackInfo.canBlockingBullet = false;
+				effectAttackInfo.effectType = projectile->GetBulletEffectType();
+
+				attackManager->spawnEffectAttack(effectAttackInfo);
+			}
+		}
+	}
 }
 
 void ProjectileComponent::HandleReflectEvent()

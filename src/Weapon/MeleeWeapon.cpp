@@ -87,7 +87,18 @@ void MeleeWeapon::attack(int damage) {
 
 	if(const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock()) {
 		const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-		attackManager->spawnEffectAttack(characterType, slashTransform, slashDirection, m_attackRange, damage, canReflect, Weapon::weaponHasOffset(m_AttackType, m_weaponType), m_effectAttackType);
+		EffectAttackInfo effectAttackInfo;
+		effectAttackInfo.type = m_currentOwner->GetType();
+		effectAttackInfo.attackTransform = slashTransform;
+		effectAttackInfo.direction = slashDirection;
+		effectAttackInfo.size = m_attackRange;
+		effectAttackInfo.damage = damage;
+
+		effectAttackInfo.canReflectBullet = canReflect;
+		effectAttackInfo.canBlockingBullet = Weapon::weaponHasOffset(m_AttackType, m_weaponType);
+		effectAttackInfo.effectType = m_effectAttackType;
+
+		attackManager->spawnEffectAttack(effectAttackInfo);
 	} else {
 		LOG_ERROR("Can't find currentScene");
 	}

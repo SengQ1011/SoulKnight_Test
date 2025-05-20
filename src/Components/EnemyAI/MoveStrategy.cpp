@@ -8,6 +8,7 @@
 #include "Creature/Character.hpp"
 #include "Override/nGameObject.hpp"
 #include "StructType.hpp"
+#include "RandomUtil.hpp"
 
 //============================= (Base) =============================
 void ReflectMovement(const CollisionEventInfo &info, const EnemyContext &ctx)
@@ -40,7 +41,7 @@ void IMoveStrategy::CollisionAction(const CollisionEventInfo &info, const EnemyC
 			} else {
 				aiComp->SetEnemyState(enemyState::IDLE);
 				ctx.moveComp->SetDesiredDirection(glm::vec2(0,0));
-				m_restTimer = RandomFloatInRange(0.3f, 1.0f); // 設定休息時間
+				m_restTimer = RandomUtil::RandomFloatInRange(0.3f, 1.0f); // 設定休息時間
 			}
 		}
 	}
@@ -62,10 +63,10 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 			if (m_restTimer <= 0) {
 				// 休息結束，開始移動
 				constexpr float ratio = 0.2f;
-				const glm::vec2 deltaDisplacement = glm::normalize(RandomDirectionInsideUnitCircle()) * ratio;
+				const glm::vec2 deltaDisplacement = glm::normalize(RandomUtil::RandomDirectionInsideUnitCircle()) * ratio;
 				ctx.moveComp->SetDesiredDirection(deltaDisplacement);
 				// 設定移動持續時間
-				m_moveTimer = RandomFloatInRange(2.0f, 6.5f);
+				m_moveTimer = RandomUtil::RandomFloatInRange(2.0f, 6.5f);
 				aiComp->SetEnemyState(enemyState::WANDERING);
 			}
 			break;
@@ -75,7 +76,7 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 			if (m_moveTimer <= 0) {
 				// 移動結束，開始休息
 				ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0)); // 停止移動
-				m_restTimer = RandomFloatInRange(1.0f, 3.0f); // 設定休息時間
+				m_restTimer = RandomUtil::RandomFloatInRange(1.0f, 3.0f); // 設定休息時間
 				aiComp->SetEnemyState(enemyState::IDLE);
 			}
 			break;
@@ -98,7 +99,7 @@ void IMoveStrategy::changeToIdle(const EnemyContext &ctx) {
 	const auto aiComp = ctx.GetAIComp();
 	// 移動結束，開始休息
 	ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0)); // 停止移動
-	m_restTimer = RandomFloatInRange(1.0f, 3.0f); // 設定休息時間
+	m_restTimer = RandomUtil::RandomFloatInRange(1.0f, 3.0f); // 設定休息時間
 	aiComp->SetEnemyState(enemyState::IDLE);
 }
 
@@ -114,9 +115,9 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 			}
 			if (m_restTimer <= 0) {
 				constexpr float ratio = 0.2f;
-				const glm::vec2 deltaDisplacement = glm::normalize(RandomDirectionInsideUnitCircle()) * ratio;
+				const glm::vec2 deltaDisplacement = glm::normalize(RandomUtil::RandomDirectionInsideUnitCircle()) * ratio;
 				ctx.moveComp->SetDesiredDirection(deltaDisplacement);
-				m_moveTimer = RandomFloatInRange(5.0f, 10.0f);
+				m_moveTimer = RandomUtil::RandomFloatInRange(5.0f, 10.0f);
 				aiComp->SetEnemyState(enemyState::WANDERING);
 			}
 			break;
@@ -147,7 +148,7 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 			aiComp->DeductionReadyAttackTimer(deltaTime);
 			if (aiComp->GetReadyAttackTimer() <= 0) {
 				m_mandatoryRest = true;
-				m_restTimer = RandomFloatInRange(1.5f, 3.5f);
+				m_restTimer = RandomUtil::RandomFloatInRange(1.5f, 3.5f);
 			} else {
 				// 根據攻擊型別判讀停止
 				if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {

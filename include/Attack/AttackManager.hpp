@@ -27,13 +27,12 @@ public:
 	const std::vector<std::shared_ptr<EffectAttack>>& GetEffects() const { return m_effects; }
 
 	// Bubble延緩加入->否則一邊更新一邊加入vector，會導致迭代器/引用失效
-	void AttackManager::EnqueueSpawn(std::function<void()> spawnFunc) {
+	void EnqueueSpawn(std::function<void()> spawnFunc) {
 		m_spawnQueue.push_back(std::move(spawnFunc));
 	}
 	// 射出子彈類 OR 斬擊動畫
-	void spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed,
-		int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath);
-	void spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, bool isSword, EffectAttackType effectType);
+	void spawnProjectile(const ProjectileInfo& projectileInfo);
+	void spawnEffectAttack(const EffectAttackInfo &effectAttackInfo);
 
 
 private:

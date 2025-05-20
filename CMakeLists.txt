@@ -45,6 +45,7 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         libs/tracy/TracyClient.cpp
+        include/RandomUtil.hpp
 )
 
 if(MSVC)
@@ -83,17 +84,21 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/tracy
 )
 
-if(MSVC)
+if(WIN32)
     target_link_libraries(${PROJECT_NAME}
-        SDL2::SDL2main
+            SDL2::SDL2main
             PTSD
+            ws2_32
+            dbghelp
     )
-else()
+elseif(UNIX)
     target_link_libraries(${PROJECT_NAME}
             SDL2::SDL2main
             PTSD
             pthread
     )
+else()
+    message(FATAL_ERROR "Unsupported platform")
 endif()
 
 # 定義生成 files.cmake 的函數

@@ -42,6 +42,10 @@ EffectAttackType stringToEffectAttackType(const std::string& str) {
 	if (str == "SLASH") return EffectAttackType::SLASH;
 	if (str == "LUNGE") return EffectAttackType::LUNGE;
 	if (str == "SHOCKWAVE") return EffectAttackType::SHOCKWAVE;
+	if (str == "ENERGY_WAVE") return EffectAttackType::ENERGY_WAVE;
+	if (str == "LARGE_BOOM") return EffectAttackType::LARGE_BOOM;
+	if (str == "MEDIUM_BOOM") return EffectAttackType::MEDIUM_BOOM;
+	if (str == "SMALL_BOOM") return EffectAttackType::SMALL_BOOM;
 }
 
 namespace WeaponFactory {
@@ -98,6 +102,8 @@ namespace WeaponFactory {
 						gunInfo.dropLevel = dropLevel;
 						gunInfo.basicPrice = basicPrice;
 						gunInfo.bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
+						gunInfo.bulletOffset = weapon["bulletOffset"].get<float>();
+						gunInfo.numOfBullets = weapon["numOfBullets"].get<int>();
 						gunInfo.bulletSize = weapon["bulletSize"].get<float>();
 						gunInfo.bulletSpeed = weapon["bulletSpeed"].get<float>();
 						gunInfo.bulletCanReboundBySword = weapon["bulletCanRebound"].get<bool>();
@@ -106,6 +112,13 @@ namespace WeaponFactory {
 						if (gunInfo.haveBubbleTrail){
 							gunInfo.bubbleImagePath = RESOURCE_DIR + weapon["bubbleImagePath"].get<std::string>();
 							LOG_DEBUG("have trail");
+						}
+						gunInfo.haveEffectAttack = weapon["haveEffectAttack"].get<bool>();
+						if(gunInfo.haveEffectAttack)
+						{
+							gunInfo.effectAttackSize = weapon["effectAttackSize"].get<float>();
+							gunInfo.effectAttackDamage = weapon["effectAttackDamage"].get<int>();
+							gunInfo.effect = stringToEffectAttackType(weapon["effectType"].get<std::string>());
 						}
 						weaponPtr = std::make_shared<GunWeapon>(gunInfo);
 					}

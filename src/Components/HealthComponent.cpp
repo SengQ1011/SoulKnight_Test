@@ -148,9 +148,13 @@ void HealthComponent::OnDeath() const
 	// 	attackComp->RemoveAllWeapon();
 	// }
 
-	character->SetActive(false);
+
+	const DeathEventInfo deathEventInfo{character};
+	character->OnEvent(deathEventInfo);
+
 	stateComponent->SetState(State::DEAD);
-	LOG_DEBUG("HealthComponent::OnDeath");
+	character->SetActive(false);
+
 	if (movementComp)
 		movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f)); // 移動向量設爲0
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -172,13 +176,6 @@ void HealthComponent::OnDeath() const
 	else
 	{
 		trackingManager->SetPlayer(nullptr);
-		//const DeathEventInfo deathEventInfo{character};
-		//EventManager::GetInstance().Notify(deathEventInfo);
-	}
-
-	if (character->GetType() == CharacterType::ENEMY) {
-
+		// EventManager::GetInstance().Notify(deathEventInfo);
 	}
 }
-
-

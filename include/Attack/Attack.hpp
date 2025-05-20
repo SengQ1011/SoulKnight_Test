@@ -7,10 +7,18 @@
 
 #include "Override/nGameObject.hpp"
 
+struct AttackInfo
+{
+	CharacterType type;
+	Util::Transform attackTransform;
+	glm::vec2 direction;
+	float size = 0.0f;
+	int damage = 0;
+};
+
 class Attack : public nGameObject {
 public:
-	explicit Attack(const CharacterType type, const Util::Transform &attackTransform,
-		const glm::vec2 direction, float size, int damage);
+	explicit Attack(const AttackInfo& attack_info);
 	~Attack() override= default;
 
 	virtual void Init() = 0;

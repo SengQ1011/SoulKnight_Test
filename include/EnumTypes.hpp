@@ -41,19 +41,25 @@ enum class State
 };
 
 enum class StatusEffect {
+	NONE,
 	BURNS,		// 灼燒
 	POISON,		// 中毒
 	ELECTRIC,	// 感電
-	 DIZZINESS,	// 眩暈
+	DIZZINESS,	// 眩暈
 	FROZEN,		// 冰凍
 	FATIGUE		// 疲勞
 };
 
 enum class EffectAttackType
 {
+	NONE,
 	SLASH,
 	LUNGE,
-	SHOCKWAVE
+	SHOCKWAVE,
+	ENERGY_WAVE,
+	LARGE_BOOM,
+	MEDIUM_BOOM,
+	SMALL_BOOM
 };
 
 enum class AttackType {
