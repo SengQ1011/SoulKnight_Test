@@ -119,7 +119,7 @@ void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 
 void HealthComponent::TakeDamage(int damage)
 {
-	// LOG_DEBUG("take damage {}", damage);
+	LOG_DEBUG("take damage {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
 	{
@@ -148,9 +148,13 @@ void HealthComponent::OnDeath() const
 	// 	attackComp->RemoveAllWeapon();
 	// }
 
-	character->SetActive(false);
+
+	const DeathEventInfo deathEventInfo{character};
+	character->OnEvent(deathEventInfo);
+
 	stateComponent->SetState(State::DEAD);
-	LOG_DEBUG("HealthComponent::OnDeath");
+	character->SetActive(false);
+
 	if (movementComp)
 		movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f)); // 移動向量設爲0
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -164,20 +168,14 @@ void HealthComponent::OnDeath() const
 		auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(scene->GetCurrentRoom());
 		if (monsterRoom) monsterRoom->OnEnemyDied();
 		LOG_DEBUG("HealthComponent::remove ");
-	}
-	else
-	{
-		trackingManager->SetPlayer(nullptr);
-		//const DeathEventInfo deathEventInfo{character};
-		//EventManager::GetInstance().Notify(deathEventInfo);
-	}
-
-	if (character->GetType() == CharacterType::ENEMY) {
 		if(auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
 		{
 			aiComp->HideReadyAttackIcon();
 		}
 	}
+	else
+	{
+		trackingManager->SetPlayer(nullptr);
+		// EventManager::GetInstance().Notify(deathEventInfo);
+	}
 }
-
-

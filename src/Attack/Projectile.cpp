@@ -14,19 +14,22 @@
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
-Projectile::Projectile(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction,
-					   float size, int damage, const std::string &imagePath, float speed, int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath)
-						   : Attack(type, attackTransform, direction, size, damage),
-								m_imagePath(imagePath), m_speed(speed), m_numRebound(numRebound), m_canReboundBySword(canReboundBySword),
-								m_isBubble(isBubble), m_enableBubbleTrail(bubbleTrail), m_bubbleImagePath(bubbleImagePath) {}
+Projectile::Projectile(const ProjectileInfo& projectileInfo)
+						   : Attack(projectileInfo),
+								m_imagePath(projectileInfo.imagePath), m_speed(projectileInfo.speed),
+								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
+								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
+								m_bubbleImagePath(projectileInfo.bubbleImagePath),
+								m_bulletHaveEffectAttack(projectileInfo.haveEffectAttack), m_effectAttackSize(projectileInfo.effectAttackSize),
+								m_effectAttackDamage(projectileInfo.effectAttackDamage), m_bullet_EffectAttack(projectileInfo.effect){}
 
 //=========================== (實作) ================================//
 void Projectile::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
 	m_startPosition = this->m_WorldCoord;
-	// 全部子彈太大了，縮小25%
-	this->m_Transform.scale = glm::vec2(0.75f, 0.75f);
+	// 全部子彈太大了，縮小35%
+	this->m_Transform.scale = glm::vec2(0.65f, 0.65f);
 	// 其他初始化（縮放、圖片等）
 	this->SetInitialScale(m_Transform.scale);
 	this->SetZIndexType(ZIndexType::ATTACK);
@@ -55,24 +58,38 @@ void Projectile::Init() {
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
 	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
+	CollisionComp->SetSize(glm::vec2(m_size));
 
 	// TODO:測試子彈大小
-	CollisionComp->SetSize(glm::vec2(m_size));
 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
-	// currentScene->GetCamera().lock()->AddChild(CollisionComp->GetVisibleBox());
+	// currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
 }
 
-void Projectile::UpdateObject(const float deltaTime) {
-	// 讓子彈按方向移動
-	this->m_WorldCoord += m_direction * m_speed * deltaTime;
 
+void Projectile::UpdateObject(const float deltaTime) {
 	if (m_isBubble) {
 		m_bubbleStayTime -= deltaTime;
+		// 泡泡到期消失
 		if (m_bubbleStayTime <= 0.0f) {
 			this->MarkForRemoval();
+			return;
 		}
+
+		// 使用 sin 控制速度（平滑遞減）
+		float t = 3.0f - m_bubbleStayTime;
+		float T = 3.0f;
+		float percent = std::clamp(t / T, 0.0f, 1.0f);
+		m_speed = m_bubbleSpeed * sinf((1.0f - percent) * (3.1415926f / 2.0f));
+
+		// 移動泡泡
+		this->m_WorldCoord += m_direction * m_speed * deltaTime;
+	}else {
+		// 一般子彈直接移動
+		this->m_WorldCoord += m_direction * m_speed * deltaTime;
 	}
+
+
 	if (m_enableBubbleTrail) {
 		m_bubbleTimer += deltaTime;
 		if (m_bubbleTimer >= m_bubbleSpawnInterval) {
@@ -120,23 +137,27 @@ void Projectile::ReflectChangeAttackCharacterType(CharacterType type)
 }
 
 
-void Projectile::ResetAll(const CharacterType type, const Util::Transform &attackTransform, glm::vec2 direction, float size, int damage,
-	const std::string& ImagePath, float speed, int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath) {
-	m_type = type;
-	m_imagePath = ImagePath;
-	this->m_Transform = attackTransform;
-	this->m_direction = direction;
-	this->m_size = size;
-	m_speed = speed;
-	m_damage = damage;
-	m_numRebound = numRebound;
+void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
+	m_type = projectileInfo.type;
+	m_Transform = projectileInfo.attackTransform;
+	m_direction = projectileInfo.direction;
+	m_size = projectileInfo.size;
+	m_damage = projectileInfo.damage;
+
+	m_imagePath = projectileInfo.imagePath;
+	m_speed = projectileInfo.speed;
+	m_numRebound = projectileInfo.numRebound;
+	m_canReboundBySword = projectileInfo.canReboundBySword;
+	m_isBubble = projectileInfo.isBubble;
+	m_enableBubbleTrail = projectileInfo.bubbleTrail;
+	m_bubbleImagePath = projectileInfo.bubbleImagePath;
+	m_bulletHaveEffectAttack = projectileInfo.haveEffectAttack;
+	m_effectAttackSize = projectileInfo.effectAttackSize;
+	m_effectAttackDamage = projectileInfo.effectAttackDamage;
+	m_bullet_EffectAttack = projectileInfo.effect;
+
 	m_reboundCounter = 0;
 	m_markRemove = false;
-	m_canReboundBySword = canReboundBySword;
-	m_isBubble = isBubble;
-	m_enableBubbleTrail = bubbleTrail;
-	m_bubbleImagePath = bubbleImagePath;
-
 	m_bubbleTimer = 0.0f;
 	m_bubbleStayTime = 3.0f;
 }
@@ -153,11 +174,28 @@ void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulle
 	bulletTransform.translation = pos;									// 子彈的位置
 	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
 
+	ProjectileInfo bubbleInfo;
+	bubbleInfo.type = m_type;
+	bubbleInfo.attackTransform = bulletTransform;
+	bubbleInfo.direction = m_direction;
+	bubbleInfo.size = m_bubbleSize;
+	bubbleInfo.damage = m_bubbleDamage;
+
+	bubbleInfo.imagePath = m_bubbleImagePath;
+	bubbleInfo.speed = m_bubbleSpeed;
+	bubbleInfo.numRebound = 0;
+	bubbleInfo.canReboundBySword = false;
+	bubbleInfo.isBubble = true;
+	bubbleInfo.bubbleTrail = false;
+	bubbleInfo.haveEffectAttack = false;
+	bubbleInfo.effectAttackSize = 0.0f;
+	bubbleInfo.effectAttackDamage = 0;
+	bubbleInfo.effect = EffectAttackType::NONE;
+
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
 	// 延緩發射
 	attackManager->EnqueueSpawn([=]() {
-		attackManager->spawnProjectile(CharacterType::ENEMY, bulletTransform, bulletDirection, m_bubbleSize, m_bubbleDamage, m_bubbleImagePath, m_bubbleSpeed, 0, false, true, false, "");
+		attackManager->spawnProjectile(bubbleInfo);
 	});
 }
-

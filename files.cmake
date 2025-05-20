@@ -135,6 +135,7 @@ set(INCLUDE_FILES
     ObserveManager/TrackingManager.hpp
     Observer.hpp
     Override/nGameObject.hpp
+    RandomUtil.hpp
     Room/DungeonMap.hpp
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp

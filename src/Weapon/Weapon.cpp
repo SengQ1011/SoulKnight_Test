@@ -5,10 +5,18 @@
 #include "Weapon/Weapon.hpp"
 #include "Util/Image.hpp"
 
-Weapon::Weapon(const std::string& ImagePath, const std::string& name, int damage, int energy, float criticalRate, int offset, float attackInterval)
-	: m_ImagePath(ImagePath), m_weaponName(name), m_damage(damage), m_energy(energy), m_criticalRate(criticalRate), m_offset(offset), m_attackInterval(attackInterval)
+Weapon::Weapon(const BaseWeaponInfo& weaponInfo)
+	: m_ImagePath(weaponInfo.imagePath),
+		m_weaponName(weaponInfo.name),
+		m_AttackType(weaponInfo.attackType),
+		m_weaponType(weaponInfo.weaponType),
+		m_damage(weaponInfo.damage),
+		m_energy(weaponInfo.energy),
+		m_criticalRate(weaponInfo.criticalRate),
+		m_offset(weaponInfo.offset),
+		m_attackInterval(weaponInfo.attackInterval)
 {
-	SetImage(ImagePath);
+	SetImage(weaponInfo.imagePath);
 	this->SetZIndexType(ZIndexType::OBJECTLOW);
 }
 

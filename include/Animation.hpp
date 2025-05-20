@@ -10,8 +10,8 @@
 
 class Animation: public nGameObject {
 public:
-	Animation(std::vector<std::string> AnimationPaths, bool needLoop);
-	~Animation() = default;
+	Animation(std::vector<std::string> AnimationPaths, bool needLoop, float interval = 0);
+	~Animation() override = default;
 
 	// 禁用拷贝构造和拷贝赋值
 	Animation(const Animation&) = delete;

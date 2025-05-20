@@ -5,7 +5,7 @@
 
 #include "Scene/Dungeon_Scene.hpp"
 
-// #include <Tracy.hpp>
+#include <Tracy.hpp>
 
 #include "Components/CollisionComponent.hpp"
 #include "Components/FollowerComponent.hpp"
@@ -68,16 +68,16 @@ void DungeonScene::Start()
 void DungeonScene::Update()
 {
 	{
-		// ZoneScopedN("SceneManager::Update");
+		ZoneScopedN("SceneManager::Update");
 		for (auto& [type,manager]: m_Managers) manager->Update();
 	}
 	{
 		// 更新房间
-		// ZoneScopedN("Map::Update");
+		ZoneScopedN("Map::Update");
 		m_Map->Update();
 	}
 	{
-		// ZoneScopedN("CurrentDungeonRoom::Update");
+		ZoneScopedN("CurrentDungeonRoom::Update");
 		const std::shared_ptr<DungeonRoom> dungeonRoom = m_Map->GetCurrentRoom();
 		if (dungeonRoom)
 		{
@@ -90,13 +90,13 @@ void DungeonScene::Update()
 
 	{
 		// 更新相机
-		// ZoneScopedN("Camera::Update");
+		ZoneScopedN("Camera::Update");
 		m_Camera->Update();
 	}
 
 	{
 		// 更新渲染器
-		// ZoneScopedN("Renderer::Update");
+		ZoneScopedN("Renderer::Update");
 		m_Root->Update();
 	}
 }

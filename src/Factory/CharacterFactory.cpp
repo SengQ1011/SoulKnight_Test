@@ -136,7 +136,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			FollowerComp->Update(); // 直接更新一次位置
 			//FollowerComp->SetTargetMouse(true);
 
-			auto weapon2 = WeaponFactory::createWeapon(3);
+			auto weapon2 = WeaponFactory::createWeapon(5);
 			attackComponent->AddWeapon(weapon2);
 			LOG_DEBUG("Player created");
 			return player;
@@ -169,7 +169,7 @@ bool JsonArrayContains(const nlohmann::json& array, const std::string& target) {
 
 	return std::any_of(array.begin(), array.end(),
 		[&target](const auto& item) {
-			return item.is_string() && item.get<std::string>() == target;
+			return item.is_string() && item.template get<std::string>() == target;
 		}
 	);
 }

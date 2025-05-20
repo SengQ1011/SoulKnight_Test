@@ -105,7 +105,7 @@ void AnimationComponent::SetSkillEffect(bool play)
 
 				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 				scene->GetRoot().lock()->AddChild(m_effectAnimation);
-				scene->GetCamera().lock()->AddChild(m_effectAnimation);
+				scene->GetCamera().lock()->SafeAddChild(m_effectAnimation);
 
 				m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
 			}
