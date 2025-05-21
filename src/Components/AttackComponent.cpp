@@ -158,8 +158,9 @@ void AttackComponent::TryAttack()
 		return;
 	const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
 	const float currentEnergy = healthComponent->GetCurrentEnergy();
+	const auto useEnergy = m_currentWeapon->GetEnergy();
 
-	if (isPlayer && currentEnergy <= 0)
+	if (isPlayer && currentEnergy <= 0 && useEnergy != 0)
 	{
 		LOG_DEBUG("AttackComponent: Not enough energy to attack");
 		return;
@@ -175,7 +176,7 @@ void AttackComponent::TryAttack()
 
 			if (isPlayer)
 			{
-				healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
+				healthComponent->ConsumeEnergy(useEnergy);
 			}
 		}
 	}

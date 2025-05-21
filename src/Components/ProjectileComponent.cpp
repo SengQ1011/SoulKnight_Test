@@ -82,7 +82,6 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 				effectAttackInfo.attackTransform.scale = glm::vec2(1.0f, 1.0f);
 				effectAttackInfo.direction = glm::vec2(0.0f, 0.0f);
 				effectAttackInfo.size = projectile->GetBulletEffectAttackSize();
-				LOG_DEBUG("size:{}",effectAttackInfo.size);
 				effectAttackInfo.damage = projectile->GetBulletEffectAttackDamage();
 
 				effectAttackInfo.canReflectBullet = false;

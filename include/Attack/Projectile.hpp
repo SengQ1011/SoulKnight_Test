@@ -80,7 +80,7 @@ protected:
 	// 泡泡子彈的屬性
 	float m_bubbleSize = 4.0f;
 	int m_bubbleDamage = 2;
-	float m_bubbleSpeed = 40.0f;
+	float m_bubbleSpeed = 20.0f;
 	float m_bubbleStayTime = 3.0f;
 };
 

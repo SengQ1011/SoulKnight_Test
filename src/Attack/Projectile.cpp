@@ -177,7 +177,7 @@ void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulle
 	ProjectileInfo bubbleInfo;
 	bubbleInfo.type = m_type;
 	bubbleInfo.attackTransform = bulletTransform;
-	bubbleInfo.direction = m_direction;
+	bubbleInfo.direction = bulletDirection;
 	bubbleInfo.size = m_bubbleSize;
 	bubbleInfo.damage = m_bubbleDamage;
 

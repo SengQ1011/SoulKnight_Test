@@ -124,7 +124,7 @@
     "speed": 0.7,
     "attackType": ["Gun"],
     "haveWeapon": 1,
-    "weaponId": 505,
+    "weaponId": 503,
     "size": 28.0
   },
   {
@@ -134,17 +134,17 @@
     "monsterType": "Attack",
     "isElite": 0,
     "animations": {
-      "STANDING": [""],
-      "MOVING": [""],
-      "ATTACK": [""],
-      "DEAD": [""]
+      "STANDING": ["/monster/Icefield/enemy33_heavyMiner/enemy33_4.png","/monster/Icefield/enemy33_heavyMiner/enemy33_5.png"],
+      "MOVING": ["/monster/Icefield/enemy33_heavyMiner/enemy33_4.png","/monster/Icefield/enemy33_heavyMiner/enemy33_5.png"],
+      "ATTACK": ["/monster/Icefield/enemy33_heavyMiner/enemy33_4.png","/monster/Icefield/enemy33_heavyMiner/enemy33_5.png"],
+      "DEAD": ["/monster/Icefield/enemy33_heavyMiner/enemy33_6.png"]
     },
     "monsterPoint": 2,
-    "maxHp": 1,
-    "speed": 0.7,
+    "maxHp": 12,
+    "speed": 0.5,
     "attackType": ["Gun"],
     "haveWeapon": 1,
-    "weaponId": 503,
+    "weaponId": 504,
     "size": 28.0
   },
   {
