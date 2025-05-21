@@ -246,18 +246,12 @@ void MovementComponent::HandleCollision(const CollisionEventInfo& eventInfo)
 
 	const std::shared_ptr<nGameObject> other = (eventInfo.GetObjectA() == owner) ? eventInfo.GetObjectB() : eventInfo.GetObjectA();
 
-	if (const std::shared_ptr<CollisionComponent> otherCollider =
-			other->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-		otherCollider && otherCollider->IsTrigger())
-	{
-		// if (const auto otherIsShockwave = std::dynamic_pointer_cast<EffectAttack>(other);
-		// 	otherIsShockwave && otherIsShockwave->GetEffectAttackType() == EffectAttackType::SHOCKWAVE)
-		// {
-		// 	// LOG_DEBUG("Shockwave");
-		// }
-		// else return;
-		return;
-	}
+	// if (const std::shared_ptr<CollisionComponent> otherCollider =
+	// 		other->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+	// 	otherCollider && otherCollider->IsTrigger())
+	// {
+	// 	return;
+	// }
 
 	const glm::vec2 collisionNormal = eventInfo.GetCollisionNormal();
 	auto penetration = eventInfo.penetration;

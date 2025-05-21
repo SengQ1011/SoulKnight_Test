@@ -35,6 +35,7 @@ void EffectAttack::Init() {
 	CollisionComp->ClearTriggerStrategies();
 	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
+	CollisionComp->SetCollider(false);
 	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
 	if (m_type == CharacterType::PLAYER)
 	{

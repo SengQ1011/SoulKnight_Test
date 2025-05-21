@@ -10,8 +10,6 @@
 
 
 #include "UIPanel.hpp"
-
-
 class nGameObject;
 
 class SettingPanel : public UIPanel {

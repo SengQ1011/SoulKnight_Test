@@ -39,15 +39,10 @@ void MainMenuScene::Start()
 	m_Version->SetZIndex(2);
 	m_Version->SetPivot({-450,300});
 
-	// m_MainMenu->SetDrawable(imagePoolManager.GetImage(RESOURCE_DIR"/UI/MenuPanel.png"));
-	// m_MainMenu->SetZIndex(100);
-	// m_MainMenu->m_Transform.translation = glm::vec2(140,80);
-	// std::shared_ptr<SettingPanel>settingPanel = std::make_shared<SettingPanel>();
-	// settingPanel->Start();
-	// UIManager::GetInstance().RegisterPanel("setting", settingPanel);
+	std::shared_ptr<SettingPanel>settingPanel = std::make_shared<SettingPanel>();
+	settingPanel->Start();
+	UIManager::GetInstance().RegisterPanel("setting", settingPanel);
 
-
-	// m_BGM->FadeIn(1);
 	AudioManager::GetInstance().Reset();
 	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
 	AudioManager::GetInstance().PlayBGM();
@@ -57,7 +52,6 @@ void MainMenuScene::Start()
 	m_Root->AddChild(m_Title);
 	m_Root->AddChild(m_Version);
 	m_Root->AddChild(m_Text);
-	// m_Root->AddChild(m_MainMenu);
 }
 
 void MainMenuScene::Update()
@@ -65,9 +59,9 @@ void MainMenuScene::Update()
 	m_Root->Update();
 	AudioManager::GetInstance().DrawDebugUI(); //測試用的
 	UIManager::GetInstance().Update();
-	// if (Util::Input::IsKeyUp(Util::Keycode::T)) UIManager::GetInstance().TogglePanel("setting");
-	// if (Util::Input::IsKeyUp(Util::Keycode::O)) UIManager::GetInstance().ShowPanel("setting");
-	// if (Util::Input::IsKeyUp(Util::Keycode::H)) UIManager::GetInstance().HidePanel("setting");
+	if (Util::Input::IsKeyUp(Util::Keycode::T)) UIManager::GetInstance().TogglePanel("setting");
+	if (Util::Input::IsKeyUp(Util::Keycode::O)) UIManager::GetInstance().ShowPanel("setting");
+	if (Util::Input::IsKeyUp(Util::Keycode::H)) UIManager::GetInstance().HidePanel("setting");
 }
 
 void MainMenuScene::Exit()
