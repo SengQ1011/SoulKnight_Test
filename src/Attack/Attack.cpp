@@ -4,8 +4,8 @@
 
 #include "Attack/Attack.hpp"
 
- Attack::Attack(const CharacterType type, const Util::Transform &attackTransform, const glm::vec2 direction, float size, int damage)
-	 :m_type(type), m_direction(direction), m_size(size), m_damage(damage)
+ Attack::Attack(const AttackInfo& attack_info)
+	 :m_type(attack_info.type), m_direction(attack_info.direction), m_size(attack_info.size), m_damage(attack_info.damage)
 {
-	this->m_Transform = attackTransform;
+	this->m_Transform = attack_info.attackTransform;
 }

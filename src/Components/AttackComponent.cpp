@@ -6,6 +6,7 @@
 #include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Structs/DeathEventInfo.hpp"
 #include "Weapon/Weapon.hpp"
 
 
@@ -64,7 +65,6 @@ void AttackComponent::Update()
 	m_switchTimeCounter -= deltaTime;
 }
 
-
 void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 {
 	auto character = GetOwner<Character>();
@@ -89,7 +89,6 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	scene->GetPendingObjects().push_back(m_currentWeapon);
 	m_currentWeapon->SetRegisteredToScene(true);
 }
-
 
 void AttackComponent::RemoveWeapon()
 {
@@ -226,7 +225,7 @@ void AttackComponent::SetDualWield(bool enable)
 	else
 	{
 		scene->GetRoot().lock()->AddChild(m_secondWeapon);
-		scene->GetCamera().lock()->AddChild(m_secondWeapon);
+		scene->GetCamera().lock()->SafeAddChild(m_secondWeapon);
 		// scene->GetPendingObjects().push_back(m_secondWeapon);
 	}
 }
@@ -259,5 +258,34 @@ void AttackComponent::OnLostTarget() {
 		if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
 			followerComp2->SetTarget(nullptr);
 		}
+	}
+}
+
+std::vector<EventType> AttackComponent::SubscribedEventTypes() const
+{
+	return {
+		EventType::Death
+	};
+}
+
+void AttackComponent::HandleEvent(const EventInfo &eventInfo)
+{
+	// {}可以在case裏形成額外作用域，用來在裏面定義變數
+	switch (eventInfo.GetEventType())
+	{
+	case EventType::Death:
+	{
+		if (const auto* deathEventInfo = dynamic_cast<const DeathEventInfo*>(&eventInfo)) {
+			// 清除武器
+			// m_Weapons.clear();
+			for (auto& weapon : m_Weapons)
+			{
+				weapon->SetControlVisible(false);
+			}
+		}
+		break;
+	}
+	default:
+		break;
 	}
 }

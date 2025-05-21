@@ -31,9 +31,8 @@ public:
 		m_spawnQueue.push_back(std::move(spawnFunc));
 	}
 	// 射出子彈類 OR 斬擊動畫
-	void spawnProjectile(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, const std::string& bulletImagePath, float speed,
-		int numRebound, bool canReboundBySword, bool isBubble, bool bubbleTrail, const std::string &bubbleImagePath);
-	void spawnEffectAttack(const CharacterType type, const Util::Transform& transform, glm::vec2 direction, float size, int damage, bool canReflect, bool isSword, EffectAttackType effectType);
+	void spawnProjectile(const ProjectileInfo& projectileInfo);
+	void spawnEffectAttack(const EffectAttackInfo &effectAttackInfo);
 
 
 private:

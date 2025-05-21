@@ -18,7 +18,10 @@ void FullFirepower::EndSkill(){
 
 void FullFirepower::Execute() {
 	if (auto attackComp = m_owner.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
-		if(auto currentWeapon = attackComp->GetCurrentWeapon()) {
+		if(auto currentWeapon = attackComp->GetCurrentWeapon())
+		{
+			auto attackType = currentWeapon->GetAttackType();
+			auto weaponType = currentWeapon->GetWeaponType();
 			auto cloneWeapon = currentWeapon->Clone();
 			auto cloneFollowerComp = cloneWeapon->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
 			auto currentFollowerComp = currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER);
@@ -26,7 +29,8 @@ void FullFirepower::Execute() {
 			cloneFollowerComp->SetTargetMouse(currentFollowerComp->GetUseMouse());
 			cloneFollowerComp->SetHandOffset(glm::vec2(30/5.0f,-25/4.0f));
 			cloneFollowerComp->SetHoldingPosition(glm::vec2(30/2.0f,2.0f));
-			cloneFollowerComp->SetIsSword(currentWeapon->GetIsSword());
+			if(Weapon::weaponHasOffset(attackType, weaponType))
+				cloneFollowerComp->SetIsSword(true);
 			attackComp->SetSecondWeapon(cloneWeapon);
 			attackComp->SetDualWield(true);
 			cloneWeapon->SetZIndexType(ZIndexType::CUSTOM);

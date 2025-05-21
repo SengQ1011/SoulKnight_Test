@@ -23,11 +23,15 @@ public:
 	void ZoomCamera(float zoomLevel);
 	void RotateCamera(float degree);
 
+	// 初始化/結束階段使用
 	void AddChild(const std::shared_ptr<nGameObject> &child);
 	void AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children);
 	void RemoveChild(const std::shared_ptr<nGameObject>& child);
 	void MarkForRemoval(const std::shared_ptr<nGameObject>& child);
 	bool FindChild(const std::shared_ptr<nGameObject>& child);
+	// 更新階段使用
+	void SafeAddChild(const std::shared_ptr<nGameObject>& child) { m_ToAddList.push_back(child); }
+	void SafeRemoveChild(const std::shared_ptr<nGameObject>& child) { m_ToRemoveList.push_back(child); }
 
 	void Update();
 	void UpdateZIndex(const std::shared_ptr<nGameObject> &child) const;
@@ -43,6 +47,7 @@ protected:
 private:
 	std::weak_ptr<nGameObject> m_FollowTarget;
 	std::vector<std::shared_ptr<nGameObject>> m_Children;
+	std::vector<std::weak_ptr<nGameObject>> m_ToAddList;
 	std::vector<std::weak_ptr<nGameObject>> m_ToRemoveList;
 
 	void UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child);

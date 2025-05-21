@@ -50,7 +50,7 @@ private:
 	glm::vec2 m_DesiredDirection; // 移動方向向量（輸入）
 	glm::vec2 m_Velocity; // 當前速度向量
 	glm::vec2 m_ImpulseVelocity = glm::vec2(0.0f);  // 外部施加的推力
-	float m_ImpulseDamping = 8.0f;						// 衰減速度
+	float m_ImpulseDamping = 6.0f;						// 衰減速度
 	// 冰面專用參數()
 	float m_IceAcceleration = 4.0f; // 冰面加速度--》值越小，加速越慢（需要更長時間提速）
 	float m_IceFriction = 15.0f; // 冰面摩擦力==》值越大，減速越快（滑行距離短）
