@@ -169,7 +169,8 @@ bool JsonArrayContains(const nlohmann::json& array, const std::string& target) {
 
 	return std::any_of(array.begin(), array.end(),
 		[&target](const auto& item) {
-			return item.is_string() && item.get<std::string>() == target;
+			// return item.is_string() && item.get<std::string>() == target;
+			return item.is_string() && item.template get<std::string>() == target;
 		}
 	);
 }

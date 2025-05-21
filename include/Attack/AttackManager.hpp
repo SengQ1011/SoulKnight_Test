@@ -27,7 +27,7 @@ public:
 	const std::vector<std::shared_ptr<EffectAttack>>& GetEffects() const { return m_effects; }
 
 	// Bubble延緩加入->否則一邊更新一邊加入vector，會導致迭代器/引用失效
-	void AttackManager::EnqueueSpawn(std::function<void()> spawnFunc) {
+	void EnqueueSpawn(std::function<void()> spawnFunc) {
 		m_spawnQueue.push_back(std::move(spawnFunc));
 	}
 	// 射出子彈類 OR 斬擊動畫
