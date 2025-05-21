@@ -81,7 +81,6 @@ void RoomCollisionManager::Update()
 
 
     std::for_each(m_NGameObjects.begin(), m_NGameObjects.end(), [&](const auto& weakObj) {
-        // ZoneScopedN("NarrowPhaseAndRecord");
 
         const std::shared_ptr<nGameObject> objectA = weakObj.lock();
         if (!objectA || !objectA->IsActive())

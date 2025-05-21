@@ -21,14 +21,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(ptsd)
 
-FetchContent_Declare(
-        eventpp
-        GIT_REPOSITORY https://github.com/wqking/eventpp
-        GIT_TAG        d2db8af2a46c79f8dc75759019fba487948e9442 # v0.1.3
-        SOURCE_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/EVENTPP
-)
-FetchContent_MakeAvailable(eventpp)
-
 include(files.cmake)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
@@ -44,7 +36,6 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
-        libs/tracy/TracyClient.cpp
         include/RandomUtil.hpp
 )
 
@@ -56,7 +47,6 @@ endif()
 
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE TRACY_ENABLE TRACY_CALLSTACK TRACY_MEMORY)
     target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Resources")
     target_compile_definitions(${PROJECT_NAME} PRIVATE JSON_DIR="${CMAKE_CURRENT_SOURCE_DIR}/json")
 else()
@@ -76,12 +66,6 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${DEPENDENCY_INCLUDE_D
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/PTSD/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/nlohmann)
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/client
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/tracy/tracy
-)
 
 if(WIN32)
     target_link_libraries(${PROJECT_NAME}

@@ -111,8 +111,6 @@ void Camera::Update() {
 		}
 
 		// 判斷是否顯示
-		// child->SetVisible(false);
-
 		child->SetVisible(child->IsInsideWindow() && child->IsControlVisible());
 		if (!child->IsInsideWindow()) continue; // 沒顯示就不移動了
 		child->Update();

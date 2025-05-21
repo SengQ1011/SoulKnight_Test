@@ -22,8 +22,6 @@
 
 void LobbyScene::Start()
 {
-
-	// ZoneScopedN("LobbyScene::Start");
 	LOG_DEBUG("Entering Lobby Scene");
 	// 创建并初始化玩家
 	CreatePlayer();
