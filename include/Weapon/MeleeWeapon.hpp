@@ -5,11 +5,12 @@
 #ifndef MELEEWEAPON_HPP
 #define MELEEWEAPON_HPP
 
+#include "Attack/EffectAttack.hpp"
 #include "Weapon.hpp"
 
 struct MeleeWeaponInfo : public BaseWeaponInfo {
 	float attackRange = 0.0f;
-	EffectAttackType attackEffectType;
+	EffectAttackInfo defaultEffectAttackInfo;
 };
 
 class MeleeWeapon : public Weapon {
@@ -23,11 +24,11 @@ public:
 	}
 
 	//----Getter----
-	[[nodiscard]] EffectAttackType GetEffectAttackType() const { return m_effectAttackType; }
+	[[nodiscard]] float GetAttackRange() const { return m_attackRange; }
 
 private:
-	EffectAttackType m_effectAttackType;
 	float m_attackRange;  // 近戰武器的攻擊範圍
+	EffectAttackInfo m_effectAttackInfo;
 };
 
 #endif // MELEEWEAPON_HPP

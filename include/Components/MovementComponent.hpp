@@ -27,14 +27,16 @@ public:
 	void ResolveOverlap(glm::vec2 collisionNormal, float penetration);
 
 	//----Getters----
-	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
 	[[nodiscard]] const glm::vec2 &GetVelocity() const { return m_Velocity; }
 	[[nodiscard]] const glm::vec2 &GetPosition() const { return m_Position; }
+	[[nodiscard]] float GetSpeedRatio() const { return m_SpeedRatio; }
+	[[nodiscard]] float GetCurrentSpeedRatio() const { return m_currentSpeedRatio; }
 	[[nodiscard]] const glm::vec2 GetLastValidDirection() const { return m_LastValidDirection; }
 
 	//----Setters----
 	void SetPosition(const glm::vec2 &position) { m_Position = position; }
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
+	void SetCurrentSpeedRatio(const float speedRatio) { m_currentSpeedRatio = speedRatio; }
 	void SetVelocity(const glm::vec2 &velocity) { m_Velocity = velocity; }
 	void SetImpulseVelocity(const glm::vec2 &velocity) { m_ImpulseVelocity = velocity; }
 	void SetOnIce(bool isOnIce) { m_IsOnIce = isOnIce; }

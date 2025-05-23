@@ -36,7 +36,7 @@ void EffectAttack::Init() {
 	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
 	CollisionComp->SetCollider(false);
-	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
 	if (m_type == CharacterType::PLAYER)
 	{
 		if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
@@ -84,6 +84,9 @@ void EffectAttack::ResetAll(const EffectAttackInfo &effectAttackInfo)
  	m_direction = effectAttackInfo.direction;
  	m_size = effectAttackInfo.size;
  	m_damage = effectAttackInfo.damage;
+	m_elementalDamage = effectAttackInfo.elementalDamage;
+	m_chainAttack = effectAttackInfo.chainAttack;
+
  	m_effectType = effectAttackInfo.effectType;
 	m_reflectBullet = effectAttackInfo.canReflectBullet;
 	m_bulletBlocking = effectAttackInfo.canBlockingBullet;

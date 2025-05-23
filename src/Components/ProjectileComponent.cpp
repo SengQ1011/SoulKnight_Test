@@ -70,25 +70,27 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 		projectile->AddReboundCounter();
 	}else {
 		projectile->MarkForRemoval();
-		if( projectile->GetHaveEffectAttack())
+		auto chainAttackInfo = projectile->GetChainAttackInfo();
+		if(chainAttackInfo.enabled)
 		{
 			const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 			if (const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK))
 			{
-				EffectAttackInfo effectAttackInfo;
-				effectAttackInfo.type = projectile->GetAttackLayerType();
-				effectAttackInfo.attackTransform = projectile->GetTransform();
-				effectAttackInfo.attackTransform.translation = projectile->GetWorldCoord();
-				effectAttackInfo.attackTransform.scale = glm::vec2(1.0f, 1.0f);
-				effectAttackInfo.direction = glm::vec2(0.0f, 0.0f);
-				effectAttackInfo.size = projectile->GetBulletEffectAttackSize();
-				effectAttackInfo.damage = projectile->GetBulletEffectAttackDamage();
+				if (chainAttackInfo.attackType == AttackType::EFFECT_ATTACK) {
+					const auto effectInfoPtr = std::dynamic_pointer_cast<EffectAttackInfo>(chainAttackInfo.nextAttackInfo);
+					if (!effectInfoPtr) return;
+					effectInfoPtr->type = projectile->GetAttackLayerType();
+					effectInfoPtr->attackTransform = projectile->GetTransform();
+					effectInfoPtr->attackTransform.translation = projectile->GetWorldCoord();
+					effectInfoPtr->attackTransform.scale = glm::vec2(1.0f, 1.0f);
+					effectInfoPtr->direction = glm::vec2(0.0f, 0.0f);
+					attackManager->spawnEffectAttack(*effectInfoPtr);
+				}else
+				{
+					const auto projInfoPtr = std::dynamic_pointer_cast<ProjectileInfo>(chainAttackInfo.nextAttackInfo);
+					if (!projInfoPtr) return;
+				}
 
-				effectAttackInfo.canReflectBullet = false;
-				effectAttackInfo.canBlockingBullet = false;
-				effectAttackInfo.effectType = projectile->GetBulletEffectType();
-
-				attackManager->spawnEffectAttack(effectAttackInfo);
 			}
 		}
 	}

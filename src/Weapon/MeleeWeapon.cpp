@@ -10,9 +10,9 @@
 
 MeleeWeapon::MeleeWeapon(const MeleeWeaponInfo& meleeWeaponInfo)
 						: Weapon(meleeWeaponInfo),
-							m_attackRange(meleeWeaponInfo.attackRange),  m_effectAttackType(meleeWeaponInfo.attackEffectType)
+							m_attackRange(meleeWeaponInfo.attackRange), m_effectAttackInfo(meleeWeaponInfo.defaultEffectAttackInfo)
 {
-	m_AttackType = AttackType::MELEE;
+	m_AttackType = AttackType::EFFECT_ATTACK;
 }
 
 void MeleeWeapon::attack(int damage) {
@@ -43,9 +43,9 @@ void MeleeWeapon::attack(int damage) {
 	// 建立 Transform
 	Util::Transform slashTransform;
 	float distance = 0.0f;
-	if(m_effectAttackType == EffectAttackType::SLASH) distance = 16.0f;
-	else if (m_effectAttackType == EffectAttackType::LUNGE) distance = 16.0f;
-	else if (m_effectAttackType == EffectAttackType::SHOCKWAVE) distance = 25.0f;
+	if(m_effectAttackInfo.effectType == EffectAttackType::SLASH) distance = 16.0f;
+	else if (m_effectAttackInfo.effectType == EffectAttackType::LUNGE) distance = 16.0f;
+	else if (m_effectAttackInfo.effectType == EffectAttackType::SHOCKWAVE) distance = 25.0f;
 	// facingLeft
 	if(std::cos(angle) < 0.0f)distance += 5.0f;
 
@@ -71,7 +71,7 @@ void MeleeWeapon::attack(int damage) {
 	}
 	slashTransform.translation = this->m_WorldCoord + offset;							// 揮擊的位置
 
-	if (m_effectAttackType == EffectAttackType::SHOCKWAVE){
+	if (m_effectAttackInfo.effectType == EffectAttackType::SHOCKWAVE){
 		slashTransform.rotation = 0.0f;
 		slashTransform.scale.y = std::abs(slashTransform.scale.y);
 	}
@@ -87,16 +87,14 @@ void MeleeWeapon::attack(int damage) {
 
 	if(const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock()) {
 		const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-		EffectAttackInfo effectAttackInfo;
+		EffectAttackInfo effectAttackInfo = m_effectAttackInfo;
 		effectAttackInfo.type = m_currentOwner->GetType();
 		effectAttackInfo.attackTransform = slashTransform;
 		effectAttackInfo.direction = slashDirection;
-		effectAttackInfo.size = m_attackRange;
 		effectAttackInfo.damage = damage;
 
 		effectAttackInfo.canReflectBullet = canReflect;
 		effectAttackInfo.canBlockingBullet = Weapon::weaponHasOffset(m_AttackType, m_weaponType);
-		effectAttackInfo.effectType = m_effectAttackType;
 
 		attackManager->spawnEffectAttack(effectAttackInfo);
 	} else {

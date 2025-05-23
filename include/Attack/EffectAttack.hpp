@@ -6,11 +6,13 @@
 #define EFFECTATTACK_HPP
 
 #include "Attack/Attack.hpp"
+
 class Animation;
 
 struct  EffectAttackInfo : public AttackInfo
 {
-	EffectAttackType effectType;
+	~EffectAttackInfo() override = default;
+	EffectAttackType effectType = EffectAttackType::NONE;
 	bool canReflectBullet = false;
 	bool canBlockingBullet = true;
 };

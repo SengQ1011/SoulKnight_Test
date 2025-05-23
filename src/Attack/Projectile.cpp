@@ -19,17 +19,15 @@ Projectile::Projectile(const ProjectileInfo& projectileInfo)
 								m_imagePath(projectileInfo.imagePath), m_speed(projectileInfo.speed),
 								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
 								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
-								m_bubbleImagePath(projectileInfo.bubbleImagePath),
-								m_bulletHaveEffectAttack(projectileInfo.haveEffectAttack), m_effectAttackSize(projectileInfo.effectAttackSize),
-								m_effectAttackDamage(projectileInfo.effectAttackDamage), m_bullet_EffectAttack(projectileInfo.effect){}
+								m_bubbleImagePath(projectileInfo.bubbleImagePath) {}
 
 //=========================== (實作) ================================//
 void Projectile::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
 	m_startPosition = this->m_WorldCoord;
-	// 全部子彈太大了，縮小35%
-	this->m_Transform.scale = glm::vec2(0.65f, 0.65f);
+	// 全部子彈太大了，縮小30%
+	this->m_Transform.scale = glm::vec2(0.7f, 0.7f);
 	// 其他初始化（縮放、圖片等）
 	this->SetInitialScale(m_Transform.scale);
 	this->SetZIndexType(ZIndexType::ATTACK);
@@ -47,7 +45,7 @@ void Projectile::Init() {
 	//設置觸發器 和 觸發事件
 	CollisionComp->ClearTriggerStrategies();
 	CollisionComp->SetTrigger(true);
-	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
 
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
@@ -143,6 +141,8 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 	m_direction = projectileInfo.direction;
 	m_size = projectileInfo.size;
 	m_damage = projectileInfo.damage;
+	m_elementalDamage = projectileInfo.elementalDamage;
+	m_chainAttack = projectileInfo.chainAttack;
 
 	m_imagePath = projectileInfo.imagePath;
 	m_speed = projectileInfo.speed;
@@ -151,10 +151,6 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 	m_isBubble = projectileInfo.isBubble;
 	m_enableBubbleTrail = projectileInfo.bubbleTrail;
 	m_bubbleImagePath = projectileInfo.bubbleImagePath;
-	m_bulletHaveEffectAttack = projectileInfo.haveEffectAttack;
-	m_effectAttackSize = projectileInfo.effectAttackSize;
-	m_effectAttackDamage = projectileInfo.effectAttackDamage;
-	m_bullet_EffectAttack = projectileInfo.effect;
 
 	m_reboundCounter = 0;
 	m_markRemove = false;
@@ -175,22 +171,18 @@ void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulle
 	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
 
 	ProjectileInfo bubbleInfo;
-	bubbleInfo.type = m_type;
+	bubbleInfo.type = this->m_type;
 	bubbleInfo.attackTransform = bulletTransform;
 	bubbleInfo.direction = bulletDirection;
-	bubbleInfo.size = m_bubbleSize;
-	bubbleInfo.damage = m_bubbleDamage;
+	bubbleInfo.size = this->m_bubbleSize;
+	bubbleInfo.damage = this->m_bubbleDamage;
 
-	bubbleInfo.imagePath = m_bubbleImagePath;
-	bubbleInfo.speed = m_bubbleSpeed;
+	bubbleInfo.imagePath = this->m_bubbleImagePath;
+	bubbleInfo.speed = this->m_bubbleSpeed;
 	bubbleInfo.numRebound = 0;
 	bubbleInfo.canReboundBySword = false;
 	bubbleInfo.isBubble = true;
 	bubbleInfo.bubbleTrail = false;
-	bubbleInfo.haveEffectAttack = false;
-	bubbleInfo.effectAttackSize = 0.0f;
-	bubbleInfo.effectAttackDamage = 0;
-	bubbleInfo.effect = EffectAttackType::NONE;
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);

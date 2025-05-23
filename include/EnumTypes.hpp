@@ -63,8 +63,8 @@ enum class EffectAttackType
 };
 
 enum class AttackType {
-	MELEE,
-	GUN,
+	EFFECT_ATTACK,
+	PROJECTILE,
 	COLLISION,
 	NONE
 };

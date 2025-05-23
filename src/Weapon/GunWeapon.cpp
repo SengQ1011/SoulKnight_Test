@@ -12,15 +12,11 @@
 
 GunWeapon::GunWeapon(const GunWeaponInfo& gunWeaponInfo)
 		: Weapon(gunWeaponInfo),
-			m_bulletImagePath(gunWeaponInfo.bulletImagePath), m_numOfBullets(gunWeaponInfo.numOfBullets),
-			m_bulletOffset(gunWeaponInfo.bulletOffset), m_bulletSize(gunWeaponInfo.bulletSize),
-			m_bulletSpeed(gunWeaponInfo.bulletSpeed), m_bulletCanReboundBySword(gunWeaponInfo.bulletCanReboundBySword),
-			m_bulletIsBubble(gunWeaponInfo.bulletIsBubble), m_bulletHaveBubbleTrail(gunWeaponInfo.haveBubbleTrail),
-			m_bubbleImagePath(gunWeaponInfo.bubbleImagePath),
-			m_bulletHaveEffectAttack(gunWeaponInfo.haveEffectAttack), m_effectAttackSize(gunWeaponInfo.effectAttackSize),
-			m_effectAttackDamage(gunWeaponInfo.effectAttackDamage), m_bullet_EffectAttack(gunWeaponInfo.effect)
+			m_numOfBullets(gunWeaponInfo.numOfBullets), m_bulletOffset(gunWeaponInfo.bulletOffset),
+			m_projectileInfo(gunWeaponInfo.defaultProjectileInfo)
 {
-	m_AttackType = AttackType::GUN;
+	m_AttackType = AttackType::PROJECTILE;
+
 }
 
 void GunWeapon::attack(const int damage) {
@@ -41,7 +37,9 @@ void GunWeapon::attack(const int damage) {
 	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x); // 子彈旋轉
 
 	const auto characterType = m_currentOwner->GetType();
-	auto numRebound = m_currentOwner->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetNumRebound();
+	int numRebound = 0;
+	if (m_projectileInfo.canReboundBySword)
+		numRebound = m_currentOwner->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetNumRebound();
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 
@@ -71,25 +69,12 @@ void GunWeapon::attack(const int damage) {
 		// 更新 Transform
 		bulletTransform.rotation = newRotation;
 
-		ProjectileInfo bulletInfo;
-		bulletInfo.type = m_currentOwner->GetType();
-		bulletInfo.attackTransform = bulletTransform;
-		bulletInfo.direction = newDirection;
-		bulletInfo.size = m_bulletSize;
-		bulletInfo.damage = damage;
+		ProjectileInfo projectileInfo = m_projectileInfo;
+		projectileInfo.type = m_currentOwner->GetType();
+		projectileInfo.attackTransform = bulletTransform;
+		projectileInfo.direction = newDirection;
+		projectileInfo.damage = damage;
 
-		bulletInfo.imagePath = m_bulletImagePath;
-		bulletInfo.speed = m_bulletSpeed;
-		bulletInfo.numRebound = numRebound;
-		bulletInfo.canReboundBySword = m_bulletCanReboundBySword;
-		bulletInfo.isBubble = m_bulletIsBubble;
-		bulletInfo.bubbleImagePath = m_bubbleImagePath;
-		bulletInfo.bubbleTrail = m_bulletHaveBubbleTrail;
-		bulletInfo.haveEffectAttack = m_bulletHaveEffectAttack;
-		bulletInfo.effectAttackSize = m_effectAttackSize;
-		bulletInfo.effectAttackDamage = m_effectAttackDamage;
-		bulletInfo.effect = m_bullet_EffectAttack;
-
-		attackManager->spawnProjectile(bulletInfo);
+		attackManager->spawnProjectile(projectileInfo);
 	}
  }

@@ -154,8 +154,18 @@ void AttackComponent::TryAttack()
 		return;
 
 	const auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
-	if (!healthComponent)
-		return;
+	if (!healthComponent) return;
+	if (const auto stateComp = character->GetComponent<StateComponent>(ComponentType::STATE))
+	{
+		if (auto statusEffects = stateComp->GetActiveEffects(); !statusEffects.empty())
+		{
+			const auto it = std::find_if(statusEffects.begin(), statusEffects.end(),
+											[](StatusEffect effect) {
+												return effect == StatusEffect::FROZEN;});
+			// 如果有Frozen異常狀態，就不能攻擊
+			if (it != statusEffects.end()) return;
+		}
+	}
 	const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
 	const float currentEnergy = healthComponent->GetCurrentEnergy();
 	const auto useEnergy = m_currentWeapon->GetEnergy();

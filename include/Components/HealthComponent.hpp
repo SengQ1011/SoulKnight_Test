@@ -18,12 +18,13 @@ public:
 	void Update() override;
 
 	//----Getter----
-	int GetMaxHp() const { return m_maxHp; }
-	int GetCurrentHp() const { return m_currentHp; }
-	int GetMaxArmor() const { return m_maxArmor; }
-	int GetCurrentArmor() const { return m_currentArmor; }
-	int GetMaxEnergy() const { return m_maxEnergy; }
-	int GetCurrentEnergy() const { return m_currentEnergy; }
+	[[nodiscard]] int GetMaxHp() const { return m_maxHp; }
+	[[nodiscard]] int GetCurrentHp() const { return m_currentHp; }
+	[[nodiscard]] int GetMaxArmor() const { return m_maxArmor; }
+	[[nodiscard]] int GetCurrentArmor() const { return m_currentArmor; }
+	[[nodiscard]] int GetMaxEnergy() const { return m_maxEnergy; }
+	[[nodiscard]] int GetCurrentEnergy() const { return m_currentEnergy; }
+	[[nodiscard]] bool GetIsInvincibleMode() const { return m_invincibleMode; }
 
 	//----Setter----
 	void SetMaxHp(const int hp) { m_maxHp = hp; }
@@ -33,6 +34,7 @@ public:
 	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
 	void AddCurrentEnergy(const int energy) { m_currentEnergy += energy; }
 	void ConsumeEnergy(const int energy) { m_currentEnergy -= energy; }
+	void SetInvincibleMode(const bool op) { m_invincibleMode = op; }
 	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
 	void TakeDamage(int damage);
@@ -48,8 +50,9 @@ private:
 	int m_maxEnergy; // 能量上限
 	int m_currentEnergy; // 當前能量值
 	float m_armorRecoveryInterval = 1.5f;
-	float m_armorRecoveryTimer = 0.0f; // 恢復護甲計時器
-	bool m_breakProtection = false; // 天賦：破甲保護
+	float m_armorRecoveryTimer = 0.0f;	// 恢復護甲計時器
+	bool m_invincibleMode = false;		// 無敵模式
+	bool m_breakProtection = false;		// 天賦：破甲保護
 	std::unordered_map<int, float> m_recentAttackSources;	// 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
 	float m_invincibleDuration = 0.5f; // 碰撞後對於同一個物件無敵時間（秒）
 

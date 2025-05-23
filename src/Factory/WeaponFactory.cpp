@@ -4,6 +4,8 @@
 // WeaponFactory.cpp
 
 #include "Factory/WeaponFactory.hpp"
+
+#include "Attack/EffectAttack.hpp"
 #include "Factory/Factory.hpp"
 
 #include "Weapon/GunWeapon.hpp"
@@ -25,8 +27,8 @@ static const std::unordered_map<std::string, WeaponType> weaponTypeMap = {
 };
 
 AttackType stringToAttackType(const std::string& str) {
-	if (str == "Melee") return AttackType::MELEE;
-	if (str == "Gun") return AttackType::GUN;
+	if (str == "EffectAttack") return AttackType::EFFECT_ATTACK;
+	if (str == "Projectile") return AttackType::PROJECTILE;
 	if (str == "None") return AttackType::NONE;
 }
 
@@ -48,6 +50,40 @@ EffectAttackType stringToEffectAttackType(const std::string& str) {
 	if (str == "SMALL_BOOM") return EffectAttackType::SMALL_BOOM;
 }
 
+StatusEffect stringToStatusEffect(const std::string& str) {
+	if (str == "NONE") return StatusEffect::NONE;
+	if (str == "BURNS") return StatusEffect::BURNS;
+	if (str == "POISON") return StatusEffect::POISON;
+	if (str == "ELECTRIC") return StatusEffect::ELECTRIC;
+	if (str == "DIZZINESS") return StatusEffect::DIZZINESS;
+	if (str == "FROZEN") return StatusEffect::FROZEN;
+	if (str == "FATIGUE") return StatusEffect::FATIGUE;
+}
+
+std::shared_ptr<ProjectileInfo> createChainedProjectileInfo(const nlohmann::json& json)
+{
+	auto proj = std::make_shared<ProjectileInfo>();
+	proj->imagePath = json["imagePath"].get<std::string>();
+	proj->size = json["size"].get<float>();
+	proj->damage = json["damage"].get<int>();
+	proj->elementalDamage = stringToStatusEffect(json["elementalDamage"].get<std::string>());
+	proj->speed = json["speed"].get<float>();
+	proj->canReboundBySword = json["canReboundBySword"].get<bool>();
+	return proj;
+}
+
+std::shared_ptr<EffectAttackInfo> createChainedEffectAttackInfo(const nlohmann::json& json)
+{
+	auto effect = std::make_shared<EffectAttackInfo>();
+	effect->size = json["size"].get<float>();
+	effect->damage = json["damage"].get<float>();
+	effect->elementalDamage = stringToStatusEffect(json["elementalDamage"].get<std::string>());
+	effect->canReflectBullet = false;
+	effect->canBlockingBullet = false;
+	effect->effectType = stringToEffectAttackType(json["effectType"].get<std::string>());
+	return effect;
+}
+
 namespace WeaponFactory {
 	std::shared_ptr<Weapon> createWeapon(int weaponID) {
 		try {
@@ -66,18 +102,18 @@ namespace WeaponFactory {
 					float criticalRate = weapon["criticalRate"].get<float>();
 					int offset = weapon["offset"].get<int>();
 					float attackInterval = weapon["attackInterval"].get<float>();
+					StatusEffect elementalDamage = stringToStatusEffect(weapon["elementalDamage"].get<std::string>());
 					int dropLevel = weapon["dropLevel"].get<int>();
 					int basicPrice = weapon["basicPrice"].get<int>();
 					std::shared_ptr<Weapon> weaponPtr;
 
 					// 根據 type 建立不同類型的武器
-					if (attackType == AttackType::MELEE) {
+					if (attackType == AttackType::EFFECT_ATTACK) {
 						MeleeWeaponInfo meleeInfo;
 						meleeInfo.imagePath = weaponImagePath;
 						meleeInfo.name = name;
 						meleeInfo.attackType = attackType;
 						meleeInfo.weaponType = weaponType;
-						meleeInfo.damage = damage;
 						meleeInfo.energy = energy;
 						meleeInfo.criticalRate = criticalRate;
 						meleeInfo.offset = offset;
@@ -85,10 +121,28 @@ namespace WeaponFactory {
 						meleeInfo.dropLevel = dropLevel;
 						meleeInfo.basicPrice = basicPrice;
 						meleeInfo.attackRange = weapon["attackRange"].get<float>();
-						meleeInfo.attackEffectType = stringToEffectAttackType(weapon["EffectAttackType"].get<std::string>());
+
+						EffectAttackInfo effectInfo;
+						effectInfo.size = weapon["attackRange"].get<float>();
+						effectInfo.damage = damage;
+						effectInfo.elementalDamage = elementalDamage;
+						effectInfo.effectType = stringToEffectAttackType(weapon["EffectAttackType"].get<std::string>());
+						if (weapon.contains("chainedAttack"))
+						{
+							nlohmann::json chainedAttack = weapon["chainedAttack"];
+							effectInfo.chainAttack.enabled = true;
+							auto  attackType = stringToAttackType(chainedAttack["attackType"].get<std::string>());
+							if(attackType == AttackType::PROJECTILE) {
+								effectInfo.chainAttack.nextAttackInfo = createChainedProjectileInfo(chainedAttack);
+							}else if(attackType == AttackType::EFFECT_ATTACK) {
+								effectInfo.chainAttack.nextAttackInfo = createChainedEffectAttackInfo(chainedAttack);
+							}
+						}
+						meleeInfo.defaultEffectAttackInfo = effectInfo;
+
 						weaponPtr =  std::make_shared<MeleeWeapon>(meleeInfo);
 					}
-					else if (attackType == AttackType::GUN) {
+					else if (attackType == AttackType::PROJECTILE) {
 						GunWeaponInfo gunInfo;
 						gunInfo.imagePath = weaponImagePath;
 						gunInfo.name = name;
@@ -101,25 +155,35 @@ namespace WeaponFactory {
 						gunInfo.attackInterval = attackInterval;
 						gunInfo.dropLevel = dropLevel;
 						gunInfo.basicPrice = basicPrice;
-						gunInfo.bulletImagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
-						gunInfo.bulletOffset = weapon["bulletOffset"].get<float>();
+
 						gunInfo.numOfBullets = weapon["numOfBullets"].get<int>();
-						gunInfo.bulletSize = weapon["bulletSize"].get<float>();
-						gunInfo.bulletSpeed = weapon["bulletSpeed"].get<float>();
-						gunInfo.bulletCanReboundBySword = weapon["bulletCanRebound"].get<bool>();
-						gunInfo.bulletIsBubble = weapon["bulletIsBubble"].get<bool>();
-						gunInfo.haveBubbleTrail = weapon["bubbleTrail"].get<bool>();
-						if (gunInfo.haveBubbleTrail){
-							gunInfo.bubbleImagePath = RESOURCE_DIR + weapon["bubbleImagePath"].get<std::string>();
+						gunInfo.bulletOffset = weapon["bulletOffset"].get<float>();
+
+						ProjectileInfo projectileInfo;
+						projectileInfo.imagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
+						projectileInfo.size = weapon["bulletSize"].get<float>();
+						projectileInfo.elementalDamage = elementalDamage;
+						projectileInfo.speed = weapon["bulletSpeed"].get<float>();
+						projectileInfo.canReboundBySword = weapon["bulletCanRebound"].get<bool>();
+						projectileInfo.isBubble = weapon["bulletIsBubble"].get<bool>();
+						projectileInfo.bubbleTrail = weapon["bubbleTrail"].get<bool>();
+						if (projectileInfo.bubbleTrail){
+							projectileInfo.bubbleImagePath = RESOURCE_DIR + weapon["bubbleImagePath"].get<std::string>();
 							LOG_DEBUG("have trail");
 						}
-						gunInfo.haveEffectAttack = weapon["haveEffectAttack"].get<bool>();
-						if(gunInfo.haveEffectAttack)
+						if (weapon.contains("chainedAttack"))
 						{
-							gunInfo.effectAttackSize = weapon["effectAttackSize"].get<float>();
-							gunInfo.effectAttackDamage = weapon["effectAttackDamage"].get<int>();
-							gunInfo.effect = stringToEffectAttackType(weapon["effectType"].get<std::string>());
+							nlohmann::json chainedAttack = weapon["chainedAttack"];
+							projectileInfo.chainAttack.enabled = true;
+							projectileInfo.chainAttack.attackType = stringToAttackType(chainedAttack["attackType"].get<std::string>());
+							if(projectileInfo.chainAttack.attackType == AttackType::PROJECTILE) {
+								projectileInfo.chainAttack.nextAttackInfo = createChainedProjectileInfo(chainedAttack);
+							}else if(projectileInfo.chainAttack.attackType == AttackType::EFFECT_ATTACK) {
+								projectileInfo.chainAttack.nextAttackInfo = createChainedEffectAttackInfo(chainedAttack);
+							}
 						}
+						gunInfo.defaultProjectileInfo = projectileInfo;
+
 						weaponPtr = std::make_shared<GunWeapon>(gunInfo);
 					}
 					auto followerComp = weaponPtr->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
