@@ -7,8 +7,9 @@
 #ifndef NGAMEOBJECT_INL
 #define NGAMEOBJECT_INL
 
-#include "nGameObject.hpp"
 #include "Components/AllComponentInclude.hpp"
+#include "Creature/Character.hpp"
+#include "nGameObject.hpp"
 
 template <typename T, typename... Args>
 std::shared_ptr<T> nGameObject::AddComponent(ComponentType type,Args &&...args) //或許weak_ptr
@@ -54,6 +55,7 @@ void nGameObject::OnEvent(const EventT &eventInfo)
 	{
 		for (auto* component : it->second)
 		{
+			if (static_cast<int>(component->GetType()) == 11) LOG_DEBUG("Check");
 			component->HandleEvent(eventInfo);
 		}
 	}

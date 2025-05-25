@@ -113,7 +113,7 @@ void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 		if (character->GetType() == CharacterType::ENEMY) {
 			if (const auto collisionDamage = character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
 				collisionDamage > 0) {
-				LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
+				// LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
 				this->TakeDamage(collisionDamage);
 				}
 		}

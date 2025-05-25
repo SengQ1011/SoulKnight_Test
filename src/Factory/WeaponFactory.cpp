@@ -114,6 +114,7 @@ namespace WeaponFactory {
 						meleeInfo.name = name;
 						meleeInfo.attackType = attackType;
 						meleeInfo.weaponType = weaponType;
+						meleeInfo.damage = damage;
 						meleeInfo.energy = energy;
 						meleeInfo.criticalRate = criticalRate;
 						meleeInfo.offset = offset;
@@ -124,7 +125,6 @@ namespace WeaponFactory {
 
 						EffectAttackInfo effectInfo;
 						effectInfo.size = weapon["attackRange"].get<float>();
-						effectInfo.damage = damage;
 						effectInfo.elementalDamage = elementalDamage;
 						effectInfo.effectType = stringToEffectAttackType(weapon["EffectAttackType"].get<std::string>());
 						if (weapon.contains("chainedAttack"))
@@ -158,6 +158,7 @@ namespace WeaponFactory {
 
 						gunInfo.numOfBullets = weapon["numOfBullets"].get<int>();
 						gunInfo.bulletOffset = weapon["bulletOffset"].get<float>();
+						gunInfo.bulletCanTracking = weapon["bulletCanTracking"].get<bool>();
 
 						ProjectileInfo projectileInfo;
 						projectileInfo.imagePath = RESOURCE_DIR + weapon["bulletImagePath"].get<std::string>();
@@ -165,6 +166,7 @@ namespace WeaponFactory {
 						projectileInfo.elementalDamage = elementalDamage;
 						projectileInfo.speed = weapon["bulletSpeed"].get<float>();
 						projectileInfo.canReboundBySword = weapon["bulletCanRebound"].get<bool>();
+						projectileInfo.canTracking = weapon["bulletCanTracking"].get<bool>();
 						projectileInfo.isBubble = weapon["bulletIsBubble"].get<bool>();
 						projectileInfo.bubbleTrail = weapon["bubbleTrail"].get<bool>();
 						if (projectileInfo.bubbleTrail){

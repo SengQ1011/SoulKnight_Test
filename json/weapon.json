@@ -12,13 +12,14 @@
     "attackInterval": 0.333,
     "dropLevel": 3,
     "basicPrice": 10,
-    "elementalDamage": "POISON",
+    "elementalDamage": "NONE",
     "numOfBullets": 1,
     "bulletOffset": 12.5,
     "bulletSize": 8.0,
     "bulletImagePath": "/attackUI/bullet/bullet_34.png",
     "bulletSpeed": 400.0,
     "bulletCanRebound": true,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": false
   },
@@ -59,12 +60,9 @@
     "bulletSize": 8.0,
     "bulletSpeed": 400.0,
     "bulletCanRebound": true,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
-    "bubbleTrail": false,
-    "haveEffectAttack": false,
-    "effectAttackSize": 0.0,
-    "effectAttackDamage": 0,
-    "effectType": "NONE"
+    "bubbleTrail": false
   },
   {
     "ID": 4,
@@ -103,6 +101,7 @@
     "bulletSize": 12.0,
     "bulletSpeed": 350.0,
     "bulletCanRebound": false,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": false,
     "bubbleImagePath": "",
@@ -167,11 +166,11 @@
     "bulletSize": 10.0,
     "bulletSpeed": 100.0,
     "bulletCanRebound": false,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": true,
     "bubbleImagePath": "/attackUI/bullet/bullet_107.png"
-  },
-  {
+  }, {
     "ID": 504,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
     "name": "Heavy_Miner's_EnergyRocket",
@@ -191,6 +190,7 @@
     "bulletSize": 20.0,
     "bulletSpeed": 100.0,
     "bulletCanRebound": true,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": false,
     "bubbleImagePath": "",
@@ -221,6 +221,7 @@
     "bulletSize": 10.0,
     "bulletSpeed": 40.0,
     "bulletCanRebound": false,
+    "bulletCanTracking": false,
     "bulletIsBubble": true,
     "bubbleTrail": false,
     "bubbleImagePath": ""
@@ -244,8 +245,40 @@
   "bulletSize": 10.0,
   "bulletSpeed": 210.0,
   "bulletCanRebound": true,
+  "bulletCanTracking": false,
   "bulletIsBubble": false,
   "bubbleTrail": false,
   "bubbleImagePath": ""
+  }, {
+    "ID": 507,
+    "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
+    "name": "Elite_Miner's_Rocket_Launcher",
+    "attackType": "Projectile",
+    "weaponType": "ROCKET_LAUNCHER",
+    "damage": 4,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "elementalDamage": "BURNS",
+    "bulletImagePath": "/attackUI/bullet/bullet_73.png",
+    "numOfBullets": 3,
+    "bulletOffset": 19.5,
+    "bulletSize": 8.0,
+    "bulletSpeed": 100.0,
+    "bulletCanRebound": true,
+    "bulletCanTracking": true,
+    "bulletIsBubble": false,
+    "bubbleTrail": false,
+    "bubbleImagePath": "",
+    "chainedAttack": {
+      "attackType": "EffectAttack",
+      "size": 16.0,
+      "damage": 1,
+      "elementalDamage": "BURNS",
+      "effectType": "SMALL_BOOM"
+    }
   }
 ]

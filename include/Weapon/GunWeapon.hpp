@@ -12,6 +12,7 @@
 struct GunWeaponInfo : public BaseWeaponInfo {
 	int numOfBullets = 1;
 	float bulletOffset = 0.0f;
+	bool bulletCanTracking = false;
 
 	ProjectileInfo defaultProjectileInfo;
 };
@@ -30,6 +31,7 @@ public:
 private:
 	int m_numOfBullets;
 	float m_bulletOffset;
+	bool m_bulletCanTracking;
 
 	const ProjectileInfo m_projectileInfo;
 };

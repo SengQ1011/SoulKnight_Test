@@ -22,7 +22,8 @@ void EffectAttack::Init() {
 
 	// Animation
 	const auto& imagePaths = EffectAssets::EFFECT_IMAGE_PATHS.at(m_effectType);
- 	m_animation = std::make_shared<Animation>(imagePaths, false, 100.0f);
+	float intervel = 400 / imagePaths.size();
+ 	m_animation = std::make_shared<Animation>(imagePaths, false, intervel);
  	this->SetDrawable(m_animation->GetDrawable());
  	m_animation->PlayAnimation(true);
 
@@ -58,9 +59,9 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
- 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	// currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ 	currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {

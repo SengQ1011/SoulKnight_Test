@@ -277,8 +277,27 @@
     "speed": 0.4,
     "attackType": ["Gun"],
     "haveWeapon": 1,
-    "weaponId": 506,
+    "weaponId": 507,
     "size": 24.0
+  },{
+    "ID": 14,
+    "Type": "ENEMY",
+    "name": "Elite Heavy Miner",
+    "monsterType": "Attack",
+    "isElite": true,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy33_heavyMiner/enemy33_1.png","/monster/Icefield/enemy33_heavyMiner/enemy33_2.png"],
+      "MOVING": ["/monster/Icefield/enemy33_heavyMiner/enemy33_1.png","/monster/Icefield/enemy33_heavyMiner/enemy33_2.png"],
+      "ATTACK": ["/monster/Icefield/enemy33_heavyMiner/enemy33_1.png","/monster/Icefield/enemy33_heavyMiner/enemy33_2.png"],
+      "DEAD": ["/monster/Icefield/enemy33_heavyMiner/enemy33_0.png"]
+    },
+    "monsterPoint": 3,
+    "maxHp": 50,
+    "speed": 0.4,
+    "attackType": ["Gun"],
+    "haveWeapon": 1,
+    "weaponId": 507,
+    "size": 32.0
   }
 ]
 

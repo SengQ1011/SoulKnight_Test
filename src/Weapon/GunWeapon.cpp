@@ -13,7 +13,7 @@
 GunWeapon::GunWeapon(const GunWeaponInfo& gunWeaponInfo)
 		: Weapon(gunWeaponInfo),
 			m_numOfBullets(gunWeaponInfo.numOfBullets), m_bulletOffset(gunWeaponInfo.bulletOffset),
-			m_projectileInfo(gunWeaponInfo.defaultProjectileInfo)
+			m_bulletCanTracking(gunWeaponInfo.bulletCanTracking), m_projectileInfo(gunWeaponInfo.defaultProjectileInfo)
 {
 	m_AttackType = AttackType::PROJECTILE;
 
@@ -47,6 +47,9 @@ void GunWeapon::attack(const int damage) {
 	float spreadAngle = glm::radians(35.0f);  // 總共散佈的角度
 	int numBullets = m_numOfBullets;
 
+	std::shared_ptr<nGameObject> target = nullptr;
+	if (const auto followComp = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) target = followComp->GetTarget();
+
 	for (int i = 0; i < numBullets; ++i) {
 		float angleOffset = 0.0f;
 		if (numBullets > 1) {
@@ -74,6 +77,10 @@ void GunWeapon::attack(const int damage) {
 		projectileInfo.attackTransform = bulletTransform;
 		projectileInfo.direction = newDirection;
 		projectileInfo.damage = damage;
+		if(m_bulletCanTracking)
+		{
+			projectileInfo.target = target;
+		}
 
 		attackManager->spawnProjectile(projectileInfo);
 	}

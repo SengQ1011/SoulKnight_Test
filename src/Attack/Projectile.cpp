@@ -4,6 +4,8 @@
 
 #include "Attack/Projectile.hpp"
 
+#include <complex>
+
 #include "Attack/AttackManager.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/ProjectileComponent.hpp"
@@ -15,9 +17,10 @@
 #include "Util/Logger.hpp"
 
 Projectile::Projectile(const ProjectileInfo& projectileInfo)
-						   : Attack(projectileInfo),
+						   : Attack(projectileInfo), m_startPosition(projectileInfo.attackTransform.translation),
 								m_imagePath(projectileInfo.imagePath), m_speed(projectileInfo.speed),
 								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
+								m_canTracking(projectileInfo.canTracking), m_Target(projectileInfo.target),
 								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
 								m_bubbleImagePath(projectileInfo.bubbleImagePath) {}
 
@@ -34,8 +37,10 @@ void Projectile::Init() {
 	SetImage(m_imagePath);
 
 	// 加入子彈類機制組件
-	auto ProjectileComp = this->GetComponent<ProjectileComponent>(ComponentType::PROJECTILE);
-	if (!ProjectileComp) { ProjectileComp = this->AddComponent<ProjectileComponent>(ComponentType::PROJECTILE); }
+	if (auto ProjectileComp = this->GetComponent<ProjectileComponent>(ComponentType::PROJECTILE); !ProjectileComp)
+	{
+		ProjectileComp = this->AddComponent<ProjectileComponent>(ComponentType::PROJECTILE);
+	}
 
 	// 加入碰撞組件
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -82,10 +87,44 @@ void Projectile::UpdateObject(const float deltaTime) {
 
 		// 移動泡泡
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
-	}else {
-		// 一般子彈直接移動
+	} else if(m_canTracking && !m_Target.expired())
+	{
+		// 方法一：追蹤導彈（貝茲曲線）
+		auto targetPosition = m_Target.lock()->GetWorldCoord();
+		glm::vec2 P0 = m_WorldCoord;
+		glm::vec2 P2 = targetPosition;
+
+		m_bezierTime += deltaTime * 0.15f;
+		m_bezierTime = glm::clamp(m_bezierTime, 0.0f, 0.25f);
+		// 控制點P1:
+		// 數值越大： 導彈轉彎越平緩，反應比較慢，感覺像是
+		// 數值越小： 導彈彎得越急促，更快鎖定目標
+		float curveDistance = 100.0f;
+		glm::vec2 P1 = P0 + m_direction * curveDistance;
+
+		glm::vec2 bezierPos = (1 - m_bezierTime) * (1 - m_bezierTime) * P0 +
+							  2 * (1 - m_bezierTime) * m_bezierTime * P1 +
+							  m_bezierTime * m_bezierTime * P2;
+
+		glm::vec2 newDir = glm::normalize(bezierPos - m_WorldCoord);
+
+		// 方法二：動態尋路法
+		// glm::vec2 toTarget = glm::normalize(targetPosition - m_WorldCoord);
+		// // 越大越容易轉彎
+		// float curveDistance = 50.0f;
+		// // 線性插值方向
+		// float turnRate = curveDistance * deltaTime;
+		// glm::vec2 newDir = glm::normalize(glm::mix(m_direction, toTarget, turnRate));
+
+		m_direction = newDir;
+		m_Transform.rotation = atan2(newDir.y, newDir.x);
+
+		// 移動
+		m_WorldCoord += m_direction * m_speed * deltaTime;
+
+
+	}else
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
-	}
 
 
 	if (m_enableBubbleTrail) {
@@ -148,10 +187,13 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 	m_speed = projectileInfo.speed;
 	m_numRebound = projectileInfo.numRebound;
 	m_canReboundBySword = projectileInfo.canReboundBySword;
+	m_canTracking = projectileInfo.canTracking;
+	m_Target = projectileInfo.target;
 	m_isBubble = projectileInfo.isBubble;
 	m_enableBubbleTrail = projectileInfo.bubbleTrail;
 	m_bubbleImagePath = projectileInfo.bubbleImagePath;
 
+	m_bezierTime = 0;
 	m_reboundCounter = 0;
 	m_markRemove = false;
 	m_bubbleTimer = 0.0f;

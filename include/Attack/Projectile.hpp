@@ -17,6 +17,8 @@ struct ProjectileInfo : public AttackInfo
 	float speed = 50.0;
 	int numRebound = 0;
 	bool canReboundBySword  = true;
+	bool canTracking = false;
+	std::weak_ptr<nGameObject> target;
 	bool isBubble = false;
 	bool bubbleTrail = false;
 	std::string bubbleImagePath = "";
@@ -61,10 +63,14 @@ protected:
 	int m_numRebound = 0;
 	int m_reboundCounter = 0;
 	bool m_canReboundBySword = false;
+	bool m_canTracking = false;
 	bool m_isBubble = false;
 	bool m_enableBubbleTrail = false;		// 是否啟用泡泡尾跡
 	std::string m_bubbleImagePath;
 
+	// 子彈追蹤
+	std::weak_ptr<nGameObject> m_Target;	// 此物件會跟隨目標旋轉
+	float m_bezierTime = 0.0f;				// 貝茲曲線的插值參數：範圍 [0, 0.25]
 
 	// 泡泡間隔時間與計時器
 	float m_bubbleSpawnInterval = 0.2f;  // 每0.2秒生成一次
