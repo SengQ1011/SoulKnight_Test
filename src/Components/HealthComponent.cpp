@@ -69,13 +69,18 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 		const auto& dmgInfo = dynamic_cast<const TakeDamageEventInfo&>(eventInfo);
 		const auto ObjectID = dmgInfo.m_Id;
 		// 冷卻中就不處理
-		if (m_recentAttackSources.count(ObjectID) > 0)
-		{
-			LOG_DEBUG("skip");
-			break;
-		}
+		if (m_recentAttackSources.count(ObjectID) > 0) break;
 		m_recentAttackSources[ObjectID] = m_invincibleDuration;
 		TakeDamage(dmgInfo.damage);
+
+		// 元素傷害
+		if(dmgInfo.elementalDamage != StatusEffect::NONE)
+		{
+			const auto owner = GetOwner<nGameObject>();
+			const auto stateComp = owner->GetComponent<StateComponent>(ComponentType::STATE);
+			if (!stateComp) return;
+			stateComp->ApplyStatusEffect(dmgInfo.elementalDamage);
+		}
 		break;
 	}
 	default:
@@ -108,7 +113,7 @@ void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 		if (character->GetType() == CharacterType::ENEMY) {
 			if (const auto collisionDamage = character->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetCollisionDamage();
 				collisionDamage > 0) {
-				LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
+				// LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
 				this->TakeDamage(collisionDamage);
 				}
 		}
@@ -119,6 +124,8 @@ void HealthComponent::HandleCollision(const CollisionEventInfo& info){
 
 void HealthComponent::TakeDamage(int damage)
 {
+	// 無敵模式
+	if (m_invincibleMode) return;
 	LOG_DEBUG("take damage {}", damage);
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
@@ -153,6 +160,7 @@ void HealthComponent::OnDeath() const
 	character->OnEvent(deathEventInfo);
 
 	stateComponent->SetState(State::DEAD);
+	stateComponent->HideAllIcon();
 	character->SetActive(false);
 
 	if (movementComp)

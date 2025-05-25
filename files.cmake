@@ -147,6 +147,7 @@ set(INCLUDE_FILES
     Room/UniformGrid.hpp
     RoomObject/ObstacleObject.hpp
     RoomObject/RoomObject.hpp
+    SaveManager.hpp
     Scene/Complete_Scene.hpp
     Scene/DungeonLoading_Scene.hpp
     Scene/Dungeon_Scene.hpp

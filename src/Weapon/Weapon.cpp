@@ -14,7 +14,10 @@ Weapon::Weapon(const BaseWeaponInfo& weaponInfo)
 		m_energy(weaponInfo.energy),
 		m_criticalRate(weaponInfo.criticalRate),
 		m_offset(weaponInfo.offset),
-		m_attackInterval(weaponInfo.attackInterval)
+		m_attackInterval(weaponInfo.attackInterval),
+		m_dropLevel(weaponInfo.dropLevel),
+		m_basicPrice(weaponInfo.basicPrice)
+
 {
 	SetImage(weaponInfo.imagePath);
 	this->SetZIndexType(ZIndexType::OBJECTLOW);

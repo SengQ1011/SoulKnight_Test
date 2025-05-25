@@ -10,9 +10,10 @@ struct TakeDamageEventInfo final : TypedEventInfo<TakeDamageEventInfo>
 {
 	int m_Id = 0;
 	int damage = 0;
+	StatusEffect elementalDamage;
 
-	explicit TakeDamageEventInfo(const int id, const int dmg) :
-		TypedEventInfo(EventType::TakeDamage),m_Id(id), damage(dmg) {}
+	explicit TakeDamageEventInfo(const int id, const int dmg, const StatusEffect &elementalDamage) :
+		TypedEventInfo(EventType::TakeDamage),m_Id(id), damage(dmg), elementalDamage(elementalDamage) {}
 };
 
 #endif //TAKEDAMAGEEVENTINFO_HPP

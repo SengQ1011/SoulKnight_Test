@@ -40,7 +40,7 @@ public:
 	[[nodiscard]] int GetOffset() const { return m_offset; }
 	[[nodiscard]] std::shared_ptr<Character> GetWeaponOwner() const { return m_currentOwner;}
 	[[nodiscard]] static bool weaponHasOffset(const AttackType attackType, const WeaponType weaponType)
-				{ return attackType == AttackType::MELEE && weaponType != WeaponType::SPEAR; }
+				{ return attackType == AttackType::EFFECT_ATTACK && weaponType != WeaponType::SPEAR; }
 
 	//----Setter----
 	void SetImage(const std::string& ImagePath);
@@ -73,8 +73,8 @@ protected:
 	float m_criticalRate;			// 武器暴擊率
 	float m_attackInterval;			// 攻擊頻率
 	int m_offset;					// 攻擊偏移量
-	int dropLevel = 0;
-	int basicPrice = 0;
+	int m_dropLevel = 0;
+	int m_basicPrice = 0;
 
 	float m_attackDelay = 0.0f;		// 開始攻擊延遲
 	float lastAttackTime = 0.0f;  // 上次攻擊的時間

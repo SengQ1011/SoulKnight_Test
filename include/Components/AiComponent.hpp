@@ -28,7 +28,6 @@ public:
 	void Update() override;
 
 	void HandleEvent(const EventInfo &eventInfo) override;
-	void HandleEventCollision(const CollisionEventInfo& eventInfo);
 	std::vector<EventType> SubscribedEventTypes() const override;
 
 	//----Getter----

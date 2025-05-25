@@ -157,7 +157,6 @@ void CollisionComponent::TryTrigger(const std::shared_ptr<nGameObject>& self,
 		if (!wasTriggered) strategy->OnTriggerEnter(self, other);
 		else
 		{
-
 			strategy->OnTriggerStay(self, other);
 		}
 	}

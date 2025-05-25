@@ -88,7 +88,7 @@ void MonsterRoom::SpawnEnemiesInRoom()
 
 		glm::ivec2 grid = {col, row};
 		const glm::vec2 worldPos = Tool::RoomGridToWorld(grid, tileSize, roomCoord, region);
-		std::uniform_int_distribution<int> ID(1, 6);
+		std::uniform_int_distribution<int> ID(1, 14);
 
 		if (const auto enemy = SpawnEnemy(ID(rng), worldPos)) {
 			enemy->SetActive(false);

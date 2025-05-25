@@ -17,6 +17,12 @@ std::vector<EventType> ProjectileComponent::SubscribedEventTypes() const
 	};
 }
 
+void ProjectileComponent::Update()
+{
+	m_CollisionHandled = false;
+}
+
+
 void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 {
 	// {}可以在case裏形成額外作用域，用來在裏面定義變數
@@ -46,10 +52,15 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 }
 
 void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
+	if (m_CollisionHandled)
+	{
+		// 確保同一幀只被觸發一次
+		return;
+	}
+	m_CollisionHandled = true;
 	const auto& other = info.GetObjectB();
 	const auto projectile = GetOwner<Projectile>();
 	if (!projectile) return;
-
 	const auto numRebound = projectile->GetNumRebound();
 	const auto reboundCounter = projectile->GetReboundCounter();
 
@@ -70,46 +81,58 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 		projectile->AddReboundCounter();
 	}else {
 		projectile->MarkForRemoval();
-		if( projectile->GetHaveEffectAttack())
-		{
-			const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-			if (const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK))
-			{
-				EffectAttackInfo effectAttackInfo;
-				effectAttackInfo.type = projectile->GetAttackLayerType();
-				effectAttackInfo.attackTransform = projectile->GetTransform();
-				effectAttackInfo.attackTransform.translation = projectile->GetWorldCoord();
-				effectAttackInfo.attackTransform.scale = glm::vec2(1.0f, 1.0f);
-				effectAttackInfo.direction = glm::vec2(0.0f, 0.0f);
-				effectAttackInfo.size = projectile->GetBulletEffectAttackSize();
-				effectAttackInfo.damage = projectile->GetBulletEffectAttackDamage();
-
-				effectAttackInfo.canReflectBullet = false;
-				effectAttackInfo.canBlockingBullet = false;
-				effectAttackInfo.effectType = projectile->GetBulletEffectType();
-
-				attackManager->spawnEffectAttack(effectAttackInfo);
-			}
-		}
+		TriggerChainAttack(projectile);
 	}
 }
 
 void ProjectileComponent::HandleReflectEvent()
 {
-	LOG_DEBUG("reflect");
+	// LOG_DEBUG("reflect");
 	const auto proj = GetOwner<Projectile>();
 	if (!proj) return;
 	bool canReflect = proj->GetCanReboundBySword();
-	if (!canReflect) {
-		LOG_DEBUG("projectile can't reflect");
+	if (canReflect) {
+		auto direction = proj->GetAttackDirection();
+		// 以原本方向做反射
+		proj->SetDirection(-direction);
+
+		// TODO:把擁有者換成斬擊者
+		proj->ReflectChangeAttackCharacterType(CharacterType::PLAYER);
+
+	}else {
 		proj->MarkForRemoval();
-		return;
+		TriggerChainAttack(proj);
 	}
 
-	auto direction = proj->GetAttackDirection();
-	// 以原本方向做反射
-	proj->SetDirection(-direction);
+}
 
-	// TODO:把擁有者換成斬擊者
-	proj->ReflectChangeAttackCharacterType(CharacterType::PLAYER);
+void ProjectileComponent::TriggerChainAttack(const std::shared_ptr<Projectile>& projectile)
+{
+	auto chainAttackInfo = projectile->GetChainAttackInfo();
+	if (!chainAttackInfo.enabled) return;
+
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!currentScene) return;
+
+	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
+	if (!attackManager) return;
+
+	if (chainAttackInfo.attackType == AttackType::EFFECT_ATTACK)
+	{
+		const auto effectInfoPtr = std::dynamic_pointer_cast<EffectAttackInfo>(chainAttackInfo.nextAttackInfo);
+		if (!effectInfoPtr) return;
+
+		effectInfoPtr->type = projectile->GetAttackLayerType();
+		effectInfoPtr->attackTransform = projectile->GetTransform();
+		effectInfoPtr->attackTransform.translation = projectile->GetWorldCoord();
+		effectInfoPtr->attackTransform.scale = glm::vec2(1.0f);
+		effectInfoPtr->direction = glm::vec2(0.0f);
+		attackManager->spawnEffectAttack(*effectInfoPtr);
+	}
+	else if (chainAttackInfo.attackType == AttackType::PROJECTILE)
+	{
+		const auto projInfoPtr = std::dynamic_pointer_cast<ProjectileInfo>(chainAttackInfo.nextAttackInfo);
+		if (!projInfoPtr) return;
+		// TODO:
+	}
 }

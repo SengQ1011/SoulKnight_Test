@@ -6,11 +6,13 @@
 #define EFFECTATTACK_HPP
 
 #include "Attack/Attack.hpp"
+
 class Animation;
 
 struct  EffectAttackInfo : public AttackInfo
 {
-	EffectAttackType effectType;
+	~EffectAttackInfo() override = default;
+	EffectAttackType effectType = EffectAttackType::NONE;
 	bool canReflectBullet = false;
 	bool canBlockingBullet = true;
 };
@@ -68,6 +70,13 @@ namespace EffectAssets {
 			ResourcePath("/attackUI/boom/medium_boom/effect_explode_8.png"),
 			ResourcePath("/attackUI/boom/medium_boom/effect_explode_9.png")
 		}},
+		{EffectAttackType::SMALL_BOOM,{
+			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_0.png"),
+			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_1.png"),
+			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_2.png"),
+			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_3.png"),
+			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_4.png")
+		}}
 	};
 }
 
