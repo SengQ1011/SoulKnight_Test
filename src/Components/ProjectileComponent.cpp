@@ -61,7 +61,6 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 	const auto& other = info.GetObjectB();
 	const auto projectile = GetOwner<Projectile>();
 	if (!projectile) return;
-	LOG_DEBUG("ID{}",projectile->GetID());
 	const auto numRebound = projectile->GetNumRebound();
 	const auto reboundCounter = projectile->GetReboundCounter();
 
