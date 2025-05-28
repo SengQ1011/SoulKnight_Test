@@ -42,10 +42,7 @@ void MeleeWeapon::attack(int damage) {
 
 	// 建立 Transform
 	Util::Transform slashTransform;
-	float distance = 0.0f;
-	if(m_effectAttackInfo.effectType == EffectAttackType::SLASH) distance = 16.0f;
-	else if (m_effectAttackInfo.effectType == EffectAttackType::LUNGE) distance = 16.0f;
-	else if (m_effectAttackInfo.effectType == EffectAttackType::SHOCKWAVE) distance = 25.0f;
+	float distance = m_attackInitPositionOffset;
 	// facingLeft
 	if(std::cos(angle) < 0.0f)distance += 5.0f;
 

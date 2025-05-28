@@ -49,7 +49,7 @@ private:
 	int m_currentArmor; // 當前護甲值
 	int m_maxEnergy; // 能量上限
 	int m_currentEnergy; // 當前能量值
-	float m_armorRecoveryInterval = 1.5f;
+	float m_armorRecoveryInterval = 2.0f;
 	float m_armorRecoveryTimer = 0.0f;	// 恢復護甲計時器
 	bool m_invincibleMode = false;		// 無敵模式
 	bool m_breakProtection = false;		// 天賦：破甲保護
