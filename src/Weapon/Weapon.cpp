@@ -15,6 +15,7 @@ Weapon::Weapon(const BaseWeaponInfo& weaponInfo)
 		m_criticalRate(weaponInfo.criticalRate),
 		m_offset(weaponInfo.offset),
 		m_attackInterval(weaponInfo.attackInterval),
+		m_attackInitPositionOffset(weaponInfo.attackInitPositionOffset),
 		m_dropLevel(weaponInfo.dropLevel),
 		m_basicPrice(weaponInfo.basicPrice)
 

@@ -38,11 +38,11 @@ void EffectAttack::Init() {
 	CollisionComp->SetTrigger(true);
 	CollisionComp->SetCollider(false);
 	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
+	if(m_effectType == EffectAttackType::SHOCKWAVE) CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 	if (m_type == CharacterType::PLAYER)
 	{
 		if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
 		else CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
-		if(m_effectType == EffectAttackType::SHOCKWAVE) CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 	}
 
 	// layer
@@ -59,15 +59,16 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
-	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
+	// const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ // 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ // 	currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {
 	if (!m_Active) return;
 	if (m_animation->IfAnimationEnds()) {
 		MarkForRemoval();
+		TriggerChainAttack();
 		SetActive(false);
 		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(shared_from_this());

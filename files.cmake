@@ -49,6 +49,7 @@ set(SRC_FILES
     Room/StartingRoom.cpp
     Room/UniformGrid.cpp
     RoomObject/ObstacleObject.cpp
+    SaveManager.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
     Scene/Dungeon_Scene.cpp

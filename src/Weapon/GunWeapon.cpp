@@ -12,8 +12,8 @@
 
 GunWeapon::GunWeapon(const GunWeaponInfo& gunWeaponInfo)
 		: Weapon(gunWeaponInfo),
-			m_numOfBullets(gunWeaponInfo.numOfBullets), m_bulletOffset(gunWeaponInfo.bulletOffset),
-			m_bulletCanTracking(gunWeaponInfo.bulletCanTracking), m_projectileInfo(gunWeaponInfo.defaultProjectileInfo)
+			m_numOfBullets(gunWeaponInfo.numOfBullets), m_bulletCanTracking(gunWeaponInfo.bulletCanTracking),
+			m_projectileInfo(gunWeaponInfo.defaultProjectileInfo)
 {
 	m_AttackType = AttackType::PROJECTILE;
 
@@ -29,7 +29,7 @@ void GunWeapon::attack(const int damage) {
 	}
 
 	// 用 bulletDirection * offset 做子彈偏移位置
-	glm::vec2 offset = bulletDirection * m_bulletOffset;
+	glm::vec2 offset = bulletDirection * m_attackInitPositionOffset;
 
 	// 建立 Transform
 	Util::Transform bulletTransform;

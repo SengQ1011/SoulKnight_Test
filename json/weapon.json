@@ -10,11 +10,19 @@
     "criticalRate": 0.0,
     "offset": 5,
     "attackInterval": 0.333,
+    "attackPositionOffset": 12.5,
     "dropLevel": 3,
     "basicPrice": 10,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "numOfBullets": 1,
-    "bulletOffset": 12.5,
     "bulletSize": 8.0,
     "bulletImagePath": "/attackUI/bullet/bullet_34.png",
     "bulletSpeed": 400.0,
@@ -34,8 +42,17 @@
     "criticalRate": 0.03,
     "offset": 0,
     "attackInterval": 0.416,
+    "attackPositionOffset": 16,
     "dropLevel": 4,
     "basicPrice": 28,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "attackRange": 32.0,
     "EffectAttackType": "SLASH"
@@ -51,12 +68,20 @@
     "criticalRate": 0.0,
     "offset": 25,
     "attackInterval": 0.8333,
+    "attackPositionOffset": 25.5,
     "dropLevel": 1,
     "basicPrice": 15,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_34.png",
     "numOfBullets": 5,
-    "bulletOffset": 25.5,
     "bulletSize": 8.0,
     "bulletSpeed": 400.0,
     "bulletCanRebound": true,
@@ -75,8 +100,17 @@
     "criticalRate": 0.08,
     "offset": 0,
     "attackInterval": 1.0,
+    "attackPositionOffset": 25.0,
     "dropLevel": 2,
     "basicPrice": 19,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "attackRange": 32.0,
     "EffectAttackType": "SHOCKWAVE"
@@ -92,12 +126,20 @@
     "criticalRate": 0.0,
     "offset": 0.2,
     "attackInterval": 1.0,
+    "attackPositionOffset": 24.5,
     "dropLevel": 1,
     "basicPrice": 16,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_rocket.png",
     "numOfBullets": 1,
-    "bulletOffset": 24.5,
     "bulletSize": 12.0,
     "bulletSpeed": 350.0,
     "bulletCanRebound": false,
@@ -123,8 +165,17 @@
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 1.0,
+    "attackPositionOffset": 16.0,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "attackRange": 24.0,
     "EffectAttackType": "SLASH"
@@ -140,8 +191,17 @@
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 1.0,
+    "attackPositionOffset": 16.0,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "attackRange": 24.0,
     "EffectAttackType": "LUNGE"
@@ -157,12 +217,20 @@
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_109.png",
     "numOfBullets": 1,
-    "bulletOffset": 19.5,
     "bulletSize": 10.0,
     "bulletSpeed": 100.0,
     "bulletCanRebound": false,
@@ -181,12 +249,20 @@
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_30.png",
     "numOfBullets": 1,
-    "bulletOffset": 19.5,
     "bulletSize": 20.0,
     "bulletSpeed": 100.0,
     "bulletCanRebound": true,
@@ -212,12 +288,20 @@
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.6,
+    "attackPositionOffset": 22.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_107.png",
     "numOfBullets": 7,
-    "bulletOffset": 22.5,
     "bulletSize": 10.0,
     "bulletSpeed": 40.0,
     "bulletCanRebound": false,
@@ -236,12 +320,20 @@
   "criticalRate": 0.0,
   "offset": 0,
   "attackInterval": 0.5,
+  "attackPositionOffset": 23.5,
   "dropLevel": -1,
   "basicPrice": 0,
+  "handOffset": {
+    "x": 4.3,
+    "y": -6.25
+  },
+  "holdingPosition": {
+    "x":15.0,
+    "y": 0.0
+  },
   "elementalDamage": "NONE",
   "bulletImagePath": "/attackUI/bullet/bullet_135.png",
   "numOfBullets": 1,
-  "bulletOffset": 23.5,
   "bulletSize": 10.0,
   "bulletSpeed": 210.0,
   "bulletCanRebound": true,
@@ -249,6 +341,46 @@
   "bulletIsBubble": false,
   "bubbleTrail": false,
   "bubbleImagePath": ""
+  },
+  {
+    "ID": 507,
+    "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
+    "name": "Elite_Miner's_Rocket_Launcher",
+    "attackType": "Projectile",
+    "weaponType": "ROCKET_LAUNCHER",
+    "damage": 4,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x": 15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "BURNS",
+    "bulletImagePath": "/attackUI/bullet/bullet_73.png",
+    "numOfBullets": 3,
+    "bulletSize": 8.0,
+    "bulletSpeed": 100.0,
+    "bulletCanRebound": false,
+    "bulletCanTracking": true,
+    "bulletIsBubble": false,
+    "bubbleTrail": false,
+    "bubbleImagePath": "",
+    "chainedAttack": {
+      "attackType": "EffectAttack",
+      "size": 16.0,
+      "damage": 1,
+      "elementalDamage": "BURNS",
+      "effectType": "SMALL_BOOM"
+    }
   }, {
     "ID": 507,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
@@ -260,15 +392,23 @@
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
     "elementalDamage": "BURNS",
     "bulletImagePath": "/attackUI/bullet/bullet_73.png",
     "numOfBullets": 3,
-    "bulletOffset": 19.5,
     "bulletSize": 8.0,
     "bulletSpeed": 100.0,
-    "bulletCanRebound": true,
+    "bulletCanRebound": false,
     "bulletCanTracking": true,
     "bulletIsBubble": false,
     "bubbleTrail": false,
@@ -279,6 +419,72 @@
       "damage": 1,
       "elementalDamage": "BURNS",
       "effectType": "SMALL_BOOM"
+    }
+  },
+  {
+    "ID": 508,
+    "weaponImagePath": "/weapon/enemyWeapon/transparentWeapon.png",
+    "name": "transparentWeapon_Hammer",
+    "attackType": "EffectAttack",
+    "weaponType": "HAMMER",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 0.0,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 0.0,
+      "y": -4.0
+    },
+    "holdingPosition": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SHOCKWAVE"
+  },
+  {
+    "ID": 509,
+    "weaponImagePath": "/weapon/enemyWeapon/transparentWeapon.png",
+    "name": "transparentWeapon_Snow_Ape",
+    "attackType": "EffectAttack",
+    "weaponType": "HAMMER",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 0.0,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 0.0,
+      "y": -4.0
+    },
+    "holdingPosition": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SHOCKWAVE",
+    "chainedAttack": {
+      "attackType": "Projectile",
+      "bulletImagePath": "/attackUI/bullet/bullet_111.png",
+      "bulletSize": 12.0,
+      "damage": 2,
+      "elementalDamage": "FROZEN",
+      "bulletSpeed": 100.0,
+      "bulletCanRebound": false,
+      "bulletCanTracking": false,
+      "bulletIsBubble": false,
+      "bubbleTrail": false,
+      "bubbleImagePath": "",
+      "chainProjectionNum": 12
     }
   }
 ]
