@@ -6,7 +6,8 @@
 #include "Util/Image.hpp"
 
 Weapon::Weapon(const BaseWeaponInfo& weaponInfo)
-	: m_ImagePath(weaponInfo.imagePath),
+	:	m_ID(weaponInfo.id),
+		m_ImagePath(weaponInfo.imagePath),
 		m_weaponName(weaponInfo.name),
 		m_AttackType(weaponInfo.attackType),
 		m_weaponType(weaponInfo.weaponType),

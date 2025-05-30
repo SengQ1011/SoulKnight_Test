@@ -45,6 +45,8 @@ private:
 	// std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
 	float m_timer = 0.0f;
 	// std::shared_ptr<nGameObject> m_OnDeathText;
+	std::shared_ptr<nGameObject> m_stageText;
+	float m_textTimer = 2.0f;
 	std::shared_ptr<Util::SFX> m_ClickSound = std::make_shared<Util::SFX>(RESOURCE_DIR"/plankton-augh.mp3");
 
 

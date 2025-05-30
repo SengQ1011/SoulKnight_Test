@@ -10,6 +10,7 @@
 class Character;
 
 struct BaseWeaponInfo {
+	int id;
 	std::string imagePath;
 	std::string name;
 	AttackType attackType;
@@ -30,6 +31,7 @@ public:
 	~Weapon() override = default;
 
 	//----Getter----
+	[[nodiscard]] int GetWeaponID() const { return m_ID; }
 	[[nodiscard]] AttackType GetAttackType() const {return m_AttackType; }
 	[[nodiscard]] WeaponType GetWeaponType() const {return m_weaponType; }
 	[[nodiscard]] std::string GetImagePath() const { return m_ImagePath; }
@@ -65,6 +67,7 @@ public:
 	virtual std::shared_ptr<Weapon> Clone() const = 0;
 
 protected:
+	int m_ID;
 	AttackType m_AttackType = AttackType::NONE;
 	WeaponType m_weaponType = WeaponType::NONE;
 	std::string m_ImagePath;		// 武器照片

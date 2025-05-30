@@ -3,16 +3,18 @@
 //
 
 #include "Room/MonsterRoom.hpp"
+#include <random>
 #include "Components/DoorComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Factory/CharacterFactory.hpp"
 #include "Loader.hpp"
 #include "Override/nGameObject.hpp"
-#include "Tool/Tool.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Tool/Tool.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
-#include <random>
+
+#include "ObserveManager/EventManager.hpp"
 
 void MonsterRoom::Start(const std::shared_ptr<Character> &player)
 {
@@ -150,6 +152,7 @@ void MonsterRoom::OnStateChanged()
 
 void MonsterRoom::OnEnemyDied()
 {
+	EventManager::GetInstance().enemyDeathEvent();
 	if (m_CombatWave.isInCombat && m_CombatWave.aliveEnemyCount > 0)
 		--m_CombatWave.aliveEnemyCount;
 }

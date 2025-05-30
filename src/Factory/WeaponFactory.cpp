@@ -101,6 +101,7 @@ namespace WeaponFactory {
 			// 根據武器 ID 查找對應的武器資料
 			for (const auto& weapon : weaponData) {
 				if (weapon["ID"] == weaponID) {
+					int id = weapon["ID"].get<int>();
 					std::string weaponImagePath = RESOURCE_DIR + weapon["weaponImagePath"].get<std::string>();
 					std::string name = weapon["name"].get<std::string>();
 					auto attackType = stringToAttackType(weapon["attackType"].get<std::string>());
@@ -121,6 +122,7 @@ namespace WeaponFactory {
 					// 根據 type 建立不同類型的武器
 					if (attackType == AttackType::EFFECT_ATTACK) {
 						MeleeWeaponInfo meleeInfo;
+						meleeInfo.id = id;
 						meleeInfo.imagePath = weaponImagePath;
 						meleeInfo.name = name;
 						meleeInfo.attackType = attackType;
@@ -156,6 +158,7 @@ namespace WeaponFactory {
 					}
 					else if (attackType == AttackType::PROJECTILE) {
 						GunWeaponInfo gunInfo;
+						gunInfo.id = id;
 						gunInfo.imagePath = weaponImagePath;
 						gunInfo.name = name;
 						gunInfo.attackType = attackType;
@@ -206,7 +209,7 @@ namespace WeaponFactory {
 					if(Weapon::weaponHasOffset(attackType, weaponType)){
 						followerComp->SetIsSword(true);
 					}
-					LOG_DEBUG("create Weapon successful");
+					// LOG_DEBUG("create Weapon successful");
 					return weaponPtr;
 				}
 			}

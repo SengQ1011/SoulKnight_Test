@@ -120,5 +120,4 @@ enum ZIndexType: int
 	CUSTOM		=100,   // dont care
 };
 
-
 #endif //ENUMTYPES_HPP

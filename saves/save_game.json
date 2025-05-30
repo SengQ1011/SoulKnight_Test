@@ -1,0 +1,28 @@
+{
+    "gameData": {
+        "gameMoney": 0
+    },
+    "gameProgress": {
+        "cumulativeTime": 102702.75,
+        "currentChapter": 1,
+        "currentStage": 3,
+        "dungeonStartTime": 117593.515625,
+        "killCount": 12,
+        "playerData": {
+            "currentEnergy": 144,
+            "currentHp": 7,
+            "money": 0,
+            "playerID": 1,
+            "talentID": [
+                2
+            ],
+            "weaponID": [
+                1,
+                5
+            ]
+        }
+    },
+    "isInGameProgress": true,
+    "saveName": "New Game",
+    "saveTime": "2025-05-30 15:59:51"
+}

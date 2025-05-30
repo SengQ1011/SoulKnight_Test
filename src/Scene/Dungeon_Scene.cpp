@@ -6,21 +6,19 @@
 #include "Scene/Dungeon_Scene.hpp"
 
 #include "Components/CollisionComponent.hpp"
-#include "Components/FollowerComponent.hpp"
 #include "GameMechanism/TalentDatabase.hpp"
 
 #include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
 #include "Loader.hpp"
 #include "Scene/SceneManager.hpp"
+#include "SaveManager.hpp"
 #include "ObserveManager/InputManager.hpp"
 #include "Attack/AttackManager.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-
-#include <iostream>
 
 #include "Components/InputComponent.hpp"
 #include "Creature/Character.hpp"
@@ -36,13 +34,28 @@ void DungeonScene::Start()
 	LOG_DEBUG("Entering Game Scene");
 	m_Loader = std::make_shared<Loader>(m_ThemeName);
 
-	// m_OnDeathText = std::make_shared<nGameObject>();
-	// m_OnDeathText->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
-	// m_OnDeathText->SetZIndex(100);
-	// m_OnDeathText->SetZIndexType(CUSTOM);
-	// m_OnDeathText->SetControlVisible(false);
-	// m_Root->AddChild(m_OnDeathText);
-	// m_Camera->AddChild(m_OnDeathText);
+	// if(!m_OnDeathText)
+	// {
+	// 	m_OnDeathText = std::make_shared<nGameObject>();
+	// 	m_OnDeathText->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR"/Font/zpix.ttf",36,"菜 就多練",Util::Color(255,255,0)));
+	// 	m_OnDeathText->SetZIndex(100);
+	// 	m_OnDeathText->SetZIndexType(CUSTOM);
+	// 	m_OnDeathText->SetControlVisible(false);
+	// 	m_Root->AddChild(m_OnDeathText);
+	// 	m_Camera->AddChild(m_OnDeathText);
+	// }
+	const std::string stage = "Stage"+ std::to_string(m_SceneData->gameProgress.currentChapter) + "-" +
+					std::to_string(m_SceneData->gameProgress.currentStage);
+
+	if(!m_stageText) {
+		m_stageText = std::make_shared<nGameObject>();
+		m_stageText->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR"/Font/BRUSHSCI.TTF",32,stage,Util::Color(255,255,255)));
+		m_stageText->SetZIndex(100);
+		m_stageText->SetZIndexType(CUSTOM);
+		m_stageText->SetControlVisible(true);
+		m_Root->AddChild(m_stageText);
+		m_Camera->AddChild(m_stageText);
+	}
 
 	// 创建并初始化玩家
 	CreatePlayer();
@@ -61,6 +74,12 @@ void DungeonScene::Start()
 	InitializeSceneManagers();
 
 	FlushPendingObjectsToRendererAndCamera();
+
+	// 更新游戲數據
+	m_SceneData->isInGameProgress = true;
+	if (m_SceneData->gameProgress.currentStage == 0) m_SceneData->gameProgress.currentStage++;
+	m_SceneData->gameProgress.dungeonStartTime = Util::Time::GetElapsedTimeMs();
+	Upload();
 }
 
 void DungeonScene::Update()
@@ -79,6 +98,14 @@ void DungeonScene::Update()
 		dungeonRoom->DebugDungeonRoom();
 	}
 
+	if (m_textTimer > 0)
+		m_textTimer -= Util::Time::GetDeltaTimeMs() / 1000.0f;
+	else if(m_textTimer < 0)
+	{
+		m_textTimer = 0;
+		m_stageText->SetControlVisible(false);
+	}
+
 	// 更新相机
 	m_Camera->Update();
 
@@ -90,6 +117,42 @@ void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
 	m_BGM->Pause();
+
+	// TODO:保存游戲的進度
+	auto cumulativeTime = Util::Time::GetElapsedTimeMs() - m_SceneData->gameProgress.dungeonStartTime;
+	m_SceneData->gameProgress.cumulativeTime += cumulativeTime;
+
+	if (m_Player)
+	{
+		int hp, energy, money = 0;
+		std::vector<int> weaponID, talentID;
+		if (auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH))
+		{
+			hp = healthComp->GetCurrentHp();
+			energy = healthComp->GetCurrentEnergy();
+		}
+		// TODO:錢錢compoennt
+		// if (auto Comp = m_Player->GetComponent<>(ComponentType::))
+		// {
+		// 	money =
+		// }
+		if (auto attackComp = m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK))
+		{
+			weaponID = attackComp->GetAllWeaponID();
+		}
+		if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
+		{
+			talentID = talentComp->GetAllTalentID();
+		}
+
+		m_SceneData->gameProgress.currentStage++;
+		// playerData
+		m_SceneData->gameProgress.playerData.currentHp = hp;
+		m_SceneData->gameProgress.playerData.currentEnergy = energy;
+		m_SceneData->gameProgress.playerData.money = money;
+		m_SceneData->gameProgress.playerData.weaponID = weaponID;
+		m_SceneData->gameProgress.playerData.talentID = talentID;
+	}
 }
 
 Scene::SceneType DungeonScene::Change()
@@ -194,7 +257,3 @@ void DungeonScene::InitializeSceneManagers()
 	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
 	inputManager->addObserver(m_Camera);
 }
-
-
-
-

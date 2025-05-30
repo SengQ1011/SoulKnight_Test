@@ -18,6 +18,7 @@ public:
 
 	//----Getter----
 	[[nodiscard]] std::vector<Talent> GetTalents() const;
+	[[nodiscard]] std::vector<int> GetAllTalentID() const;
 
 	//----Setter----
 	void AddTalent(const Talent &talent);
