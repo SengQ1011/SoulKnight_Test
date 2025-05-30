@@ -63,12 +63,20 @@ StatusEffect stringToStatusEffect(const std::string& str) {
 std::shared_ptr<ProjectileInfo> createChainedProjectileInfo(const nlohmann::json& json)
 {
 	auto proj = std::make_shared<ProjectileInfo>();
-	proj->imagePath = json["imagePath"].get<std::string>();
-	proj->size = json["size"].get<float>();
+	proj->imagePath = RESOURCE_DIR + json["bulletImagePath"].get<std::string>();
+	proj->size = json["bulletSize"].get<float>();
 	proj->damage = json["damage"].get<int>();
 	proj->elementalDamage = stringToStatusEffect(json["elementalDamage"].get<std::string>());
-	proj->speed = json["speed"].get<float>();
-	proj->canReboundBySword = json["canReboundBySword"].get<bool>();
+	proj->speed = json["bulletSpeed"].get<float>();
+	proj->canReboundBySword = json["bulletCanRebound"].get<bool>();
+	proj->canTracking = json["bulletCanTracking"].get<bool>();
+	proj->isBubble = json["bulletIsBubble"].get<bool>();
+	proj->bubbleTrail = json["bubbleTrail"].get<bool>();
+	if (proj->bubbleTrail){
+		proj->bubbleImagePath = RESOURCE_DIR + json["bubbleImagePath"].get<std::string>();
+	}
+	proj->chainProjectionNum = json["chainProjectionNum"].get<int>();
+
 	return proj;
 }
 
@@ -102,9 +110,12 @@ namespace WeaponFactory {
 					float criticalRate = weapon["criticalRate"].get<float>();
 					int offset = weapon["offset"].get<int>();
 					float attackInterval = weapon["attackInterval"].get<float>();
+					float attackInitPositionOffset = weapon["attackPositionOffset"].get<float>();
 					StatusEffect elementalDamage = stringToStatusEffect(weapon["elementalDamage"].get<std::string>());
 					int dropLevel = weapon["dropLevel"].get<int>();
 					int basicPrice = weapon["basicPrice"].get<int>();
+					glm::vec2 handOffset = glm::vec2(weapon["handOffset"].at("x").get<float>(), weapon["handOffset"].at("y").get<float>());
+					glm::vec2 holdingPosition = glm::vec2(weapon["holdingPosition"].at("x").get<float>(), weapon["holdingPosition"].at("y").get<float>());
 					std::shared_ptr<Weapon> weaponPtr;
 
 					// 根據 type 建立不同類型的武器
@@ -119,6 +130,7 @@ namespace WeaponFactory {
 						meleeInfo.criticalRate = criticalRate;
 						meleeInfo.offset = offset;
 						meleeInfo.attackInterval = attackInterval;
+						meleeInfo.attackInitPositionOffset = attackInitPositionOffset;
 						meleeInfo.dropLevel = dropLevel;
 						meleeInfo.basicPrice = basicPrice;
 						meleeInfo.attackRange = weapon["attackRange"].get<float>();
@@ -131,10 +143,10 @@ namespace WeaponFactory {
 						{
 							nlohmann::json chainedAttack = weapon["chainedAttack"];
 							effectInfo.chainAttack.enabled = true;
-							auto  attackType = stringToAttackType(chainedAttack["attackType"].get<std::string>());
-							if(attackType == AttackType::PROJECTILE) {
+							effectInfo.chainAttack.attackType = stringToAttackType(chainedAttack["attackType"].get<std::string>());
+							if(effectInfo.chainAttack.attackType == AttackType::PROJECTILE) {
 								effectInfo.chainAttack.nextAttackInfo = createChainedProjectileInfo(chainedAttack);
-							}else if(attackType == AttackType::EFFECT_ATTACK) {
+							}else if(effectInfo.chainAttack.attackType == AttackType::EFFECT_ATTACK) {
 								effectInfo.chainAttack.nextAttackInfo = createChainedEffectAttackInfo(chainedAttack);
 							}
 						}
@@ -153,11 +165,11 @@ namespace WeaponFactory {
 						gunInfo.criticalRate = criticalRate;
 						gunInfo.offset = offset;
 						gunInfo.attackInterval = attackInterval;
+						gunInfo.attackInitPositionOffset = attackInitPositionOffset;
 						gunInfo.dropLevel = dropLevel;
 						gunInfo.basicPrice = basicPrice;
 
 						gunInfo.numOfBullets = weapon["numOfBullets"].get<int>();
-						gunInfo.bulletOffset = weapon["bulletOffset"].get<float>();
 						gunInfo.bulletCanTracking = weapon["bulletCanTracking"].get<bool>();
 
 						ProjectileInfo projectileInfo;
@@ -171,7 +183,6 @@ namespace WeaponFactory {
 						projectileInfo.bubbleTrail = weapon["bubbleTrail"].get<bool>();
 						if (projectileInfo.bubbleTrail){
 							projectileInfo.bubbleImagePath = RESOURCE_DIR + weapon["bubbleImagePath"].get<std::string>();
-							LOG_DEBUG("have trail");
 						}
 						if (weapon.contains("chainedAttack"))
 						{
@@ -189,12 +200,13 @@ namespace WeaponFactory {
 						weaponPtr = std::make_shared<GunWeapon>(gunInfo);
 					}
 					auto followerComp = weaponPtr->AddComponent<FollowerComponent>(ComponentType::FOLLOWER);
-					followerComp->SetHandOffset(glm::vec2(30/7.0f,-25/4.0f));
-					followerComp->SetHoldingPosition(glm::vec2(30/2.0f,0));
+					followerComp->SetHandOffset(handOffset);
+					followerComp->SetHoldingPosition(holdingPosition);
 					followerComp->SetZIndexOffset(0.5f);
 					if(Weapon::weaponHasOffset(attackType, weaponType)){
 						followerComp->SetIsSword(true);
 					}
+					LOG_DEBUG("create Weapon successful");
 					return weaponPtr;
 				}
 			}

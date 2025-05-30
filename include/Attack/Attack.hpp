@@ -58,6 +58,8 @@ public:
 	void SetDisappearOnHit(const bool disappear) { m_disappearOnHit = disappear; }
 	void SetAttackCharacterType(const CharacterType type) { m_type = type; }
 
+	void TriggerChainAttack() const;
+
 protected:
 	CharacterType m_type;
 	glm::vec2 m_direction;			// 方向

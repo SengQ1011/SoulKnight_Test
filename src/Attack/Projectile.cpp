@@ -22,7 +22,7 @@ Projectile::Projectile(const ProjectileInfo& projectileInfo)
 								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
 								m_canTracking(projectileInfo.canTracking), m_Target(projectileInfo.target),
 								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
-								m_bubbleImagePath(projectileInfo.bubbleImagePath) {}
+								m_bubbleImagePath(projectileInfo.bubbleImagePath), m_chainProjectionNum(projectileInfo.chainProjectionNum) {}
 
 //=========================== (實作) ================================//
 void Projectile::Init() {
@@ -87,7 +87,8 @@ void Projectile::UpdateObject(const float deltaTime) {
 
 		// 移動泡泡
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
-	} else if(m_canTracking && !m_Target.expired())
+	}
+	else if(m_canTracking && !m_Target.expired())
 	{
 		// 方法一：追蹤導彈（貝茲曲線）
 		auto targetPosition = m_Target.lock()->GetWorldCoord();
@@ -123,9 +124,9 @@ void Projectile::UpdateObject(const float deltaTime) {
 		m_WorldCoord += m_direction * m_speed * deltaTime;
 
 
-	}else
+	}
+	else
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
-
 
 	if (m_enableBubbleTrail) {
 		m_bubbleTimer += deltaTime;
@@ -198,6 +199,8 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 	m_markRemove = false;
 	m_bubbleTimer = 0.0f;
 	m_bubbleStayTime = 3.0f;
+
+	m_chainProjectionNum = projectileInfo.chainProjectionNum;
 }
 
 

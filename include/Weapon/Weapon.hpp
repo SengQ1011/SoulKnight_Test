@@ -19,6 +19,7 @@ struct BaseWeaponInfo {
 	float criticalRate = 0.0f;
 	int offset = 0;
 	float attackInterval = 0.0f;
+	float attackInitPositionOffset = 0.0f;
 	int dropLevel = 0;
 	int basicPrice = 0;
 };
@@ -47,6 +48,7 @@ public:
 	void SetLastAttackTime(const float time) { lastAttackTime = time; }
 	void SetOwner(std::shared_ptr<Character> owner) { m_currentOwner = owner; }
 	void RemoveOwner() { m_currentOwner = nullptr; }
+	void SetOffset(const int offset) { m_offset = offset; }
 	void SetAttackDelay(float delay) {
 		m_attackDelay = delay;
 		lastAttackTime = m_attackDelay;
@@ -62,7 +64,6 @@ public:
 	// 支持克隆複製
 	virtual std::shared_ptr<Weapon> Clone() const = 0;
 
-
 protected:
 	AttackType m_AttackType = AttackType::NONE;
 	WeaponType m_weaponType = WeaponType::NONE;
@@ -72,7 +73,8 @@ protected:
 	int m_energy;					// 武器所需能量
 	float m_criticalRate;			// 武器暴擊率
 	float m_attackInterval;			// 攻擊頻率
-	int m_offset;					// 攻擊偏移量
+	int m_offset;					// 攻擊方向偏移量
+	float m_attackInitPositionOffset;		// 攻擊位置偏移量
 	int m_dropLevel = 0;
 	int m_basicPrice = 0;
 

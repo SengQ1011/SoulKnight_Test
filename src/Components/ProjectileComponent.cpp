@@ -3,10 +3,8 @@
 //
 #include "Components/ProjectileComponent.hpp"
 
-#include "Attack/AttackManager.hpp"
 #include "Attack/Projectile.hpp"
 #include "Creature/Character.hpp"
-#include "Scene/SceneManager.hpp"
 
 std::vector<EventType> ProjectileComponent::SubscribedEventTypes() const
 {
@@ -81,7 +79,7 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 		projectile->AddReboundCounter();
 	}else {
 		projectile->MarkForRemoval();
-		TriggerChainAttack(projectile);
+		projectile->TriggerChainAttack();
 	}
 }
 
@@ -101,38 +99,6 @@ void ProjectileComponent::HandleReflectEvent()
 
 	}else {
 		proj->MarkForRemoval();
-		TriggerChainAttack(proj);
-	}
-
-}
-
-void ProjectileComponent::TriggerChainAttack(const std::shared_ptr<Projectile>& projectile)
-{
-	auto chainAttackInfo = projectile->GetChainAttackInfo();
-	if (!chainAttackInfo.enabled) return;
-
-	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-	if (!currentScene) return;
-
-	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-	if (!attackManager) return;
-
-	if (chainAttackInfo.attackType == AttackType::EFFECT_ATTACK)
-	{
-		const auto effectInfoPtr = std::dynamic_pointer_cast<EffectAttackInfo>(chainAttackInfo.nextAttackInfo);
-		if (!effectInfoPtr) return;
-
-		effectInfoPtr->type = projectile->GetAttackLayerType();
-		effectInfoPtr->attackTransform = projectile->GetTransform();
-		effectInfoPtr->attackTransform.translation = projectile->GetWorldCoord();
-		effectInfoPtr->attackTransform.scale = glm::vec2(1.0f);
-		effectInfoPtr->direction = glm::vec2(0.0f);
-		attackManager->spawnEffectAttack(*effectInfoPtr);
-	}
-	else if (chainAttackInfo.attackType == AttackType::PROJECTILE)
-	{
-		const auto projInfoPtr = std::dynamic_pointer_cast<ProjectileInfo>(chainAttackInfo.nextAttackInfo);
-		if (!projInfoPtr) return;
-		// TODO:
+		proj->TriggerChainAttack();
 	}
 }

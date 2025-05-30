@@ -260,7 +260,8 @@
     "haveWeapon": 1,
     "weaponId": 506,
     "size": 32.0
-  },{
+  },
+  {
     "ID": 13,
     "Type": "ENEMY",
     "name": "Elite Heavy Miner",
@@ -279,7 +280,8 @@
     "haveWeapon": 1,
     "weaponId": 507,
     "size": 24.0
-  },{
+  },
+  {
     "ID": 14,
     "Type": "ENEMY",
     "name": "Elite Heavy Miner",
@@ -297,6 +299,102 @@
     "attackType": ["Gun"],
     "haveWeapon": 1,
     "weaponId": 507,
+    "size": 32.0
+  },
+  {
+    "ID": 15,
+    "Type": "ENEMY",
+    "name": "Baby_Snow_Ape",
+    "monsterType": "Attack",
+    "isElite": false,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_4.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_5.png",
+                  "/monster/Icefield/enemy34_BabySnowApe/enemy34_6.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_7.png"],
+      "MOVING": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_0.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_1.png",
+                "/monster/Icefield/enemy34_BabySnowApe/enemy34_2.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_3.png"],
+      "ATTACK": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_0.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_1.png",
+                "/monster/Icefield/enemy34_BabySnowApe/enemy34_2.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_3.png"],
+      "DEAD": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_8.png"]
+    },
+    "monsterPoint": 2,
+    "maxHp": 9,
+    "speed": 0.7,
+    "attackType": ["Melee"],
+    "haveWeapon": 1,
+    "weaponId": 508,
+    "size": 24.0
+  },
+  {
+    "ID": 16,
+    "Type": "ENEMY",
+    "name": "Baby_Snow_Ape",
+    "monsterType": "Attack",
+    "isElite": true,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_4.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_5.png",
+        "/monster/Icefield/enemy34_BabySnowApe/enemy34_6.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_7.png"],
+      "MOVING": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_0.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_1.png",
+        "/monster/Icefield/enemy34_BabySnowApe/enemy34_2.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_3.png"],
+      "ATTACK": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_0.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_1.png",
+        "/monster/Icefield/enemy34_BabySnowApe/enemy34_2.png","/monster/Icefield/enemy34_BabySnowApe/enemy34_3.png"],
+      "DEAD": ["/monster/Icefield/enemy34_BabySnowApe/enemy34_8.png"]
+    },
+    "monsterPoint": 3,
+    "maxHp": 30,
+    "speed": 0.7,
+    "attackType": ["Melee"],
+    "haveWeapon": 1,
+    "weaponId": 508,
+    "size": 32.0
+  },
+  {
+    "ID": 17,
+    "Type": "ENEMY",
+    "name": "Snow_Ape",
+    "monsterType": "Attack",
+    "isElite": false,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy35_SnowApe/enemy35_5.png", "/monster/Icefield/enemy35_SnowApe/enemy35_6.png",
+                      "/monster/Icefield/enemy35_SnowApe/enemy35_6.png"],
+      "MOVING": ["/monster/Icefield/enemy35_SnowApe/enemy35_0.png", "/monster/Icefield/enemy35_SnowApe/enemy35_1.png",
+                  "/monster/Icefield/enemy35_SnowApe/enemy35_2.png","/monster/Icefield/enemy35_SnowApe/enemy35_3.png",
+                  "/monster/Icefield/enemy35_SnowApe/enemy35_4.png"],
+      "ATTACK": ["/monster/Icefield/enemy35_SnowApe/enemy35_0.png", "/monster/Icefield/enemy35_SnowApe/enemy35_1.png",
+                  "/monster/Icefield/enemy35_SnowApe/enemy35_2.png","/monster/Icefield/enemy35_SnowApe/enemy35_3.png",
+                  "/monster/Icefield/enemy35_SnowApe/enemy35_4.png"],
+      "DEAD": ["/monster/Icefield/enemy35_SnowApe/enemy35_8.png"]
+    },
+    "monsterPoint": 3,
+    "maxHp": 28,
+    "speed": 0.7,
+    "attackType": ["Melee"],
+    "haveWeapon": 1,
+    "weaponId": 509,
+    "size": 24.0
+  },
+  {
+    "ID": 18,
+    "Type": "ENEMY",
+    "name": "Snow_Ape",
+    "monsterType": "Attack",
+    "isElite": true,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy35_SnowApe/enemy35_5.png", "/monster/Icefield/enemy35_SnowApe/enemy35_6.png",
+                    "/monster/Icefield/enemy35_SnowApe/enemy35_6.png"],
+      "MOVING": ["/monster/Icefield/enemy35_SnowApe/enemy35_0.png", "/monster/Icefield/enemy35_SnowApe/enemy35_1.png",
+                  "/monster/Icefield/enemy35_SnowApe/enemy35_2.png","/monster/Icefield/enemy35_SnowApe/enemy35_3.png",
+                  "/monster/Icefield/enemy35_SnowApe/enemy35_4.png"],
+      "ATTACK": ["/monster/Icefield/enemy35_SnowApe/enemy35_0.png", "/monster/Icefield/enemy35_SnowApe/enemy35_1.png",
+                "/monster/Icefield/enemy35_SnowApe/enemy35_2.png","/monster/Icefield/enemy35_SnowApe/enemy35_3.png",
+                "/monster/Icefield/enemy35_SnowApe/enemy35_4.png"],
+      "DEAD": ["/monster/Icefield/enemy35_SnowApe/enemy35_8.png"]
+    },
+    "monsterPoint": 3,
+    "maxHp": 80,
+    "speed": 0.7,
+    "attackType": ["Melee"],
+    "haveWeapon": 1,
+    "weaponId": 509,
     "size": 32.0
   }
 ]

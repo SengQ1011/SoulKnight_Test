@@ -22,6 +22,9 @@ struct ProjectileInfo : public AttackInfo
 	bool isBubble = false;
 	bool bubbleTrail = false;
 	std::string bubbleImagePath = "";
+
+	// chainAttack記錄
+	int chainProjectionNum = 0;
 };
 
 class Projectile : public Attack {
@@ -80,6 +83,9 @@ protected:
 	int m_bubbleDamage = 2;
 	float m_bubbleSpeed = 20.0f;
 	float m_bubbleStayTime = 3.0f;
+
+	// chainAttack記錄
+	int m_chainProjectionNum = 0;
 };
 
 #endif //PROJECTILE_HPP
