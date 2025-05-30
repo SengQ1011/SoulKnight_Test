@@ -28,10 +28,12 @@ public:
 
 	//----Setter----
 	void SetMaxHp(const int hp) { m_maxHp = hp; }
+	void SetCurrentHp(const int hp) { m_currentHp = hp; }
 	void AddCurrentHp(const int hp) { m_currentHp += hp; }
 	void SetMaxArmor(const int armor) { m_maxArmor = armor; }
 	void AddCurrentArmor(const int armor) { m_currentArmor += armor; }
 	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
+	void SetCurrentEnergy(const int energy) { m_currentEnergy = energy; }
 	void AddCurrentEnergy(const int energy) { m_currentEnergy += energy; }
 	void ConsumeEnergy(const int energy) { m_currentEnergy -= energy; }
 	void SetInvincibleMode(const bool op) { m_invincibleMode = op; }

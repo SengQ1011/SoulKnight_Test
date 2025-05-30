@@ -24,6 +24,7 @@
 #include "Creature/Character.hpp"
 #include "Factory/CharacterFactory.hpp"
 #include "Factory/RoomObjectFactory.hpp"
+#include "Factory/WeaponFactory.hpp"
 #include "Room/DungeonMap.hpp"
 #include "Util/Image.hpp"
 
@@ -218,11 +219,40 @@ void DungeonScene::CreatePlayer()
 {
 	// 使用 CharacterFactory 创建玩家
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
+	if (!m_Player) LOG_ERROR("Failed to create player");
+	const auto playerData = m_SceneData->gameProgress.playerData;
 
-	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
-	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
-		talentComp->AddTalent(talentDatabase[2]);
+	// Hp & 能量
+	if (const auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH)){
+		const auto hp = playerData.currentHp;
+		const auto energy = playerData.currentEnergy;
+		healthComp->SetCurrentHp(hp);
+		healthComp->SetCurrentEnergy(energy);
 	}
+
+	// 武器
+	if (const auto attackComp = m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK))
+	{
+		// 移除初始武器
+		attackComp->RemoveAllWeapon();
+		auto weaponID = playerData.weaponID;
+		for (const auto& id : weaponID){
+			attackComp->AddWeapon(WeaponFactory::createWeapon(id));
+		}
+	}
+
+	// 恢復天賦
+	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+	if (const auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+		auto talentID = playerData.talentID;
+		for (const auto& talent : talentID)
+		talentComp->AddTalent(talentDatabase[talent]);
+	}
+
+	// money
+	// if (const auto XXComp = m_Player->GetComponent<>(ComponentType::)){
+	//
+	// }
 
 	// 设置玩家的初始位置
 	m_Player->SetWorldCoord(glm::vec2(0)); // 地图正中央
