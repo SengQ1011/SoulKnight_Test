@@ -8,7 +8,6 @@
 #include "Scene/Scene.hpp"
 
 #include <future>
-
 namespace Util
 {
 	class Text;

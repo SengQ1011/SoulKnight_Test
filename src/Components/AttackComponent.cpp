@@ -65,6 +65,16 @@ void AttackComponent::Update()
 	m_switchTimeCounter -= deltaTime;
 }
 
+std::vector<int> AttackComponent::GetAllWeaponID() const
+{
+	std::vector<int> id;
+	for (auto& weapon : m_Weapons)
+	{
+		id.push_back(weapon->GetWeaponID());
+	}
+	return id;
+}
+
 void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 {
 	auto character = GetOwner<Character>();
