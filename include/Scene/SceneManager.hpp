@@ -27,7 +27,7 @@ public:
 	void End(); // NOLINT(readability-convert-member-functions-to-static)
 
 	void StartGame();
-	std::shared_ptr<SaveData> SceneManager::DownloadGameProgress() const;
+	std::shared_ptr<SaveData> DownloadGameProgress() const;
 	void UploadGameProgress(std::shared_ptr<SaveData>& updatedProgress);
 	void receiveEnemyDeathEvent() const;
 
