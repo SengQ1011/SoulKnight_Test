@@ -70,9 +70,12 @@ set(SRC_FILES
     TriggerStrategy/BlockProjectileStrategy.cpp
     TriggerStrategy/KnockOffTriggerStrategy.cpp
     TriggerStrategy/ReflectTriggerStrategy.cpp
+    UIPanel/PlayerStatusPanel.cpp
     UIPanel/SettingPanel.cpp
+    UIPanel/UIButton.cpp
     UIPanel/UIManager.cpp
     UIPanel/UIPanel.cpp
+    UIPanel/UISlider.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
@@ -168,18 +171,23 @@ set(INCLUDE_FILES
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
     Structs/KnockOffEventInfo.hpp
+    Structs/PositionChangedEvent.hpp
     Structs/RectShape.hpp
     Structs/ReflectProjectileEventInfo.hpp
     Structs/TakeDamageEventInfo.hpp
+    Structs/ValueChangedEvent.hpp
     Tool/Tool.hpp
     TriggerStrategy/AttackTriggerStrategy.hpp
     TriggerStrategy/BlockProjectileStrategy.hpp
     TriggerStrategy/ITriggerStrategy.hpp
     TriggerStrategy/KnockOffTriggerStrategy.hpp
     TriggerStrategy/ReflectTriggerStrategy.hpp
+    UIPanel/PlayerStatusPanel.hpp
     UIPanel/SettingPanel.hpp
+    UIPanel/UIButton.hpp
     UIPanel/UIManager.hpp
     UIPanel/UIPanel.hpp
+    UIPanel/UISlider.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp

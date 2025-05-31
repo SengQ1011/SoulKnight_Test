@@ -16,6 +16,7 @@ public:
 	static UIManager& GetInstance();
 
 	void RegisterPanel(const std::string& name, const std::shared_ptr<UIPanel>& panel);
+	void ResetPanels() {m_Panels.clear();}
 
 	void ShowPanel(const std::string& name);
 	void HidePanel(const std::string& name);

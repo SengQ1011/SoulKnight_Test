@@ -47,7 +47,7 @@ void nGameObject::OnEvent(const EventT &eventInfo)
 		return;
 
 	// 留條後路，讓nGameObject自己處理Event的邏輯 - Projectile害的
-	// OnEventReceived(eventInfo);
+	OnEventReceived(eventInfo);
 
 	const EventType eventType = eventInfo.GetEventType();
 	if (const auto it = m_EventSubscribers.find(eventType); it != m_EventSubscribers.end())
