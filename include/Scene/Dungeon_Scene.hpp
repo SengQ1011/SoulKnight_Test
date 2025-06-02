@@ -25,6 +25,7 @@ public:
 	static void GenerateStaticDungeon();
 	static std::shared_ptr<DungeonScene> GetPreGenerated();
 	static void ClearPreGenerated();
+	std::shared_ptr<Character> GetPlayer() const { return m_Player; }
 
 private:
 	static std::shared_ptr<DungeonScene> s_PreGeneratedInstance;

@@ -10,14 +10,15 @@
 
 #include "Components/AiComponent.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Components/EnemyAI/AttackStrategy.hpp"
+#include "Components/EnemyAI/MoveStrategy.hpp"
+#include "Components/EnemyAI/UtilityStrategy.hpp"
 #include "Components/FollowerComponent.hpp"
 #include "Components/HealthComponent.hpp"
 #include "Components/InputComponent.hpp"
 #include "Components/SkillComponent.hpp"
 #include "Components/TalentComponet.hpp"
-#include "Components/EnemyAI/MoveStrategy.hpp"
-#include "Components/EnemyAI/AttackStrategy.hpp"
-#include "Components/EnemyAI/UtilityStrategy.hpp"
+#include "Components/walletComponent.hpp"
 
 #include "Util/Logger.hpp"
 
@@ -122,7 +123,8 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
 			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, criticalRate, handBladeDamage, 0);
 			auto skillComponent = player->AddComponent<SkillComponent>(ComponentType::SKILL, skill);
-			auto tanlentCompoent = player->AddComponent<TalentComponent>(ComponentType::TALENT);
+			auto walletComp = player->AddComponent<WalletComponent>(ComponentType::WALLET);
+			auto talentComp = player->AddComponent<TalentComponent>(ComponentType::TALENT);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 			CollisionComp->AddCollisionMask(CollisionLayers_Terrain);

@@ -12,6 +12,7 @@ void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObj
 {
 	if (interactable && interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE)) {
 		m_InteractableObjects.push_back(interactable);
+		LOG_INFO("Interactable registered");
 	}
 }
 

@@ -7,7 +7,7 @@
             "Name": "portal",
             "Class": "INTERACTABLE",
             "InteractionRadius": 55.0,
-            "InteractableFunctionName": "Portal",
+            "InteractableType": "PORTAL",
             "PromptObject": {
                 "PromptFontPath": "/Font/zpix.ttf",
                 "PromptFontSize": 32.0,

@@ -240,4 +240,25 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 	// TODO:沒有TrackingManager的自動化刪除
 }
 
+std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
+{
+	auto factory = m_Factory.lock();
+	std::shared_ptr<nGameObject> chest;
+	if (type == ChestType::REWARD) {
+		chest = factory->createRoomObject("object_rewardChest");
+	}
+	else if (type == ChestType::WEAPON) {
+		chest = factory->createRoomObject("object_weaponChest");
+	}
+	chest->SetActive(true);
+	chest->SetControlVisible(true);
+	// RegisterObjectToSceneAndManager(chest);
+	//  因爲可能是在游戲中創建，要手動加入渲染器/manager
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	currentScene->GetRoot().lock()->AddChild(chest);
+	currentScene->GetCamera().lock()->SafeAddChild(chest);
 
+	// 加入互動manager中
+	m_InteractionManager->RegisterInteractable(chest);
+	return chest;
+}

@@ -10,13 +10,13 @@ namespace Core { class Drawable; }
 
 class ChestComponent final : public Component {
 public:
-	enum class State
+	enum class ChestState
 	{
 		OPENED = 0,
 		CLOSED = 1,
 	};
 
-	ChestComponent() = default;
+	explicit ChestComponent(ChestType chestType, std::vector<std::string> imagePaths);
 	~ChestComponent() override = default;
 
 	void Init() override;
@@ -25,16 +25,19 @@ public:
 	void HandleCollision(const CollisionEventInfo &info) override;
 
 	/* ---Getter--- */
-	[[nodiscard]] State GetCurrentState() const { return m_currentState; }
+	[[nodiscard]] ChestState GetCurrentState() const { return m_currentState; }
 
 	/* ---Setter--- */
-	void SetState(const State newState) {m_currentState = newState;}
+	void SetState(const ChestState newState) {m_currentState = newState;}
 
 	void ChestOpened();
 
 private:
-	State m_currentState = State::CLOSED;
+	ChestType m_chestType;
+	ChestState m_currentState = ChestState::CLOSED;
+	std::vector<std::string> m_imagePaths;
 	std::vector<std::shared_ptr<Core::Drawable>> m_drawables;
+	std::vector<std::shared_ptr<nGameObject>> m_dropItems;
 };
 
 #endif //CHESTCOMPONENT_HPP

@@ -24,6 +24,12 @@ ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
 	return CUSTOM;
 }
 
+ChestType stringToChestType(const std::string& str) {
+	if (str == "WEAPON") return ChestType::WEAPON;
+	if (str == "REWARD") return ChestType::REWARD;
+	throw std::invalid_argument("Invalid ChestType: " + str);
+}
+
 nlohmann::json Factory::readJsonFile(const std::string& fileName) {
 	std::ifstream file(JSON_DIR "/" + fileName);
 	if (!file.is_open()) {
@@ -64,8 +70,13 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 		{"CHEST",
 			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
 			{
-				object->AddComponent<ChestComponent>
-				(ComponentType::CHEST);
+				try {
+					ChestType chestType = stringToChestType(json.at("chestType").get<std::string>());
+					std::vector<std::string> imagePaths = json.at("imagePaths").get<std::vector<std::string>>();
+					object->AddComponent<ChestComponent>(ComponentType::CHEST, chestType, imagePaths);
+				} catch (const std::exception& e) {
+					LOG_ERROR("Factory::createComponent CHEST parsing failed: {}", e.what());
+				}
 			}
 		},
 	};

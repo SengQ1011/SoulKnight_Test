@@ -113,7 +113,6 @@ void AnimationComponent::SetSkillEffect(bool play)
 	}
 	else
 	{
-		LOG_DEBUG("end");
 		m_useSkillEffect = false;
 		m_effectAnimation->SetControlVisible(false);
 		m_effectAnimation->PlayAnimation(false);

@@ -140,6 +140,9 @@ void LobbyScene::Exit()
 	if (m_LobbyRoom) {
 		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
 	}
+
+	if (m_Player) SavePlayerInformation(m_Player);
+
 }
 
 Scene::SceneType LobbyScene::Change()

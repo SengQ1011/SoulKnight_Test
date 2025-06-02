@@ -21,7 +21,8 @@ enum class ComponentType
 	PROJECTILE,		// 11
 	SKILL,
 	STATE,
-	TALENT
+	TALENT,
+	WALLET
 };
 
 enum class CharacterType
@@ -118,6 +119,26 @@ enum ZIndexType: int
 	OBJECTHIGH	= 60,	// 60 -  80
 	UI			= 80,	// 80 -  99
 	CUSTOM		=100,   // dont care
+};
+
+enum class ChestType
+{
+	REWARD,
+	WEAPON
+};
+
+enum class InteractableType {
+	NONE,
+	PORTAL,
+	SHOP,
+	NPC_DIALOGUE,
+	REWARD_CHEST,
+	WEAPON_CHEST,
+	COIN,
+	ENERGY_BALL,
+	WEAPON,
+	HP_POISON,
+	ENERGY_POISON
 };
 
 #endif //ENUMTYPES_HPP
