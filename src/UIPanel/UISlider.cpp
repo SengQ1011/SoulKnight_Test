@@ -32,7 +32,7 @@ UISlider::UISlider(const std::function<float()>& listenFunction,
 
 		// 限制滑塊 X 軸在 groove 範圍內
 		const float grooveCenterX = this->m_Transform.translation.x;
-		const float halfWidth = this->GetScaledSize().x * 0.5f;
+		const float halfWidth = this->GetScaledSize().x * 0.5f - m_BorderWidth.x;
 		limitedMove.x = std::clamp(limitedMove.x, grooveCenterX - halfWidth, grooveCenterX + halfWidth);
 
 		// 固定滑塊 Y 軸與 groove 對齊
@@ -60,7 +60,7 @@ void UISlider::Start()
 
 	if (!m_Button) return;
 	m_Button->m_Transform.translation = m_Track->m_Transform.translation + glm::vec2(m_Track->GetScaledSize().x * 0.5f, 0.0f);
-	m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize(); //TODO:可能要變數而不是常數
+	// m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize(); //TODO:可能要變數而不是常數
 	m_Button->SetZIndex(m_Track->GetZIndex()+1.0f);
 }
 
@@ -96,7 +96,7 @@ void UISlider::Update()
 	if (m_Button)
 	{
 		m_Button->m_Transform.translation = m_Track->m_Transform.translation + glm::vec2(m_Track->GetScaledSize().x, 0.0f);
-		m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize();
+		// m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize();
 	}
 
 	DrawDebugUI();
@@ -137,7 +137,7 @@ void UISlider::TrackFollowButton(const PositionChangedEvent &eventInfo)
 
 	// 更新 Track 長度（填色長度）
 	m_Track->m_Transform.scale.x = newValue / m_Track->GetImageSize().x;
-	m_Track->m_Transform.scale.y = this->GetScaledSize().y / m_Track->GetImageSize().y;
+	m_Track->m_Transform.scale.y = (this->GetScaledSize().y  - m_BorderWidth.y) / m_Track->GetImageSize().y;
 
 	// 通知外部 callback（回傳值為 0~1）
 	if (m_TrackFunction)

@@ -17,9 +17,9 @@ void SettingPanel::Start()
 {
 	// 位置偏移量定義
 	const glm::vec2 backgroundOffset = glm::vec2(0.0f, 22.0f);
-	const glm::vec2 sliderOffset1 = glm::vec2(50.0f, 100.0f);
-	const glm::vec2 sliderOffset2 = glm::vec2(50.0f, -25.0f);
-	const glm::vec2 sliderOffset3 = glm::vec2(50.0f, -150.0f);
+	const glm::vec2 sliderOffset1 = glm::vec2(50.0f, 92.0f);
+	const glm::vec2 sliderOffset2 = glm::vec2(50.0f, -33.0f);
+	const glm::vec2 sliderOffset3 = glm::vec2(50.0f, -158.0f);
 
 	m_PanelBackground = std::make_shared<nGameObject>();
 	m_PanelBackground->SetDrawable(
@@ -34,16 +34,15 @@ void SettingPanel::Start()
 
 	// 主音量的軌道
 	const auto track1 = std::make_shared<nGameObject>();
-	track1->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/BlueCollider.png"));
+	track1->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/ui_progress_blue.png"));
 	m_GameObjects.push_back(track1);
 
 	// 主音量滑桿
-	m_SliderMasterVolume = std::make_shared<UISlider>(listenMasterVoice, track1, glm::vec2(0.0f), true,
-													  RESOURCE_DIR "/YellowCollider.png", controlMasterVoice);
-	m_SliderMasterVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
+	m_SliderMasterVolume = std::make_shared<UISlider>(listenMasterVoice, track1, glm::vec2(7.0f,4.0f), true,
+													  RESOURCE_DIR "/UI/ui_settingPanel/button_volume.png", controlMasterVoice);
+	m_SliderMasterVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/ui_progress_bg.png"));
 	m_SliderMasterVolume->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
 	m_SliderMasterVolume->m_Transform.translation = sliderOffset1;
-	m_SliderMasterVolume->m_Transform.scale = glm::vec2(13.333f, 1.482f);
 	m_SliderMasterVolume->Start();
 	const auto slider_button1 = m_SliderMasterVolume->GetButton();
 	m_GameObjects.push_back(slider_button1);
@@ -53,15 +52,14 @@ void SettingPanel::Start()
 	const auto listenBGMVoice = []() -> float { return AudioManager::GetInstance().GetBGMVolume(); };
 
 	const auto track2 = std::make_shared<nGameObject>();
-	track2->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/BlueCollider.png"));
+	track2->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/ui_progress_blue.png"));
 	m_GameObjects.push_back(track2);
 
-	m_SliderBGMVolume = std::make_shared<UISlider>(listenBGMVoice, track2, glm::vec2(0.0f), true,
-												   RESOURCE_DIR "/YellowCollider.png", controlBGMVoice);
-	m_SliderBGMVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
+	m_SliderBGMVolume = std::make_shared<UISlider>(listenBGMVoice, track2, glm::vec2(7.0f,4.0f), true,
+												   RESOURCE_DIR "/UI/ui_settingPanel/button_volume.png", controlBGMVoice);
+	m_SliderBGMVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/ui_progress_bg.png"));
 	m_SliderBGMVolume->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
 	m_SliderBGMVolume->m_Transform.translation = sliderOffset2;
-	m_SliderBGMVolume->m_Transform.scale = glm::vec2(13.333f, 1.482f);
 	m_SliderBGMVolume->Start();
 	const auto slider_button2 = m_SliderBGMVolume->GetButton();
 	m_GameObjects.push_back(slider_button2);
@@ -71,26 +69,18 @@ void SettingPanel::Start()
 	const auto listenSFXVoice = []() -> float { return AudioManager::GetInstance().GetSFXVolume(); };
 
 	const auto track3 = std::make_shared<nGameObject>();
-	track3->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/BlueCollider.png"));
+	track3->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/ui_progress_blue.png"));
 	m_GameObjects.push_back(track3);
 
-	m_SliderSFXVolume = std::make_shared<UISlider>(listenSFXVoice, track3, glm::vec2(0.0f), true,
-												   RESOURCE_DIR "/YellowCollider.png", controlSFXVoice);
-	m_SliderSFXVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
+	m_SliderSFXVolume = std::make_shared<UISlider>(listenSFXVoice, track3, glm::vec2(7.0f,4.0f), true,
+												   RESOURCE_DIR "/UI/ui_settingPanel/button_volume.png", controlSFXVoice);
+	m_SliderSFXVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/ui_progress_bg.png"));
 	m_SliderSFXVolume->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
 	m_SliderSFXVolume->m_Transform.translation = sliderOffset3;
-	m_SliderSFXVolume->m_Transform.scale = glm::vec2(13.333f, 1.482f);
 	m_SliderSFXVolume->Start();
 	const auto slider_button3 = m_SliderSFXVolume->GetButton();
 	m_GameObjects.push_back(slider_button3);
 	m_GameObjects.push_back(m_SliderSFXVolume);
-
-	std::shared_ptr<nGameObject> see = std::make_shared<nGameObject>();
-	see->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/RedCollider.png"));
-	see->SetZIndex(100.0f);
-	see->m_Transform.translation = glm::vec2(0.0f, 0.0f);
-	see->m_Transform.scale = glm::vec2(1, 1000) / see->GetImageSize();
-	m_GameObjects.push_back(see);
 
 	std::function<void()> button_function = [this]() { this->Hide(); };
 	m_CloseButton = std::make_shared<UIButton>(button_function, false);
@@ -115,7 +105,6 @@ void SettingPanel::Start()
 		renderer->AddChild(m_SliderMasterVolume);
 		renderer->AddChild(m_SliderBGMVolume);
 		renderer->AddChild(m_SliderSFXVolume);
-		renderer->AddChild(see);
 	}
 
 	Hide();

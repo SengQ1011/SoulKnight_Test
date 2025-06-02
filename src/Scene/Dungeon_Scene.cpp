@@ -128,7 +128,6 @@ void DungeonScene::Update()
 void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
-	m_BGM->Pause();
 
 	// TODO:保存游戲的進度
 	auto cumulativeTime = Util::Time::GetElapsedTimeMs() - m_SceneData->gameProgress.dungeonStartTime;
@@ -273,4 +272,22 @@ void DungeonScene::InitializeSceneManagers()
 	// 注册输入观察者
 	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
 	inputManager->addObserver(m_Camera);
+}
+
+void DungeonScene::InitUIManager() {
+	UIManager::GetInstance().ResetPanels();
+
+	const auto settingPanel = std::make_shared<SettingPanel>();
+	settingPanel->Start();
+	UIManager::GetInstance().RegisterPanel("setting", settingPanel);
+
+	const auto playerStatusPanel = std::make_shared<PlayerStatusPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH));
+	playerStatusPanel->Start();
+	UIManager::GetInstance().RegisterPanel("playerStatus", playerStatusPanel);
+}
+
+void DungeonScene::InitAudioManager() {
+	AudioManager::GetInstance().Reset();
+	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
+	AudioManager::GetInstance().PlayBGM();
 }
