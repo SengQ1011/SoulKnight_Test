@@ -15,27 +15,18 @@
 
 void SettingPanel::Start()
 {
-	m_PanelBackground = std::make_shared<nGameObject>();
-	m_PanelBackground->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/MenuPanel.png"));
-	m_PanelBackground->SetZIndex(80.0f);
-	m_PanelBackground->m_Transform.scale = glm::vec2(0.760f, 0.880f);
-	m_GameObjects.push_back(m_PanelBackground);
-
 	// 位置偏移量定義
-	const glm::vec2 iconOffset1 = glm::vec2(-250.0f, 100.0f);
-	const glm::vec2 iconOffset2 = glm::vec2(-250.0f, -25.0f);
-	const glm::vec2 iconOffset3 = glm::vec2(-250.0f, -150.0f);
+	const glm::vec2 backgroundOffset = glm::vec2(0.0f, 22.0f);
 	const glm::vec2 sliderOffset1 = glm::vec2(50.0f, 100.0f);
 	const glm::vec2 sliderOffset2 = glm::vec2(50.0f, -25.0f);
 	const glm::vec2 sliderOffset3 = glm::vec2(50.0f, -150.0f);
 
-	// Master Volume Icon
-	m_IconMasterVolume = std::make_shared<nGameObject>();
-	m_IconMasterVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
-	m_IconMasterVolume->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
-	m_IconMasterVolume->m_Transform.translation = iconOffset1;
-	m_IconMasterVolume->m_Transform.scale = glm::vec2(2.133f, 2.370);
-	m_GameObjects.push_back(m_IconMasterVolume);
+	m_PanelBackground = std::make_shared<nGameObject>();
+	m_PanelBackground->SetDrawable(
+		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/background_menuPanel.png"));
+	m_PanelBackground->SetZIndex(80.0f);
+	m_PanelBackground->m_Transform.translation = backgroundOffset;
+	m_GameObjects.push_back(m_PanelBackground);
 
 	// 主音量的監聽和控制function
 	const auto controlMasterVoice = [](const float newValue) { AudioManager::GetInstance().SetMasterVolume(newValue); };
@@ -58,14 +49,6 @@ void SettingPanel::Start()
 	m_GameObjects.push_back(slider_button1);
 	m_GameObjects.push_back(m_SliderMasterVolume);
 
-	// BGM Volume Icon
-	m_IconBGMVolume = std::make_shared<nGameObject>();
-	m_IconBGMVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
-	m_IconBGMVolume->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
-	m_IconBGMVolume->m_Transform.translation = iconOffset2;
-	m_IconBGMVolume->m_Transform.scale = glm::vec2(2.133f, 2.370);
-	m_GameObjects.push_back(m_IconBGMVolume);
-
 	const auto controlBGMVoice = [](const float newValue) { AudioManager::GetInstance().SetBGMVolume(newValue); };
 	const auto listenBGMVoice = []() -> float { return AudioManager::GetInstance().GetBGMVolume(); };
 
@@ -83,14 +66,6 @@ void SettingPanel::Start()
 	const auto slider_button2 = m_SliderBGMVolume->GetButton();
 	m_GameObjects.push_back(slider_button2);
 	m_GameObjects.push_back(m_SliderBGMVolume);
-
-	// SFX Volume Icon
-	m_IconSFXVolume = std::make_shared<nGameObject>();
-	m_IconSFXVolume->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
-	m_IconSFXVolume->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
-	m_IconSFXVolume->m_Transform.translation = iconOffset3;
-	m_IconSFXVolume->m_Transform.scale = glm::vec2(2.133f, 2.370);
-	m_GameObjects.push_back(m_IconSFXVolume);
 
 	const auto controlSFXVoice = [](const float newValue) { AudioManager::GetInstance().SetSFXVolume(newValue); };
 	const auto listenSFXVoice = []() -> float { return AudioManager::GetInstance().GetSFXVolume(); };
@@ -119,10 +94,10 @@ void SettingPanel::Start()
 
 	std::function<void()> button_function = [this]() { this->Hide(); };
 	m_CloseButton = std::make_shared<UIButton>(button_function, false);
-	m_CloseButton->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/button.png"));
+	m_CloseButton->SetDrawable(
+		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_settingPanel/button_close.png"));
 	m_CloseButton->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
 	m_CloseButton->m_Transform.translation = glm::vec2(335.0f, 219.0f);
-	m_CloseButton->m_Transform.scale = glm::vec2(2.133f, 2.370f);
 	m_GameObjects.push_back(m_CloseButton);
 
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -137,9 +112,6 @@ void SettingPanel::Start()
 		renderer->AddChild(slider_button1);
 		renderer->AddChild(slider_button2);
 		renderer->AddChild(slider_button3);
-		renderer->AddChild(m_IconMasterVolume);
-		renderer->AddChild(m_IconBGMVolume);
-		renderer->AddChild(m_IconSFXVolume);
 		renderer->AddChild(m_SliderMasterVolume);
 		renderer->AddChild(m_SliderBGMVolume);
 		renderer->AddChild(m_SliderSFXVolume);
@@ -151,7 +123,7 @@ void SettingPanel::Start()
 
 void SettingPanel::Update()
 {
-	// DrawDebugUI();
+	DrawDebugUI();
 	for (const std::shared_ptr<nGameObject> &gameObject : m_GameObjects)
 	{
 		gameObject->Update();
@@ -261,126 +233,6 @@ void SettingPanel::DrawDebugUI()
 		ImGui::LabelText("imagesize.y", "%.3f", m_SliderMasterVolume->GetImageSize().y);
 		ImGui::LabelText("imageScaledSize.x", "%.3f", m_SliderMasterVolume->GetScaledSize().x);
 		ImGui::LabelText("imageScaledSize.y", "%.3f", m_SliderMasterVolume->GetScaledSize().y);
-	}
-
-	// === Icon Master Volume ===
-	if (ImGui::CollapsingHeader("Master Volume Icon", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_IconMasterVolume->m_Transform.scale * m_IconMasterVolume->GetImageSize();
-		static glm::vec2 pos = glm::vec2(0, 0);
-		static bool posChanged = false, sizeChanged = false;
-
-		if (sizeChanged)
-		{
-			m_IconMasterVolume->m_Transform.scale = size / m_IconMasterVolume->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_IconMasterVolume->m_Transform.translation = pos;
-			posChanged = false;
-		}
-
-		ImGui::InputFloat("Setting Width##mv", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Setting Height##mv", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Setting x##mv", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Setting y##mv", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-
-		if (!sizeChanged)
-			size = m_IconMasterVolume->m_Transform.scale * m_IconMasterVolume->GetImageSize();
-		if (!posChanged)
-			pos = m_IconMasterVolume->m_Transform.translation;
-
-		ImGui::LabelText("scale.x", "%.3f", m_IconMasterVolume->m_Transform.scale.x);
-		ImGui::LabelText("scale.y", "%.3f", m_IconMasterVolume->m_Transform.scale.y);
-	}
-
-	// === Icon BGM Volume ===
-	if (ImGui::CollapsingHeader("BGM Volume Icon", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_IconBGMVolume->m_Transform.scale * m_IconBGMVolume->GetImageSize();
-		static glm::vec2 pos = glm::vec2(0, 0);
-		static bool posChanged = false, sizeChanged = false;
-
-		if (sizeChanged)
-		{
-			m_IconBGMVolume->m_Transform.scale = size / m_IconBGMVolume->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_IconBGMVolume->m_Transform.translation = pos;
-			posChanged = false;
-		}
-
-		ImGui::InputFloat("Setting Width##bgmv", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Setting Height##bgmv", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Setting x##bgmv", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Setting y##bgmv", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-
-		if (!sizeChanged)
-			size = m_IconBGMVolume->m_Transform.scale * m_IconBGMVolume->GetImageSize();
-		if (!posChanged)
-			pos = m_IconBGMVolume->m_Transform.translation;
-
-		ImGui::LabelText("scale.x", "%.3f", m_IconBGMVolume->m_Transform.scale.x);
-		ImGui::LabelText("scale.y", "%.3f", m_IconBGMVolume->m_Transform.scale.y);
-	}
-
-	// === Icon SFX Volume ===
-	if (ImGui::CollapsingHeader("SFX Volume Icon", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_IconSFXVolume->m_Transform.scale * m_IconSFXVolume->GetImageSize();
-		static glm::vec2 pos = glm::vec2(0, 0);
-		static bool posChanged = false, sizeChanged = false;
-
-		if (sizeChanged)
-		{
-			m_IconSFXVolume->m_Transform.scale = size / m_IconSFXVolume->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_IconSFXVolume->m_Transform.translation = pos;
-			posChanged = false;
-		}
-
-		ImGui::InputFloat("Setting Width##sfxv", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Setting Height##sfxv", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Setting x##sfxv", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Setting y##sfxv", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-
-		if (!sizeChanged)
-			size = m_IconSFXVolume->m_Transform.scale * m_IconSFXVolume->GetImageSize();
-		if (!posChanged)
-			pos = m_IconSFXVolume->m_Transform.translation;
-
-		ImGui::LabelText("scale.x", "%.3f", m_IconSFXVolume->m_Transform.scale.x);
-		ImGui::LabelText("scale.y", "%.3f", m_IconSFXVolume->m_Transform.scale.y);
 	}
 
 	ImGui::End();

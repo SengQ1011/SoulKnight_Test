@@ -107,10 +107,9 @@ void MainMenuScene::InitSettingButton() {
 		UIManager::GetInstance().ShowPanel("setting");
 	};
 	m_SettingButton = std::make_shared<UIButton>(onClick, false);
-	m_SettingButton->SetDrawable(img.GetImage(RESOURCE_DIR "/button.png"));
+	m_SettingButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_settingPanel/button_setting.png"));
 	m_SettingButton->SetZIndex(3.0f);
 	m_SettingButton->m_Transform.translation = {-550.0f, -280.0f};
-	m_SettingButton->m_Transform.scale = {2.133f, 2.370f};
 }
 
 void MainMenuScene::InitAudioManager() {

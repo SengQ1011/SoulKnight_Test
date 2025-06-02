@@ -23,8 +23,10 @@ void PlayerStatusPanel::Start()
 	m_PanelBackground->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_playerStatus/background_playerStatusPanel.png"));
 	m_PanelBackground->SetZIndex(90.0f);
-	m_PanelBackground->m_Transform.translation = (glm::vec2(static_cast<float>(PTSD_Config::WINDOW_WIDTH) ,
-	static_cast<float>(PTSD_Config::WINDOW_HEIGHT)) - m_PanelBackground->GetScaledSize()) * glm::vec2(-0.5f, 0.5f);
+	m_PanelBackground->m_Transform.translation =
+		(glm::vec2(static_cast<float>(PTSD_Config::WINDOW_WIDTH), static_cast<float>(PTSD_Config::WINDOW_HEIGHT)) -
+		 m_PanelBackground->GetScaledSize()) *
+		glm::vec2(-0.5f, 0.5f);
 	m_GameObjects.push_back(m_PanelBackground);
 
 	const glm::vec2 offsetHP = glm::vec2(15.0f, 36.0f);
@@ -145,8 +147,7 @@ void PlayerStatusPanel::Start()
 	m_TextPlayerEnergy->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR "/Font/zpix.ttf", 16, "0/0",
 																 Util::Color::FromRGB(255, 255, 255), false));
 	m_TextPlayerEnergy->SetZIndex(m_SliderPlayerEnergy->GetZIndex() + 2.0f);
-	m_TextPlayerEnergy->m_Transform.translation =
-		m_SliderPlayerEnergy->m_Transform.translation + offsetText;
+	m_TextPlayerEnergy->m_Transform.translation = m_SliderPlayerEnergy->m_Transform.translation + offsetText;
 	m_TextPlayerEnergy->m_Transform.scale = glm::vec2(1.0f, 1.0f);
 	m_GameObjects.push_back(m_TextPlayerEnergy);
 

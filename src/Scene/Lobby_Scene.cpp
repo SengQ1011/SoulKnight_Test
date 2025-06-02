@@ -81,6 +81,26 @@ void LobbyScene::Update()
 	m_Root->Update();
 }
 
+void LobbyScene::Exit()
+{
+	LOG_DEBUG("Lobby Scene exited");
+	// 退出场景时的清理工作
+	AudioManager::GetInstance().PauseBGM();
+	if (m_LobbyRoom) {
+		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
+	}
+}
+
+Scene::SceneType LobbyScene::Change()
+{
+	if (IsChange())
+	{
+		LOG_DEBUG("Change Main Menu");
+		return Scene::SceneType::DungeonLoad;
+	}
+	return Scene::SceneType::Null;
+}
+
 void LobbyScene::CreatePlayer()
 {
 	// 使用 CharacterFactory 创建玩家
@@ -138,26 +158,6 @@ void LobbyScene::InitializeSceneManagers()
 	// 注册输入观察者
 	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
 	inputManager->addObserver(m_Camera);
-}
-
-void LobbyScene::Exit()
-{
-	LOG_DEBUG("Lobby Scene exited");
-	// 退出场景时的清理工作
-	AudioManager::GetInstance().PauseBGM();
-	if (m_LobbyRoom) {
-		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
-	}
-}
-
-Scene::SceneType LobbyScene::Change()
-{
-	if (IsChange())
-	{
-		LOG_DEBUG("Change Main Menu");
-		return Scene::SceneType::DungeonLoad;
-	}
-	return Scene::SceneType::Null;
 }
 
 void LobbyScene::InitUIManager() {
