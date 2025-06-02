@@ -157,8 +157,8 @@ std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> stringToAtkStra
 	std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> strategies;
 	for (const auto& atkType : atkStrategies) {
 		if(atkType == "Collision") strategies[AttackType::COLLISION] = std::make_shared<CollisionAttack>();
-		if(atkType == "Melee") strategies[AttackType::MELEE] = std::make_shared<MeleeAttack>();
-		if(atkType == "Gun") strategies[AttackType::GUN] = std::make_shared<GunAttack>();
+		if(atkType == "Melee") strategies[AttackType::EFFECT_ATTACK] = std::make_shared<MeleeAttack>();
+		if(atkType == "Gun") strategies[AttackType::PROJECTILE] = std::make_shared<GunAttack>();
 		if(atkType == "None")  strategies[AttackType::NONE] = std::make_shared<NoAttack>();
 	}
 	return strategies;
@@ -184,7 +184,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         	enemy->SetZIndexType(ZIndexType::OBJECTHIGH);
 
         	//檢查是否是精英形態
-        	if(characterInfo["isElite"] == 1) enemy->m_Transform.scale = glm::vec2(1.4f);
+        	if(characterInfo["isElite"].get<bool>() == true) enemy->m_Transform.scale = glm::vec2(1.4f);
         	auto animation = parseCharacterAnimations(characterInfo["animations"]);
 			MonsterType aiType = stringToMonsterType(characterInfo["monsterType"].get<std::string>());
         	int monsterPoint = characterInfo["monsterPoint"].get<int>();

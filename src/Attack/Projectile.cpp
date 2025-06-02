@@ -4,6 +4,8 @@
 
 #include "Attack/Projectile.hpp"
 
+#include <complex>
+
 #include "Attack/AttackManager.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/ProjectileComponent.hpp"
@@ -15,29 +17,30 @@
 #include "Util/Logger.hpp"
 
 Projectile::Projectile(const ProjectileInfo& projectileInfo)
-						   : Attack(projectileInfo),
+						   : Attack(projectileInfo), m_startPosition(projectileInfo.attackTransform.translation),
 								m_imagePath(projectileInfo.imagePath), m_speed(projectileInfo.speed),
 								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
+								m_canTracking(projectileInfo.canTracking), m_Target(projectileInfo.target),
 								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
-								m_bubbleImagePath(projectileInfo.bubbleImagePath),
-								m_bulletHaveEffectAttack(projectileInfo.haveEffectAttack), m_effectAttackSize(projectileInfo.effectAttackSize),
-								m_effectAttackDamage(projectileInfo.effectAttackDamage), m_bullet_EffectAttack(projectileInfo.effect){}
+								m_bubbleImagePath(projectileInfo.bubbleImagePath), m_chainProjectionNum(projectileInfo.chainProjectionNum) {}
 
 //=========================== (實作) ================================//
 void Projectile::Init() {
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
 	m_startPosition = this->m_WorldCoord;
-	// 全部子彈太大了，縮小35%
-	this->m_Transform.scale = glm::vec2(0.65f, 0.65f);
+	// 全部子彈太大了，縮小30%
+	this->m_Transform.scale = glm::vec2(0.7f, 0.7f);
 	// 其他初始化（縮放、圖片等）
 	this->SetInitialScale(m_Transform.scale);
 	this->SetZIndexType(ZIndexType::ATTACK);
 	SetImage(m_imagePath);
 
 	// 加入子彈類機制組件
-	auto ProjectileComp = this->GetComponent<ProjectileComponent>(ComponentType::PROJECTILE);
-	if (!ProjectileComp) { ProjectileComp = this->AddComponent<ProjectileComponent>(ComponentType::PROJECTILE); }
+	if (auto ProjectileComp = this->GetComponent<ProjectileComponent>(ComponentType::PROJECTILE); !ProjectileComp)
+	{
+		ProjectileComp = this->AddComponent<ProjectileComponent>(ComponentType::PROJECTILE);
+	}
 
 	// 加入碰撞組件
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -47,7 +50,7 @@ void Projectile::Init() {
 	//設置觸發器 和 觸發事件
 	CollisionComp->ClearTriggerStrategies();
 	CollisionComp->SetTrigger(true);
-	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
 
 	if(m_type == CharacterType::PLAYER) {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
@@ -84,11 +87,46 @@ void Projectile::UpdateObject(const float deltaTime) {
 
 		// 移動泡泡
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
-	}else {
-		// 一般子彈直接移動
-		this->m_WorldCoord += m_direction * m_speed * deltaTime;
 	}
+	else if(m_canTracking && !m_Target.expired())
+	{
+		// 方法一：追蹤導彈（貝茲曲線）
+		auto targetPosition = m_Target.lock()->GetWorldCoord();
+		glm::vec2 P0 = m_WorldCoord;
+		glm::vec2 P2 = targetPosition;
 
+		m_bezierTime += deltaTime * 0.15f;
+		m_bezierTime = glm::clamp(m_bezierTime, 0.0f, 0.25f);
+		// 控制點P1:
+		// 數值越大： 導彈轉彎越平緩，反應比較慢，感覺像是
+		// 數值越小： 導彈彎得越急促，更快鎖定目標
+		float curveDistance = 100.0f;
+		glm::vec2 P1 = P0 + m_direction * curveDistance;
+
+		glm::vec2 bezierPos = (1 - m_bezierTime) * (1 - m_bezierTime) * P0 +
+							  2 * (1 - m_bezierTime) * m_bezierTime * P1 +
+							  m_bezierTime * m_bezierTime * P2;
+
+		glm::vec2 newDir = glm::normalize(bezierPos - m_WorldCoord);
+
+		// 方法二：動態尋路法
+		// glm::vec2 toTarget = glm::normalize(targetPosition - m_WorldCoord);
+		// // 越大越容易轉彎
+		// float curveDistance = 50.0f;
+		// // 線性插值方向
+		// float turnRate = curveDistance * deltaTime;
+		// glm::vec2 newDir = glm::normalize(glm::mix(m_direction, toTarget, turnRate));
+
+		m_direction = newDir;
+		m_Transform.rotation = atan2(newDir.y, newDir.x);
+
+		// 移動
+		m_WorldCoord += m_direction * m_speed * deltaTime;
+
+
+	}
+	else
+		this->m_WorldCoord += m_direction * m_speed * deltaTime;
 
 	if (m_enableBubbleTrail) {
 		m_bubbleTimer += deltaTime;
@@ -143,23 +181,26 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 	m_direction = projectileInfo.direction;
 	m_size = projectileInfo.size;
 	m_damage = projectileInfo.damage;
+	m_elementalDamage = projectileInfo.elementalDamage;
+	m_chainAttack = projectileInfo.chainAttack;
 
 	m_imagePath = projectileInfo.imagePath;
 	m_speed = projectileInfo.speed;
 	m_numRebound = projectileInfo.numRebound;
 	m_canReboundBySword = projectileInfo.canReboundBySword;
+	m_canTracking = projectileInfo.canTracking;
+	m_Target = projectileInfo.target;
 	m_isBubble = projectileInfo.isBubble;
 	m_enableBubbleTrail = projectileInfo.bubbleTrail;
 	m_bubbleImagePath = projectileInfo.bubbleImagePath;
-	m_bulletHaveEffectAttack = projectileInfo.haveEffectAttack;
-	m_effectAttackSize = projectileInfo.effectAttackSize;
-	m_effectAttackDamage = projectileInfo.effectAttackDamage;
-	m_bullet_EffectAttack = projectileInfo.effect;
 
+	m_bezierTime = 0;
 	m_reboundCounter = 0;
 	m_markRemove = false;
 	m_bubbleTimer = 0.0f;
 	m_bubbleStayTime = 3.0f;
+
+	m_chainProjectionNum = projectileInfo.chainProjectionNum;
 }
 
 
@@ -175,22 +216,18 @@ void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulle
 	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
 
 	ProjectileInfo bubbleInfo;
-	bubbleInfo.type = m_type;
+	bubbleInfo.type = this->m_type;
 	bubbleInfo.attackTransform = bulletTransform;
-	bubbleInfo.direction = m_direction;
-	bubbleInfo.size = m_bubbleSize;
-	bubbleInfo.damage = m_bubbleDamage;
+	bubbleInfo.direction = bulletDirection;
+	bubbleInfo.size = this->m_bubbleSize;
+	bubbleInfo.damage = this->m_bubbleDamage;
 
-	bubbleInfo.imagePath = m_bubbleImagePath;
-	bubbleInfo.speed = m_bubbleSpeed;
+	bubbleInfo.imagePath = this->m_bubbleImagePath;
+	bubbleInfo.speed = this->m_bubbleSpeed;
 	bubbleInfo.numRebound = 0;
 	bubbleInfo.canReboundBySword = false;
 	bubbleInfo.isBubble = true;
 	bubbleInfo.bubbleTrail = false;
-	bubbleInfo.haveEffectAttack = false;
-	bubbleInfo.effectAttackSize = 0.0f;
-	bubbleInfo.effectAttackDamage = 0;
-	bubbleInfo.effect = EffectAttackType::NONE;
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);

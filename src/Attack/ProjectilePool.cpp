@@ -24,6 +24,6 @@ std::shared_ptr<Projectile> ProjectilePool::Acquire(const ProjectileInfo& projec
 
 	// 如果池是空的，創建一個新的子彈
 	auto newBullet = std::make_shared<Projectile>(projectileInfo);
-	LOG_DEBUG("created new bullet");
+	// LOG_DEBUG("created new bullet");
 	return newBullet;
 }

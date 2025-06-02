@@ -4,6 +4,20 @@
 
 #include "Scene/Scene.hpp"
 #include "Override/nGameObject.hpp"
+#include "SaveManager.hpp"
+#include "Scene/SceneManager.hpp"
+
+void Scene::Upload()
+{
+	auto& sceneManager = SceneManager::GetInstance();
+	sceneManager.UploadGameProgress(m_SceneData);
+};
+
+void Scene::Download()
+{
+	const auto & sceneManager = SceneManager::GetInstance();
+	m_SceneData = sceneManager.DownloadGameProgress();
+};
 
 void Scene::FlushPendingObjectsToRendererAndCamera()
 {

@@ -6,21 +6,25 @@
 #define PROJECTILE_HPP
 
 #include "Attack/Attack.hpp"
+
+struct EffectAttackInfo;
 namespace Util{ class Image; }
 
 struct ProjectileInfo : public AttackInfo
 {
-	std::string imagePath;
-	float speed;
-	int numRebound;
+	~ProjectileInfo() override = default;
+	std::string imagePath = "";
+	float speed = 50.0;
+	int numRebound = 0;
 	bool canReboundBySword  = true;
+	bool canTracking = false;
+	std::weak_ptr<nGameObject> target;
 	bool isBubble = false;
 	bool bubbleTrail = false;
 	std::string bubbleImagePath = "";
-	bool haveEffectAttack = false;
-	float effectAttackSize = 0.0f;
-	int effectAttackDamage = 0;
-	EffectAttackType effect = EffectAttackType::NONE;
+
+	// chainAttack記錄
+	int chainProjectionNum = 0;
 };
 
 class Projectile : public Attack {
@@ -43,10 +47,6 @@ public:
 	[[nodiscard]] int GetReboundCounter() const{ return m_reboundCounter; }
 	[[nodiscard]] bool GetCanReboundBySword() const{ return m_canReboundBySword; };
 	[[nodiscard]] bool GetIsBubble() const{ return m_isBubble; }
-	[[nodiscard]] bool GetHaveEffectAttack() const { return m_bulletHaveEffectAttack; }
-	[[nodiscard]] float GetBulletEffectAttackSize() const { return m_effectAttackSize; }
-	[[nodiscard]] int GetBulletEffectAttackDamage() const { return m_effectAttackDamage; }
-	[[nodiscard]] EffectAttackType GetBulletEffectType() const { return m_bullet_EffectAttack; }
 
 	//----Setter----
 	void SetImage(const std::string& imagePath);
@@ -66,13 +66,14 @@ protected:
 	int m_numRebound = 0;
 	int m_reboundCounter = 0;
 	bool m_canReboundBySword = false;
+	bool m_canTracking = false;
 	bool m_isBubble = false;
 	bool m_enableBubbleTrail = false;		// 是否啟用泡泡尾跡
 	std::string m_bubbleImagePath;
-	bool m_bulletHaveEffectAttack = false;
-	float m_effectAttackSize = 0.0f;
-	int m_effectAttackDamage = 0;
-	EffectAttackType m_bullet_EffectAttack;
+
+	// 子彈追蹤
+	std::weak_ptr<nGameObject> m_Target;	// 此物件會跟隨目標旋轉
+	float m_bezierTime = 0.0f;				// 貝茲曲線的插值參數：範圍 [0, 0.25]
 
 	// 泡泡間隔時間與計時器
 	float m_bubbleSpawnInterval = 0.2f;  // 每0.2秒生成一次
@@ -80,8 +81,11 @@ protected:
 	// 泡泡子彈的屬性
 	float m_bubbleSize = 4.0f;
 	int m_bubbleDamage = 2;
-	float m_bubbleSpeed = 40.0f;
+	float m_bubbleSpeed = 20.0f;
 	float m_bubbleStayTime = 3.0f;
+
+	// chainAttack記錄
+	int m_chainProjectionNum = 0;
 };
 
 #endif //PROJECTILE_HPP

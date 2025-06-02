@@ -44,6 +44,8 @@ private:
 	//  std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;
 	float m_timer = 0.0f;
 	// std::shared_ptr<nGameObject> m_OnDeathText;
+	std::shared_ptr<nGameObject> m_stageText;
+	float m_textTimer = 2.0f;
 
 
 	void CreatePlayer();

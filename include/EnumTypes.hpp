@@ -7,18 +7,18 @@
 
 enum class ComponentType
 {
-	AI,
-	ANIMATION,
-	ATTACK,
-	CHEST,
-	COLLISION,
-	DOOR,
-	FOLLOWER,
-	HEALTH,
-	INPUT,
-	INTERACTABLE,
-	MOVEMENT,
-	PROJECTILE,
+	AI,				// 0
+	ANIMATION,		// 1
+	ATTACK,			// 2
+	CHEST,			// 3
+	COLLISION,		// 4
+	DOOR,			// 5
+	FOLLOWER,		// 6
+	HEALTH,			// 7
+	INPUT,			// 8
+	INTERACTABLE,	// 9
+	MOVEMENT,		// 10
+	PROJECTILE,		// 11
 	SKILL,
 	STATE,
 	TALENT
@@ -63,8 +63,8 @@ enum class EffectAttackType
 };
 
 enum class AttackType {
-	MELEE,
-	GUN,
+	EFFECT_ATTACK,
+	PROJECTILE,
 	COLLISION,
 	NONE
 };
@@ -119,6 +119,5 @@ enum ZIndexType: int
 	UI			= 80,	// 80 -  99
 	CUSTOM		=100,   // dont care
 };
-
 
 #endif //ENUMTYPES_HPP

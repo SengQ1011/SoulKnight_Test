@@ -18,6 +18,7 @@ public:
 	void Exit() override;
 	SceneType Change() override;
 
+
 protected:
 };
 

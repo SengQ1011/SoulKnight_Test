@@ -132,7 +132,7 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 			break;
 		case enemyState::CHASING:
 			if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr){
-				if (const auto gun = aiComp->GetAttackStrategy(AttackType::GUN)) {
+				if (const auto gun = aiComp->GetAttackStrategy(AttackType::PROJECTILE)) {
 					// 處理遠程武器的最佳距離保持
 					MaintainOptimalRangeForGun(ctx, target, gun);
 				} else {
@@ -152,11 +152,11 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 			} else {
 				// 根據攻擊型別判讀停止
 				if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
-					if (const auto attack = aiComp->GetAttackStrategy(AttackType::MELEE)) {
+					if (const auto attack = aiComp->GetAttackStrategy(AttackType::EFFECT_ATTACK)) {
 						// 繼續追蹤玩家
 						ChasePlayerLogic(ctx, target);
 					}
-					else if (const auto gun = aiComp->GetAttackStrategy(AttackType::GUN)) {
+					else if (const auto gun = aiComp->GetAttackStrategy(AttackType::PROJECTILE)) {
 						// 停止並瞄準
 						ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0));
 						//MaintainOptimalRangeForGun(ctx, target, gun);
@@ -214,7 +214,7 @@ void ChaseMove::checkAttackCondition(const EnemyContext &ctx) const
 	auto aiComp = ctx.GetAIComp();
 
 	// 检查所有攻击类型，避免重复代码
-	const std::array<AttackType, 2> attackTypes = {AttackType::MELEE, AttackType::GUN};
+	const std::array<AttackType, 2> attackTypes = {AttackType::EFFECT_ATTACK, AttackType::PROJECTILE};
 
 	for (const auto &attackType : attackTypes) {
 		if (const auto strategy = aiComp->GetAttackStrategy(attackType)) {

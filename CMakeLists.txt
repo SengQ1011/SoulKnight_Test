@@ -36,7 +36,7 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
-        include/RandomUtil.hpp
+        src/SaveManager.cpp
 )
 
 if(MSVC)

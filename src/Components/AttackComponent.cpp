@@ -65,6 +65,16 @@ void AttackComponent::Update()
 	m_switchTimeCounter -= deltaTime;
 }
 
+std::vector<int> AttackComponent::GetAllWeaponID() const
+{
+	std::vector<int> id;
+	for (auto& weapon : m_Weapons)
+	{
+		id.push_back(weapon->GetWeaponID());
+	}
+	return id;
+}
+
 void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 {
 	auto character = GetOwner<Character>();
@@ -154,12 +164,23 @@ void AttackComponent::TryAttack()
 		return;
 
 	const auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
-	if (!healthComponent)
-		return;
+	if (!healthComponent) return;
+	if (const auto stateComp = character->GetComponent<StateComponent>(ComponentType::STATE))
+	{
+		if (auto statusEffects = stateComp->GetActiveEffects(); !statusEffects.empty())
+		{
+			const auto it = std::find_if(statusEffects.begin(), statusEffects.end(),
+											[](StatusEffect effect) {
+												return effect == StatusEffect::FROZEN;});
+			// 如果有Frozen異常狀態，就不能攻擊
+			if (it != statusEffects.end()) return;
+		}
+	}
 	const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
 	const float currentEnergy = healthComponent->GetCurrentEnergy();
+	const auto useEnergy = m_currentWeapon->GetEnergy();
 
-	if (isPlayer && currentEnergy <= 0)
+	if (isPlayer && currentEnergy <= 0 && useEnergy != 0)
 	{
 		LOG_DEBUG("AttackComponent: Not enough energy to attack");
 		return;
@@ -175,7 +196,7 @@ void AttackComponent::TryAttack()
 
 			if (isPlayer)
 			{
-				healthComponent->ConsumeEnergy(m_currentWeapon->GetEnergy());
+				healthComponent->ConsumeEnergy(useEnergy);
 			}
 		}
 	}

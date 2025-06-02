@@ -8,6 +8,7 @@
 
 #include "ImagePoolManager.hpp"
 #include "ObserveManager/AudioManager.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Tool/Tool.hpp"
 #include "UIPanel/SettingPanel.hpp"
 #include "UIPanel/UIButton.hpp"
@@ -58,9 +59,8 @@ Scene::SceneType MainMenuScene::Change()
 {
 	if (Util::Input::IsKeyDown(Util::Keycode::RETURN) || Util::Input::IsKeyDown(Util::Keycode::SPACE))
 	{
-		LOG_DEBUG("Change Lobby Scene");
 		AudioManager::GetInstance().PlaySFX("click");
-		return Scene::SceneType::Lobby;
+		SceneManager::GetInstance().StartGame();
 	}
 	return Scene::SceneType::Null;
 }

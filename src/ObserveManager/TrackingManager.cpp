@@ -28,9 +28,11 @@ void TrackingManager::SetPlayer(const std::shared_ptr<Character> &player)
 {
 	if(player == nullptr) {
 		for(auto &enemy: m_enemies) {
+			if (const auto attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
+				attackComp->OnLostTarget();
+			}
 			if (const auto aiComp = enemy->GetComponent<AIComponent>(ComponentType::AI)) {
 				aiComp->RemoveTarget();
-				// LOG_DEBUG("removed");
 			}
 		}
 	}

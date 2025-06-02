@@ -22,7 +22,8 @@ void EffectAttack::Init() {
 
 	// Animation
 	const auto& imagePaths = EffectAssets::EFFECT_IMAGE_PATHS.at(m_effectType);
- 	m_animation = std::make_shared<Animation>(imagePaths, false, 100.0f);
+	float intervel = 400 / imagePaths.size();
+ 	m_animation = std::make_shared<Animation>(imagePaths, false, intervel);
  	this->SetDrawable(m_animation->GetDrawable());
  	m_animation->PlayAnimation(true);
 
@@ -36,12 +37,12 @@ void EffectAttack::Init() {
 	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
 	CollisionComp->SetCollider(false);
-	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage));
+	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
+	if(m_effectType == EffectAttackType::SHOCKWAVE) CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 	if (m_type == CharacterType::PLAYER)
 	{
 		if(m_reflectBullet) CollisionComp->AddTriggerStrategy(std::make_unique<ReflectTriggerStrategy>());
 		else CollisionComp->AddTriggerStrategy(std::make_unique<BlockProjectileStrategy>());
-		if(m_effectType == EffectAttackType::SHOCKWAVE) CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 	}
 
 	// layer
@@ -58,15 +59,16 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
- 	// auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	// currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	// currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
+	// const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ // 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ // 	currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {
 	if (!m_Active) return;
 	if (m_animation->IfAnimationEnds()) {
 		MarkForRemoval();
+		TriggerChainAttack();
 		SetActive(false);
 		const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		scene->GetRoot().lock()->RemoveChild(shared_from_this());
@@ -84,6 +86,9 @@ void EffectAttack::ResetAll(const EffectAttackInfo &effectAttackInfo)
  	m_direction = effectAttackInfo.direction;
  	m_size = effectAttackInfo.size;
  	m_damage = effectAttackInfo.damage;
+	m_elementalDamage = effectAttackInfo.elementalDamage;
+	m_chainAttack = effectAttackInfo.chainAttack;
+
  	m_effectType = effectAttackInfo.effectType;
 	m_reflectBullet = effectAttackInfo.canReflectBullet;
 	m_bulletBlocking = effectAttackInfo.canBlockingBullet;

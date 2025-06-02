@@ -28,6 +28,7 @@ public:
 	[[nodiscard]] std::shared_ptr<Weapon> GetCurrentWeapon() const { return m_currentWeapon; }
 	[[nodiscard]] std::shared_ptr<Weapon> GetSecondWeapon() const { return m_secondWeapon; }
 	[[nodiscard]] std::vector<std::shared_ptr<Weapon>> GetAllWeapons() const { return m_Weapons; }
+	[[nodiscard]] std::vector<int> GetAllWeaponID() const;
 	[[nodiscard]] bool HasTarget() const { return !m_Target.expired(); }
 	[[nodiscard]] std::weak_ptr<nGameObject> GetTarget() const { return m_Target.lock(); }
 	[[nodiscard]] int GetNumRebound() const { return m_numRebound; }

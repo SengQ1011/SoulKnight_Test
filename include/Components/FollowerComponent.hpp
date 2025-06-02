@@ -33,12 +33,12 @@ public:
 
 	//----Getter----
 	[[nodiscard]] std::shared_ptr<nGameObject> GetFollower() const { return m_Follower.lock(); }
+	[[nodiscard]] std::shared_ptr<nGameObject> GetTarget() const { return m_Target.lock(); }
 	[[nodiscard]] float GetBaseRotation() const { return m_baseRotation; }
 	[[nodiscard]] float GetHoldingRotation() const { return m_HoldingRotation; }
 	[[nodiscard]] bool GetUseMouse() const { return m_UseMousePosition; }
 	[[nodiscard]] float GetZIndexOffset() const { return m_ZIndexOffset; }
 	[[nodiscard]] float GetBaseRotationDegrees() const { return m_baseRotationDegrees; }
-
 
 	// Setter
 	void SetFollower(const std::shared_ptr<nGameObject> &follower) { m_Follower = follower; }

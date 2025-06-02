@@ -11,6 +11,16 @@ TalentComponent::TalentComponent() {}
 
 std::vector<Talent> TalentComponent::GetTalents() const { return m_talents;  }
 
+std::vector<int> TalentComponent::GetAllTalentID() const
+{
+	std::vector<int> id;
+	for (auto& talent : m_talents)
+	{
+		id.push_back(talent.GetId());
+	}
+	return id;
+}
+
 void TalentComponent::AddTalent(const Talent &talent)
 {
 	auto character = GetOwner<Character>();

@@ -5,10 +5,12 @@
 #ifndef EVENTMANAGER_HPP
 #define EVENTMANAGER_HPP
 
-#include <unordered_map>
-#include <vector>
 #include <functional>
 #include <typeindex>
+#include <unordered_map>
+#include <vector>
+
+#include "Scene/SceneManager.hpp"
 #include "Structs/EventInfo.hpp"
 
 class EventManager {
@@ -24,13 +26,20 @@ public:
 		m_Listeners[eventType].push_back(listener);
 	}
 
-	void Notify(const EventInfo& info) const {
+	void Notify(const EventInfo &info) const
+	{
 		auto it = m_Listeners.find(info.GetType());
-		if (it != m_Listeners.end()) {
-			for (const auto& listener : it->second) {
+		if (it != m_Listeners.end())
+		{
+			for (const auto &listener : it->second)
+			{
 				listener(info);
 			}
 		}
+	}
+
+	static void enemyDeathEvent() {
+		SceneManager::GetInstance().receiveEnemyDeathEvent();
 	}
 
 private:

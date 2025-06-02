@@ -3,41 +3,57 @@
     "ID": 1,
     "weaponImagePath": "/weapon/weapons/weapons_19.png",
     "name": "Old_worn_pistol",
-    "attackType": "Gun",
+    "attackType": "Projectile",
     "weaponType": "PISTOL",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 5,
     "attackInterval": 0.333,
+    "attackPositionOffset": 12.5,
     "dropLevel": 3,
     "basicPrice": 10,
-    "bulletImagePath": "/attackUI/bullet/bullet_34.png",
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "numOfBullets": 1,
-    "bulletOffset": 12.5,
     "bulletSize": 8.0,
+    "bulletImagePath": "/attackUI/bullet/bullet_34.png",
     "bulletSpeed": 400.0,
     "bulletCanRebound": true,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
-    "bubbleTrail": false,
-    "haveEffectAttack": false,
-    "effectAttackSize": 0.0,
-    "effectAttackDamage": 0,
-    "effectType": "NONE"
+    "bubbleTrail": false
   },
   {
     "ID": 2,
     "weaponImagePath": "/weapon/weapons3/weapons3_92.png",
     "name": "Light_saber_Blue",
-    "attackType": "Melee",
+    "attackType": "EffectAttack",
     "weaponType": "SWORD",
     "damage": 8,
     "energy": 0,
     "criticalRate": 0.03,
     "offset": 0,
     "attackInterval": 0.416,
+    "attackPositionOffset": 16,
     "dropLevel": 4,
     "basicPrice": 28,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "attackRange": 32.0,
     "EffectAttackType": "SLASH"
   },
@@ -45,41 +61,57 @@
     "ID": 3,
     "weaponImagePath": "/weapon/weapons/weapons_43.png",
     "name": "Normal_Shotgun",
-    "attackType": "Gun",
+    "attackType": "Projectile",
     "weaponType": "SHOTGUN",
     "damage": 3,
     "energy": 3,
     "criticalRate": 0.0,
     "offset": 25,
     "attackInterval": 0.8333,
+    "attackPositionOffset": 25.5,
     "dropLevel": 1,
     "basicPrice": 15,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_34.png",
     "numOfBullets": 5,
-    "bulletOffset": 25.5,
     "bulletSize": 8.0,
     "bulletSpeed": 400.0,
     "bulletCanRebound": true,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
-    "bubbleTrail": false,
-    "haveEffectAttack": false,
-    "effectAttackSize": 0.0,
-    "effectAttackDamage": 0,
-    "effectType": "NONE"
+    "bubbleTrail": false
   },
   {
     "ID": 4,
     "weaponImagePath": "/weapon/weapons2/weapons2_121.png",
     "name": "Wooden_Hammer",
-    "attackType": "Melee",
+    "attackType": "EffectAttack",
     "weaponType": "HAMMER",
     "damage": 12,
     "energy": 0,
     "criticalRate": 0.08,
     "offset": 0,
+    "attackInterval": 1.0,
+    "attackPositionOffset": 25.0,
     "dropLevel": 2,
     "basicPrice": 19,
-    "attackInterval": 1.0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "attackRange": 32.0,
     "EffectAttackType": "SHOCKWAVE"
   },
@@ -87,42 +119,64 @@
     "ID": 5,
     "weaponImagePath": "/weapon/weapons/weapons_132.png",
     "name": "Old_Rocket_Launcher",
-    "attackType": "Gun",
+    "attackType": "Projectile",
     "weaponType": "ROCKET_LAUNCHER",
     "damage": 8,
     "energy": 8,
     "criticalRate": 0.0,
     "offset": 0.2,
     "attackInterval": 1.0,
+    "attackPositionOffset": 24.5,
     "dropLevel": 1,
     "basicPrice": 16,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_rocket.png",
     "numOfBullets": 1,
-    "bulletOffset": 24.5,
     "bulletSize": 12.0,
     "bulletSpeed": 350.0,
     "bulletCanRebound": false,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": false,
     "bubbleImagePath": "",
-    "haveEffectAttack": true,
-    "effectAttackSize": 32.0,
-    "effectAttackDamage": 1,
-    "effectType": "MEDIUM_BOOM"
-  },
-  {
+    "chainedAttack": {
+        "attackType": "EffectAttack",
+        "size": 36.0,
+        "damage": 0,
+        "elementalDamage": "BURNS",
+        "effectType": "MEDIUM_BOOM"
+    }
+  }, {
     "ID": 501,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_501.png",
     "name": "Pickaxe",
-    "attackType": "Melee",
+    "attackType": "EffectAttack",
     "weaponType": "SWORD",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 1.0,
+    "attackPositionOffset": 16.0,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "attackRange": 24.0,
     "EffectAttackType": "SLASH"
   },
@@ -130,15 +184,25 @@
     "ID": 502,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
     "name": "Miner's drill",
-    "attackType": "Melee",
+    "attackType": "EffectAttack",
     "weaponType": "SPEAR",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 1.0,
+    "attackPositionOffset": 16.0,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "attackRange": 24.0,
     "EffectAttackType": "LUNGE"
   },
@@ -146,108 +210,281 @@
     "ID": 503,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
     "name": "Electric_drill",
-    "attackType": "Gun",
+    "attackType": "Projectile",
     "weaponType": "PISTOL",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_109.png",
     "numOfBullets": 1,
-    "bulletOffset": 19.5,
     "bulletSize": 10.0,
-    "bulletSpeed": 210.0,
+    "bulletSpeed": 100.0,
     "bulletCanRebound": false,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": true,
-    "bubbleImagePath": "/attackUI/bullet/bullet_107.png",
-    "haveEffectAttack": false,
-    "effectAttackSize": 0.0,
-    "effectAttackDamage": 0,
-    "effectType": "NONE"
-  },
-  {
+    "bubbleImagePath": "/attackUI/bullet/bullet_107.png"
+  }, {
     "ID": 504,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
-    "name": "Heavy_Miner's_Rocket",
-    "attackType": "Gun",
+    "name": "Heavy_Miner's_EnergyRocket",
+    "attackType": "Projectile",
     "weaponType": "ROCKET_LAUNCHER",
     "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_30.png",
     "numOfBullets": 1,
-    "bulletOffset": 19.5,
     "bulletSize": 20.0,
-    "bulletSpeed": 350.0,
+    "bulletSpeed": 100.0,
     "bulletCanRebound": true,
+    "bulletCanTracking": false,
     "bulletIsBubble": false,
     "bubbleTrail": false,
     "bubbleImagePath": "",
-    "haveEffectAttack": true,
-    "effectAttackSize": 32.0,
-    "effectAttackDamage": 1,
-    "effectType": "ENERGY_WAVE"
-  },
-  {
+    "chainedAttack": {
+      "attackType": "EffectAttack",
+      "size": 32.0,
+      "damage": 1,
+      "elementalDamage": "NONE",
+      "effectType": "ENERGY_WAVE"
+    }
+  }, {
     "ID": 505,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_505.png",
     "name": "Elite_Miner's_Shotgun",
-    "attackType": "Gun",
+    "attackType": "Projectile",
     "weaponType": "SHOTGUN",
     "damage": 2,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,
     "attackInterval": 0.6,
+    "attackPositionOffset": 22.5,
     "dropLevel": -1,
     "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
     "bulletImagePath": "/attackUI/bullet/bullet_107.png",
     "numOfBullets": 7,
-    "bulletOffset": 22.5,
     "bulletSize": 10.0,
     "bulletSpeed": 40.0,
     "bulletCanRebound": false,
+    "bulletCanTracking": false,
     "bulletIsBubble": true,
     "bubbleTrail": false,
-    "bubbleImagePath": "",
-    "haveEffectAttack": false,
-    "effectAttackSize": 0.0,
-    "effectAttackDamage": 0,
-    "effectType": "NONE"
-  },
-  {
+    "bubbleImagePath": ""
+  }, {
   "ID": 506,
   "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_506.png",
   "name": "Elite_Miner's_Rifle",
-  "attackType": "Gun",
+  "attackType": "Projectile",
   "weaponType": "RIFLE",
   "damage": 4,
   "energy": 0,
   "criticalRate": 0.0,
   "offset": 0,
   "attackInterval": 0.5,
+  "attackPositionOffset": 23.5,
   "dropLevel": -1,
   "basicPrice": 0,
-  "bulletImagePath": "/attackUI/bullet/bullet_115.png",
-  "numOfBullets": 7,
-  "bulletOffset": 23.5,
+  "handOffset": {
+    "x": 4.3,
+    "y": -6.25
+  },
+  "holdingPosition": {
+    "x":15.0,
+    "y": 0.0
+  },
+  "elementalDamage": "NONE",
+  "bulletImagePath": "/attackUI/bullet/bullet_135.png",
+  "numOfBullets": 1,
   "bulletSize": 10.0,
   "bulletSpeed": 210.0,
   "bulletCanRebound": true,
+  "bulletCanTracking": false,
   "bulletIsBubble": false,
   "bubbleTrail": false,
-  "bubbleImagePath": "",
-  "m_enableEffectAttack": false,
-  "effectAttackSize": 0.0,
-  "effectAttackDamage": 0,
-  "effectType": "NONE"
-}
+  "bubbleImagePath": ""
+  },
+  {
+    "ID": 507,
+    "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
+    "name": "Elite_Miner's_Rocket_Launcher",
+    "attackType": "Projectile",
+    "weaponType": "ROCKET_LAUNCHER",
+    "damage": 4,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x": 15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "BURNS",
+    "bulletImagePath": "/attackUI/bullet/bullet_73.png",
+    "numOfBullets": 3,
+    "bulletSize": 8.0,
+    "bulletSpeed": 100.0,
+    "bulletCanRebound": false,
+    "bulletCanTracking": true,
+    "bulletIsBubble": false,
+    "bubbleTrail": false,
+    "bubbleImagePath": "",
+    "chainedAttack": {
+      "attackType": "EffectAttack",
+      "size": 16.0,
+      "damage": 1,
+      "elementalDamage": "BURNS",
+      "effectType": "SMALL_BOOM"
+    }
+  }, {
+    "ID": 507,
+    "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_502.png",
+    "name": "Elite_Miner's_Rocket_Launcher",
+    "attackType": "Projectile",
+    "weaponType": "ROCKET_LAUNCHER",
+    "damage": 4,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 19.5,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "BURNS",
+    "bulletImagePath": "/attackUI/bullet/bullet_73.png",
+    "numOfBullets": 3,
+    "bulletSize": 8.0,
+    "bulletSpeed": 100.0,
+    "bulletCanRebound": false,
+    "bulletCanTracking": true,
+    "bulletIsBubble": false,
+    "bubbleTrail": false,
+    "bubbleImagePath": "",
+    "chainedAttack": {
+      "attackType": "EffectAttack",
+      "size": 16.0,
+      "damage": 1,
+      "elementalDamage": "BURNS",
+      "effectType": "SMALL_BOOM"
+    }
+  },
+  {
+    "ID": 508,
+    "weaponImagePath": "/weapon/enemyWeapon/transparentWeapon.png",
+    "name": "transparentWeapon_Hammer",
+    "attackType": "EffectAttack",
+    "weaponType": "HAMMER",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 0.0,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 0.0,
+      "y": -4.0
+    },
+    "holdingPosition": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SHOCKWAVE"
+  },
+  {
+    "ID": 509,
+    "weaponImagePath": "/weapon/enemyWeapon/transparentWeapon.png",
+    "name": "transparentWeapon_Snow_Ape",
+    "attackType": "EffectAttack",
+    "weaponType": "HAMMER",
+    "damage": 3,
+    "energy": 0,
+    "criticalRate": 0.0,
+    "offset": 0,
+    "attackInterval": 0.5,
+    "attackPositionOffset": 0.0,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 0.0,
+      "y": -4.0
+    },
+    "holdingPosition": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SHOCKWAVE",
+    "chainedAttack": {
+      "attackType": "Projectile",
+      "bulletImagePath": "/attackUI/bullet/bullet_111.png",
+      "bulletSize": 12.0,
+      "damage": 2,
+      "elementalDamage": "FROZEN",
+      "bulletSpeed": 100.0,
+      "bulletCanRebound": false,
+      "bulletCanTracking": false,
+      "bulletIsBubble": false,
+      "bubbleTrail": false,
+      "bubbleImagePath": "",
+      "chainProjectionNum": 12
+    }
+  }
 ]

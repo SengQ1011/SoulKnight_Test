@@ -3,10 +3,8 @@
 //
 #include "Components/ProjectileComponent.hpp"
 
-#include "Attack/AttackManager.hpp"
 #include "Attack/Projectile.hpp"
 #include "Creature/Character.hpp"
-#include "Scene/SceneManager.hpp"
 
 std::vector<EventType> ProjectileComponent::SubscribedEventTypes() const
 {
@@ -16,6 +14,12 @@ std::vector<EventType> ProjectileComponent::SubscribedEventTypes() const
 		EventType::ReflectProjectile
 	};
 }
+
+void ProjectileComponent::Update()
+{
+	m_CollisionHandled = false;
+}
+
 
 void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 {
@@ -46,10 +50,15 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 }
 
 void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
+	if (m_CollisionHandled)
+	{
+		// 確保同一幀只被觸發一次
+		return;
+	}
+	m_CollisionHandled = true;
 	const auto& other = info.GetObjectB();
 	const auto projectile = GetOwner<Projectile>();
 	if (!projectile) return;
-
 	const auto numRebound = projectile->GetNumRebound();
 	const auto reboundCounter = projectile->GetReboundCounter();
 
@@ -70,47 +79,26 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 		projectile->AddReboundCounter();
 	}else {
 		projectile->MarkForRemoval();
-		if( projectile->GetHaveEffectAttack())
-		{
-			const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-			if (const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK))
-			{
-				EffectAttackInfo effectAttackInfo;
-				effectAttackInfo.type = projectile->GetAttackLayerType();
-				effectAttackInfo.attackTransform = projectile->GetTransform();
-				effectAttackInfo.attackTransform.translation = projectile->GetWorldCoord();
-				effectAttackInfo.attackTransform.scale = glm::vec2(1.0f, 1.0f);
-				effectAttackInfo.direction = glm::vec2(0.0f, 0.0f);
-				effectAttackInfo.size = projectile->GetBulletEffectAttackSize();
-				LOG_DEBUG("size:{}",effectAttackInfo.size);
-				effectAttackInfo.damage = projectile->GetBulletEffectAttackDamage();
-
-				effectAttackInfo.canReflectBullet = false;
-				effectAttackInfo.canBlockingBullet = false;
-				effectAttackInfo.effectType = projectile->GetBulletEffectType();
-
-				attackManager->spawnEffectAttack(effectAttackInfo);
-			}
-		}
+		projectile->TriggerChainAttack();
 	}
 }
 
 void ProjectileComponent::HandleReflectEvent()
 {
-	LOG_DEBUG("reflect");
+	// LOG_DEBUG("reflect");
 	const auto proj = GetOwner<Projectile>();
 	if (!proj) return;
 	bool canReflect = proj->GetCanReboundBySword();
-	if (!canReflect) {
-		LOG_DEBUG("projectile can't reflect");
+	if (canReflect) {
+		auto direction = proj->GetAttackDirection();
+		// 以原本方向做反射
+		proj->SetDirection(-direction);
+
+		// TODO:把擁有者換成斬擊者
+		proj->ReflectChangeAttackCharacterType(CharacterType::PLAYER);
+
+	}else {
 		proj->MarkForRemoval();
-		return;
+		proj->TriggerChainAttack();
 	}
-
-	auto direction = proj->GetAttackDirection();
-	// 以原本方向做反射
-	proj->SetDirection(-direction);
-
-	// TODO:把擁有者換成斬擊者
-	proj->ReflectChangeAttackCharacterType(CharacterType::PLAYER);
 }

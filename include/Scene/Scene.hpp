@@ -6,33 +6,18 @@
 #define SCENE_HPP
 
 #include "Camera.hpp"
-#include "Room/DungeonRoom.hpp"
 #include "Room/Room.hpp"
 #include "Util/Renderer.hpp"
 #include "Util/Time.hpp"
 
 class RoomCollisionManager;
-
+struct SaveData;
 class Camera;
 // TODO
 enum class StageTheme
 {
 	Null,
 	IcePlains,
-};
-
-struct SceneData
-{
-	//PlayerData
-	//WeaponData
-	//DungeonData
-	int KillCount = 0;
-	int StageCount = 0;
-	int Point = 0;
-	Util::ms_t DungeonStartTime = 0;
-	StageTheme StageTheme = StageTheme::IcePlains;
-	int DungeonRound = 3;
-	bool inDungeon = false;
 };
 
 class Scene {
@@ -54,20 +39,15 @@ public:
 	explicit Scene(const SceneType sceneType = SceneType::Null) : m_SceneType(sceneType) {}
 	virtual ~Scene() = default;
 
-	virtual std::shared_ptr<SceneData> Upload()
-	{
-		return m_SceneData;
-	};
-	virtual void Download(const std::shared_ptr<SceneData>& data)
-	{
-		m_SceneData = data;
-	};
+	virtual void Upload();
+	virtual void Download();
 
 	virtual void Start() = 0;
 	virtual void Update() = 0;
 	virtual void Exit() = 0;
 	virtual SceneType Change() = 0; // 換場景設置
 
+	std::shared_ptr<SaveData> GetSaveData() { return m_SceneData; };
 	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
 	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
 	std::shared_ptr<Room> GetCurrentRoom() {return m_CurrentRoom;}
@@ -102,7 +82,7 @@ public:
 protected:
 	bool m_IsChange = false;
 	SceneType m_SceneType = SceneType::Null;
-	std::shared_ptr<SceneData> m_SceneData = nullptr;
+	std::shared_ptr<SaveData> m_SceneData = nullptr;
 	std::shared_ptr<Room> m_CurrentRoom = nullptr;
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();

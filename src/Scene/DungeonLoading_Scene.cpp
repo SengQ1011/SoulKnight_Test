@@ -4,14 +4,12 @@
 
 
 #include "Scene/DungeonLoading_Scene.hpp"
-#include <chrono>
 #include <thread>
 
 #include "ImagePoolManager.hpp"
+#include "SaveManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Scene/Dungeon_Scene.hpp"
-#include "Util/Logger.hpp"
-
 #include "Util/Text.hpp"
 
 void DungeonLoadingScene::Start()
@@ -63,6 +61,16 @@ Scene::SceneType DungeonLoadingScene::Change()
 {
 	if (m_DungeonReady)
 	{
+		// 已完成1-4了 ==> 進入boss關卡
+		if(m_SceneData->gameProgress.currentStage == 4) {
+			// return Scene::SceneType::DungeonBOSS;
+			return Scene::SceneType::Dungeon;
+		}
+		// 已完成boss關卡 ==> 結算
+		if(m_SceneData->gameProgress.currentStage == 5) {
+			return Scene::SceneType::Result;
+		}
+		// otherwise
 		return Scene::SceneType::Dungeon;
 	}
 	return Scene::SceneType::Null;

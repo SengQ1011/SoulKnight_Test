@@ -30,7 +30,7 @@ void AIComponent::Init()
 	m_readyAttackTimer = m_readyAttackTime;
 	const auto enemy = GetOwner<Character>();
 
-	std::string imagePath = RESOURCE_DIR"/icon/double-exclamation-mark.png";
+	std::string imagePath = RESOURCE_DIR"/UI/icon/double-exclamation-mark.png";
 	m_readyAttackIcon = std::make_shared<nGameObject>();
 	m_readyAttackIcon->SetDrawable(ImagePoolManager::GetInstance().GetImage(imagePath));
 	m_readyAttackIcon->SetZIndexType(ZIndexType::UI);
