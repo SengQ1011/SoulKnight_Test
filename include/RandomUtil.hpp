@@ -10,7 +10,14 @@
 
 class RandomUtil {
 public:
-	// 獲取範圍 [min, max] 內的隨機浮點數
+	// 獲取範圍 [min, max] 內的隨機數
+	static int RandomIntInRange(int min, int max) {
+		// 用 C++11 random
+		static std::mt19937 rng(std::random_device{}());
+		std::uniform_int_distribution<int> dist(min, max);
+		return dist(rng);
+	}
+
 	static float RandomFloatInRange(const float min, const float max)
 	{
 		static std::mt19937 gen(std::random_device{}()); // 用隨機設備作為種子初始化生成器

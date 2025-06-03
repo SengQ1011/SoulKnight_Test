@@ -8,25 +8,37 @@
 #include "Creature/Character.hpp"
 #include "Util/Logger.hpp"
 
-void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObject> &interactable)
+void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObject>& interactable)
 {
-	if (interactable && interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE)) {
-		m_InteractableObjects.push_back(interactable);
-	}
+	if (!interactable) return;
+	const auto comp = interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
+	if (!comp) return;
+	LOG_DEBUG("Successfully registered interactable");
+	InteractableEntry entry;
+	entry.obj = interactable;
+	entry.comp = comp; // shared_ptr → weak_ptr 自動轉換
+	m_InteractableObjects.push_back(entry);
 }
+
 
 void RoomInteractionManager::UnregisterInteractable(const std::shared_ptr<nGameObject> &interactable)
 {
+	auto oldSize = m_InteractableObjects.size();
+	// 有找到才刪除
 	m_InteractableObjects.erase(
 		std::remove_if(m_InteractableObjects.begin(), m_InteractableObjects.end(),
-			[&interactable](const auto& weakPtr)
+			[&interactable](const InteractableEntry& entry)
 			{
-				if (weakPtr.expired()) return true; //檢查weak_ptr是否過期
-				const auto sharedPtr = weakPtr.lock(); //轉換成shared_ptr來比較
-				return sharedPtr.get() == interactable.get(); //比較指針地址
+				auto obj = entry.obj.lock();
+				return !obj || obj.get() == interactable.get();
 			}),
 		m_InteractableObjects.end()
 	);
+
+	if (m_InteractableObjects.size() == oldSize)
+	{
+		LOG_WARN("RoomInteractionManager::UnregisterInteractable - target not found or already expired");
+	}
 }
 
 std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(float maxRadius) const
@@ -37,18 +49,15 @@ std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(floa
 	std::shared_ptr<nGameObject> closestInteractable = nullptr;
 	float closestDistance = maxRadius;
 
-	for (const auto& weakPtr : m_InteractableObjects) // 不能并行因爲會改變外面值
+	for (const auto& entry : m_InteractableObjects) // 不能并行因爲會改變外面值
 	{
 		LOG_DEBUG("RoomInteractionManager::GetClosestInteractable");
-		if (weakPtr.expired()) continue;
-		const auto obj = weakPtr.lock();
-		if (!obj) continue;
-
-		const auto component = obj->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-		if (!component) continue;
+		auto obj = entry.obj.lock();
+		auto comp = entry.comp.lock();
+		if (!obj || !comp) continue;
 
 		if (const float distance = glm::length(obj->GetWorldCoord() - player->GetWorldCoord()); //取得之間距離
-			distance < closestDistance && distance <= component->GetInteractionRadius()) //小於最靠近距離 在互動範圍裏
+			distance < closestDistance && distance <= comp->GetInteractionRadius()) //小於最靠近距離 在互動範圍裏
 		{
 			closestInteractable = obj;
 			closestDistance = distance;
@@ -57,16 +66,17 @@ std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(floa
 	return closestInteractable;
 }
 
-void RoomInteractionManager::UpdateAutoInteractions() {
+void RoomInteractionManager::UpdateAutoInteractions() const
+{
 	const auto player = m_Player.lock();
 	if (!player) return;
 
-	for (const auto& weakInteractable : m_InteractableObjects) {
-		auto interactable = weakInteractable.lock();
-		if (!interactable || !interactable->IsActive()) continue;
+	for (const auto& entry : m_InteractableObjects) {
+		auto obj = entry.obj.lock();
+		auto comp = entry.comp.lock();
+		if (!obj || !comp || !obj->IsActive()) continue;
 
-		const auto comp = interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-		if (comp && comp->IsAutoInteract() && comp->IsInRange(player)) {
+		if (comp->IsAutoInteract() && comp->IsInRange(player)) {
 			comp->OnInteract(player);
 		}
 	}
@@ -90,14 +100,31 @@ bool RoomInteractionManager::TryInteractWithClosest(float maxRadius) const
 
 void RoomInteractionManager::SetPlayer(const std::shared_ptr<Character> &player) { m_Player = player; }
 
-void RoomInteractionManager::Update() // 玩家位置的更新 來判斷是否顯示互動提示
+void RoomInteractionManager::Update()
 {
 	if (!m_IsActive) return;
-	auto player = m_Player.lock();
+	const auto player = m_Player.lock();
 	if (!player) return;
 
-	// 對每個interactable做更新
-	for (const auto& interactable : m_InteractableObjects) UpdateInteractable(interactable,player);
+	for (auto& entry : m_InteractableObjects)
+	{
+		auto obj = entry.obj.lock();
+		auto comp = entry.comp.lock();
+
+		if (!obj || !comp) continue;
+
+		// 範圍判斷與提示顯示
+		const bool inRange = comp->IsInRange(player);
+		comp->ShowPrompt(inRange);
+
+		// 若是自動互動的，直接觸發
+		if (inRange && comp->IsAutoInteract())
+			comp->OnInteract(player);
+	}
+	for (const auto& obj : m_ToUnregister) {
+		UnregisterInteractable(obj);
+	}
+	m_ToUnregister.clear();
 
 }
 
@@ -115,7 +142,3 @@ void RoomInteractionManager::UpdateInteractable(const std::weak_ptr<nGameObject>
 	component->ShowPrompt(inRange);
 	if (inRange && component->IsAutoInteract()) component->OnInteract(player); //自動觸發
 }
-
-
-
-

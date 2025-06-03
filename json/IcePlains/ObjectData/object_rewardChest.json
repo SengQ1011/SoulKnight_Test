@@ -2,7 +2,7 @@
   "id":"object_rewardChest",
   "isAnimated": false,
   "path": "/allChest/object_rewardChest_0.png",
-  "ZIndex": "OBJECTHIGH",
+  "ZIndex": "OBJECTLOW",
   "posOffset": [
     0.0,
     0.0

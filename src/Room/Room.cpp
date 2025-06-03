@@ -275,7 +275,7 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 				if(!coin) LOG_ERROR("Failed to create room object");
 				currentScene->GetRoot().lock()->AddChild(coin);
 				currentScene->GetCamera().lock()->SafeAddChild(coin);
-
+				coin->SetRegisteredToScene(true);
 				coin->SetActive(false);
 				coin->SetControlVisible(false);
 				coin->SetInitialScale(glm::vec2(0.8f, 0.8f));
@@ -289,7 +289,7 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 				if(!energyBall) LOG_ERROR("Failed to create room object");
 				currentScene->GetRoot().lock()->AddChild(energyBall);
 				currentScene->GetCamera().lock()->SafeAddChild(energyBall);
-
+				energyBall->SetRegisteredToScene(true);
 				energyBall->SetActive(false);
 				energyBall->SetControlVisible(false);
 				energyBall->SetInitialScale(glm::vec2(0.8f, 0.8f));
@@ -298,8 +298,18 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 			}
 		}
 		else if (type == ChestType::WEAPON) {
-			// TODO
-			// WeaponFactory::
+			std::vector<int> allPlayerWeaponID;
+			if (auto attackComp = m_Player.lock()->GetComponent<AttackComponent>(ComponentType::ATTACK))
+			{
+				allPlayerWeaponID = attackComp->GetAllWeaponID();
+			}
+			auto weapon = WeaponFactory::createRandomWeapon(allPlayerWeaponID);
+			if(!weapon) LOG_ERROR("Failed to create room object");
+			currentScene->GetRoot().lock()->AddChild(weapon);
+			currentScene->GetCamera().lock()->SafeAddChild(weapon);
+			weapon->SetRegisteredToScene(true);
+			weapon->SetControlVisible(false);
+			objects.push_back(weapon);
 		}
 
 		chestComp->AddDropItems(objects);
@@ -310,6 +320,7 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 
 	currentScene->GetRoot().lock()->AddChild(chest);
 	currentScene->GetCamera().lock()->SafeAddChild(chest);
+	chest->SetRegisteredToScene(true);
 
 	// 加入互動manager中
 	m_InteractionManager->RegisterInteractable(chest);
