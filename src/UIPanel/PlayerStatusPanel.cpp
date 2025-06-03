@@ -126,7 +126,7 @@ void PlayerStatusPanel::Start()
 
 	// HP數值文字
 	m_TextPlayerHP = std::make_shared<nGameObject>();
-	m_TextPlayerHP->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR "/Font/zpix.ttf", 16, "0/0",
+	m_TextPlayerHP->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/7",
 															 Util::Color::FromRGB(255, 255, 255), false));
 	m_TextPlayerHP->SetZIndex(m_SliderPlayerHP->GetZIndex() + 2.0f);
 	m_TextPlayerHP->m_Transform.translation = m_SliderPlayerHP->m_Transform.translation + offsetText;
@@ -135,7 +135,7 @@ void PlayerStatusPanel::Start()
 
 	// 護甲數值文字
 	m_TextPlayerArmor = std::make_shared<nGameObject>();
-	m_TextPlayerArmor->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR "/Font/zpix.ttf", 16, "0/0",
+	m_TextPlayerArmor->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/8",
 																Util::Color::FromRGB(255, 255, 255), false));
 	m_TextPlayerArmor->SetZIndex(m_SliderPlayerArmor->GetZIndex() + 2.0f);
 	m_TextPlayerArmor->m_Transform.translation = m_SliderPlayerArmor->m_Transform.translation + offsetText;
@@ -144,7 +144,7 @@ void PlayerStatusPanel::Start()
 
 	// 能量數值文字
 	m_TextPlayerEnergy = std::make_shared<nGameObject>();
-	m_TextPlayerEnergy->SetDrawable(std::make_shared<Util::Text>(RESOURCE_DIR "/Font/zpix.ttf", 16, "0/0",
+	m_TextPlayerEnergy->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/180",
 																 Util::Color::FromRGB(255, 255, 255), false));
 	m_TextPlayerEnergy->SetZIndex(m_SliderPlayerEnergy->GetZIndex() + 2.0f);
 	m_TextPlayerEnergy->m_Transform.translation = m_SliderPlayerEnergy->m_Transform.translation + offsetText;

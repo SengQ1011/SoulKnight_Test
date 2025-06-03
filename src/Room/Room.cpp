@@ -5,10 +5,14 @@
 #include "Room/Room.hpp"
 
 #include <iostream>
+
+#include "Components/ChestComponent.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/InteractableComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Factory/RoomObjectFactory.hpp"
+#include "Factory/WeaponFactory.hpp"
+#include "RandomUtil.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "Room/RoomInteractionManager.hpp"
 #include "Scene/SceneManager.hpp"
@@ -40,9 +44,13 @@ void Room::Update() {
 	// TODO: 房間管理員都交給Camera
 	for (auto& [type, manager] : m_Managers) { manager->Update(); }
 
-	// 互動管理
-	if (Util::Input::IsKeyDown(Util::Keycode::F)) m_InteractionManager->TryInteractWithClosest();
+	// 自動互動
+	m_InteractionManager->UpdateAutoInteractions();
 
+	// 玩家主動互動
+	if (Util::Input::IsKeyDown(Util::Keycode::F)) {
+		m_InteractionManager->TryInteractWithClosest();
+	}
 }
 
 void Room::CharacterEnter(const std::shared_ptr<Character>& character) {
@@ -63,7 +71,6 @@ void Room::CharacterExit(const std::shared_ptr<Character>& character) {
         m_Characters.erase(it);
 		UnRegisterObjectToSceneAndManager(character);
         OnCharacterExit(character);
-
     }
 }
 
@@ -243,18 +250,64 @@ void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject>&
 std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 {
 	auto factory = m_Factory.lock();
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	std::shared_ptr<nGameObject> chest;
+
 	if (type == ChestType::REWARD) {
 		chest = factory->createRoomObject("object_rewardChest");
+
 	}
 	else if (type == ChestType::WEAPON) {
 		chest = factory->createRoomObject("object_weaponChest");
 	}
-	chest->SetActive(true);
-	chest->SetControlVisible(true);
+	if (!chest)	return nullptr;
+
+	if (auto chestComp = chest->GetComponent<ChestComponent>(ComponentType::CHEST))
+	{
+		std::vector<std::shared_ptr<nGameObject>> objects;
+		if (type == ChestType::REWARD) {
+			int num1 = RandomUtil::RandomFloatInRange(5, 10);
+			int num2 = RandomUtil::RandomFloatInRange(5, 10);
+			// 生成金幣
+			for (int i = 0; i < num1; i++)
+			{
+				auto coin = factory->createRoomObject("object_coin");
+				if(!coin) LOG_ERROR("Failed to create room object");
+				currentScene->GetRoot().lock()->AddChild(coin);
+				currentScene->GetCamera().lock()->SafeAddChild(coin);
+
+				coin->SetActive(false);
+				coin->SetControlVisible(false);
+				coin->SetInitialScale(glm::vec2(0.8f, 0.8f));
+
+				objects.push_back(coin);
+			}
+			// 生成能量球
+			for (int i = 0; i < num2; i++)
+			{
+				auto energyBall = factory->createRoomObject("object_energyBall");
+				if(!energyBall) LOG_ERROR("Failed to create room object");
+				currentScene->GetRoot().lock()->AddChild(energyBall);
+				currentScene->GetCamera().lock()->SafeAddChild(energyBall);
+
+				energyBall->SetActive(false);
+				energyBall->SetControlVisible(false);
+				energyBall->SetInitialScale(glm::vec2(0.8f, 0.8f));
+
+				objects.push_back(energyBall);
+			}
+		}
+		else if (type == ChestType::WEAPON) {
+			// TODO
+			// WeaponFactory::
+		}
+
+		chestComp->AddDropItems(objects);
+	}
+
 	// RegisterObjectToSceneAndManager(chest);
 	//  因爲可能是在游戲中創建，要手動加入渲染器/manager
-	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+
 	currentScene->GetRoot().lock()->AddChild(chest);
 	currentScene->GetCamera().lock()->SafeAddChild(chest);
 

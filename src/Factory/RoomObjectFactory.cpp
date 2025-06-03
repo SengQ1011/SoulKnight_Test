@@ -36,7 +36,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 			std::shared_ptr<Animation> animation = std::make_shared<Animation>(path,true);
 			animation->PlayAnimation(true);
 			roomObject = animation;
-			LOG_DEBUG("SEE {} {}",std::dynamic_pointer_cast<Animation>(roomObject)->IsLooping(),std::dynamic_pointer_cast<Animation>(roomObject)->IsPlaying());
+			// LOG_DEBUG("SEE {} {}",std::dynamic_pointer_cast<Animation>(roomObject)->IsLooping(),std::dynamic_pointer_cast<Animation>(roomObject)->IsPlaying());
 		}
 		else
 		{

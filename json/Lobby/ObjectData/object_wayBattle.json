@@ -9,7 +9,7 @@
             "InteractionRadius": 35.5,
             "InteractableType": "PORTAL",
             "PromptObject": {
-                "PromptFontPath": "/Font/zpix.ttf",
+                "PromptFontPath": "/Font/jf-openhuninn-2.1.ttf",
                 "PromptFontSize": 32.0,
                 "PromptText": "進入地牢",
                 "PromptColor": [

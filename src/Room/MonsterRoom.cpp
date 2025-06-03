@@ -144,7 +144,6 @@ void MonsterRoom::OnStateChanged()
 		if (const auto rewardChest = CreateChest(ChestType::REWARD))
 		{
 			rewardChest->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
-			LOG_INFO("MonsterRoom::OnStateChanged: Chest created at {}, {}, ",rewardChest->GetWorldCoord(), m_Player.lock()->GetWorldCoord());
 		}
 
 		break;

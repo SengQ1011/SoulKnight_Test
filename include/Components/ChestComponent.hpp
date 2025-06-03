@@ -29,6 +29,7 @@ public:
 
 	/* ---Setter--- */
 	void SetState(const ChestState newState) {m_currentState = newState;}
+	void AddDropItems(const std::vector<std::shared_ptr<nGameObject>>& items) {m_dropItems = items;}
 
 	void ChestOpened();
 

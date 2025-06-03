@@ -33,9 +33,9 @@ public:
 		m_Type(data.s_InteractableType),
 		m_InteractionRadius(data.s_InteractionRadius),
 		m_IsAutoInteract(data.s_IsAutoInteract),
-		m_PromptObject(data.s_PromptObject)
-	{
-	}
+		m_PromptObject(data.s_PromptObject){}
+
+	~InteractableComponent() override = default;
 
 	// 使用std::function作為互動回調
 	using InteractionCallback = std::function<void(const std::shared_ptr<Character> &interactor,

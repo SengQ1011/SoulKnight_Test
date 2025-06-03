@@ -12,7 +12,6 @@ void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObj
 {
 	if (interactable && interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE)) {
 		m_InteractableObjects.push_back(interactable);
-		LOG_INFO("Interactable registered");
 	}
 }
 
@@ -56,6 +55,21 @@ std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(floa
 		}
 	}
 	return closestInteractable;
+}
+
+void RoomInteractionManager::UpdateAutoInteractions() {
+	const auto player = m_Player.lock();
+	if (!player) return;
+
+	for (const auto& weakInteractable : m_InteractableObjects) {
+		auto interactable = weakInteractable.lock();
+		if (!interactable || !interactable->IsActive()) continue;
+
+		const auto comp = interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
+		if (comp && comp->IsAutoInteract() && comp->IsInRange(player)) {
+			comp->OnInteract(player);
+		}
+	}
 }
 
 bool RoomInteractionManager::TryInteractWithClosest(float maxRadius) const

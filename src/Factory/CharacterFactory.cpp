@@ -18,7 +18,7 @@
 #include "Components/InputComponent.hpp"
 #include "Components/SkillComponent.hpp"
 #include "Components/TalentComponet.hpp"
-#include "Components/walletComponent.hpp"
+#include "Components/WalletComponent.hpp"
 
 #include "Util/Logger.hpp"
 

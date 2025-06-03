@@ -4,12 +4,14 @@
 
 #include "Components/ChestComponent.hpp"
 
+#include "Factory/RoomObjectFactory.hpp"
 #include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "RandomUtil.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Util/Image.hpp"
 
- ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths)
+ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths)
 								: m_chestType(chestType), m_imagePaths(imagePaths){}
 
 
@@ -23,27 +25,11 @@ void ChestComponent::Init()
 	}
 	const std::shared_ptr<nGameObject> chest = GetOwner<nGameObject>();
 	if (!chest) return;
-	chest->SetActive(false);
-	chest->SetControlVisible(false);
+	chest->SetActive(true);
+	chest->SetControlVisible(true);
 	chest->SetDrawable(m_drawables[0]);
 
-	// 預生成掉落物
 	m_dropItems.clear();
-	if (m_chestType == ChestType::REWARD)
-	{
-		int num1 = RandomUtil::RandomFloatInRange(5, 10);
-		int num2 = RandomUtil::RandomFloatInRange(5, 10);
-		// 生成金幣
-		for (int i = 0; i < num1; i++)
-		{
-
-		}
-		// 生成能量球
-		for (int i = 0; i < num2; i++)
-		{
-
-		}
-	}
 }
 
 void ChestComponent::Update()
@@ -87,6 +73,7 @@ void ChestComponent::ChestOpened()
  	auto chest = GetOwner<nGameObject>();
  	if (!chest) return;
 
+	const auto interactionManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager();
  	// 切換圖片
  	if (m_drawables.size() > 1)
  		chest->SetDrawable(m_drawables[1]); // 開啟狀態的圖片
@@ -99,9 +86,14 @@ void ChestComponent::ChestOpened()
  			item->SetActive(true);
  			item->SetControlVisible(true);
 
+ 			// 加入互動manager中
+ 			interactionManager->RegisterInteractable(item);
+
  			// 隨機丟出去一點點
- 			glm::vec2 randomOffset = glm::vec2{RandomUtil::RandomFloatInRange(0.5f,30.0f),RandomUtil::RandomFloatInRange(0.5f,30.0f)};
+			auto randomOffset = glm::vec2{RandomUtil::RandomFloatInRange(-25.0f,25.0f),RandomUtil::RandomFloatInRange(-25.0f,25.0f)};
  			item->SetWorldCoord(chestWorldCor + randomOffset);
  		}
  	}
+	// 清空，不保留
+	m_dropItems.clear();
  }

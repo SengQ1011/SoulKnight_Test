@@ -11,7 +11,8 @@
     {
       "Class": "INTERACTABLE",
       "InteractionRadius": 20.0,
-      "InteractableType": "WEAPON_CHEST"
+      "InteractableType": "WEAPON_CHEST",
+      "IsAutoInteract": false
     },
     {
       "Class": "CHEST",

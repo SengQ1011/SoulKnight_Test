@@ -23,6 +23,7 @@ public:
 	void UnregisterInteractable(const std::shared_ptr<nGameObject>& interactable);
 
 	void Update() override; // 更新互動提示（通常由Room::Update調用）
+	void UpdateAutoInteractions();
 	bool TryInteractWithClosest(float maxRadius = 50.0f) const; // Notify
 	void SetPlayer(const std::shared_ptr<Character>& player); // 引用玩家角色
 

@@ -11,7 +11,8 @@
     {
       "Class": "INTERACTABLE",
       "InteractionRadius": 20.0,
-      "InteractableType": "REWARD_CHEST"
+      "InteractableType": "REWARD_CHEST",
+      "IsAutoInteract": true
     },
     {
       "Class": "CHEST",

@@ -3,7 +3,7 @@
 //
 
 #include "Scene/Scene.hpp"
-#include "Components/walletComponent.hpp"
+#include "Components/WalletComponent.hpp"
 #include "Override/nGameObject.hpp"
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"

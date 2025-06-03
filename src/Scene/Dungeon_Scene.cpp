@@ -23,6 +23,7 @@
 #include "Util/Logger.hpp"
 
 #include "Components/InputComponent.hpp"
+#include "Components/walletComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Factory/CharacterFactory.hpp"
 #include "Factory/RoomObjectFactory.hpp"
@@ -141,8 +142,8 @@ void DungeonScene::Exit()
 
 Scene::SceneType DungeonScene::Change()
 {
-	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
-		return Scene::SceneType::Menu;
+	// if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
+	// 	return Scene::SceneType::Menu;
 	if (!m_Player->IsActive())
 	{
 		m_timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
@@ -201,66 +202,6 @@ void DungeonScene::BuildDungeon()
 	InitializeSceneManagers();
 }
 
-void DungeonScene::CreatePlayer()
-{
-	// 使用 CharacterFactory 创建玩家
-	m_Player = CharacterFactory::GetInstance().createPlayer(1);
-	if (!m_Player) LOG_ERROR("Failed to create player");
-	const auto playerData = m_SceneData->gameProgress.playerData;
-
-	// Hp & 能量
-	if (const auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH)){
-		const auto hp = playerData.currentHp;
-		const auto energy = playerData.currentEnergy;
-		healthComp->SetCurrentHp(hp);
-		healthComp->SetCurrentEnergy(energy);
-	}
-
-	std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
-	if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
-	{
-		talentComp->AddTalent(talentDatabase[2]);
-	// 武器
-	if (const auto attackComp = m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK))
-	{
-		// 移除初始武器
-		attackComp->RemoveAllWeapon();
-		auto weaponID = playerData.weaponID;
-		for (const auto& id : weaponID){
-			attackComp->AddWeapon(WeaponFactory::createWeapon(id));
-		}
-	}
-
-	// 恢復天賦
-	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
-	if (const auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
-		auto talentID = playerData.talentID;
-		for (const auto& talent : talentID)
-		talentComp->AddTalent(talentDatabase[talent]);
-	}
-
-	// money
-	// if (const auto XXComp = m_Player->GetComponent<>(ComponentType::)){
-	//
-	// }
-
-	// 设置玩家的初始位置
-	m_Player->SetWorldCoord(glm::vec2(0)); // 地图正中央
-
-	// 获取碰撞组件并添加到场景和相机
-	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION))
-	{
-		// 将碰撞盒添加到场景根节点和相机
-		const auto playerVisibleBox = collision->GetVisibleBox();
-		m_PendingObjects.emplace_back(playerVisibleBox);
-		playerVisibleBox->SetRegisteredToScene(true);
-	}
-
-	// 将玩家添加到场景根节点和相机
-	m_PendingObjects.emplace_back(m_Player);
-	m_Player->SetRegisteredToScene(true);
-}
-
 void DungeonScene::SetupCamera() const
 {
 	m_Camera->SetMapSize(m_MapHeight);
@@ -295,4 +236,67 @@ void DungeonScene::InitAudioManager() {
 	AudioManager::GetInstance().Reset();
 	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
 	AudioManager::GetInstance().PlayBGM();
+}
+
+void DungeonScene::CreatePlayer()
+{
+	// 使用 CharacterFactory 创建玩家
+	m_Player = CharacterFactory::GetInstance().createPlayer(1);
+	if (!m_Player) LOG_ERROR("Failed to create player");
+	const auto playerData = m_SceneData->gameProgress.playerData;
+
+	// Hp & 能量
+	if (const auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH)){
+		const auto hp = playerData.currentHp;
+		const auto energy = playerData.currentEnergy;
+		healthComp->SetCurrentHp(hp);
+		healthComp->SetCurrentEnergy(energy);
+	}
+
+	std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
+	if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
+	{
+		talentComp->AddTalent(talentDatabase[2]);
+		// 武器
+		if (const auto attackComp = m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK))
+		{
+			// 移除初始武器
+			attackComp->RemoveAllWeapon();
+			auto weaponID = playerData.weaponID;
+			for (const auto& id : weaponID){
+				attackComp->AddWeapon(WeaponFactory::createWeapon(id));
+			}
+		}
+
+		// 恢復天賦
+		std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
+		if (const auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+			auto talentID = playerData.talentID;
+			for (const auto& talent : talentID)
+				talentComp->AddTalent(talentDatabase[talent]);
+		}
+
+		// money
+		if (const auto walletComp = m_Player->GetComponent<WalletComponent>(ComponentType::WALLET))
+		{
+			const auto player_money = playerData.money;
+			walletComp->SetMoney(player_money);
+		}
+
+		// 设置玩家的初始位置
+		m_Player->SetWorldCoord(glm::vec2(0)); // 地图正中央
+
+		// 获取碰撞组件并添加到场景和相机
+		if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION))
+		{
+			// 将碰撞盒添加到场景根节点和相机
+			const auto playerVisibleBox = collision->GetVisibleBox();
+			m_PendingObjects.emplace_back(playerVisibleBox);
+			playerVisibleBox->SetRegisteredToScene(true);
+		}
+
+		// 将玩家添加到场景根节点和相机
+		m_PendingObjects.emplace_back(m_Player);
+		m_Player->SetRegisteredToScene(true);
+	}
 }
