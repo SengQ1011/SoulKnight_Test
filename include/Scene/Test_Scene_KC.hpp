@@ -14,7 +14,7 @@
 
 class DungeonMap;
 class LobbyRoom;
-class UIButton;
+class nGameObject;
 
 class TestScene_KC final : public Scene
 {
@@ -30,11 +30,11 @@ public:
 private:
 	// 私有方法，按功能划分场景初始化流程
 	void CreatePlayer();
+	void CreateStageText();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	void InitUIManager();
 	void InitAudioManager();
-	void InitPauseButton();
 
 protected:
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
@@ -50,8 +50,9 @@ protected:
 
 	std::string m_ThemeName = "Lobby"; // 工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
 
-	// UI 元素
-	std::shared_ptr<UIButton> m_PauseButton;
+	// 關卡文字
+	std::shared_ptr<nGameObject> m_stageText;
+	float m_stageTextTimer = 0.0f;
 
 	// test
 	std::vector<std::shared_ptr<nGameObject>> m_RoomObjectGroup;

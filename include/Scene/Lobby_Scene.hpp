@@ -13,7 +13,6 @@
 
 
 class LobbyRoom;
-class UIButton;
 
 class LobbyScene : public Scene
 {
@@ -42,16 +41,12 @@ protected:
 
 	std::string m_ThemeName = "Lobby"; // 工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
 
-	// UI 元素
-	std::shared_ptr<UIButton> m_PauseButton;
-
 	void CreatePlayer();
 	void CreateEnemy();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	void InitUIManager();
 	void InitAudioManager();
-	void InitPauseButton();
 };
 
 #endif // LOBBY_SCENE_HPP

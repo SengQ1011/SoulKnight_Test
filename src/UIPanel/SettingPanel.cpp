@@ -18,6 +18,9 @@
 
 void SettingPanel::Start()
 {
+	// 設置面板名稱用於輸入阻擋檢查
+	SetPanelName("setting");
+
 	// 創建遮罩層
 	m_OverLay = std::make_shared<nGameObject>();
 	m_OverLay->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/overlay_black.png"));

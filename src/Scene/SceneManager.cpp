@@ -38,7 +38,7 @@ void SceneManager::Start()
 		InitializeNewGameData();
 	}
 
-	m_CurrentScene = CreateScene(Scene::SceneType::Test_KC);
+	m_CurrentScene = CreateScene(Scene::SceneType::Menu);
 
 	m_CurrentScene->Start();
 }

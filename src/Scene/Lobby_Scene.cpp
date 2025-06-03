@@ -13,6 +13,7 @@
 #include "Components/HealthComponent.hpp"
 #include "Components/InputComponent.hpp"
 #include "Components/TalentComponet.hpp"
+#include "Components/walletComponent.hpp"
 
 #include "Creature/Character.hpp"
 #include "Factory/CharacterFactory.hpp"
@@ -21,6 +22,7 @@
 #include "ObserveManager/InputManager.hpp"
 #include "Room/LobbyRoom.hpp"
 #include "Room/RoomCollisionManager.hpp"
+#include "UIPanel/GameHUDPanel.hpp"
 #include "UIPanel/PausePanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
 #include "UIPanel/SettingPanel.hpp"
@@ -30,9 +32,6 @@
 #include "Util/Input.hpp"
 
 #include "Weapon/Weapon.hpp"
-
-// 簡單的回調函數用於暫停按鈕
-void OpenPausePanelLobby() { UIManager::GetInstance().ShowPanel("pause"); }
 
 void LobbyScene::Start()
 {
@@ -61,14 +60,10 @@ void LobbyScene::Start()
 	m_CurrentRoom = m_LobbyRoom;
 
 	InitUIManager();
-	InitPauseButton();
 	InitAudioManager();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
-
-	// 添加暫停按鈕到場景
-	m_Root->AddChild(m_PauseButton);
 
 	// 防止并行渲染器出事
 	FlushPendingObjectsToRendererAndCamera();
@@ -78,9 +73,6 @@ void LobbyScene::Update()
 {
 	// 先更新UI管理器，處理UI相關的輸入
 	UIManager::GetInstance().Update();
-
-	// 更新暫停按鈕
-	m_PauseButton->Update();
 
 	// 測試用：按P鍵顯示/隱藏暫停面板
 	if (Util::Input::IsKeyDown(Util::Keycode::P))
@@ -201,19 +193,23 @@ void LobbyScene::InitUIManager()
 {
 	UIManager::GetInstance().ResetPanels();
 
+	// 創建設定面板 - 最高優先級模態面板
 	const auto settingPanel = std::make_shared<SettingPanel>();
 	settingPanel->Start();
-	UIManager::GetInstance().RegisterPanel("setting", std::static_pointer_cast<UIPanel>(settingPanel));
+	UIManager::GetInstance().RegisterPanel("setting", std::static_pointer_cast<UIPanel>(settingPanel), 2, true);
 
+	// 創建暫停面板 - 中等優先級模態面板
 	const auto pausePanel =
 		std::make_shared<PausePanel>(m_Player->GetComponent<TalentComponent>(ComponentType::TALENT));
 	pausePanel->Start();
-	UIManager::GetInstance().RegisterPanel("pause", std::static_pointer_cast<UIPanel>(pausePanel));
+	UIManager::GetInstance().RegisterPanel("pause", std::static_pointer_cast<UIPanel>(pausePanel), 1, true);
 
-	const auto playerStatusPanel =
-		std::make_shared<PlayerStatusPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH));
-	playerStatusPanel->Start();
-	UIManager::GetInstance().RegisterPanel("playerStatus", std::static_pointer_cast<UIPanel>(playerStatusPanel));
+	// 創建遊戲 HUD 面板 - 低優先級非模態面板
+	const auto gameHUDPanel =
+		std::make_shared<GameHUDPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH),
+									   m_Player->GetComponent<WalletComponent>(ComponentType::WALLET));
+	gameHUDPanel->Start();
+	UIManager::GetInstance().RegisterPanel("gameHUD", std::static_pointer_cast<UIPanel>(gameHUDPanel), 0, false);
 }
 
 void LobbyScene::InitAudioManager()
@@ -221,15 +217,4 @@ void LobbyScene::InitAudioManager()
 	AudioManager::GetInstance().Reset();
 	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
 	AudioManager::GetInstance().PlayBGM();
-}
-
-void LobbyScene::InitPauseButton()
-{
-	auto &img = ImagePoolManager::GetInstance();
-
-	// 使用全局函數作為回調，顯示暫停面板
-	m_PauseButton = std::make_shared<UIButton>(OpenPausePanelLobby, false);
-	m_PauseButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_pausePanel/button_pause.png"));
-	m_PauseButton->SetZIndex(85.0f);
-	m_PauseButton->m_Transform.translation = {580.0f, 310.0f};
 }

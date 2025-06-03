@@ -13,6 +13,7 @@
 #include "Components/HealthComponent.hpp"
 #include "Components/InputComponent.hpp"
 #include "Components/TalentComponet.hpp"
+#include "Components/walletComponent.hpp"
 
 #include "Creature/Character.hpp"
 #include "EnumTypes.hpp"
@@ -23,12 +24,14 @@
 #include "ObserveManager/InputManager.hpp"
 #include "Room/LobbyRoom.hpp"
 #include "Room/RoomCollisionManager.hpp"
+#include "UIPanel/GameHUDPanel.hpp"
 #include "UIPanel/PausePanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
 #include "UIPanel/SettingPanel.hpp"
 #include "UIPanel/UIButton.hpp"
 #include "UIPanel/UIManager.hpp"
 #include "UIPanel/UIPanel.hpp"
+#include "Util/Color.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 
@@ -41,6 +44,10 @@ void OpenPausePanel() { UIManager::GetInstance().ShowPanel("pause"); }
 void TestScene_KC::Start()
 {
 	LOG_DEBUG("Entering KC Test Scene (with Lobby Settings)");
+
+	// 創建關卡文字
+	CreateStageText();
+
 	// 创建并初始化玩家
 	CreatePlayer();
 
@@ -63,14 +70,10 @@ void TestScene_KC::Start()
 	m_CurrentRoom = m_LobbyRoom;
 
 	InitUIManager();
-	InitPauseButton();
 	InitAudioManager();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
-
-	// 添加暫停按鈕到場景
-	m_Root->AddChild(m_PauseButton);
 
 	// 防止并行渲染器出事
 	FlushPendingObjectsToRendererAndCamera();
@@ -80,9 +83,6 @@ void TestScene_KC::Update()
 {
 	// 先更新UI管理器，處理UI相關的輸入
 	UIManager::GetInstance().Update();
-
-	// 更新暫停按鈕
-	m_PauseButton->Update();
 
 	// 測試用：按P鍵顯示/隱藏暫停面板
 	if (Util::Input::IsKeyDown(Util::Keycode::P))
@@ -98,6 +98,18 @@ void TestScene_KC::Update()
 
 		// 更新房间
 		m_LobbyRoom->Update();
+	}
+
+	// 關卡文字計時器更新
+	if (m_stageTextTimer > 0)
+	{
+		m_stageTextTimer -= Util::Time::GetDeltaTimeMs() / 1000.0f;
+		if (m_stageTextTimer <= 0)
+		{
+			m_stageTextTimer = 0;
+			if (m_stageText)
+				m_stageText->SetControlVisible(false);
+		}
 	}
 
 	// 更新相机（相機總是需要更新）
@@ -135,11 +147,11 @@ void TestScene_KC::CreatePlayer()
 {
 	// 使用 CharacterFactory 创建玩家
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
-	std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
-	if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
-	{
-		talentComp->AddTalent(talentDatabase[3]);
-	}
+	// std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
+	// if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
+	// {
+	// 	talentComp->AddTalent(talentDatabase[3]);
+	// }
 
 	// 设置玩家的初始位置
 	m_Player->SetWorldCoord(glm::vec2(-16 * 2, 16 * 2)); // 初始位置为右两格，上两格
@@ -157,6 +169,24 @@ void TestScene_KC::CreatePlayer()
 	// 将玩家添加到场景根节点和相机
 	m_PendingObjects.push_back(m_Player);
 	m_Player->SetRegisteredToScene(true);
+}
+
+void TestScene_KC::CreateStageText()
+{
+	if (!m_stageText)
+	{
+		m_stageText = std::make_shared<nGameObject>();
+		m_stageText->SetDrawable(ImagePoolManager::GetInstance().GetText(
+			RESOURCE_DIR "/Font/BRUSHSCI.TTF", 32, "Test Scene - KC", Util::Color(255, 255, 255)));
+		m_stageText->SetZIndex(100);
+		m_stageText->SetZIndexType(CUSTOM);
+		m_stageText->SetControlVisible(true);
+		m_Root->AddChild(m_stageText);
+		m_Camera->AddChild(m_stageText);
+
+		// 設置顯示時間
+		m_stageTextTimer = 3.0f; // 顯示3秒
+	}
 }
 
 void TestScene_KC::SetupCamera() const
@@ -181,19 +211,23 @@ void TestScene_KC::InitUIManager()
 {
 	UIManager::GetInstance().ResetPanels();
 
+	// 創建設定面板 - 最高優先級模態面板
 	const auto settingPanel = std::make_shared<SettingPanel>();
 	settingPanel->Start();
-	UIManager::GetInstance().RegisterPanel("setting", std::static_pointer_cast<UIPanel>(settingPanel));
+	UIManager::GetInstance().RegisterPanel("setting", std::static_pointer_cast<UIPanel>(settingPanel), 2, true);
 
+	// 創建暫停面板 - 中等優先級模態面板
 	const auto pausePanel =
 		std::make_shared<PausePanel>(m_Player->GetComponent<TalentComponent>(ComponentType::TALENT));
 	pausePanel->Start();
-	UIManager::GetInstance().RegisterPanel("pause", std::static_pointer_cast<UIPanel>(pausePanel));
+	UIManager::GetInstance().RegisterPanel("pause", std::static_pointer_cast<UIPanel>(pausePanel), 1, true);
 
-	const auto playerStatusPanel =
-		std::make_shared<PlayerStatusPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH));
-	playerStatusPanel->Start();
-	UIManager::GetInstance().RegisterPanel("playerStatus", std::static_pointer_cast<UIPanel>(playerStatusPanel));
+	// 創建遊戲 HUD 面板 - 低優先級非模態面板
+	const auto gameHUDPanel =
+		std::make_shared<GameHUDPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH),
+									   m_Player->GetComponent<WalletComponent>(ComponentType::WALLET));
+	gameHUDPanel->Start();
+	UIManager::GetInstance().RegisterPanel("gameHUD", std::static_pointer_cast<UIPanel>(gameHUDPanel), 0, false);
 }
 
 void TestScene_KC::InitAudioManager()
@@ -201,15 +235,4 @@ void TestScene_KC::InitAudioManager()
 	AudioManager::GetInstance().Reset();
 	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
 	AudioManager::GetInstance().PlayBGM();
-}
-
-void TestScene_KC::InitPauseButton()
-{
-	auto &img = ImagePoolManager::GetInstance();
-
-	// 使用全局函數作為回調，顯示暫停面板
-	m_PauseButton = std::make_shared<UIButton>(OpenPausePanel, false);
-	m_PauseButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_pausePanel/button_pause.png"));
-	m_PauseButton->SetZIndex(85.0f);
-	m_PauseButton->m_Transform.translation = {580.0f, 310.0f};
 }

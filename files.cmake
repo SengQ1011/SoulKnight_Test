@@ -71,6 +71,7 @@ set(SRC_FILES
     TriggerStrategy/BlockProjectileStrategy.cpp
     TriggerStrategy/KnockOffTriggerStrategy.cpp
     TriggerStrategy/ReflectTriggerStrategy.cpp
+    UIPanel/GameHUDPanel.cpp
     UIPanel/PausePanel.cpp
     UIPanel/PlayerStatusPanel.cpp
     UIPanel/SettingPanel.cpp
@@ -186,6 +187,7 @@ set(INCLUDE_FILES
     TriggerStrategy/ITriggerStrategy.hpp
     TriggerStrategy/KnockOffTriggerStrategy.hpp
     TriggerStrategy/ReflectTriggerStrategy.hpp
+    UIPanel/GameHUDPanel.hpp
     UIPanel/PausePanel.hpp
     UIPanel/PlayerStatusPanel.hpp
     UIPanel/SettingPanel.hpp

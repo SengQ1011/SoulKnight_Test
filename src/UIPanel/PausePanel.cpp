@@ -19,6 +19,9 @@
 
 void PausePanel::Start()
 {
+	// 設置面板名稱用於輸入阻擋檢查
+	SetPanelName("pause");
+
 	// 創建遮罩層
 	m_OverLay = std::make_shared<nGameObject>();
 	m_OverLay->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/overlay_black.png"));
@@ -59,7 +62,7 @@ void PausePanel::Start()
 	m_GameObjects.push_back(m_MenuButton);
 
 	// 創建 SettingButton - 呼叫SettingPanel
-	std::function<void()> setting_function = []()
+	std::function<void()> setting_function = [this]()
 	{
 		// 顯示設定面板
 		UIManager::GetInstance().ShowPanel("setting");
@@ -100,20 +103,40 @@ void PausePanel::Start()
 
 void PausePanel::Update()
 {
-	// 優先更新動畫
+	// 優先更新動畫（動畫總是需要更新）
 	UpdateAnimation();
 
-	// 更新天賦顯示
+	// 更新天賦顯示（顯示總是需要更新）
 	UpdateTalentIcons();
+
+	// 檢查是否應該阻擋輸入
+	bool blockInput = ShouldBlockInput();
 
 	// 更新所有元件
 	// DrawDebugUI();
 	for (const std::shared_ptr<nGameObject> &gameObject : m_GameObjects)
 	{
-		gameObject->Update();
+		// 如果是按鈕類型且輸入被阻擋，則暫時設為不活躍
+		if (auto button = std::dynamic_pointer_cast<UIButton>(gameObject))
+		{
+			if (blockInput)
+			{
+				button->SetActive(false); // 暫時禁用按鈕輸入
+				button->Update(); // 仍然更新渲染
+				button->SetActive(true); // 恢復活躍狀態
+			}
+			else
+			{
+				button->Update(); // 正常更新
+			}
+		}
+		else
+		{
+			gameObject->Update(); // 非按鈕元件正常更新
+		}
 	}
 
-	// 更新天賦圖標
+	// 更新天賦圖標（只需要渲染更新）
 	for (const auto &talentIcon : m_TalentIcons)
 	{
 		talentIcon->Update();
