@@ -7,7 +7,6 @@
 
 #include "Scene/Scene.hpp"
 #include "Factory/RoomObjectFactory.hpp"
-#include "ObserveManager/TrackingManager.hpp"
 #include "Util/BGM.hpp"
 #include "Attack/AttackManager.hpp"
 #include "Loader.hpp"
@@ -26,13 +25,6 @@ public:
 	SceneType Change() override;
 
 protected:
-	void CreatePlayer();
-	void CreateEnemy();
-	void SetupCamera() const;
-	void InitializeSceneManagers();
-
-	// std::shared_ptr<TrackingManager> m_trackingManager = std::make_shared<TrackingManager>();
-
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
 
 	std::shared_ptr<Character> m_Player;
@@ -47,6 +39,13 @@ protected:
 	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
 
 	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+
+	void CreatePlayer();
+	void CreateEnemy();
+	void SetupCamera() const;
+	void InitializeSceneManagers();
+	void InitUIManager();
+	void InitAudioManager();
 };
 
 #endif //LOBBY_SCENE_HPP

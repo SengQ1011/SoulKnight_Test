@@ -210,7 +210,6 @@ namespace WeaponFactory {
 						followerComp->SetIsSword(true);
 					}
 					// LOG_DEBUG("create Weapon successful");
-
 					return weaponPtr;
 				}
 			}
