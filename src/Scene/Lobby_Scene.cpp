@@ -17,6 +17,10 @@
 #include "Room/LobbyRoom.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "Util/Input.hpp"
+#include "UIPanel/UIManager.hpp"
+#include "UIPanel/SettingPanel.hpp"
+#include "UIPanel/PlayerStatusPanel.hpp"
+#include "ObserveManager/AudioManager.hpp"
 
 #include "Weapon/Weapon.hpp"
 
@@ -46,6 +50,9 @@ void LobbyScene::Start()
 
 	m_CurrentRoom = m_LobbyRoom;
 
+	InitUIManager();
+	InitAudioManager();
+
 	// 初始化场景管理器
 	InitializeSceneManagers();
 
@@ -63,6 +70,7 @@ void LobbyScene::Update()
 
 	for (auto& [type,manager]: m_Managers) manager->Update();
 
+	UIManager::GetInstance().Update();
 	// 更新房间
 	m_LobbyRoom->Update();
 
@@ -71,6 +79,26 @@ void LobbyScene::Update()
 
 	// 更新渲染器
 	m_Root->Update();
+}
+
+void LobbyScene::Exit()
+{
+	LOG_DEBUG("Lobby Scene exited");
+	// 退出场景时的清理工作
+	AudioManager::GetInstance().PauseBGM();
+	if (m_LobbyRoom) {
+		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
+	}
+}
+
+Scene::SceneType LobbyScene::Change()
+{
+	if (IsChange())
+	{
+		LOG_DEBUG("Change Main Menu");
+		return Scene::SceneType::DungeonLoad;
+	}
+	return Scene::SceneType::Null;
 }
 
 void LobbyScene::CreatePlayer()
@@ -132,22 +160,21 @@ void LobbyScene::InitializeSceneManagers()
 	inputManager->addObserver(m_Camera);
 }
 
-void LobbyScene::Exit()
-{
-	LOG_DEBUG("Lobby Scene exited");
-	// 退出场景时的清理工作
-	m_BGM->Pause();
-	if (m_LobbyRoom) {
-		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
-	}
+void LobbyScene::InitUIManager() {
+	UIManager::GetInstance().ResetPanels();
+
+	const auto settingPanel = std::make_shared<SettingPanel>();
+	settingPanel->Start();
+	UIManager::GetInstance().RegisterPanel("setting", settingPanel);
+
+	const auto playerStatusPanel = std::make_shared<PlayerStatusPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH));
+	playerStatusPanel->Start();
+	UIManager::GetInstance().RegisterPanel("playerStatus", playerStatusPanel);
 }
 
-Scene::SceneType LobbyScene::Change()
-{
-	if (IsChange())
-	{
-		LOG_DEBUG("Change Main Menu");
-		return Scene::SceneType::DungeonLoad;
-	}
-	return Scene::SceneType::Null;
+
+void LobbyScene::InitAudioManager() {
+	AudioManager::GetInstance().Reset();
+	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
+	AudioManager::GetInstance().PlayBGM();
 }

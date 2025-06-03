@@ -11,6 +11,7 @@
 #include "Util/SFX.hpp"
 
 
+class UIButton;
 class UIPanel;
 class MainMenuScene : public Scene
 {
@@ -30,6 +31,14 @@ protected:
 
 	std::shared_ptr<Util::GameObject> m_Text = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Version = std::make_shared<Util::GameObject>();
+	std::shared_ptr<UIButton> m_SettingButton;
+
+	void InitBackground();
+	void InitTitleAndDecor();
+	void InitTextLabels();
+	void InitSettingButton();
+	void InitUIManager();
+	void InitAudioManager();
 };
 
 #endif //MAINMENU_SCENE_HPP

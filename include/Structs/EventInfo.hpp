@@ -20,6 +20,8 @@ enum class EventType {
 	TriggerStay,
 	TriggerExit,
 
+	Click,
+
 	// AttackTrigger
 	BlockedProjectileBySword,
 	ReflectProjectile,
@@ -27,6 +29,8 @@ enum class EventType {
 
 	// 通用
 	Death,
+	PositionChanged,
+	ValueChanged
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
@@ -55,7 +59,7 @@ struct EventInfo {
 	explicit EventInfo(const EventType type): m_EventType(type) {}
 	virtual ~EventInfo() = default;
 
-	virtual std::type_index GetType() const = 0;			// 信息類型
+	virtual std::type_index GetType() const { return typeid(void);};			// 信息類型
 	EventType GetEventType() const { return m_EventType;}	// 事件名稱
 	void SetEventType(const EventType type) { m_EventType = type; } // 手動設置特定事件
 

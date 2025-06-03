@@ -37,13 +37,12 @@ void CollisionComponent::SetColliderBoxColor(const std::string &color) const // 
 	if (!s_YellowColliderImage)
 		s_YellowColliderImage = imagePoolManger.GetImage(RESOURCE_DIR "/YellowCollider.png");
 
-
-	if (color == "Red" && s_RedColliderImage)
-		m_ColliderVisibleBox->SetDrawable(s_RedColliderImage);
-	else if (color == "Blue" && s_BlueColliderImage)
-		m_ColliderVisibleBox->SetDrawable(s_BlueColliderImage);
-	else if (color == "Yellow" && s_YellowColliderImage)
-		m_ColliderVisibleBox->SetDrawable(s_YellowColliderImage);
+	if (color == "Red" )
+		m_ColliderVisibleBox->SetDrawable(imagePoolManger.GetImage(RESOURCE_DIR "/RedCollider.png"));
+	else if (color == "Blue" )
+		m_ColliderVisibleBox->SetDrawable(imagePoolManger.GetImage(RESOURCE_DIR "/BlueCollider.png"));
+	else if (color == "Yellow" )
+		m_ColliderVisibleBox->SetDrawable(imagePoolManger.GetImage(RESOURCE_DIR "/YellowCollider.png"));
 
 	m_ColliderVisibleBox->SetInitialScale(m_Size / m_ColliderVisibleBox->GetImageSize());
 }

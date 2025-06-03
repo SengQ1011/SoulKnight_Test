@@ -8,13 +8,15 @@
 #include "Components/CollisionComponent.hpp"
 #include "GameMechanism/TalentDatabase.hpp"
 
+#include "Attack/AttackManager.hpp"
 #include "Components/InteractableComponent.hpp"
 #include "Cursor.hpp"
 #include "Loader.hpp"
 #include "Scene/SceneManager.hpp"
 #include "SaveManager.hpp"
 #include "ObserveManager/InputManager.hpp"
-#include "Attack/AttackManager.hpp"
+#include "Scene/SceneManager.hpp"
+
 
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -24,8 +26,13 @@
 #include "Creature/Character.hpp"
 #include "Factory/CharacterFactory.hpp"
 #include "Factory/RoomObjectFactory.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Room/DungeonMap.hpp"
+#include "UIPanel/PlayerStatusPanel.hpp"
+#include "UIPanel/SettingPanel.hpp"
+#include "UIPanel/UIManager.hpp"
 #include "Util/Image.hpp"
+
 
 std::shared_ptr<DungeonScene> DungeonScene::s_PreGeneratedInstance = nullptr;
 
@@ -61,14 +68,17 @@ void DungeonScene::Start()
 	CreatePlayer();
 
 	// 设置相机
-	m_MapHeight = 5 * 35 * 16 ; //Dungeon 5個房間 35個方塊 16像素
+	m_MapHeight = 5 * 35 * 16; // Dungeon 5個房間 35個方塊 16像素
 	SetupCamera();
 
-	//設置工廠
+	// 設置工廠
 	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
 
-	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory,m_Loader,m_Player);
+	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory, m_Loader, m_Player);
 	m_Map->Start();
+
+	InitUIManager();
+	InitAudioManager();
 
 	// 初始化场景管理器
 	InitializeSceneManagers();
@@ -84,8 +94,10 @@ void DungeonScene::Start()
 
 void DungeonScene::Update()
 {
-	for (auto& [type,manager]: m_Managers) manager->Update();
+	for (auto &[type, manager] : m_Managers)
+		manager->Update();
 
+	UIManager::GetInstance().Update();
 	// 更新房间
 	m_Map->Update();
 
@@ -116,7 +128,6 @@ void DungeonScene::Update()
 void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
-	m_BGM->Pause();
 
 	// TODO:保存游戲的進度
 	auto cumulativeTime = Util::Time::GetElapsedTimeMs() - m_SceneData->gameProgress.dungeonStartTime;
@@ -157,10 +168,10 @@ void DungeonScene::Exit()
 
 Scene::SceneType DungeonScene::Change()
 {
-	if (Util::Input::IsKeyUp(Util::Keycode::RETURN)) return Scene::SceneType::Menu;
+	if (Util::Input::IsKeyUp(Util::Keycode::RETURN))
+		return Scene::SceneType::Menu;
 	if (!m_Player->IsActive())
 	{
-		m_ClickSound->Play();
 		m_timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
 		// m_OnDeathText->SetControlVisible(true);
 
@@ -179,13 +190,16 @@ Scene::SceneType DungeonScene::Change()
 	return Scene::SceneType::Null;
 }
 
-void DungeonScene::GenerateStaticDungeon() {
+void DungeonScene::GenerateStaticDungeon()
+{
 	s_PreGeneratedInstance = std::make_shared<DungeonScene>();
 	s_PreGeneratedInstance->BuildDungeon(); // 真正重的初始化過程
 }
 
-std::shared_ptr<DungeonScene> DungeonScene::GetPreGenerated() {
-	if (!s_PreGeneratedInstance) {
+std::shared_ptr<DungeonScene> DungeonScene::GetPreGenerated()
+{
+	if (!s_PreGeneratedInstance)
+	{
 		LOG_ERROR("s_PreGeneratedInstance is null! You forgot to call GenerateStaticDungeon?");
 	}
 	return s_PreGeneratedInstance;
@@ -201,13 +215,13 @@ void DungeonScene::BuildDungeon()
 	CreatePlayer();
 
 	// 设置相机
-	m_MapHeight = 5 * 35 * 16 ; //Dungeon 5個房間 35個方塊 16像素
+	m_MapHeight = 5 * 35 * 16; // Dungeon 5個房間 35個方塊 16像素
 	SetupCamera();
 
-	//設置工廠
+	// 設置工廠
 	m_RoomObjectFactory = std::make_shared<RoomObjectFactory>(m_Loader);
 
-	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory,m_Loader,m_Player);
+	m_Map = std::make_shared<DungeonMap>(m_RoomObjectFactory, m_Loader, m_Player);
 	m_Map->Start();
 
 	// 初始化场景管理器
@@ -219,8 +233,9 @@ void DungeonScene::CreatePlayer()
 	// 使用 CharacterFactory 创建玩家
 	m_Player = CharacterFactory::GetInstance().createPlayer(1);
 
-	std::vector<Talent> talentDatabase = CreateTalentList();  // 創建天賦資料庫
-	if(auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT)){
+	std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
+	if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
+	{
 		talentComp->AddTalent(talentDatabase[2]);
 	}
 
@@ -228,7 +243,8 @@ void DungeonScene::CreatePlayer()
 	m_Player->SetWorldCoord(glm::vec2(0)); // 地图正中央
 
 	// 获取碰撞组件并添加到场景和相机
-	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION))
+	{
 		// 将碰撞盒添加到场景根节点和相机
 		const auto playerVisibleBox = collision->GetVisibleBox();
 		m_PendingObjects.emplace_back(playerVisibleBox);
@@ -256,4 +272,22 @@ void DungeonScene::InitializeSceneManagers()
 	// 注册输入观察者
 	inputManager->addObserver(m_Player->GetComponent<InputComponent>(ComponentType::INPUT));
 	inputManager->addObserver(m_Camera);
+}
+
+void DungeonScene::InitUIManager() {
+	UIManager::GetInstance().ResetPanels();
+
+	const auto settingPanel = std::make_shared<SettingPanel>();
+	settingPanel->Start();
+	UIManager::GetInstance().RegisterPanel("setting", settingPanel);
+
+	const auto playerStatusPanel = std::make_shared<PlayerStatusPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH));
+	playerStatusPanel->Start();
+	UIManager::GetInstance().RegisterPanel("playerStatus", playerStatusPanel);
+}
+
+void DungeonScene::InitAudioManager() {
+	AudioManager::GetInstance().Reset();
+	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
+	AudioManager::GetInstance().PlayBGM();
 }
