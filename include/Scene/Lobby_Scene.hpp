@@ -5,13 +5,15 @@
 #ifndef LOBBY_SCENE_HPP
 #define LOBBY_SCENE_HPP
 
-#include "Scene/Scene.hpp"
-#include "Factory/RoomObjectFactory.hpp"
-#include "Util/BGM.hpp"
 #include "Attack/AttackManager.hpp"
+#include "Factory/RoomObjectFactory.hpp"
 #include "Loader.hpp"
+#include "Scene/Scene.hpp"
+#include "Util/BGM.hpp"
+
 
 class LobbyRoom;
+class UIButton;
 
 class LobbyScene : public Scene
 {
@@ -36,9 +38,12 @@ protected:
 	std::shared_ptr<RoomObjectFactory> m_RoomObjectFactory;
 
 	std::shared_ptr<Loader> m_Loader = std::make_shared<Loader>("Lobby");
-	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR"/UI/bgm_openingLow.wav");
+	std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR "/UI/bgm_openingLow.wav");
 
-	std::string m_ThemeName = "Lobby";//工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+	std::string m_ThemeName = "Lobby"; // 工廠和房間加載JSON用的 TODO:可能叫SceneManager傳入
+
+	// UI 元素
+	std::shared_ptr<UIButton> m_PauseButton;
 
 	void CreatePlayer();
 	void CreateEnemy();
@@ -46,6 +51,7 @@ protected:
 	void InitializeSceneManagers();
 	void InitUIManager();
 	void InitAudioManager();
+	void InitPauseButton();
 };
 
-#endif //LOBBY_SCENE_HPP
+#endif // LOBBY_SCENE_HPP

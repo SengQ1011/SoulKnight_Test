@@ -23,6 +23,7 @@ public:
 	void DrawDebugUI();
 
 protected:
+	std::shared_ptr<nGameObject> m_OverLay; // 遮罩層
 	std::shared_ptr<nGameObject> m_PanelBackground;
 	std::shared_ptr<UISlider> m_SliderMasterVolume;
 	std::shared_ptr<UISlider> m_SliderBGMVolume;

@@ -11,6 +11,7 @@
 
 
 class DungeonMap;
+class UIButton;
 
 class DungeonScene final : public Scene
 {
@@ -48,12 +49,15 @@ private:
 	std::shared_ptr<nGameObject> m_stageText;
 	float m_textTimer = 2.0f;
 
+	// UI 元素
+	std::shared_ptr<UIButton> m_PauseButton;
 
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	void InitUIManager();
 	void InitAudioManager();
+	void InitPauseButton();
 
 	// 以下為你原本地牢生成的函數
 	void BuildDungeon(); // 房間生成與初始化邏輯

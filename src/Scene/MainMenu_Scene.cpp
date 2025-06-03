@@ -61,6 +61,7 @@ Scene::SceneType MainMenuScene::Change()
 	{
 		AudioManager::GetInstance().PlaySFX("click");
 		SceneManager::GetInstance().StartGame();
+		// return SceneType::Lobby;
 	}
 	return Scene::SceneType::Null;
 }

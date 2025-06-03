@@ -43,7 +43,7 @@ std::vector<Talent> CreateTalentList() {
 			}
 		});
 
-	list.emplace_back(3, "近戰反彈", "", [](Character& obj) {
+	list.emplace_back(3, "近戰反彈", "/UI/ui_talentIcon/ui_buff_04.png", [](Character& obj) {
 		if (const auto attackComp = obj.GetComponent<AttackComponent>(ComponentType::ATTACK)) {
 				attackComp->SetReflectBullet(true);
 			}

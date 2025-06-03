@@ -1,8 +1,9 @@
 #include "App.hpp"
 
+#include "SaveManager.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
-#include "Scene/SceneManager.hpp"
 
 void App::Start() {
     LOG_TRACE("Start");
