@@ -13,6 +13,8 @@
 #include "UIPanel/UIButton.hpp"
 #include "UIPanel/UIManager.hpp"
 #include "Util/GameObject.hpp"
+#include "Util/Time.hpp"
+#include "config.hpp"
 
 
 void PausePanel::Start()
@@ -28,8 +30,13 @@ void PausePanel::Start()
 	m_PanelBackground->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_pausePanel/background_pausePanel.png"));
 	m_PanelBackground->SetZIndex(m_OverLay->GetZIndex() + 0.1f);
-	m_PanelBackground->m_Transform.translation = glm::vec2(0.0f, 0.0f);
 	m_GameObjects.push_back(m_PanelBackground);
+
+	// 計算隱藏位置（螢幕上方外側）
+	const float windowHeight = static_cast<float>(PTSD_Config::WINDOW_HEIGHT);
+	const float panelHeight = m_PanelBackground->GetScaledSize().y;
+	m_HiddenPosition = glm::vec2(0.0f, windowHeight * 0.5f + panelHeight);
+	m_VisiblePosition = m_BackgroundOffset;
 
 	// 創建 ResumeButton - 關閉PausePanel返回游戲
 	std::function<void()> resume_function = [this]() { this->Hide(); };
@@ -37,7 +44,6 @@ void PausePanel::Start()
 	m_ResumeButton->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_pausePanel/button_resume.png"));
 	m_ResumeButton->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
-	m_ResumeButton->m_Transform.translation = glm::vec2(0.0f, -100.0f);
 	m_GameObjects.push_back(m_ResumeButton);
 
 	// 創建 MenuButton - 返回主選單
@@ -50,8 +56,6 @@ void PausePanel::Start()
 	m_MenuButton->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_pausePanel/button_menu.png"));
 	m_MenuButton->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
-	// 緊貼ResumeButton的左邊位置（假設按鈕寬度約100，間距10）
-	m_MenuButton->m_Transform.translation = glm::vec2(-224.0f, -100.0f);
 	m_GameObjects.push_back(m_MenuButton);
 
 	// 創建 SettingButton - 呼叫SettingPanel
@@ -64,8 +68,6 @@ void PausePanel::Start()
 	m_SettingButton->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_pausePanel/button_setting.png"));
 	m_SettingButton->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
-	// 緊貼ResumeButton的右邊位置
-	m_SettingButton->m_Transform.translation = glm::vec2(224.0f, -100.0f);
 	m_GameObjects.push_back(m_SettingButton);
 
 	// 初始化天賦顯示
@@ -89,16 +91,23 @@ void PausePanel::Start()
 		}
 	}
 
+	// 設定初始位置為隱藏狀態
+	UpdateAllElementsPosition(m_HiddenPosition);
+
 	// 默認隱藏面板
-	Hide();
+	UIPanel::Hide();
 }
 
 void PausePanel::Update()
 {
+	// 優先更新動畫
+	UpdateAnimation();
+
 	// 更新天賦顯示
 	UpdateTalentIcons();
 
-	DrawDebugUI();
+	// 更新所有元件
+	// DrawDebugUI();
 	for (const std::shared_ptr<nGameObject> &gameObject : m_GameObjects)
 	{
 		gameObject->Update();
@@ -117,12 +126,6 @@ void PausePanel::InitializeTalentIcons()
 	m_TalentIcons.clear();
 	m_TalentIcons.resize(TALENT_SLOTS);
 
-	// 計算起始位置（中心對齊）
-	const float iconSpacing = 82.0f; // 圖標間距（包含圖標大小）
-	const float totalWidth = (TALENT_SLOTS - 1) * iconSpacing;
-	const float startX = -totalWidth / 2.0f;
-	const float iconY = 0.0f; // 天賦圖標的Y位置（正中央）
-
 	for (int i = 0; i < TALENT_SLOTS; ++i)
 	{
 		auto talentIcon = std::make_shared<nGameObject>();
@@ -132,7 +135,6 @@ void PausePanel::InitializeTalentIcons()
 			ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_talentIcon/ui_buff_00.png"));
 
 		talentIcon->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
-		talentIcon->m_Transform.translation = glm::vec2(startX + i * iconSpacing, iconY);
 
 		// 設定圖標放大一倍
 		talentIcon->m_Transform.scale = glm::vec2(2.0f, 2.0f);
@@ -357,3 +359,111 @@ void PausePanel::DrawDebugUI()
 
 	ImGui::End();
 }
+
+void PausePanel::Show()
+{
+	if (m_IsAnimating && m_IsShowingAnimation)
+		return; // 避免重複調用
+
+	UIPanel::Show(); // 先顯示面板
+	StartShowAnimation();
+}
+
+void PausePanel::Hide()
+{
+	if (m_IsAnimating && !m_IsShowingAnimation)
+		return; // 避免重複調用
+
+	StartHideAnimation();
+	// 注意：不立即調用 UIPanel::Hide()，等動畫完成後再調用
+}
+
+void PausePanel::StartShowAnimation()
+{
+	m_IsAnimating = true;
+	m_IsShowingAnimation = true;
+	m_AnimationTimer = 0.0f;
+
+	// 確保面板從隱藏位置開始
+	UpdateAllElementsPosition(m_HiddenPosition);
+}
+
+void PausePanel::StartHideAnimation()
+{
+	m_IsAnimating = true;
+	m_IsShowingAnimation = false;
+	m_AnimationTimer = 0.0f;
+
+	// 確保面板從可見位置開始
+	UpdateAllElementsPosition(m_VisiblePosition);
+}
+
+void PausePanel::UpdateAnimation()
+{
+	if (!m_IsAnimating)
+		return;
+
+	m_AnimationTimer += Util::Time::GetDeltaTimeMs() / 1000.0f;
+	const float progress = std::min(m_AnimationTimer / m_AnimationDuration, 1.0f);
+
+	UpdatePanelPosition(progress);
+
+	// 動畫完成
+	if (progress >= 1.0f)
+	{
+		m_IsAnimating = false;
+
+		if (!m_IsShowingAnimation)
+		{
+			// Hide 動畫完成，現在真正隱藏面板
+			UIPanel::Hide();
+		}
+	}
+}
+
+void PausePanel::UpdatePanelPosition(float progress)
+{
+	const float easedProgress = EaseOutQuad(progress);
+
+	glm::vec2 currentPos;
+	if (m_IsShowingAnimation)
+	{
+		// Show: 從隱藏位置到可見位置
+		currentPos = m_HiddenPosition + (m_VisiblePosition - m_HiddenPosition) * easedProgress;
+	}
+	else
+	{
+		// Hide: 從可見位置到隱藏位置
+		currentPos = m_VisiblePosition + (m_HiddenPosition - m_VisiblePosition) * easedProgress;
+	}
+
+	// 統一更新所有元件位置
+	UpdateAllElementsPosition(currentPos);
+}
+
+void PausePanel::UpdateAllElementsPosition(const glm::vec2 &panelPosition)
+{
+	// 更新面板背景位置
+	m_PanelBackground->m_Transform.translation = panelPosition;
+
+	// 更新所有按鈕位置（相對於面板背景位置）
+	m_ResumeButton->m_Transform.translation = panelPosition + m_ResumeButtonOffset;
+	m_MenuButton->m_Transform.translation = panelPosition + m_MenuButtonOffset;
+	m_SettingButton->m_Transform.translation = panelPosition + m_SettingButtonOffset;
+
+	// 更新天賦圖標位置
+	const float iconSpacing = 82.0f; // 圖標間距（包含圖標大小）
+	const float totalWidth = (TALENT_SLOTS - 1) * iconSpacing;
+	const float startX = -totalWidth / 2.0f;
+	const glm::vec2 talentIconsPosition = panelPosition + m_TalentIconsBaseOffset;
+
+	for (int i = 0; i < TALENT_SLOTS && i < static_cast<int>(m_TalentIcons.size()); ++i)
+	{
+		if (m_TalentIcons[i])
+		{
+			m_TalentIcons[i]->m_Transform.translation = talentIconsPosition + glm::vec2(startX + i * iconSpacing, 0.0f);
+		}
+	}
+}
+
+float PausePanel::EaseOutQuad(float t) { return 1.0f - (1.0f - t) * (1.0f - t); }

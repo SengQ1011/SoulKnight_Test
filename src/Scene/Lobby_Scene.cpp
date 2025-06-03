@@ -103,10 +103,9 @@ void LobbyScene::Update()
 
 		// 更新房间
 		m_LobbyRoom->Update();
-	}
 
-	// 更新相机（相機總是需要更新）
-	m_Camera->Update();
+		m_Camera->Update();
+	}
 
 	// 更新渲染器（渲染總是需要更新）
 	m_Root->Update();

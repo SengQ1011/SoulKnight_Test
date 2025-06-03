@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "UIPanel.hpp"
+#include "glm/glm.hpp"
 
 class UIButton;
 class nGameObject;
@@ -22,6 +23,10 @@ public:
 	void Start() override;
 	void Update() override;
 	void DrawDebugUI();
+
+	// Override Show/Hide for animation
+	void Show() override;
+	void Hide() override;
 
 protected:
 	// 天賦組件引用
@@ -38,9 +43,30 @@ protected:
 	std::vector<std::shared_ptr<nGameObject>> m_TalentIcons;
 	static const int TALENT_SLOTS = 8; // 天賦槽位數量
 
+	// 元件相對於面板背景的偏移量
+	glm::vec2 m_BackgroundOffset = glm::vec2(0.0f, 0.0f);
+	glm::vec2 m_ResumeButtonOffset = glm::vec2(0.0f, -100.0f);
+	glm::vec2 m_MenuButtonOffset = glm::vec2(-224.0f, -100.0f);
+	glm::vec2 m_SettingButtonOffset = glm::vec2(224.0f, -100.0f);
+	glm::vec2 m_TalentIconsBaseOffset = glm::vec2(0.0f, 0.0f); // 天賦圖標基準偏移
+
+	// 動畫相關
+	bool m_IsAnimating = false;
+	bool m_IsShowingAnimation = false; // true = showing, false = hiding
+	float m_AnimationTimer = 0.0f;
+	float m_AnimationDuration = 0.4f; // 0.4秒動畫時間
+	glm::vec2 m_VisiblePosition = glm::vec2(0.0f, 0.0f); // 顯示位置
+	glm::vec2 m_HiddenPosition; // 隱藏位置，在 Start() 中計算
+
 private:
 	void InitializeTalentIcons();
 	void UpdateTalentIcons();
+	void StartShowAnimation();
+	void StartHideAnimation();
+	void UpdateAnimation();
+	void UpdatePanelPosition(float progress);
+	void UpdateAllElementsPosition(const glm::vec2 &panelPosition); // 統一更新所有元件位置
+	float EaseOutQuad(float t); // 緩動函數
 };
 
 #endif // PAUSEPANEL_HPP

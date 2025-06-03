@@ -122,8 +122,8 @@ void DungeonScene::Update()
 		UIManager::GetInstance().TogglePanel("pause");
 	}
 
-	// Input处理 - 只有當設定面板和暫停面板都沒有顯示時才處理遊戲輸入
-	if (!UIManager::GetInstance().IsPanelVisible("setting") && !UIManager::GetInstance().IsPanelVisible("pause"))
+	// Input处理 - 當暫停面板都沒有顯示時處理遊戲輸入
+	if (!UIManager::GetInstance().IsPanelVisible("pause"))
 	{
 		for (auto &[type, manager] : m_Managers)
 			manager->Update();
@@ -139,18 +139,17 @@ void DungeonScene::Update()
 
 			dungeonRoom->DebugDungeonRoom();
 		}
-	}
 
-	if (m_textTimer > 0)
-		m_textTimer -= Util::Time::GetDeltaTimeMs() / 1000.0f;
-	else if (m_textTimer < 0)
-	{
-		m_textTimer = 0;
-		m_stageText->SetControlVisible(false);
-	}
+		if (m_textTimer > 0)
+			m_textTimer -= Util::Time::GetDeltaTimeMs() / 1000.0f;
+		else if (m_textTimer < 0)
+		{
+			m_textTimer = 0;
+			m_stageText->SetControlVisible(false);
+		}
 
-	// 更新相机（相機總是需要更新）
-	m_Camera->Update();
+		m_Camera->Update();
+	}
 
 	// 更新渲染器（渲染總是需要更新）
 	m_Root->Update();
