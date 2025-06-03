@@ -16,7 +16,7 @@ class AttackComponent final : public Component, public TrackingObserver
 {
 public:
 	explicit AttackComponent(const std::shared_ptr<Weapon> &initWeapon, const float criticalRate,
-							 const int handBladeDamage, const int collisionDamage);
+	                   const int handBladeDamage, const int collisionDamage);
 	~AttackComponent() override = default;
 
 	void Init() override;
@@ -38,8 +38,9 @@ public:
 	//----Setter----
 	void SetMaxWeapon(const int num) { m_maxWeapon = num; }
 	void AddWeapon(const std::shared_ptr<Weapon>& weapon);
+	void PickUpWeapon(const std::shared_ptr<Weapon>& newWeapon);
 	void RemoveAllWeapon() { m_Weapons.clear(); }
-	void RemoveWeapon();
+	void RemoveWeapon(const std::shared_ptr<Weapon>& weapon);
 	void switchWeapon();
 	void SetTarget(const std::shared_ptr<nGameObject> &target) { m_Target = target; }
 	void SetNumRebound(const int num) { m_numRebound = num; }
@@ -69,10 +70,12 @@ private:
 	int m_numRebound = 0;				// 天賦：子彈反彈
 	bool m_ReflectBullets = false;		// 天賦：近戰反彈
 	bool m_dualWield = false;			// 是否雙持武器
-	const float m_switchCooldown = 1.0f;	// 冷卻時間（秒）
-	float m_switchTimeCounter;				// 上次切換時間
-	std::shared_ptr<Weapon> m_currentWeapon; // 目前裝備的武器
-	std::shared_ptr<Weapon> m_secondWeapon; // 技能：雙持武器
+	const float m_pickUpWeaponCooldown = 1.0f;		// 冷卻時間
+	float m_pickUpWeaponTimeCounter = 0;			// 計時器
+	const float m_switchCooldown = 1.0f;			// 切換冷卻時間（秒）
+	float m_switchTimeCounter = 0;					// 上次切換時間
+	std::shared_ptr<Weapon> m_currentWeapon;		// 目前裝備的武器
+	std::shared_ptr<Weapon> m_secondWeapon;			// 技能：雙持武器
 	std::vector<std::shared_ptr<Weapon>> m_Weapons; // 每個角色都有武器
 	std::weak_ptr<nGameObject> m_Target; // 此物件會跟隨目標旋轉
 };

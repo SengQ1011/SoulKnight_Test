@@ -21,7 +21,7 @@ public:
 		bool isAutoInteract = false
 	) :
 		Component(ComponentType::INTERACTABLE),
-		m_Type(type),
+		m_interactableType(type),
 		m_InteractionRadius(interactionRadius),
 		m_IsAutoInteract(isAutoInteract),
 		m_PromptObject(promptObject)
@@ -30,7 +30,7 @@ public:
 
 	explicit InteractableComponent(const StructInteractableComponent& data) :
 		Component(ComponentType::INTERACTABLE),
-		m_Type(data.s_InteractableType),
+		m_interactableType(data.s_InteractableType),
 		m_InteractionRadius(data.s_InteractionRadius),
 		m_IsAutoInteract(data.s_IsAutoInteract),
 		m_PromptObject(data.s_PromptObject){}
@@ -58,16 +58,16 @@ public:
 	void ShowPrompt(bool show);
 
 	// Getter
-	float GetInteractionRadius() const { return m_InteractionRadius; }
-	bool IsAutoInteract() const { return m_IsAutoInteract; }
-	std::shared_ptr<nGameObject> GetPromptObject() const { return m_PromptObject; }
+	[[nodiscard]] float GetInteractionRadius() const { return m_InteractionRadius; }
+	[[nodiscard]] bool IsAutoInteract() const { return m_IsAutoInteract; }
+	[[nodiscard]] std::shared_ptr<nGameObject> GetPromptObject() const { return m_PromptObject; }
 
 	// Setter
-	void SetInteractionRadius(float radius) { m_InteractionRadius = radius; }
-	void SetAutoInteract(bool autoInteract) { m_IsAutoInteract = autoInteract; }
+	void SetInteractionRadius(const float radius) { m_InteractionRadius = radius; }
+	void SetAutoInteract(const bool autoInteract) { m_IsAutoInteract = autoInteract; }
 
 protected:
-	InteractableType m_Type;
+	InteractableType m_interactableType;
 	float m_InteractionRadius;
 	bool m_IsAutoInteract = false;
 	bool m_IsPromptVisible = false;

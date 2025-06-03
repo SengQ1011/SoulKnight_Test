@@ -10,11 +10,12 @@
 #include "Components/WalletComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Scene/Dungeon_Scene.hpp"
+#include "Weapon/Weapon.hpp"
 
 
 void InteractableComponent::Init()
 {
-	switch (m_Type)
+	switch (m_interactableType)
 	{
 		case InteractableType::PORTAL:
 		{
@@ -31,6 +32,7 @@ void InteractableComponent::Init()
 		{
 			m_InteractionCallback = [](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
+				LOG_DEBUG("InteractableComponent::InteractableType::REWARD_CHEST");
 				if (auto chestComp = target->GetComponent<ChestComponent>(ComponentType::CHEST))
 				{
 					chestComp->ChestOpened();
@@ -72,9 +74,24 @@ void InteractableComponent::Init()
 			};
 			break;
 		}
+		case InteractableType::WEAPON:
+		{
+			m_InteractionCallback =
+			[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+			{
+				if (const auto attackComp = interactor->GetComponent<AttackComponent>(ComponentType::ATTACK))
+				{
+					if(const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
+					{
+						attackComp->PickUpWeapon(weapon);
+					}
+				}
+			};
+			break;
+		}
 	}
 
-	if (m_Type == InteractableType::COIN || m_Type == InteractableType::ENERGY_BALL)
+	if (m_interactableType == InteractableType::COIN || m_interactableType == InteractableType::ENERGY_BALL)
 	{
 		// 設定自動追蹤玩家的行為
 		m_UpdateCallback = [](const std::shared_ptr<nGameObject> &self, const std::shared_ptr<Character> &player)
@@ -87,7 +104,7 @@ void InteractableComponent::Init()
 			if (distance < attractRange)
 			{
 				glm::vec2 direction = glm::normalize(playerPos - selfPos);
-				const float speed = 150.0f;
+				const float speed = 100.0f;
 				self->SetWorldCoord(selfPos+(direction * speed * (Util::Time::GetDeltaTimeMs() / 1000.0f)));
 			}
 		};
@@ -124,9 +141,18 @@ void InteractableComponent::Update()
 
 bool InteractableComponent::OnInteract(const std::shared_ptr<Character> &interactor)
 {
+	auto item = GetOwner<nGameObject>();
 	if (m_InteractionCallback)
 	{
 		m_InteractionCallback(interactor, GetOwner<nGameObject>());
+		if(m_interactableType == InteractableType::REWARD_CHEST || m_interactableType == InteractableType::WEAPON_CHEST)
+		{
+			if (const auto interactableManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager())
+			{
+				LOG_DEBUG("InteractableComponent::Remove");
+				interactableManager->QueueUnregister(item);
+			}
+		}
 		return true;
 	}
 	return false;
@@ -153,4 +179,3 @@ bool InteractableComponent::IsInRange(const std::shared_ptr<Character> &characte
 	float distance = glm::length(character->GetWorldCoord() - owner->GetWorldCoord());
 	return distance <= m_InteractionRadius;
 }
-
