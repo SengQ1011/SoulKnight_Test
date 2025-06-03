@@ -3,10 +3,12 @@
 //
 
 #include "UIPanel/UIManager.hpp"
-#include "UIPanel/UIPanel.hpp"
 #include <utility>
+#include "UIPanel/UIPanel.hpp"
 
-UIManager& UIManager::GetInstance() {
+#include "Util/Logger.hpp"
+
+UIManager & UIManager::GetInstance() {
 	static UIManager instance;
 	return instance;
 }

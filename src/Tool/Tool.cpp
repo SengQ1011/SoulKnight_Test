@@ -4,8 +4,12 @@
 
 #include "Tool/Tool.hpp"
 
-#include "config.hpp"
 #include <iostream>
+#include "Util/Input.hpp"
+#include "Components/AiComponent.hpp"
+#include "config.hpp"
+
+#include "Components/AiComponent.hpp"
 
 namespace Tool
 {
@@ -18,7 +22,7 @@ namespace Tool
 	}
 
 
-	glm::vec2 Sdl2Glm(int x, int y)
+	glm::vec2 Sdl2Glm(float x, float y)
 	{
 		glm::vec2 glmCoord;
 		glmCoord.x = PTSD_Config::WINDOW_WIDTH * 0.5f - x;
@@ -28,11 +32,9 @@ namespace Tool
 
 	glm::vec2 GetMouseCoord()
 	{
-		int x, y;
-		glm::vec2 glmCoord;
-		SDL_GetMouseState(&x,&y);
-		glmCoord = Sdl2Glm(x,y);
-		return glmCoord;
+		glm::vec2 mouse_coord = Util::Input::GetCursorPosition();
+		mouse_coord *= glm::vec2(1,-1);
+		return mouse_coord;
 	}
 
 	// 世界座標轉地圖格子座標

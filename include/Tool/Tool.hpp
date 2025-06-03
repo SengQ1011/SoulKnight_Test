@@ -30,7 +30,7 @@ namespace Tool
 	 * @param y The y-coordinate in SDL coordinate system.
 	 * @return A glm::vec2 containing the coordinates in GLM coordinate system. {x,y}
 	 */
-	glm::vec2 Sdl2Glm(int x, int y);
+	glm::vec2 Sdl2Glm(float x, float y);
 
 	/**
 	 * @brief Get cursor position in GLM coordinate system.

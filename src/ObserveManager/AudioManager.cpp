@@ -163,9 +163,9 @@ void AudioManager::DrawDebugUI()
 	static bool sizeChangedByInput = false;
 
 	// 音量控制
-	static float masterVolume = 0;
-	static float SFX_Volume = 0;
-	static float BGM_Volume = 0;
+	float masterVolume = GetMasterVolume() * 100.0f;
+	float BGM_Volume   = GetBGMVolume() * 100.0f;
+	float SFX_Volume   = GetSFXVolume() * 100.0f;
 
 	// 當
 	if (sizeChangedByInput)
@@ -194,24 +194,21 @@ void AudioManager::DrawDebugUI()
 	if (!sizeChangedByInput) size = ImGui::GetWindowSize();
 	if (!posChangedByInput) pos = ImGui::GetWindowPos();
 
-	// ImGui::Text("Current Position: x = %.1f, y = %.1f", pos.x, pos.y);
-	// ImGui::Text("Current Size: %.1f x %.1f", size.x, size.y);
-
 	if (ImGui::CollapsingHeader("Volume Setting",ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::SliderFloat("MasterVolume", &masterVolume, 0.0f, 100.0f, "%.0f%%");
-		ImGui::SliderFloat("SFXVolume", &SFX_Volume, 0.0f, 100.0f, "%.0f%%");
 		ImGui::SliderFloat("BGMVolume", &BGM_Volume, 0.0f, 100.0f, "%.0f%%");
+		ImGui::SliderFloat("SFXVolume", &SFX_Volume, 0.0f, 100.0f, "%.0f%%");
 		SetMasterVolume(masterVolume*0.01f);
-		SetSFXVolume(SFX_Volume*0.01f);
 		SetBGMVolume(BGM_Volume*0.01f);
+		SetSFXVolume(SFX_Volume*0.01f);
 	}
 
 	if (ImGui::CollapsingHeader("VolumeOutput",ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("Master Volume: %.0f%%", GetMasterVolume() * 100.0f);
-		ImGui::Text("SFX Volume: %.0f%%", GetSFXVolume() * 100.0f);
 		ImGui::Text("BGM Volume: %.0f%%", GetBGMVolume() * 100.0f);
+		ImGui::Text("SFX Volume: %.0f%%", GetSFXVolume() * 100.0f);
 	}
 	ImGui::End();
 
