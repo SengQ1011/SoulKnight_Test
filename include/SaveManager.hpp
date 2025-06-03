@@ -24,7 +24,7 @@ struct PlayerData {
 struct GameProgress {
 	// int currentTheme;				// 目前的主題
     int currentChapter = 1;				// 目前的章節(1~3)==》對應 StageTheme
-	int currentStage = 1;				// 目前的關卡數(1~5)
+	int currentStage = 0;				// 目前的關卡數(1~5)
 	Util::ms_t dungeonStartTime = 0;	// 開始時間（結算的時候計算）
 	Util::ms_t cumulativeTime = 0;		// 纍積時間
 	int killCount = 0;

@@ -167,7 +167,7 @@ void SceneManager::InitializeNewGameData()
 	// 初始化遊戲進度
 	auto& progress = newData->gameProgress;
 	progress.currentChapter = static_cast<int>(StageTheme::IcePlains);
-	progress.currentStage = 1;
+	progress.currentStage = 0;		// 在離開Lobby時開始更新
 	progress.dungeonStartTime = 0;	// 進入地牢再更新
 	progress.cumulativeTime = 0;
 	progress.killCount = 0;

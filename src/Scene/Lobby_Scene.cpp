@@ -85,10 +85,12 @@ void LobbyScene::Exit()
 {
 	LOG_DEBUG("Lobby Scene exited");
 	// 退出场景时的清理工作
-	AudioManager::GetInstance().PauseBGM();
+	m_BGM->Pause();
 	if (m_LobbyRoom) {
 		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
 	}
+
+	if (m_Player) SavePlayerInformation(m_Player);
 }
 
 Scene::SceneType LobbyScene::Change()

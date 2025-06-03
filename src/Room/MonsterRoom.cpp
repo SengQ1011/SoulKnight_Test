@@ -141,6 +141,11 @@ void MonsterRoom::OnStateChanged()
 			if (doorComp) doorComp->DoorOpened(); // 通常 EXPLORED 要開門
 		}
 		// TODO: 顯示寶箱或獎勵生成
+		if (const auto rewardChest = CreateChest(ChestType::REWARD))
+		{
+			rewardChest->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		}
+
 		break;
 
 	default:

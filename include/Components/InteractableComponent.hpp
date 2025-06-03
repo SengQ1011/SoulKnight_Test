@@ -14,23 +14,34 @@ class nGameObject;
 class InteractableComponent : public Component
 {
 public:
-	explicit InteractableComponent(float interactionRadius = 30.0f, bool isAutoInteract = false) :
-		Component(ComponentType::INTERACTABLE), m_InteractionRadius(interactionRadius),
-		m_IsAutoInteract(isAutoInteract)
+	explicit InteractableComponent(
+		InteractableType type,
+		const std::shared_ptr<nGameObject>& promptObject,
+		float interactionRadius = 30.0f,
+		bool isAutoInteract = false
+	) :
+		Component(ComponentType::INTERACTABLE),
+		m_Type(type),
+		m_InteractionRadius(interactionRadius),
+		m_IsAutoInteract(isAutoInteract),
+		m_PromptObject(promptObject)
 	{
 	}
 
-	explicit InteractableComponent(const StructInteractableComponent &data) :
-		Component(ComponentType::INTERACTABLE), m_InteractionRadius(data.s_InteractionRadius),
-		m_IsAutoInteract(data.s_IsAutoInteract)
-	{
-		m_PromptObject = data.s_PromptObject;
-		m_InteractableFunctionName = data.s_InteractableFunctionName;
-	};
+	explicit InteractableComponent(const StructInteractableComponent& data) :
+		Component(ComponentType::INTERACTABLE),
+		m_Type(data.s_InteractableType),
+		m_InteractionRadius(data.s_InteractionRadius),
+		m_IsAutoInteract(data.s_IsAutoInteract),
+		m_PromptObject(data.s_PromptObject){}
+
+	~InteractableComponent() override = default;
 
 	// 使用std::function作為互動回調
 	using InteractionCallback = std::function<void(const std::shared_ptr<Character> &interactor,
 												   const std::shared_ptr<nGameObject> &target)>;
+	using UpdateCallback = std::function<void(const std::shared_ptr<nGameObject> &self,
+												const std::shared_ptr<Character> &interactor)>;
 
 	void Init() override;
 	void Update() override;
@@ -56,12 +67,13 @@ public:
 	void SetAutoInteract(bool autoInteract) { m_IsAutoInteract = autoInteract; }
 
 protected:
+	InteractableType m_Type;
 	float m_InteractionRadius;
 	bool m_IsAutoInteract = false;
 	bool m_IsPromptVisible = false;
 
 	InteractionCallback m_InteractionCallback;
-	std::string m_InteractableFunctionName = "Null";
+	UpdateCallback m_UpdateCallback;
 
 	// 互動提示UI元素
 	std::shared_ptr<nGameObject> m_PromptObject = nullptr;

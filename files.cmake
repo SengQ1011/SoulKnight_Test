@@ -117,6 +117,7 @@ set(INCLUDE_FILES
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
     Components/TriggerComponent.hpp
+    Components/WalletComponent.hpp
     Creature/Character.hpp
     Cursor.hpp
     EnumTypes.hpp

@@ -20,9 +20,9 @@ struct StructInteractableComponent
 	std::string s_Class = "InteractableComponent";
 	float s_InteractionRadius = 30.0f; //71.0f/2
 	bool s_IsAutoInteract = false;
-	std::shared_ptr<nGameObject> s_PromptObject = nullptr;
 
-	std::string s_InteractableFunctionName = "Portal";
+	std::shared_ptr<nGameObject> s_PromptObject = nullptr;
+	InteractableType s_InteractableType = InteractableType::NONE;
 };
 
 struct StructPrompt
@@ -62,6 +62,26 @@ inline void from_json(const nlohmann::json& j, StructPrompt &object)
 	if (j.contains("IsPromptVisible")) j.at("IsPromptVisible").get_to(object.s_IsPromptVisible);
 }
 
+inline InteractableType StringToInteractableType(const std::string& typeStr)
+{
+	static const std::unordered_map<std::string, InteractableType> strToType {
+		        {"PORTAL", InteractableType::PORTAL},
+				{"SHOP", InteractableType::SHOP},
+				{"NPC_DIALOGUE", InteractableType::NPC_DIALOGUE},
+				{"REWARD_CHEST", InteractableType::REWARD_CHEST},
+				{"WEAPON_CHEST", InteractableType::WEAPON_CHEST},
+				{"COIN", InteractableType::COIN},
+				{"ENERGY_BALL", InteractableType::ENERGY_BALL},
+				{"WEAPON", InteractableType::WEAPON},
+				{"HP_POISON", InteractableType::HP_POISON},
+				{"ENERGY_POISON", InteractableType::ENERGY_POISON}
+	};
+
+	auto it = strToType.find(typeStr);
+	if (it != strToType.end()) return it->second;
+	throw std::invalid_argument("Unknown InteractableType string: " + typeStr);
+}
+
 inline void from_json(const nlohmann::ordered_json &j, StructInteractableComponent &object)
 {
 	if (j.contains("Class"))
@@ -70,10 +90,13 @@ inline void from_json(const nlohmann::ordered_json &j, StructInteractableCompone
 		j.at("InteractionRadius").get_to(object.s_InteractionRadius);
 	if (j.contains("IsAutoInteract"))
 		j.at("IsAutoInteract").get_to(object.s_IsAutoInteract);
-	if (j.contains("InteractableFunctionName"))
-		j.at("InteractableFunctionName").get_to(object.s_InteractableFunctionName);
 	if (j.contains("PromptObject"))
 		object.s_PromptObject = CreatePromptObject(j.at("PromptObject").get<StructPrompt>());
+	if (j.contains("InteractableType")) {
+		std::string typeStr;
+		j.at("InteractableType").get_to(typeStr);
+		object.s_InteractableType = StringToInteractableType(typeStr);
+	}
 }
 
 #endif //INTERACTIONCOMPONENTSTRUCT_HPP

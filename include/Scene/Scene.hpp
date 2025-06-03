@@ -78,6 +78,7 @@ public:
 	void SetIsChange(const bool change) {m_IsChange = change;}
 
 	void FlushPendingObjectsToRendererAndCamera();
+	void SavePlayerInformation(std::shared_ptr<Character> player) const;
 
 protected:
 	bool m_IsChange = false;

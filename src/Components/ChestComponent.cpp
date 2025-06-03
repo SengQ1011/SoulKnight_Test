@@ -4,28 +4,39 @@
 
 #include "Components/ChestComponent.hpp"
 
+#include "Factory/RoomObjectFactory.hpp"
 #include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
+#include "RandomUtil.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Util/Image.hpp"
+
+ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths)
+								: m_chestType(chestType), m_imagePaths(imagePaths){}
+
 
 void ChestComponent::Init()
 {
 	auto& imagePoolManager = ImagePoolManager::GetInstance();
-	const auto drawable0 = imagePoolManager.GetImage(RESOURCE_DIR"/IcePlains/object_chest_0.png");
-	const auto drawable1 = imagePoolManager.GetImage(RESOURCE_DIR"/IcePlains/object_chest_1.png");
-	m_drawables.emplace_back(drawable0);
-	m_drawables.emplace_back(drawable1);
+	for (auto& imagePath : m_imagePaths)
+	{
+		const auto drawable = imagePoolManager.GetImage(RESOURCE_DIR + imagePath);
+		m_drawables.emplace_back(drawable);
+	}
 	const std::shared_ptr<nGameObject> chest = GetOwner<nGameObject>();
 	if (!chest) return;
-	chest->SetActive(false);
-	chest->SetControlVisible(false);
-	chest->SetDrawable(drawable0);
+	chest->SetActive(true);
+	chest->SetControlVisible(true);
+	chest->SetDrawable(m_drawables[0]);
+
+	m_dropItems.clear();
 }
 
 void ChestComponent::Update()
 {
 }
 
+// 改爲用interactableComp觸發了
 void ChestComponent::HandleEvent(const EventInfo &eventInfo)
 {
 	if (eventInfo.GetEventType() == EventType::Collision)
@@ -53,9 +64,36 @@ void ChestComponent::HandleCollision(const CollisionEventInfo &info)
 }
 
 void ChestComponent::ChestOpened()
-{
+ {
+ 	// 若已經開過就不處理
+ 	if (m_currentState == ChestState::OPENED) return;
+ 	m_currentState = ChestState::OPENED;
+ 	LOG_INFO("Chest opened");
 
-}
+ 	auto chest = GetOwner<nGameObject>();
+ 	if (!chest) return;
 
+	const auto interactionManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager();
+ 	// 切換圖片
+ 	if (m_drawables.size() > 1)
+ 		chest->SetDrawable(m_drawables[1]); // 開啟狀態的圖片
+	auto chestWorldCor = chest->GetWorldCoord();
+ 	// 啟用掉落物
+ 	for (auto& item : m_dropItems)
+ 	{
+ 		if (item)
+ 		{
+ 			item->SetActive(true);
+ 			item->SetControlVisible(true);
 
+ 			// 加入互動manager中
+ 			interactionManager->RegisterInteractable(item);
 
+ 			// 隨機丟出去一點點
+			auto randomOffset = glm::vec2{RandomUtil::RandomFloatInRange(-25.0f,25.0f),RandomUtil::RandomFloatInRange(-25.0f,25.0f)};
+ 			item->SetWorldCoord(chestWorldCor + randomOffset);
+ 		}
+ 	}
+	// 清空，不保留
+	m_dropItems.clear();
+ }

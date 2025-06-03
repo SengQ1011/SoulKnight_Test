@@ -87,6 +87,9 @@ public:
     // 加载JSON配置
     virtual void LoadFromJSON() = 0;
 
+	// 創建物品
+	std::shared_ptr<nGameObject> CreateChest(ChestType type) const;
+
 protected:
     // 房间属性
 	RoomSpaceInfo m_RoomSpaceInfo;

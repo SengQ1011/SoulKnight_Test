@@ -15,7 +15,7 @@ public:
 	~RoomObjectFactory() override = default;
 
 	// 根據配置文件創建物件
-	std::shared_ptr<nGameObject> createRoomObject(const std::string& _id, const std::string& _class);
+	std::shared_ptr<nGameObject> createRoomObject(const std::string& _id, const std::string& _class = "");
 	//	TODO: std::shared_ptr<RoomObject> createWall(const std::string& _id, const std::string& _class);
 
 	[[nodiscard]] std::string GetObjectDataFilePath() const {return m_ObjectDataFilePath;}

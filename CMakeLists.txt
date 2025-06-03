@@ -37,6 +37,7 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         src/SaveManager.cpp
+        include/Components/walletComponent.hpp
 )
 
 if(MSVC)
