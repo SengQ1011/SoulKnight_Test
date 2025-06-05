@@ -160,10 +160,6 @@ void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
 
-	// 只在玩家死亡時才直接返回，不做任何處理
-	if (m_IsPlayerDeath)
-		return;
-
 	// 保存游戲的進度（但不增加關卡數）
 	auto cumulativeTime = Util::Time::GetElapsedTimeMs() - m_SceneData->gameProgress.dungeonStartTime;
 	m_SceneData->gameProgress.cumulativeTime += cumulativeTime;
@@ -173,6 +169,15 @@ void DungeonScene::Exit()
 		SavePlayerInformation(m_Player);
 		// 移除自動增加關卡數的邏輯
 		// 關卡數只能在進入傳送門時增加
+	}
+
+	// 如果是玩家死亡，更新存檔狀態但不增加關卡進度
+	if (m_IsPlayerDeath && m_SceneData)
+	{
+		LOG_DEBUG("Player died, saving progress without stage advancement");
+		// 上傳更新的數據（包含killCount和playerData等）
+		auto &sceneManager = SceneManager::GetInstance();
+		sceneManager.UploadGameProgress(m_SceneData);
 	}
 }
 

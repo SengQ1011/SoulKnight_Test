@@ -72,6 +72,7 @@ set(SRC_FILES
     TriggerStrategy/KnockOffTriggerStrategy.cpp
     TriggerStrategy/ReflectTriggerStrategy.cpp
     UIPanel/GameHUDPanel.cpp
+    UIPanel/MenuHUDPanel.cpp
     UIPanel/MinimapPanel.cpp
     UIPanel/PausePanel.cpp
     UIPanel/PlayerStatusPanel.cpp
@@ -80,6 +81,7 @@ set(SRC_FILES
     UIPanel/UIManager.cpp
     UIPanel/UIPanel.cpp
     UIPanel/UISlider.cpp
+    Util/Timer.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
@@ -189,14 +191,17 @@ set(INCLUDE_FILES
     TriggerStrategy/KnockOffTriggerStrategy.hpp
     TriggerStrategy/ReflectTriggerStrategy.hpp
     UIPanel/GameHUDPanel.hpp
+    UIPanel/MenuHUDPanel.hpp
     UIPanel/MinimapPanel.hpp
     UIPanel/PausePanel.hpp
     UIPanel/PlayerStatusPanel.hpp
+    UIPanel/ResultPanel.hpp
     UIPanel/SettingPanel.hpp
     UIPanel/UIButton.hpp
     UIPanel/UIManager.hpp
     UIPanel/UIPanel.hpp
     UIPanel/UISlider.hpp
+    Util/Timer.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp

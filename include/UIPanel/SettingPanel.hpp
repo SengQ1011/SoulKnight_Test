@@ -8,8 +8,8 @@
 #include <glm/glm.hpp>
 #include <memory>
 
-
 #include "UIPanel.hpp"
+#include "Util/Timer.hpp"
 
 class UIButton;
 class UISlider;
@@ -46,8 +46,7 @@ protected:
 	// 動畫相關
 	bool m_IsAnimating = false;
 	bool m_IsShowingAnimation = false; // true = showing, false = hiding
-	float m_AnimationTimer = 0.0f;
-	float m_AnimationDuration = 0.4f; // 0.4秒動畫時間
+	Util::Timer m_AnimationTimer{0.4f}; // 動畫計時器，持續時間0.4秒
 	glm::vec2 m_VisiblePosition = glm::vec2(22.0f); // 顯示位置
 	glm::vec2 m_HiddenPosition; // 隱藏位置，在 Start() 中計算
 
@@ -57,7 +56,6 @@ private:
 	void UpdateAnimation();
 	void UpdatePanelPosition(float progress);
 	void UpdateAllElementsPosition(const glm::vec2 &panelPosition); // 統一更新所有元件位置
-	float EaseOutQuad(float t); // 緩動函數
 };
 
 #endif // SETTINGPANEL_HPP

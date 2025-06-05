@@ -13,6 +13,7 @@
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Tool/Tool.hpp"
+#include "UIPanel/MenuHUDPanel.hpp"
 #include "UIPanel/SettingPanel.hpp"
 #include "UIPanel/UIButton.hpp"
 #include "UIPanel/UIManager.hpp"
@@ -46,17 +47,12 @@ void MainMenuScene::Start()
 	InitUIManager();
 	InitSettingButton();
 	InitDeleteDataButton();
-	InitNewGameButton();
-	InitContinueGameButton();
+	InitMenuHUDPanel();
 	InitAudioManager();
 
 	m_Root->AddChild(m_Background);
 	m_Root->AddChild(m_SettingButton);
 	m_Root->AddChild(m_DeleteDataButton);
-	m_Root->AddChild(m_NewGameButton);
-	m_Root->AddChild(m_ContinueGameButton);
-	m_Root->AddChild(m_NewGameButtonText);
-	m_Root->AddChild(m_ContinueGameButtonText);
 	m_Root->AddChild(m_RedShawl);
 	m_Root->AddChild(m_Title);
 	m_Root->AddChild(m_Version);
@@ -70,10 +66,11 @@ void MainMenuScene::Update()
 	m_Root->Update();
 	m_SettingButton->Update();
 	m_DeleteDataButton->Update();
-	if (m_NewGameButton)
-		m_NewGameButton->Update();
-	if (m_ContinueGameButton)
-		m_ContinueGameButton->Update();
+
+	// 更新MenuHUDPanel
+	if (m_MenuHUDPanel)
+		m_MenuHUDPanel->Update();
+
 	// AudioManager::GetInstance().DrawDebugUI(); //測試用的
 	UIManager::GetInstance().Update();
 
@@ -84,13 +81,29 @@ void MainMenuScene::Update()
 	// 檢測左鍵點擊且沒有點擊到UI元素
 	if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB) && !IsMouseClickingOnButtons())
 	{
-		// 讓 m_Text 消失
-		m_Text->SetVisible(false);
-
-		// 開始平移顯示 m_RedShawl
-		if (!m_IsSliding && !m_RedShawl->IsVisible())
+		if (!m_ShowMenuButtons)
 		{
-			StartSlideAnimation();
+			// 第一次點擊：讓 m_Text 消失，顯示按鈕
+			m_Text->SetVisible(false);
+			m_ShowMenuButtons = true;
+
+			if (m_MenuHUDPanel)
+				m_MenuHUDPanel->Show();
+
+			// 開始平移顯示 m_RedShawl
+			if (!m_IsSliding && !m_RedShawl->IsVisible())
+			{
+				StartSlideAnimation();
+			}
+		}
+		else
+		{
+			// 第二次點擊：讓 m_Text 重新顯示，隱藏按鈕
+			m_Text->SetVisible(true);
+			m_ShowMenuButtons = false;
+
+			if (m_MenuHUDPanel)
+				m_MenuHUDPanel->Hide();
 		}
 	}
 }
@@ -245,6 +258,12 @@ bool MainMenuScene::IsMouseClickingOnButtons() const
 		}
 	}
 
+	// 檢查MenuHUDPanel按鈕
+	if (m_MenuHUDPanel && m_MenuHUDPanel->IsMouseClickingOnButtons())
+	{
+		return true;
+	}
+
 	return false; // 沒有點擊到任何按鈕
 }
 
@@ -310,77 +329,8 @@ void MainMenuScene::StartSlideAnimation()
 	m_RedShawl->m_Transform.translation = m_StartPosition;
 }
 
-void MainMenuScene::InitNewGameButton()
+void MainMenuScene::InitMenuHUDPanel()
 {
-	auto &img = ImagePoolManager::GetInstance();
-
-	// 創建新遊戲按鈕回調函數
-	auto onClick = [this]()
-	{
-		LOG_DEBUG("New Game button clicked - resetting game progress");
-		AudioManager::GetInstance().PlaySFX("click");
-
-		// 只重置關卡進度，保留遊戲幣等永久數據
-		auto &sceneManager = SceneManager::GetInstance();
-		sceneManager.ResetGameProgress();
-
-		sceneManager.SetNextScene(SceneType::Lobby);
-	};
-
-	m_NewGameButton = std::make_shared<UIButton>(onClick, false);
-	m_NewGameButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_result/button_continue.png"));
-	m_NewGameButton->SetZIndex(3.0f);
-	m_NewGameButton->m_Transform.translation = {-200.0f, -100.0f}; // 左邊位置
-
-	// 創建新遊戲按鈕文字
-	m_NewGameButtonText->SetDrawable(
-		img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 32, "新遊戲", Util::Color(255, 255, 255), false));
-	m_NewGameButtonText->SetZIndex(4.0f); // 比按鈕高一層
-	m_NewGameButtonText->m_Transform.translation =
-		m_NewGameButton->m_Transform.translation + glm::vec2(15.0f, 0.0f); // 與按鈕相同位置
-}
-
-void MainMenuScene::InitContinueGameButton()
-{
-	auto &img = ImagePoolManager::GetInstance();
-
-	// 創建繼續遊戲按鈕回調函數
-	auto onClick = [this]()
-	{
-		LOG_DEBUG("Continue Game button clicked");
-		AudioManager::GetInstance().PlaySFX("click");
-		// 檢查是否有存檔數據
-		auto &saveManager = SaveManager::GetInstance();
-		if (saveManager.HasSaveData())
-		{
-			// 使用正常的場景切換機制，避免直接替換指標
-			auto &sceneManager = SceneManager::GetInstance();
-			// 根據存檔狀態決定目標場景
-			auto saveData = saveManager.GetSaveData();
-			if (saveData && saveData->isInGameProgress)
-			{
-				sceneManager.SetNextScene(SceneType::Dungeon);
-			}
-			else
-			{
-				sceneManager.SetNextScene(SceneType::Lobby);
-			}
-		}
-		else
-		{
-			LOG_INFO("No save data found for continue game");
-		}
-	};
-
-	m_ContinueGameButton = std::make_shared<UIButton>(onClick, false);
-	m_ContinueGameButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_result/button_continue.png"));
-	m_ContinueGameButton->SetZIndex(3.0f);
-	m_ContinueGameButton->m_Transform.translation = {200.0f, -100.0f}; // 右邊位置
-
-	// 創建繼續遊戲按鈕文字
-	m_ContinueGameButtonText->SetDrawable(
-		img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 32, "繼續遊戲", Util::Color(255, 255, 255), false));
-	m_ContinueGameButtonText->SetZIndex(4.0f); // 比按鈕高一層
-	m_ContinueGameButtonText->m_Transform.translation =
-		m_ContinueGameButton->m_Transform.translation + glm::vec2(15.0f, 0.0f); // 與按鈕相同位置
+	m_MenuHUDPanel = std::make_shared<MenuHUDPanel>();
+	m_MenuHUDPanel->Start();
 }

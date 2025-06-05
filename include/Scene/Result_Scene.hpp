@@ -47,6 +47,7 @@ protected:
 	void UpdatePlayerIconMovement();
 	void StartPlayerMovement();
 	void SwitchToReturnLobbyMode();
+	void UpdateLevelProgressText();
 
 	// UI元素
 	std::shared_ptr<nGameObject> m_ResultGroupBackground = std::make_shared<nGameObject>("Background");

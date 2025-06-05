@@ -170,7 +170,7 @@ void SettingPanel::StartShowAnimation()
 {
 	m_IsAnimating = true;
 	m_IsShowingAnimation = true;
-	m_AnimationTimer = 0.0f;
+	m_AnimationTimer.Restart();
 
 	// 確保面板從隱藏位置開始
 	UpdateAllElementsPosition(m_HiddenPosition);
@@ -180,7 +180,7 @@ void SettingPanel::StartHideAnimation()
 {
 	m_IsAnimating = true;
 	m_IsShowingAnimation = false;
-	m_AnimationTimer = 0.0f;
+	m_AnimationTimer.Restart();
 
 	// 確保面板從可見位置開始
 	UpdateAllElementsPosition(m_VisiblePosition);
@@ -191,13 +191,13 @@ void SettingPanel::UpdateAnimation()
 	if (!m_IsAnimating)
 		return;
 
-	m_AnimationTimer += Util::Time::GetDeltaTimeMs() / 1000.0f;
-	const float progress = std::min(m_AnimationTimer / m_AnimationDuration, 1.0f);
+	m_AnimationTimer.Update();
+	const float progress = m_AnimationTimer.GetEasedProgress(Util::Timer::EaseOutQuad);
 
 	UpdatePanelPosition(progress);
 
 	// 動畫完成
-	if (progress >= 1.0f)
+	if (m_AnimationTimer.IsFinished())
 	{
 		m_IsAnimating = false;
 
@@ -211,18 +211,16 @@ void SettingPanel::UpdateAnimation()
 
 void SettingPanel::UpdatePanelPosition(float progress)
 {
-	const float easedProgress = EaseOutQuad(progress);
-
 	glm::vec2 currentPos;
 	if (m_IsShowingAnimation)
 	{
 		// Show: 從隱藏位置到可見位置
-		currentPos = m_HiddenPosition + (m_VisiblePosition - m_HiddenPosition) * easedProgress;
+		currentPos = m_HiddenPosition + (m_VisiblePosition - m_HiddenPosition) * progress;
 	}
 	else
 	{
 		// Hide: 從可見位置到隱藏位置
-		currentPos = m_VisiblePosition + (m_HiddenPosition - m_VisiblePosition) * easedProgress;
+		currentPos = m_VisiblePosition + (m_HiddenPosition - m_VisiblePosition) * progress;
 	}
 
 	// 統一更新所有元件位置
@@ -240,8 +238,6 @@ void SettingPanel::UpdateAllElementsPosition(const glm::vec2 &panelPosition)
 	m_SliderSFXVolume->m_Transform.translation = panelPosition + m_SliderOffset3;
 	m_CloseButton->m_Transform.translation = panelPosition + m_CloseButtonOffset;
 }
-
-float SettingPanel::EaseOutQuad(float t) { return 1.0f - (1.0f - t) * (1.0f - t); }
 
 void SettingPanel::DrawDebugUI()
 {
@@ -294,7 +290,6 @@ void SettingPanel::DrawDebugUI()
 		ImGui::Text("Is Animating: %s", m_IsAnimating ? "Yes" : "No");
 		ImGui::Text("Is Showing: %s", m_IsShowingAnimation ? "Yes" : "No");
 		ImGui::Text("Animation Timer: %.3f", m_AnimationTimer);
-		ImGui::Text("Animation Duration: %.3f", m_AnimationDuration);
 		ImGui::Text("Visible Pos: (%.1f, %.1f)", m_VisiblePosition.x, m_VisiblePosition.y);
 		ImGui::Text("Hidden Pos: (%.1f, %.1f)", m_HiddenPosition.x, m_HiddenPosition.y);
 		ImGui::Text("Current Pos: (%.1f, %.1f)", m_PanelBackground->m_Transform.translation.x,

@@ -15,6 +15,7 @@
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Tool/Tool.hpp"
+#include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
@@ -228,10 +229,8 @@ void ResultScene::InitStartIcon()
 
 void ResultScene::InitLevelProgress()
 {
-
-	auto &img = ImagePoolManager::GetInstance();
 	m_LevelProgress->SetDrawable(
-		img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 24, "1-1", Util::Color(255, 255, 255), false));
+		std::make_shared<Util::Text>(RESOURCE_DIR "/Font/zpix.ttf", 24, "1-1", Util::Color(255, 255, 255), false));
 	m_LevelProgress->SetZIndex(2);
 
 	// 通關文字對齊移動
@@ -412,29 +411,59 @@ void ResultScene::UpdatePlayerIconMovement()
 		m_LevelProgress->m_Transform.translation.x = m_PlayerIcon->m_Transform.translation.x + offsetX;
 		m_LevelProgress->m_Transform.translation.y = m_ProgressBar->m_Transform.translation.y - offsetY;
 
-		// 檢查是否經過新的段落，更新關卡進度文字
-		float startX = m_StartIcon->m_Transform.translation.x;
-		float endX = m_EndIcon->m_Transform.translation.x;
-		float currentProgress = (m_PlayerIcon->m_Transform.translation.x - startX) / (endX - startX);
-
-		// 修改計算邏輯：確保只有完全通過階段才顯示下一階段
-		// 將進度條分為5段，每段代表一個關卡
-		// 只有當進度 >= 某段的結束點時，才顯示該段已完成
-		int completedStages = static_cast<int>(currentProgress * 5.0f);
-
-		// 確保 completedStages 在有效範圍內 (0-4)，對應關卡 1-1 到 1-5
-		completedStages = std::max(0, std::min(4, completedStages));
-
-		// 顯示已完成的關卡數 + 1（因為關卡從1開始）
-		int displayStage = completedStages + 1;
-		int displayChapter = 1; // 目前只有第一章
-
-		std::string progressText = std::to_string(displayChapter) + "-" + std::to_string(displayStage);
-		const auto text = std::dynamic_pointer_cast<Util::Text>(m_LevelProgress->GetDrawable());
-		text->SetText(progressText);
+		// 基於實際遊戲進度顯示關卡，而不是基於移動位置
+		// 這樣可以避免在移動過程中進度文字提前跳轉
+		UpdateLevelProgressText();
 	}
 }
 
+void ResultScene::UpdateLevelProgressText()
+{
+	// 基於玩家圖標的移動位置來漸進式更新關卡顯示
+	// 當經過特定位置時才更新到下一關
+
+	float startX = m_StartIcon->m_Transform.translation.x;
+	float endX = m_EndIcon->m_Transform.translation.x;
+	float currentProgress = (m_PlayerIcon->m_Transform.translation.x - startX) / (endX - startX);
+
+	// 將進度條分為5個階段，每個階段對應一個關卡
+	// 當經過每個階段的中點時，才顯示該階段的關卡
+	int currentStage = 1; // 默認顯示第一關
+
+	// 定義每個階段的觸發點（當經過這些位置時才更新關卡顯示）
+	const float stageThresholds[5] = {
+		0.0f, // 1-1: 從起點開始
+		0.2f, // 1-2: 經過20%位置
+		0.4f, // 1-3: 經過40%位置
+		0.6f, // 1-4: 經過60%位置
+		0.8f // 1-5: 經過80%位置
+	};
+
+	// 根據當前位置確定應該顯示的關卡
+	for (int i = 4; i >= 0; i--) // 從後往前檢查，確保顯示最高的已達到關卡
+	{
+		if (currentProgress >= stageThresholds[i])
+		{
+			currentStage = i + 1; // 關卡從1開始
+			break;
+		}
+	}
+
+	// 確保不超過實際遊戲進度（防止顯示超過實際完成的關卡）
+	int maxAllowedStage = m_GameProgress.currentStage;
+	currentStage = std::min(currentStage, maxAllowedStage);
+
+	// 確保數值在有效範圍內
+	currentStage = std::max(1, std::min(5, currentStage));
+	int displayChapter = m_GameProgress.currentChapter;
+
+	std::string progressText = std::to_string(displayChapter) + "-" + std::to_string(currentStage);
+	const auto text = std::dynamic_pointer_cast<Util::Text>(m_LevelProgress->GetDrawable());
+	if (text)
+	{
+		text->SetText(progressText);
+	}
+}
 
 void ResultScene::SwitchToReturnLobbyMode()
 {

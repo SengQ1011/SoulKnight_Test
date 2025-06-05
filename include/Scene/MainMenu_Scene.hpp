@@ -13,6 +13,7 @@
 
 class UIButton;
 class UIPanel;
+class MenuHUDPanel;
 class MainMenuScene : public Scene
 {
 public:
@@ -35,11 +36,8 @@ protected:
 	std::shared_ptr<UIButton> m_SettingButton;
 	std::shared_ptr<UIButton> m_DeleteDataButton;
 
-	// 新遊戲和繼續遊戲按鈕
-	std::shared_ptr<UIButton> m_NewGameButton;
-	std::shared_ptr<UIButton> m_ContinueGameButton;
-	std::shared_ptr<Util::GameObject> m_NewGameButtonText = std::make_shared<Util::GameObject>();
-	std::shared_ptr<Util::GameObject> m_ContinueGameButtonText = std::make_shared<Util::GameObject>();
+	// MenuHUDPanel 替代個別按鈕
+	std::shared_ptr<MenuHUDPanel> m_MenuHUDPanel;
 
 	// 平移動畫相關變數
 	bool m_IsSliding = false;
@@ -60,9 +58,8 @@ protected:
 	void InitUIManager();
 	void InitAudioManager();
 
-	// 新遊戲和繼續遊戲按鈕初始化
-	void InitNewGameButton();
-	void InitContinueGameButton();
+	// 初始化MenuHUDPanel
+	void InitMenuHUDPanel();
 
 	// 動畫相關函式
 	void UpdateSlideAnimation();
@@ -71,6 +68,9 @@ protected:
 
 	// 檢查滑鼠是否點擊到按鈕上
 	bool IsMouseClickingOnButtons() const;
+
+	// 切換面板狀態變數
+	bool m_ShowMenuButtons = false;
 };
 
 #endif // MAINMENU_SCENE_HPP
