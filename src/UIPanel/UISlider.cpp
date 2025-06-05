@@ -11,19 +11,14 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 
-UISlider::UISlider(const std::function<float()>& listenFunction,
-					  const std::shared_ptr<nGameObject>& track,
-					  const glm::vec2& borderWidth,
-					  bool hasButton,
-					  const std::string& buttonImage,
-					  const std::function<void(float)>& trackFunction) :
-	m_ListenFunction(listenFunction),
-	m_TrackFunction(trackFunction),
-	m_Track(track),
-	m_BorderWidth(borderWidth)
+UISlider::UISlider(const std::function<float()> &listenFunction, const std::shared_ptr<nGameObject> &track,
+				   const glm::vec2 &borderWidth, bool hasButton, const std::string &buttonImage,
+				   const std::function<void(float)> &trackFunction) :
+	m_ListenFunction(listenFunction), m_TrackFunction(trackFunction), m_Track(track), m_BorderWidth(borderWidth)
 {
 	// 沒有按鈕就直接返回
-	if (!hasButton) return;
+	if (!hasButton)
+		return;
 
 	// 定義按鈕拖曳時的 callback（會每幀呼叫）
 	std::function<void()> button_function = [this]()
@@ -55,13 +50,15 @@ UISlider::UISlider(const std::function<float()>& listenFunction,
 void UISlider::Start()
 {
 	// 設定 Track 的 Pivot（將中心改為左邊起點）
-	m_Track->SetZIndex(this->GetZIndex()+1.0f);
+	m_Track->SetZIndex(this->GetZIndex() + 0.1f);
 	m_Track->SetPivot(glm::vec2(m_Track->GetPivot().x - m_Track->GetImageSize().x / 2.0f, 0.0f));
 
-	if (!m_Button) return;
-	m_Button->m_Transform.translation = m_Track->m_Transform.translation + glm::vec2(m_Track->GetScaledSize().x * 0.5f, 0.0f);
+	if (!m_Button)
+		return;
+	m_Button->m_Transform.translation =
+		m_Track->m_Transform.translation + glm::vec2(m_Track->GetScaledSize().x * 0.5f, 0.0f);
 	// m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize(); //TODO:可能要變數而不是常數
-	m_Button->SetZIndex(m_Track->GetZIndex()+1.0f);
+	m_Button->SetZIndex(m_Track->GetZIndex() + 0.1f);
 }
 
 
@@ -74,7 +71,8 @@ void UISlider::Update()
 		isFollowButton = false;
 
 	// [2] 拖曳中則不跟隨 ListenFunction 值更新畫面
-	if (isFollowButton) return;
+	if (isFollowButton)
+		return;
 
 	// [3] 取得目前音量/值（0.0 ~ 1.0）
 	float currentValue = 0.0f;
@@ -89,17 +87,23 @@ void UISlider::Update()
 	if (m_Track)
 	{
 		m_Track->m_Transform.translation = glm::vec2(grooveLeft, this->m_Transform.translation.y);
-		m_Track->m_Transform.scale = glm::vec2((grooveRight - grooveLeft) * currentValue, this->GetScaledSize().y - m_BorderWidth.y) / m_Track->GetImageSize();
+		m_Track->m_Transform.scale =
+			glm::vec2((grooveRight - grooveLeft) * currentValue, this->GetScaledSize().y - m_BorderWidth.y) /
+			m_Track->GetImageSize();
 	}
 
 	// [6] 更新 Button 位置（對齊 track 右邊）
 	if (m_Button)
 	{
-		m_Button->m_Transform.translation = m_Track->m_Transform.translation + glm::vec2(m_Track->GetScaledSize().x, 0.0f);
+		m_Button->m_Transform.translation =
+			m_Track->m_Transform.translation + glm::vec2(m_Track->GetScaledSize().x, 0.0f);
 		// m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize();
 	}
 
-	DrawDebugUI();
+	if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	{
+		DrawDebugUI();
+	}
 }
 
 // ==========================
@@ -110,11 +114,11 @@ void UISlider::OnEventReceived(const EventInfo &eventInfo)
 	switch (eventInfo.GetEventType())
 	{
 	case EventType::PositionChanged:
-	{
-		const auto button_position = dynamic_cast<const PositionChangedEvent& >(eventInfo);
-		TrackFollowButton(button_position);
-		break;
-	}
+		{
+			const auto button_position = dynamic_cast<const PositionChangedEvent &>(eventInfo);
+			TrackFollowButton(button_position);
+			break;
+		}
 	case EventType::ValueChanged:
 		LOG_DEBUG("Value changed");
 		break;
@@ -137,12 +141,9 @@ void UISlider::TrackFollowButton(const PositionChangedEvent &eventInfo)
 
 	// 更新 Track 長度（填色長度）
 	m_Track->m_Transform.scale.x = newValue / m_Track->GetImageSize().x;
-	m_Track->m_Transform.scale.y = (this->GetScaledSize().y  - m_BorderWidth.y) / m_Track->GetImageSize().y;
+	m_Track->m_Transform.scale.y = (this->GetScaledSize().y - m_BorderWidth.y) / m_Track->GetImageSize().y;
 
 	// 通知外部 callback（回傳值為 0~1）
 	if (m_TrackFunction)
 		m_TrackFunction(newValue / maxValue);
 }
-
-
-

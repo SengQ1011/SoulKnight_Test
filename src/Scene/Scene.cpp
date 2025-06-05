@@ -10,32 +10,43 @@
 
 void Scene::Upload()
 {
-	auto& sceneManager = SceneManager::GetInstance();
+	auto &sceneManager = SceneManager::GetInstance();
 	sceneManager.UploadGameProgress(m_SceneData);
 };
 
 void Scene::Download()
 {
-	const auto & sceneManager = SceneManager::GetInstance();
+	const auto &sceneManager = SceneManager::GetInstance();
 	m_SceneData = sceneManager.DownloadGameProgress();
 };
 
 void Scene::FlushPendingObjectsToRendererAndCamera()
 {
-	for (const std::shared_ptr<nGameObject>& obj : m_PendingObjects) {
-		if (!obj) continue;
+	for (const std::shared_ptr<nGameObject> &obj : m_PendingObjects)
+	{
+		if (!obj)
+			continue;
 
 		const auto renderer = m_Root;
 		const auto camera = m_Camera;
 
-		if (renderer && obj->GetDrawable()) renderer->AddChild(obj);
-		if (camera) camera->AddChild(obj);
+		if (renderer && obj->GetDrawable())
+			renderer->AddChild(obj);
+		if (camera)
+			camera->AddChild(obj);
 	}
 	m_PendingObjects.clear();
 }
 
 void Scene::SavePlayerInformation(std::shared_ptr<Character> player) const
 {
+	// 檢查 m_SceneData 是否為空（測試模式或直接進入場景時可能為空）
+	if (!m_SceneData)
+	{
+		LOG_DEBUG("m_SceneData is nullptr, skipping save player information (likely in test mode)");
+		return;
+	}
+
 	if (player)
 	{
 		int hp, energy, money = 0;
@@ -58,7 +69,10 @@ void Scene::SavePlayerInformation(std::shared_ptr<Character> player) const
 			talentID = talentComp->GetAllTalentID();
 		}
 
-		m_SceneData->gameProgress.currentStage++;
+		// 注意：currentStage 的增加應該在特定條件下進行，不是每次保存都增加
+		// 這裡暫時註解掉，避免每次場景退出都增加關卡數
+		// m_SceneData->gameProgress.currentStage++;
+
 		// playerData
 		m_SceneData->gameProgress.playerData.currentHp = hp;
 		m_SceneData->gameProgress.playerData.currentEnergy = energy;
@@ -67,4 +81,3 @@ void Scene::SavePlayerInformation(std::shared_ptr<Character> player) const
 		m_SceneData->gameProgress.playerData.talentID = talentID;
 	}
 }
-

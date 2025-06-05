@@ -9,7 +9,6 @@
 
 struct BlockProjectileEventInfo final : TypedEventInfo<BlockProjectileEventInfo>
 {
-
 	explicit BlockProjectileEventInfo() :
 		TypedEventInfo(EventType::BlockedProjectileBySword) {}
 };

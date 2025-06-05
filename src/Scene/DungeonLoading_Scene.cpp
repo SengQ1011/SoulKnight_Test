@@ -7,29 +7,32 @@
 #include <thread>
 
 #include "ImagePoolManager.hpp"
-#include "SaveManager.hpp"
 #include "Override/nGameObject.hpp"
+#include "SaveManager.hpp"
 #include "Scene/Dungeon_Scene.hpp"
 #include "Util/Text.hpp"
 
+
 void DungeonLoadingScene::Start()
 {
-	LOG_DEBUG("[DungeonLoadingScene] Start");
+	LOG_DEBUG("Entering Dungeon Loading Scene");
 
-	// m_DungeonReady = false;
+	// 確保獲取場景數據
+	if (!m_SceneData)
+	{
+		Scene::Download();
+	}
 
-	// // 啟動非同步任務進行地牢生成
-	// m_GenerationTask = std::async(std::launch::async, []() {
-	// 	LOG_DEBUG("[DungeonLoadingScene] Begin Dungeon Generation...");
-	// 	DungeonScene::GenerateStaticDungeon();
-	// 	LOG_DEBUG("[DungeonLoadingScene] Dungeon Generation Finished");
-	// });
+	// 檢查數據是否成功獲取
+	if (!m_SceneData)
+	{
+		LOG_ERROR("Failed to get scene data in DungeonLoadingScene::Start()");
+		return;
+	}
+
 	m_Text = std::make_shared<nGameObject>("DungeonLoadingScene");
-	m_Text->SetDrawable(ImagePoolManager::GetInstance().GetText(
-		RESOURCE_DIR"/Font/zpix.ttf",
-		20,
-		"地牢加载中...",
-		Util::Color(255,255,255)));
+	m_Text->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/zpix.ttf", 20, "地牢加载中...",
+																Util::Color(255, 255, 255)));
 	m_Text->SetZIndex(2);
 	m_Text->m_Transform.translation = glm::vec2(0);
 	m_Root->AddChild(m_Text);
@@ -52,22 +55,21 @@ void DungeonLoadingScene::Update()
 	m_DungeonReady = true;
 }
 
-void DungeonLoadingScene::Exit()
-{
-	LOG_DEBUG("[DungeonLoadingScene] Exit");
-}
+void DungeonLoadingScene::Exit() { LOG_DEBUG("[DungeonLoadingScene] Exit"); }
 
 Scene::SceneType DungeonLoadingScene::Change()
 {
 	if (m_DungeonReady)
 	{
 		// 已完成1-4了 ==> 進入boss關卡
-		if(m_SceneData->gameProgress.currentStage == 4) {
+		if (m_SceneData->gameProgress.currentStage == 4)
+		{
 			// return Scene::SceneType::DungeonBOSS;
 			return Scene::SceneType::Dungeon;
 		}
 		// 已完成boss關卡 ==> 結算
-		if(m_SceneData->gameProgress.currentStage == 5) {
+		if (m_SceneData->gameProgress.currentStage == 5)
+		{
 			return Scene::SceneType::Result;
 		}
 		// otherwise
@@ -75,4 +77,3 @@ Scene::SceneType DungeonLoadingScene::Change()
 	}
 	return Scene::SceneType::Null;
 }
-

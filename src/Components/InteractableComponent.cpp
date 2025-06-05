@@ -5,6 +5,7 @@
 #include "Components/InteractableComponent.hpp"
 
 #include "Components/ChestComponent.hpp"
+#include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 
 #include "Components/WalletComponent.hpp"
@@ -17,20 +18,58 @@ void InteractableComponent::Init()
 {
 	switch (m_interactableType)
 	{
-		case InteractableType::PORTAL:
+	case InteractableType::PORTAL:
 		{
 			m_InteractionCallback =
-			[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
+				// 根據傳送門類型決定要切換到哪個場景
+				// 這裡可以根據傳送門的配置或當前場景來決定目標場景
+
 				const auto &scene = SceneManager::GetInstance().GetCurrentScene().lock();
-				scene->SetIsChange(true);
+				if (!scene)
+					return;
+
+				// 根據當前場景類型決定傳送門的目標
+				Scene::SceneType targetScene = Scene::SceneType::Null;
+
+				switch (scene->GetSceneType())
+				{
+				case Scene::SceneType::Lobby:
+					targetScene = Scene::SceneType::DungeonLoad;
+					break;
+				case Scene::SceneType::Test_KC:
+					// 大廳的傳送門通常進入地牢載入場景
+					targetScene = Scene::SceneType::DungeonLoad;
+					break;
+				case Scene::SceneType::Dungeon:
+					// 地牢的傳送門進入下一關或結算
+					// 只有在地牢中的傳送門才會增加關卡數
+					{
+						// 嘗試將當前場景轉換為 DungeonScene
+						if (auto dungeonScene = std::dynamic_pointer_cast<DungeonScene>(scene))
+						{
+							dungeonScene->OnStageCompleted();
+						}
+					}
+					targetScene = Scene::SceneType::DungeonLoad;
+					break;
+				default:
+					// 預設行為：使用舊的切換方式
+					scene->SetIsChange(true);
+					return;
+				}
+
+				// 使用新的場景切換方法
+				SceneManager::GetInstance().SetNextScene(targetScene);
 			};
 			break;
 		}
-		case InteractableType::REWARD_CHEST:
-		case InteractableType::WEAPON_CHEST:
+	case InteractableType::REWARD_CHEST:
+	case InteractableType::WEAPON_CHEST:
 		{
-			m_InteractionCallback = [](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+			m_InteractionCallback =
+				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
 				LOG_DEBUG("InteractableComponent::InteractableType::REWARD_CHEST");
 				if (auto chestComp = target->GetComponent<ChestComponent>(ComponentType::CHEST))
@@ -40,16 +79,17 @@ void InteractableComponent::Init()
 			};
 			break;
 		}
-		case InteractableType::COIN:
+	case InteractableType::COIN:
 		{
 			m_InteractionCallback =
-			[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
 				if (const auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
 				{
 					walletComp->AddMoney(2);
 					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-					if (!currentScene) return;
+					if (!currentScene)
+						return;
 					currentScene->GetRoot().lock()->RemoveChild(target);
 					currentScene->GetCamera().lock()->SafeRemoveChild(target);
 					currentScene->GetCurrentRoom()->GetInteractionManager()->UnregisterInteractable(target);
@@ -57,16 +97,17 @@ void InteractableComponent::Init()
 			};
 			break;
 		}
-		case InteractableType::ENERGY_BALL:
+	case InteractableType::ENERGY_BALL:
 		{
 			m_InteractionCallback =
-			[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
 				if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
 				{
 					healthComp->AddCurrentEnergy(5);
 					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-					if (!currentScene) return;
+					if (!currentScene)
+						return;
 					currentScene->GetRoot().lock()->RemoveChild(target);
 					currentScene->GetCamera().lock()->SafeRemoveChild(target);
 					currentScene->GetCurrentRoom()->GetInteractionManager()->UnregisterInteractable(target);
@@ -116,7 +157,8 @@ void InteractableComponent::Update()
 	if (m_UpdateCallback)
 	{
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-		if (!scene) return;
+		if (!scene)
+			return;
 
 		std::shared_ptr<Character> player = nullptr;
 		if (std::shared_ptr<DungeonScene> currentScene = std::dynamic_pointer_cast<DungeonScene>(scene))
@@ -128,14 +170,16 @@ void InteractableComponent::Update()
 		if (player && self)
 			m_UpdateCallback(self, player);
 	}
-	//更新位置
+	// 更新位置
 	if (!m_PromptObject)
 		return;
 	if (const auto owner = GetOwner<nGameObject>())
 	{
-		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() + glm::vec2(10.0f, owner->GetImageSize().y + std::sin(timer) * 10.0f));
+		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() +
+									  glm::vec2(10.0f, owner->GetImageSize().y + std::sin(timer) * 10.0f));
 		timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
-		if (timer >= 3.1415) timer = 0.0f;
+		if (timer >= 3.1415)
+			timer = 0.0f;
 	}
 }
 

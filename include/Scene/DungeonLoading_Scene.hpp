@@ -15,7 +15,7 @@ namespace Util
 class DungeonLoadingScene : public Scene
 {
 public:
-	DungeonLoadingScene() = default;
+	DungeonLoadingScene() : Scene(SceneType::DungeonLoad) {}
 	~DungeonLoadingScene() override = default;
 
 	void Start() override;

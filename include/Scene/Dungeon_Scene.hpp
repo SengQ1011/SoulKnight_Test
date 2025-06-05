@@ -15,7 +15,7 @@ class DungeonMap;
 class DungeonScene final : public Scene
 {
 public:
-	DungeonScene() = default;
+	DungeonScene() : Scene(SceneType::Dungeon) {}
 	~DungeonScene() override = default;
 
 	void Start() override;
@@ -28,10 +28,14 @@ public:
 	static void ClearPreGenerated();
 	std::shared_ptr<Character> GetPlayer() const { return m_Player; }
 
+	// 處理關卡完成的方法，供傳送門調用
+	void OnStageCompleted();
+
 private:
 	static std::shared_ptr<DungeonScene> s_PreGeneratedInstance;
 
 	std::shared_ptr<Character> m_Player;
+	bool m_IsPlayerDeath = false;
 	float m_MapHeight;
 
 	std::shared_ptr<DungeonMap> m_Map;
@@ -46,14 +50,17 @@ private:
 	float m_timer = 0.0f;
 	// std::shared_ptr<nGameObject> m_OnDeathText;
 	std::shared_ptr<nGameObject> m_stageText;
+	std::shared_ptr<nGameObject> m_stageIcon;
 	float m_textTimer = 2.0f;
-
 
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	void InitUIManager();
 	void InitAudioManager();
+	void InitializeStageText();
+	void InitializeStageIcon();
+	void DrawStageDebugUI(); // 調試界面
 
 	// 以下為你原本地牢生成的函數
 	void BuildDungeon(); // 房間生成與初始化邏輯
