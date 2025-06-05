@@ -8,7 +8,8 @@
 #include <typeindex>
 
 // EventManager 和 Component分兩類？
-enum class EventType {
+enum class EventType
+{
 	None,
 
 	// 大概
@@ -30,7 +31,10 @@ enum class EventType {
 	// 通用
 	Death,
 	PositionChanged,
-	ValueChanged
+	ValueChanged,
+
+	// Camera相關
+	CameraShake
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
@@ -55,23 +59,40 @@ enum class EventType {
 	// 自由擴充...
 };
 
-struct EventInfo {
-	explicit EventInfo(const EventType type): m_EventType(type) {}
+struct EventInfo
+{
+	explicit EventInfo(const EventType type) : m_EventType(type) {}
 	virtual ~EventInfo() = default;
 
-	virtual std::type_index GetType() const { return typeid(void);};			// 信息類型
-	EventType GetEventType() const { return m_EventType;}	// 事件名稱
+	virtual std::type_index GetType() const { return typeid(void); }; // 信息類型
+	EventType GetEventType() const { return m_EventType; } // 事件名稱
 	void SetEventType(const EventType type) { m_EventType = type; } // 手動設置特定事件
 
 private:
 	EventType m_EventType = EventType::None;
 };
 
-template<typename Derived>
-struct TypedEventInfo : EventInfo {
-	explicit TypedEventInfo(const EventType type): EventInfo(type) {}
+template <typename Derived>
+struct TypedEventInfo : EventInfo
+{
+	explicit TypedEventInfo(const EventType type) : EventInfo(type) {}
 	~TypedEventInfo() override = default;
 	std::type_index GetType() const override { return typeid(Derived); }
 };
 
-#endif //EVENTINFO_HPP
+// ===== 具體事件結構定義 =====
+
+// Camera抖動事件
+struct CameraShakeEvent : TypedEventInfo<CameraShakeEvent>
+{
+	float duration;
+	float intensity;
+
+	CameraShakeEvent(float dur = 0.3f, float intens = 10.0f) :
+		TypedEventInfo(EventType::CameraShake), duration(dur), intensity(intens)
+	{
+	}
+};
+
+
+#endif // EVENTINFO_HPP

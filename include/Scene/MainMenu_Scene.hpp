@@ -42,7 +42,7 @@ protected:
 	// 平移動畫相關變數
 	bool m_IsSliding = false;
 	float m_SlideTimer = 0.0f;
-	float m_SlideDuration = 1.0f; // 1秒平移時間
+	float m_SlideDuration = 0.4f; // 0.4秒平移時間
 	glm::vec2 m_StartPosition; // 起始位置（螢幕右邊）
 	glm::vec2 m_TargetPosition; // 目標位置
 

@@ -4,6 +4,7 @@
 
 #include "Scene/SceneManager.hpp"
 
+#include "ObserveManager/EventManager.hpp"
 #include "SaveManager.hpp"
 #include "Scene/Complete_Scene.hpp"
 #include "Scene/DungeonLoading_Scene.hpp"
@@ -60,6 +61,9 @@ void SceneManager::ChangeCurrentScene()
 	m_CurrentScene->Exit();
 	m_CurrentScene->Upload();
 	m_CurrentScene = nullptr;
+
+	// 清理事件監聽器，防止懸空指針
+	EventManager::GetInstance().ClearAllListeners();
 
 	// 載入新場景 特殊處理
 	//  if (m_NextSceneType == Scene::SceneType::Dungeon)

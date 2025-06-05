@@ -104,6 +104,8 @@ void LobbyScene::Update()
 				CreateEnemy();
 		}
 
+		if (Util::Input::IsKeyDown(Util::Keycode::T)) m_Camera->StartShake(0.3,5);
+
 		for (auto &[type, manager] : m_Managers)
 			manager->Update();
 
