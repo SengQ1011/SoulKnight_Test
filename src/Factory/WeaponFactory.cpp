@@ -7,6 +7,7 @@
 
 #include "Attack/EffectAttack.hpp"
 #include "Factory/Factory.hpp"
+#include "RandomUtil.hpp"
 
 #include "Weapon/GunWeapon.hpp"
 #include "Weapon/MeleeWeapon.hpp"
@@ -209,6 +210,7 @@ namespace WeaponFactory {
 					if(Weapon::weaponHasOffset(attackType, weaponType)){
 						followerComp->SetIsSword(true);
 					}
+					auto interactableComp = weaponPtr->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE, InteractableType::WEAPON, nullptr, 40.0f, false);
 					// LOG_DEBUG("create Weapon successful");
 					return weaponPtr;
 				}
@@ -219,8 +221,43 @@ namespace WeaponFactory {
 			return nullptr;  // 如果找不到對應的武器，返回 nullptr
 		}
 	}
+
+	std::shared_ptr<Weapon> createRandomWeapon(std::vector<int> allPlayerWeaponID) {
+		nlohmann::json weaponData = Factory::readJsonFile("weapon.json");
+
+		// 收集所有合法 ID
+		std::vector<int> allIDs;
+		for (const auto& weapon : weaponData) {
+			if (weapon.contains("ID") && weapon["ID"].is_number_integer() && weapon["dropLevel"].get<int>() > 0) {
+				allIDs.push_back(weapon["ID"].get<int>());
+			}
+		}
+
+		if (allIDs.empty()) {
+			LOG_ERROR("don't have valid  weaponID");
+			return nullptr;
+		}
+
+		std::shared_ptr<Weapon> result = nullptr;
+		int tryCount = 0;
+		const int maxTries = 10;
+
+		while (!result && tryCount < maxTries) {
+			const int randomIndex = RandomUtil::RandomIntInRange(0,allIDs.size() - 1);
+			int randomID = allIDs[randomIndex];
+			// 檢查 randomID 是否已在 allPlayerWeaponID 中
+			if (std::find(allPlayerWeaponID.begin(), allPlayerWeaponID.end(), randomID) != allPlayerWeaponID.end()) {
+				tryCount++;
+				continue; // 已有武器，重新嘗試
+			}
+			result = createWeapon(randomID);
+			tryCount++;
+		}
+
+		if (!result) {
+			LOG_ERROR("try over {} time but still could not random create weapon", maxTries);
+		}
+
+		return result;
+	}
 }
-
-
-
-

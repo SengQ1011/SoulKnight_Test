@@ -22,7 +22,7 @@ Weapon::Weapon(const BaseWeaponInfo& weaponInfo)
 
 {
 	SetImage(weaponInfo.imagePath);
-	this->SetZIndexType(ZIndexType::OBJECTLOW);
+	this->SetZIndexType(ZIndexType::OBJECTHIGH);
 }
 
 void Weapon::UpdateCooldown(float deltaTime) {

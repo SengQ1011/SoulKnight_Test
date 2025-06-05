@@ -89,8 +89,10 @@ void ChestComponent::ChestOpened()
  			// 加入互動manager中
  			interactionManager->RegisterInteractable(item);
 
+ 			glm::vec2 randomOffset = glm::vec2(0.0f,0.0f);
  			// 隨機丟出去一點點
-			auto randomOffset = glm::vec2{RandomUtil::RandomFloatInRange(-25.0f,25.0f),RandomUtil::RandomFloatInRange(-25.0f,25.0f)};
+			if (m_chestType == ChestType::REWARD)
+ 				randomOffset = glm::vec2{RandomUtil::RandomFloatInRange(-25.0f,25.0f),RandomUtil::RandomFloatInRange(-25.0f,25.0f)};
  			item->SetWorldCoord(chestWorldCor + randomOffset);
  		}
  	}
