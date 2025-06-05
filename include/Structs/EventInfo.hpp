@@ -34,7 +34,10 @@ enum class EventType
 	ValueChanged,
 
 	// Camera相關
-	CameraShake
+	CameraShake,
+
+	// 視覺特效
+	StartFlicker
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
@@ -90,6 +93,18 @@ struct CameraShakeEvent : TypedEventInfo<CameraShakeEvent>
 
 	CameraShakeEvent(float dur = 0.3f, float intens = 10.0f) :
 		TypedEventInfo(EventType::CameraShake), duration(dur), intensity(intens)
+	{
+	}
+};
+
+// 閃爍特效事件
+struct StartFlickerEvent : TypedEventInfo<StartFlickerEvent>
+{
+	float duration;
+	float interval;
+
+	StartFlickerEvent(float dur = 0.5f, float inter = 0.1f) :
+		TypedEventInfo(EventType::StartFlicker), duration(dur), interval(inter)
 	{
 	}
 };

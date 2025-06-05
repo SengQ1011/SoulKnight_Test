@@ -19,6 +19,7 @@ namespace Util
 		m_ElapsedTime = 0.0f;
 		m_IsRunning = false;
 		m_HasFinishedLastFrame = false;
+		// 不清除回調函數，讓Restart()能正常工作
 	}
 
 	void Timer::Update()

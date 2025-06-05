@@ -82,12 +82,6 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 			if (!owner)
 				return;
 
-			const auto character = std::dynamic_pointer_cast<Character>(owner);
-			if (!character || character->GetType() != CharacterType::PLAYER)
-				return;
-
-			EventManager::TriggerCameraShake();
-
 			// 元素傷害
 			if (dmgInfo.elementalDamage != StatusEffect::NONE)
 			{
@@ -97,6 +91,14 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 					return;
 				stateComp->ApplyStatusEffect(dmgInfo.elementalDamage);
 			}
+
+			// 角色特效
+			const auto character = std::dynamic_pointer_cast<Character>(owner);
+			if (!character || character->GetType() != CharacterType::PLAYER)
+				return;
+
+			// 觸發Camera抖動
+			EventManager::TriggerCameraShake();
 			break;
 		}
 	default:
@@ -136,6 +138,7 @@ void HealthComponent::HandleCollision(const CollisionEventInfo &info)
 				collisionDamage > 0)
 			{
 				// LOG_DEBUG("Enemy collision damage = {}", collisionDamage);
+
 				this->TakeDamage(collisionDamage);
 			}
 		}
@@ -150,6 +153,14 @@ void HealthComponent::TakeDamage(int damage)
 	if (m_invincibleMode)
 		return;
 	LOG_DEBUG("take damage {}", damage);
+
+	if (const auto owner = GetOwner<nGameObject>())
+	{
+		// 觸發閃爍特效 - 使用OnEvent進行組件間通信
+		StartFlickerEvent flickerEvent(0.5f, 0.05f);
+		owner->OnEvent(flickerEvent);
+	}
+
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
 	{

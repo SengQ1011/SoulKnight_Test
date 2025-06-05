@@ -7,22 +7,23 @@
 
 enum class ComponentType
 {
-	AI,				// 0
-	ANIMATION,		// 1
-	ATTACK,			// 2
-	CHEST,			// 3
-	COLLISION,		// 4
-	DOOR,			// 5
-	FOLLOWER,		// 6
-	HEALTH,			// 7
-	INPUT,			// 8
-	INTERACTABLE,	// 9
-	MOVEMENT,		// 10
-	PROJECTILE,		// 11
-	SKILL,
-	STATE,
-	TALENT,
-	WALLET
+	AI,				 // 0
+	ANIMATION,		 // 1
+	ATTACK,			 // 2
+	CHEST,			 // 3
+	COLLISION,		 // 4
+	DOOR,			 // 5
+	FLICKER,		 // 6
+	FOLLOWER,		 // 7
+	HEALTH,			 // 8
+	INPUT,			 // 9
+	INTERACTABLE,	 // 10
+	MOVEMENT,		 // 11
+	PROJECTILE,		 // 12
+	SKILL,			 // 13
+	STATE,			 // 14
+	TALENT,			 // 15
+	WALLET			 // 16
 };
 
 enum class CharacterType
@@ -41,14 +42,15 @@ enum class State
 	DEAD
 };
 
-enum class StatusEffect {
+enum class StatusEffect
+{
 	NONE,
-	BURNS,		// 灼燒
-	POISON,		// 中毒
-	ELECTRIC,	// 感電
-	DIZZINESS,	// 眩暈
-	FROZEN,		// 冰凍
-	FATIGUE		// 疲勞
+	BURNS, // 灼燒
+	POISON, // 中毒
+	ELECTRIC, // 感電
+	DIZZINESS, // 眩暈
+	FROZEN, // 冰凍
+	FATIGUE // 疲勞
 };
 
 enum class EffectAttackType
@@ -63,38 +65,42 @@ enum class EffectAttackType
 	SMALL_BOOM
 };
 
-enum class AttackType {
+enum class AttackType
+{
 	EFFECT_ATTACK,
 	PROJECTILE,
 	COLLISION,
 	NONE
 };
 
-enum class WeaponType {
+enum class WeaponType
+{
 	NONE,
 	// Melee
-	SWORD,				// 刀劍
-	HAMMER,				// 錘子
-	AXEnCLUB,			// 斧頭or棍棒
-	SPEAR,				// 長槍/長矛
+	SWORD, // 刀劍
+	HAMMER, // 錘子
+	AXEnCLUB, // 斧頭or棍棒
+	SPEAR, // 長槍/長矛
 	// Gun
-	PISTOL,				// 手槍
-	RIFLE,				// 步槍
-	SNIPER,				// 狙擊槍
-	SHOTGUN,			// 霰彈槍
-	ROCKET_LAUNCHER,	// 火箭炮
-	BOWnCROSSBOW,		// 弓or弩
-	STAFF,				// 法杖
+	PISTOL, // 手槍
+	RIFLE, // 步槍
+	SNIPER, // 狙擊槍
+	SHOTGUN, // 霰彈槍
+	ROCKET_LAUNCHER, // 火箭炮
+	BOWnCROSSBOW, // 弓or弩
+	STAFF, // 法杖
 };
 
 
-enum class MonsterType {
-	ATTACK,		// 追蹤玩家
-	SUMMON,		// 召喚
-	WANDER		// 游蕩
+enum class MonsterType
+{
+	ATTACK, // 追蹤玩家
+	SUMMON, // 召喚
+	WANDER // 游蕩
 };
 
-enum class enemyState {
+enum class enemyState
+{
 	IDLE,
 	WANDERING,
 	CHASING,
@@ -111,14 +117,14 @@ enum class ManagerTypes
 	TRACKING
 };
 
-enum ZIndexType: int
+enum ZIndexType : int
 {
-	FLOOR		= 0,	//  0 -  20
-	OBJECTLOW	= 20,	// 20 -  40
-	ATTACK		= 40,	// 40 -  60
-	OBJECTHIGH	= 60,	// 60 -  80
-	UI			= 80,	// 80 -  99
-	CUSTOM		=100,   // dont care
+	FLOOR = 0, //  0 -  20
+	OBJECTLOW = 20, // 20 -  40
+	ATTACK = 40, // 40 -  60
+	OBJECTHIGH = 60, // 60 -  80
+	UI = 80, // 80 -  99
+	CUSTOM = 100, // dont care
 };
 
 enum class ChestType
@@ -127,7 +133,8 @@ enum class ChestType
 	WEAPON
 };
 
-enum class InteractableType {
+enum class InteractableType
+{
 	NONE,
 	PORTAL,
 	SHOP,
@@ -141,4 +148,4 @@ enum class InteractableType {
 	ENERGY_POISON
 };
 
-#endif //ENUMTYPES_HPP
+#endif // ENUMTYPES_HPP

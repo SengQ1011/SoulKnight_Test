@@ -18,6 +18,7 @@ set(SRC_FILES
     Components/DoorComponent.cpp
     Components/EnemyAI/AttackStrategy.cpp
     Components/EnemyAI/MoveStrategy.cpp
+    Components/FlickerComponent.cpp
     Components/FollowerComponent.cpp
     Components/HealthComponent.cpp
     Components/InputComponent.cpp
@@ -112,6 +113,7 @@ set(INCLUDE_FILES
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
+    Components/FlickerComponent.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp

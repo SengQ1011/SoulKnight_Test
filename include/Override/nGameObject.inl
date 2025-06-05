@@ -55,7 +55,7 @@ void nGameObject::OnEvent(const EventT &eventInfo)
 	{
 		for (auto* component : it->second)
 		{
-			if (static_cast<int>(component->GetType()) == 11) LOG_DEBUG("Check");
+			// if (static_cast<int>(component->GetType()) == 11) LOG_DEBUG("Check");
 			component->HandleEvent(eventInfo);
 		}
 	}

@@ -123,6 +123,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			auto inputComponent = player->AddComponent<InputComponent>(ComponentType::INPUT);
 			auto attackComponent = player->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, criticalRate, handBladeDamage, 0);
 			auto skillComponent = player->AddComponent<SkillComponent>(ComponentType::SKILL, skill);
+			auto flickerComponent = player->AddComponent<FlickerComponent>(ComponentType::FLICKER);
 			auto walletComp = player->AddComponent<WalletComponent>(ComponentType::WALLET);
 			auto talentComp = player->AddComponent<TalentComponent>(ComponentType::TALENT);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -225,7 +226,8 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         		followComp->Update(); // 直接更新位置
         	}
         	auto animationComp = enemy->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
-			auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);
+			auto flickerComp = enemy->AddComponent<FlickerComponent>(ComponentType::FLICKER);
+        	auto stateComp = enemy->AddComponent<StateComponent>(ComponentType::STATE);
         	auto healthComp = enemy->AddComponent<HealthComponent>(ComponentType::HEALTH, maxHp, 0, 0);
         	auto movementComp = enemy->AddComponent<MovementComponent>(ComponentType::MOVEMENT, moveSpeed);
         	auto attackComp = enemy->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, 0, 0, collisionDamage);
