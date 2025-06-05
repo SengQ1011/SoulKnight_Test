@@ -5,6 +5,7 @@
 #include "Components/InteractableComponent.hpp"
 
 #include "Components/ChestComponent.hpp"
+#include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 
 #include "Components/WalletComponent.hpp"
@@ -34,12 +35,22 @@ void InteractableComponent::Init()
 				switch (scene->GetSceneType())
 				{
 				case Scene::SceneType::Lobby:
+					targetScene = Scene::SceneType::DungeonLoad;
+					break;
 				case Scene::SceneType::Test_KC:
 					// 大廳的傳送門通常進入地牢載入場景
 					targetScene = Scene::SceneType::DungeonLoad;
 					break;
 				case Scene::SceneType::Dungeon:
 					// 地牢的傳送門進入下一關或結算
+					// 只有在地牢中的傳送門才會增加關卡數
+					{
+						// 嘗試將當前場景轉換為 DungeonScene
+						if (auto dungeonScene = std::dynamic_pointer_cast<DungeonScene>(scene))
+						{
+							dungeonScene->OnStageCompleted();
+						}
+					}
 					targetScene = Scene::SceneType::DungeonLoad;
 					break;
 				default:

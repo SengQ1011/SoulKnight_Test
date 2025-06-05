@@ -69,7 +69,10 @@ void Scene::SavePlayerInformation(std::shared_ptr<Character> player) const
 			talentID = talentComp->GetAllTalentID();
 		}
 
-		m_SceneData->gameProgress.currentStage++;
+		// 注意：currentStage 的增加應該在特定條件下進行，不是每次保存都增加
+		// 這裡暫時註解掉，避免每次場景退出都增加關卡數
+		// m_SceneData->gameProgress.currentStage++;
+
 		// playerData
 		m_SceneData->gameProgress.playerData.currentHp = hp;
 		m_SceneData->gameProgress.playerData.currentEnergy = energy;

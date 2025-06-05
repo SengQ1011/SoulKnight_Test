@@ -31,6 +31,8 @@ public:
 	void End(); // NOLINT(readability-convert-member-functions-to-static)
 
 	void StartGame();
+	void ForceInitializeNewGame(); // 重置關卡進度開始新遊戲
+	void ResetGameProgress(); // 只重置 GameProgress，保留 GameData
 	std::shared_ptr<SaveData> DownloadGameProgress() const;
 	void UploadGameProgress(std::shared_ptr<SaveData> &updatedProgress);
 	void receiveEnemyDeathEvent() const;

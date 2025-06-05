@@ -49,6 +49,20 @@ std::shared_ptr<DungeonScene> DungeonScene::s_PreGeneratedInstance = nullptr;
 void DungeonScene::Start()
 {
 	LOG_DEBUG("Entering Game Scene");
+
+	// 確保獲取場景數據
+	if (!m_SceneData)
+	{
+		Scene::Download();
+	}
+
+	// 檢查數據是否成功獲取
+	if (!m_SceneData)
+	{
+		LOG_ERROR("Failed to get scene data in DungeonScene::Start()");
+		return;
+	}
+
 	m_Loader = std::make_shared<Loader>(m_ThemeName);
 
 	// if(!m_OnDeathText)
@@ -146,13 +160,19 @@ void DungeonScene::Exit()
 {
 	LOG_DEBUG("Game Scene exited");
 
-	// TODO:保存游戲的進度
+	// 只在玩家死亡時才直接返回，不做任何處理
+	if (m_IsPlayerDeath)
+		return;
+
+	// 保存游戲的進度（但不增加關卡數）
 	auto cumulativeTime = Util::Time::GetElapsedTimeMs() - m_SceneData->gameProgress.dungeonStartTime;
 	m_SceneData->gameProgress.cumulativeTime += cumulativeTime;
 
 	if (m_Player)
 	{
 		SavePlayerInformation(m_Player);
+		// 移除自動增加關卡數的邏輯
+		// 關卡數只能在進入傳送門時增加
 	}
 }
 
@@ -162,6 +182,7 @@ Scene::SceneType DungeonScene::Change()
 	// 	return Scene::SceneType::Menu;
 	if (!m_Player->IsActive())
 	{
+		m_IsPlayerDeath = true;
 		m_timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
 		// m_OnDeathText->SetControlVisible(true);
 
@@ -169,7 +190,8 @@ Scene::SceneType DungeonScene::Change()
 		{
 			m_timer = 0.0f;
 			// m_OnDeathText->SetControlVisible(false);
-			return Scene::SceneType::DungeonLoad;
+			// 死亡時跳轉到結算場景進行結算
+			return Scene::SceneType::Result;
 		}
 	}
 	if (m_IsChange)
@@ -254,7 +276,7 @@ void DungeonScene::InitUIManager()
 	// 創建遊戲 HUD 面板 - 低優先級非模態面板
 	const auto gameHUDPanel =
 		std::make_shared<GameHUDPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH),
-									   m_Player->GetComponent<WalletComponent>(ComponentType::WALLET));
+									   m_Player->GetComponent<WalletComponent>(ComponentType::WALLET), m_Map);
 	gameHUDPanel->Start();
 	UIManager::GetInstance().RegisterPanel("gameHUD", std::static_pointer_cast<UIPanel>(gameHUDPanel), 0, false);
 }
@@ -286,7 +308,6 @@ void DungeonScene::CreatePlayer()
 	std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
 	if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
 	{
-		talentComp->AddTalent(talentDatabase[2]);
 		// 武器
 		if (const auto attackComp = m_Player->GetComponent<AttackComponent>(ComponentType::ATTACK))
 		{
@@ -486,4 +507,20 @@ void DungeonScene::InitializeStageIcon()
 	m_stageIcon->m_Transform.translation = glm::vec2(0.0f, 120.0f);
 	m_stageIcon->m_Transform.scale = glm::vec2(4.0f);
 	m_Root->AddChild(m_stageIcon);
+}
+
+void DungeonScene::OnStageCompleted()
+{
+	// 處理關卡完成時的邏輯
+	if (m_SceneData)
+	{
+		m_SceneData->gameProgress.currentStage++;
+		LOG_INFO("Stage completed! Current stage: {}", m_SceneData->gameProgress.currentStage);
+
+		// 保存玩家資訊
+		if (m_Player)
+		{
+			SavePlayerInformation(m_Player);
+		}
+	}
 }

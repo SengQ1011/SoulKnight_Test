@@ -18,46 +18,58 @@ void DungeonMap::Start()
 	const float tileSize = m_SpaceInfo.tileSize.x;
 	const float roomRegion = m_SpaceInfo.roomRegion.x;
 	const float mapSizeInGrid = m_SpaceInfo.roomNum.x;
-	auto startPos = glm::vec2(std::floor(mapSizeInGrid/2) * roomRegion * tileSize);
-	startPos *= glm::vec2(-1,1); // 左上0，0房间坐标
+	auto startPos = glm::vec2(std::floor(mapSizeInGrid / 2) * roomRegion * tileSize);
+	startPos *= glm::vec2(-1, 1); // 左上0，0房间坐标
 	const float offsetRoom = tileSize * roomRegion;
 
-	//产生了主要路径
+	// 产生了主要路径
 	GenerateMainPath();
 
-	for (int i = 0; i < std::size(m_RoomInfo); ++i) {
-		if (m_RoomInfo[i].m_RoomType == RoomType::EMPTY) continue;
+	for (int i = 0; i < std::size(m_RoomInfo); ++i)
+	{
+		if (m_RoomInfo[i].m_RoomType == RoomType::EMPTY)
+			continue;
 
 		const int x = i % static_cast<int>(m_SpaceInfo.roomNum.x);
 		const int y = i / static_cast<int>(m_SpaceInfo.roomNum.x);
 		glm::vec2 roomPosition = startPos + glm::vec2(offsetRoom, -offsetRoom) * glm::vec2(x, y);
 		std::shared_ptr<DungeonRoom> room;
 
-		switch (m_RoomInfo[i].m_RoomType) {
+		switch (m_RoomInfo[i].m_RoomType)
+		{
 		case RoomType::STARTING:
-			room = std::make_shared<StartingRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+			room = std::make_shared<StartingRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
+												  glm::vec2(x, y));
 			break;
 		case RoomType::MONSTER:
-			room = std::make_shared<MonsterRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+			room = std::make_shared<MonsterRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
+												 glm::vec2(x, y));
 			break;
 		case RoomType::PORTAL:
-			room = std::make_shared<PortalRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+			room = std::make_shared<PortalRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
+												glm::vec2(x, y));
 			break;
-		default: break;
+		default:
+			break;
 		}
 
-		if (!room) continue;
+		if (!room)
+			continue;
 		room->Start(m_Player.lock());
 		room->CharacterEnter(m_Player.lock());
 		m_RoomInfo[i].room = room;
 
-		for (Direction dir : ALL_DIRECTIONS) {
+		for (Direction dir : ALL_DIRECTIONS)
+		{
 			if (m_RoomInfo[i].m_Connections[static_cast<int>(dir)])
 				room->CreateCorridorInDirection(dir);
 			else
 				room->CreateWallInDirection(dir);
 		}
 	}
+
+	// 設置房間間的連接關係
+	SetupRoomConnections();
 }
 
 void DungeonMap::Update()
@@ -65,7 +77,8 @@ void DungeonMap::Update()
 	// 取得當前玩家位置的房間
 	UpdateCurrentRoomIfNeeded();
 	// 當玩家走過門進入房間觸發轉換狀態
-	if (m_CurrentRoom && m_CurrentRoom->IsPlayerInsideRoom()) m_CurrentRoom->TryActivateByPlayer();
+	if (m_CurrentRoom && m_CurrentRoom->IsPlayerInsideRoom())
+		m_CurrentRoom->TryActivateByPlayer();
 }
 
 bool DungeonMap::GenerateMainPath()
@@ -75,7 +88,8 @@ bool DungeonMap::GenerateMainPath()
 	m_RoomInfo[startIndex].m_RoomType = RoomType::STARTING;
 
 	auto dir1Opt = GetRandomValidDirection(start);
-	if (!dir1Opt) return false;
+	if (!dir1Opt)
+		return false;
 	Direction dir1 = *dir1Opt;
 	glm::ivec2 monster1 = Move(start, dir1);
 	int mon1Index = monster1.y * 5 + monster1.x;
@@ -84,7 +98,8 @@ bool DungeonMap::GenerateMainPath()
 	m_RoomInfo[mon1Index].m_Connections[static_cast<int>(GetOppositeDirection(dir1))] = true;
 
 	auto dir2Opt = GetRandomValidDirection(monster1, {GetOppositeDirection(dir1)});
-	if (!dir2Opt) return false;
+	if (!dir2Opt)
+		return false;
 	Direction dir2 = *dir2Opt;
 	glm::ivec2 monster2 = Move(monster1, dir2);
 	int mon2Index = monster2.y * 5 + monster2.x;
@@ -93,7 +108,8 @@ bool DungeonMap::GenerateMainPath()
 	m_RoomInfo[mon2Index].m_Connections[static_cast<int>(GetOppositeDirection(dir2))] = true;
 
 	auto dir3Opt = GetRandomValidDirection(monster2, {GetOppositeDirection(dir2)});
-	if (!dir3Opt) return false;
+	if (!dir3Opt)
+		return false;
 	Direction dir3 = *dir3Opt;
 	glm::ivec2 portal = Move(monster2, dir3);
 	int portalIndex = portal.y * 5 + portal.x;
@@ -101,8 +117,8 @@ bool DungeonMap::GenerateMainPath()
 	m_RoomInfo[mon2Index].m_Connections[static_cast<int>(dir3)] = true;
 	m_RoomInfo[portalIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir3))] = true;
 
-	LOG_DEBUG("Main path: START ({}, {}) -> MON1 ({}, {}) -> MON2 ({}, {}) -> PORTAL ({}, {})",
-			  start.x, start.y, monster1.x, monster1.y, monster2.x, monster2.y, portal.x, portal.y);
+	LOG_DEBUG("Main path: START ({}, {}) -> MON1 ({}, {}) -> MON2 ({}, {}) -> PORTAL ({}, {})", start.x, start.y,
+			  monster1.x, monster1.y, monster2.x, monster2.y, portal.x, portal.y);
 	return true;
 }
 
@@ -114,11 +130,9 @@ void DungeonMap::UpdateCurrentRoomIfNeeded()
 	{
 		const auto mapRoomCount = m_SpaceInfo.roomNum;
 		const auto roomSizeInPixel = m_SpaceInfo.tileSize * m_SpaceInfo.roomRegion;
-		const glm::ivec2 IndexInside = Tool::FindIndexWhichGridObjectIsInside(
-			mapRoomCount,
-			roomSizeInPixel,
-			m_Player.lock()->GetWorldCoord());
-		if (IndexInside.x <0 || IndexInside.y < 0)
+		const glm::ivec2 IndexInside =
+			Tool::FindIndexWhichGridObjectIsInside(mapRoomCount, roomSizeInPixel, m_Player.lock()->GetWorldCoord());
+		if (IndexInside.x < 0 || IndexInside.y < 0)
 		{
 			LOG_ERROR("DungeonMap::UpdateCurrentRoomIfNeeded error IndexInside");
 			return;
@@ -131,57 +145,43 @@ void DungeonMap::UpdateCurrentRoomIfNeeded()
 // 用途只有检查上下左右吗？
 std::vector<std::weak_ptr<DungeonRoom>> DungeonMap::GetNeighborRooms() const
 {
-	const glm::vec2 currentRoomWorldPos = m_CurrentRoom->GetRoomSpaceInfo().m_WorldCoord;
-
-	// 左上角為 (0,0) 的原點世界座標
-	const glm::vec2 roomSize = m_SpaceInfo.roomRegion * m_SpaceInfo.tileSize;
-	const glm::vec2 halfMapRoomCount = glm::floor(m_SpaceInfo.roomNum / 2.0f);
-	const glm::vec2 startWorldPos = roomSize * halfMapRoomCount * glm::vec2(-1, 1);
-
-	// 換算為格子座標（相對於地圖左上）
-	glm::vec2 currentRoomGridPos = (currentRoomWorldPos - startWorldPos) / roomSize;
-	currentRoomGridPos *= glm::vec2(1,-1);
-	std::vector<std::weak_ptr<DungeonRoom>> neighborRooms;
-	constexpr int nearRegionSize = 3;
-	neighborRooms.resize(nearRegionSize * nearRegionSize);
-
-	for (int row = 0; row < nearRegionSize; row++)
+	if (!m_CurrentRoom)
 	{
-		const int RoomGridPosRow = static_cast<int>(currentRoomGridPos.y) + row - 1;
-		// Map纵轴边界判断
-		if (RoomGridPosRow < 0 ||
-			RoomGridPosRow >= static_cast<int>(m_SpaceInfo.roomNum.y)) continue;
-		for (int col = 0; col < nearRegionSize; col++)
-		{
-			const int RoomGridPosCol = static_cast<int>(currentRoomGridPos.x) + col - 1;
-			// Map横轴边界判断
-			if (RoomGridPosCol < 0 ||
-				RoomGridPosCol >= static_cast<int>(m_SpaceInfo.roomNum.x)) continue;
-			const int roomIndex = RoomGridPosRow * static_cast<int>(m_SpaceInfo.roomNum.x) + RoomGridPosCol;
-			if (!m_RoomInfo[roomIndex].room) continue;; // TODO:目前是九宫格，但可能不需要
-			neighborRooms[row * nearRegionSize + col] = m_RoomInfo[roomIndex].room;
-		}
-		std::cout << std::endl;
+		return {};
 	}
-	return neighborRooms;
+
+	// 直接使用當前房間的連接關係
+	return m_CurrentRoom->GetConnectedNeighbors();
 }
 
-Direction DungeonMap::GetOppositeDirection(Direction dir) {
-	switch (dir) {
-	case Direction::UP: return Direction::DOWN;
-	case Direction::DOWN: return Direction::UP;
-	case Direction::LEFT: return Direction::RIGHT;
-	case Direction::RIGHT: return Direction::LEFT;
+Direction DungeonMap::GetOppositeDirection(Direction dir)
+{
+	switch (dir)
+	{
+	case Direction::UP:
+		return Direction::DOWN;
+	case Direction::DOWN:
+		return Direction::UP;
+	case Direction::LEFT:
+		return Direction::RIGHT;
+	case Direction::RIGHT:
+		return Direction::LEFT;
 	}
 	return Direction::UP;
 }
 
-glm::ivec2 DungeonMap::Move(const glm::ivec2& pos, Direction dir) {
-	switch (dir) {
-	case Direction::UP: return pos + glm::ivec2(0, -1);
-	case Direction::DOWN: return pos + glm::ivec2(0, 1);
-	case Direction::LEFT: return pos + glm::ivec2(-1, 0);
-	case Direction::RIGHT: return pos + glm::ivec2(1, 0);
+glm::ivec2 DungeonMap::Move(const glm::ivec2 &pos, Direction dir)
+{
+	switch (dir)
+	{
+	case Direction::UP:
+		return pos + glm::ivec2(0, -1);
+	case Direction::DOWN:
+		return pos + glm::ivec2(0, 1);
+	case Direction::LEFT:
+		return pos + glm::ivec2(-1, 0);
+	case Direction::RIGHT:
+		return pos + glm::ivec2(1, 0);
 	}
 	return pos;
 }
@@ -192,8 +192,10 @@ std::optional<Direction> DungeonMap::GetRandomValidDirection(const glm::ivec2 &c
 	std::vector dirs = {Direction::UP, Direction::RIGHT, Direction::DOWN, Direction::LEFT};
 	std::shuffle(dirs.begin(), dirs.end(), std::mt19937(std::random_device{}()));
 
-	for (Direction dir : dirs) {
-		if (exclude.count(dir)) continue;
+	for (Direction dir : dirs)
+	{
+		if (exclude.count(dir))
+			continue;
 		glm::ivec2 next = Move(currentPos, dir);
 
 		// 檢查邊界
@@ -210,6 +212,48 @@ std::optional<Direction> DungeonMap::GetRandomValidDirection(const glm::ivec2 &c
 	return std::nullopt;
 }
 
+void DungeonMap::SetupRoomConnections()
+{
+	for (int i = 0; i < std::size(m_RoomInfo); ++i)
+	{
+		if (m_RoomInfo[i].m_RoomType == RoomType::EMPTY || !m_RoomInfo[i].room)
+			continue;
 
+		const int x = i % static_cast<int>(m_SpaceInfo.roomNum.x);
+		const int y = i / static_cast<int>(m_SpaceInfo.roomNum.x);
 
+		// 檢查四個方向的相鄰房間
+		for (Direction dir : ALL_DIRECTIONS)
+		{
+			glm::ivec2 neighborPos = glm::ivec2(x, y);
+			switch (dir)
+			{
+			case Direction::UP:
+				neighborPos.y -= 1;
+				break;
+			case Direction::DOWN:
+				neighborPos.y += 1;
+				break;
+			case Direction::LEFT:
+				neighborPos.x -= 1;
+				break;
+			case Direction::RIGHT:
+				neighborPos.x += 1;
+				break;
+			}
 
+			// 邊界檢查
+			if (neighborPos.x < 0 || neighborPos.x >= 5 || neighborPos.y < 0 || neighborPos.y >= 5)
+				continue;
+
+			int neighborIndex = neighborPos.y * 5 + neighborPos.x;
+
+			// 如果相鄰位置有房間，設置連接關係
+			if (m_RoomInfo[neighborIndex].room)
+			{
+				bool hasConnection = m_RoomInfo[i].m_Connections[static_cast<int>(dir)];
+				m_RoomInfo[i].room->SetNeighborRoom(dir, m_RoomInfo[neighborIndex].room, hasConnection);
+			}
+		}
+	}
+}

@@ -38,7 +38,7 @@ void SceneManager::Start()
 		InitializeNewGameData();
 	}
 
-	m_CurrentScene = CreateScene(Scene::SceneType::Menu);
+	m_CurrentScene = CreateScene(Scene::SceneType::Result);
 
 	m_CurrentScene->Start();
 }
@@ -171,6 +171,58 @@ void SceneManager::StartGame()
 	m_CurrentScene->Start();
 }
 
+void SceneManager::ForceInitializeNewGame()
+{
+	LOG_DEBUG("Resetting game progress for new game");
+	// 只重置關卡進度，保留遊戲幣等永久數據
+	ResetGameProgress();
+}
+
+void SceneManager::ResetGameProgress()
+{
+	if (!m_Data)
+	{
+		LOG_ERROR("No existing data to reset, initializing new data");
+		InitializeNewGameData();
+		return;
+	}
+
+	// 保存原有的 GameData（遊戲幣等永久數據）
+	GameData preservedGameData = m_Data->gameData;
+
+	LOG_DEBUG("Preserving GameData: gameMoney={}", preservedGameData.gameMoney);
+
+	// 重置 GameProgress
+	auto &progress = m_Data->gameProgress;
+	progress.currentChapter = 1;
+	progress.currentStage = 1;
+	progress.dungeonStartTime = 0;
+	progress.cumulativeTime = 0;
+	progress.killCount = 0;
+
+	// 重置玩家數據
+	auto &playerData = progress.playerData;
+	playerData.playerID = 1;
+	playerData.currentHp = 0;
+	playerData.currentEnergy = 0;
+	playerData.money = 0;
+	playerData.weaponID.clear();
+	playerData.talentID.clear();
+
+	// 恢復 GameData
+	m_Data->gameData = preservedGameData;
+
+	// 設置存檔狀態
+	m_Data->saveName = "New Game";
+	m_Data->isInGameProgress = false;
+
+	// 保存更新的數據
+	SaveManager::GetInstance().SaveGame(m_Data);
+
+	LOG_DEBUG("Game progress reset completed: currentStage={}, currentChapter={}, preserved gameMoney={}",
+			  progress.currentStage, progress.currentChapter, m_Data->gameData.gameMoney);
+}
+
 void SceneManager::InitializeNewGameData()
 {
 	std::shared_ptr<SaveData> newData;
@@ -186,8 +238,8 @@ void SceneManager::InitializeNewGameData()
 
 	// 初始化遊戲進度
 	auto &progress = newData->gameProgress;
-	progress.currentChapter = static_cast<int>(StageTheme::IcePlains);
-	progress.currentStage = 0; // 在離開Lobby時開始更新
+	progress.currentChapter = 1;
+	progress.currentStage = 1;
 	progress.dungeonStartTime = 0; // 進入地牢再更新
 	progress.cumulativeTime = 0;
 	progress.killCount = 0;

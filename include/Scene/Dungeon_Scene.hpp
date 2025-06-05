@@ -15,7 +15,7 @@ class DungeonMap;
 class DungeonScene final : public Scene
 {
 public:
-	DungeonScene() = default;
+	DungeonScene() : Scene(SceneType::Dungeon) {}
 	~DungeonScene() override = default;
 
 	void Start() override;
@@ -28,10 +28,14 @@ public:
 	static void ClearPreGenerated();
 	std::shared_ptr<Character> GetPlayer() const { return m_Player; }
 
+	// 處理關卡完成的方法，供傳送門調用
+	void OnStageCompleted();
+
 private:
 	static std::shared_ptr<DungeonScene> s_PreGeneratedInstance;
 
 	std::shared_ptr<Character> m_Player;
+	bool m_IsPlayerDeath = false;
 	float m_MapHeight;
 
 	std::shared_ptr<DungeonMap> m_Map;

@@ -43,7 +43,16 @@ void OpenPausePanel() { UIManager::GetInstance().ShowPanel("pause"); }
 
 void TestScene_KC::Start()
 {
-	LOG_DEBUG("Entering KC Test Scene (with Lobby Settings)");
+	LOG_DEBUG("Entering KC Test Scene");
+
+	// 確保獲取場景數據（測試場景可能不需要數據）
+	if (!m_SceneData)
+	{
+		Scene::Download();
+	}
+
+	// 測試場景不需要數據也能正常運行
+	LOG_DEBUG("Scene data status: {}", m_SceneData ? "Available" : "Not available");
 
 	// 創建關卡文字
 	CreateStageText();

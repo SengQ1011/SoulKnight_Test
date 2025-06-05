@@ -4,10 +4,13 @@
 
 #include "Scene/MainMenu_Scene.hpp"
 
+#include <cmath>
 #include <iostream>
+
 
 #include "ImagePoolManager.hpp"
 #include "ObserveManager/AudioManager.hpp"
+#include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Tool/Tool.hpp"
 #include "UIPanel/SettingPanel.hpp"
@@ -18,21 +21,42 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Text.hpp"
+#include "Util/Time.hpp"
 #include "config.hpp"
 
 void MainMenuScene::Start()
 {
-	LOG_DEBUG("Entering Main Menu");
+	LOG_DEBUG("Entering Main Menu Scene");
+
+	// 確保獲取場景數據（主菜單可能沒有數據，這是正常的）
+	if (!m_SceneData)
+	{
+		Scene::Download();
+	}
+
+	// 主菜單不需要數據也能正常運行，所以不檢查失敗情況
+	LOG_DEBUG("Scene data status: {}", m_SceneData ? "Available" : "Not available");
+
+	// 初始化背景
+	m_RedShawl = std::make_shared<nGameObject>();
 
 	InitBackground();
 	InitTitleAndDecor();
 	InitTextLabels();
 	InitUIManager();
 	InitSettingButton();
+	InitDeleteDataButton();
+	InitNewGameButton();
+	InitContinueGameButton();
 	InitAudioManager();
 
 	m_Root->AddChild(m_Background);
 	m_Root->AddChild(m_SettingButton);
+	m_Root->AddChild(m_DeleteDataButton);
+	m_Root->AddChild(m_NewGameButton);
+	m_Root->AddChild(m_ContinueGameButton);
+	m_Root->AddChild(m_NewGameButtonText);
+	m_Root->AddChild(m_ContinueGameButtonText);
 	m_Root->AddChild(m_RedShawl);
 	m_Root->AddChild(m_Title);
 	m_Root->AddChild(m_Version);
@@ -45,14 +69,43 @@ void MainMenuScene::Update()
 {
 	m_Root->Update();
 	m_SettingButton->Update();
+	m_DeleteDataButton->Update();
+	if (m_NewGameButton)
+		m_NewGameButton->Update();
+	if (m_ContinueGameButton)
+		m_ContinueGameButton->Update();
 	// AudioManager::GetInstance().DrawDebugUI(); //測試用的
 	UIManager::GetInstance().Update();
+
+	// 更新動畫效果
+	UpdateSlideAnimation();
+	UpdateTextBlinkEffect();
+
+	// 檢測左鍵點擊且沒有點擊到UI元素
+	if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB) && !IsMouseClickingOnButtons())
+	{
+		// 讓 m_Text 消失
+		m_Text->SetVisible(false);
+
+		// 開始平移顯示 m_RedShawl
+		if (!m_IsSliding && !m_RedShawl->IsVisible())
+		{
+			StartSlideAnimation();
+		}
+	}
 }
 
 void MainMenuScene::Exit()
 {
-	LOG_DEBUG("Main Menu exited {}");
+	LOG_DEBUG("Main Menu exited");
 	AudioManager::GetInstance().PauseBGM();
+}
+
+void MainMenuScene::Upload()
+{
+	// MainMenu 場景不應該上傳遊戲進度數據
+	// 避免覆寫其他場景已經設定的數據
+	LOG_DEBUG("MainMenu_Scene::Upload() - skipping upload to avoid data overwrite");
 }
 
 Scene::SceneType MainMenuScene::Change()
@@ -66,35 +119,41 @@ Scene::SceneType MainMenuScene::Change()
 	return Scene::SceneType::Null;
 }
 
-void MainMenuScene::InitBackground() {
-	auto& img = ImagePoolManager::GetInstance();
+void MainMenuScene::InitBackground()
+{
+	auto &img = ImagePoolManager::GetInstance();
 	m_Background->SetDrawable(img.GetImage(RESOURCE_DIR "/MainMenu/MainMenuBackground.png"));
 	m_Background->SetZIndex(0);
 }
 
-void MainMenuScene::InitTitleAndDecor() {
-	auto& img = ImagePoolManager::GetInstance();
+void MainMenuScene::InitTitleAndDecor()
+{
+	auto &img = ImagePoolManager::GetInstance();
 	m_Title->SetDrawable(img.GetImage(RESOURCE_DIR "/MainMenu/Title.png"));
 	m_Title->SetZIndex(2);
-	m_Title->SetPivot({234, -221.5f});
+	m_Title->m_Transform.translation = glm::vec2(-234.0f, 221.5f);
 
 	m_RedShawl->SetDrawable(img.GetImage(RESOURCE_DIR "/MainMenu/RedShawl.png"));
 	m_RedShawl->SetZIndex(1);
-	m_RedShawl->SetPivot({-237, -22.0f});
+	m_RedShawl->SetVisible(false); // 初始隱藏紅披風
+	m_RedShawl->m_Transform.translation =
+		glm::vec2((static_cast<float>(PTSD_Config::WINDOW_WIDTH) + m_RedShawl->GetScaledSize().x) / 2, 22.0f);
 }
 
-void MainMenuScene::InitTextLabels() {
-	auto& img = ImagePoolManager::GetInstance();
+void MainMenuScene::InitTextLabels()
+{
+	auto &img = ImagePoolManager::GetInstance();
 	m_Text->SetDrawable(img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 20, "ENTER開始OwOb", Util::Color(255, 255, 255)));
 	m_Text->SetZIndex(2);
-	m_Text->SetPivot({-11, 300});
+	m_Text->m_Transform.translation = glm::vec2(11.0f, -300.0f);
 
 	m_Version->SetDrawable(img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 20, "版本號 v1.0.0", Util::Color(255, 255, 255)));
 	m_Version->SetZIndex(2);
-	m_Version->SetPivot({-450, 300});
+	m_Version->m_Transform.translation = glm::vec2(450.0f, -300.0f);
 }
 
-void MainMenuScene::InitUIManager() {
+void MainMenuScene::InitUIManager()
+{
 	UIManager::GetInstance().ResetPanels();
 
 	auto panel = std::make_shared<SettingPanel>();
@@ -102,19 +161,226 @@ void MainMenuScene::InitUIManager() {
 	UIManager::GetInstance().RegisterPanel("setting", panel);
 }
 
-void MainMenuScene::InitSettingButton() {
-	auto& img = ImagePoolManager::GetInstance();
-	std::function<void()> onClick = []() {
-		UIManager::GetInstance().ShowPanel("setting");
-	};
+void MainMenuScene::InitSettingButton()
+{
+	auto &img = ImagePoolManager::GetInstance();
+	std::function<void()> onClick = []() { UIManager::GetInstance().ShowPanel("setting"); };
 	m_SettingButton = std::make_shared<UIButton>(onClick, false);
 	m_SettingButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_settingPanel/button_setting.png"));
 	m_SettingButton->SetZIndex(3.0f);
 	m_SettingButton->m_Transform.translation = {-550.0f, -280.0f};
 }
 
-void MainMenuScene::InitAudioManager() {
+void MainMenuScene::InitDeleteDataButton()
+{
+	auto &img = ImagePoolManager::GetInstance();
+	std::function<void()> onClick = []()
+	{
+		auto &saveManager = SaveManager::GetInstance();
+		if (saveManager.HasSaveData())
+		{
+			bool success = saveManager.DeleteSave();
+			if (success)
+			{
+				LOG_INFO("Save data deleted successfully");
+				AudioManager::GetInstance().PlaySFX("click");
+			}
+			else
+			{
+				LOG_ERROR("Failed to delete save data");
+			}
+		}
+		else
+		{
+			LOG_INFO("No save data to delete");
+		}
+	};
+	m_DeleteDataButton = std::make_shared<UIButton>(onClick, false);
+	m_DeleteDataButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_menuHUD/button_deleteData.png"));
+	m_DeleteDataButton->SetZIndex(3.0f);
+	m_DeleteDataButton->m_Transform.translation = {-550.0f, -216.0f};
+}
+
+void MainMenuScene::InitAudioManager()
+{
 	AudioManager::GetInstance().Reset();
 	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
 	AudioManager::GetInstance().PlayBGM();
+}
+
+bool MainMenuScene::IsMouseClickingOnButtons() const
+{
+	// 檢查是否有設定面板顯示
+	if (UIManager::GetInstance().IsPanelVisible("setting"))
+	{
+		return true; // 如果設定面板顯示，則阻擋輸入
+	}
+
+	// 獲取滑鼠座標
+	glm::vec2 mousePos = Tool::GetMouseCoord();
+
+	// 檢查是否點擊到設定按鈕
+	if (m_SettingButton && m_SettingButton->IsVisible())
+	{
+		glm::vec2 buttonPos = m_SettingButton->m_Transform.translation;
+		glm::vec2 buttonSize = m_SettingButton->GetScaledSize();
+
+		if (mousePos.x >= buttonPos.x - buttonSize.x / 2.0f && mousePos.x <= buttonPos.x + buttonSize.x / 2.0f &&
+			mousePos.y >= buttonPos.y - buttonSize.y / 2.0f && mousePos.y <= buttonPos.y + buttonSize.y / 2.0f)
+		{
+			return true;
+		}
+	}
+
+	// 檢查是否點擊到刪除資料按鈕
+	if (m_DeleteDataButton && m_DeleteDataButton->IsVisible())
+	{
+		glm::vec2 buttonPos = m_DeleteDataButton->m_Transform.translation;
+		glm::vec2 buttonSize = m_DeleteDataButton->GetScaledSize();
+
+		if (mousePos.x >= buttonPos.x - buttonSize.x / 2.0f && mousePos.x <= buttonPos.x + buttonSize.x / 2.0f &&
+			mousePos.y >= buttonPos.y - buttonSize.y / 2.0f && mousePos.y <= buttonPos.y + buttonSize.y / 2.0f)
+		{
+			return true;
+		}
+	}
+
+	return false; // 沒有點擊到任何按鈕
+}
+
+void MainMenuScene::UpdateSlideAnimation()
+{
+	if (m_IsSliding)
+	{
+		float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+		m_SlideTimer += deltaTime;
+
+		// 計算當前進度 (0.0 到 1.0)
+		float progress = std::min(m_SlideTimer / m_SlideDuration, 1.0f);
+
+		// 使用緩動函數讓動畫更自然 (ease-out)
+		float easedProgress = 1.0f - (1.0f - progress) * (1.0f - progress);
+
+		// 計算當前位置：從起始位置平移到目標位置
+		glm::vec2 currentPosition = m_StartPosition + (m_TargetPosition - m_StartPosition) * easedProgress;
+		m_RedShawl->m_Transform.translation = currentPosition;
+
+		// 平移完成
+		if (progress >= 1.0f)
+		{
+			m_IsSliding = false;
+			m_RedShawl->m_Transform.translation = m_TargetPosition;
+		}
+	}
+}
+
+void MainMenuScene::UpdateTextBlinkEffect()
+{
+	// 更新文字閃爍計時器
+	m_TextBlinkTimer += Util::Time::GetDeltaTimeMs() / 1000.0f;
+
+	// 計算閃爍週期中的進度 (0.0 到 1.0)
+	float progress = fmod(m_TextBlinkTimer, m_TextBlinkPeriod) / m_TextBlinkPeriod;
+
+	// 使用正弦波來計算透明度 (從0到1，完全透明到完全不透明)
+	float alpha = std::max(std::abs(sin(progress * M_PI)), 0.01);
+
+	// 計算透明度值
+	const auto alphaValue = static_cast<uint8_t>(alpha * 255);
+
+	// 創建新的顏色
+	Util::Color newColor(255, 255, 255, alphaValue);
+
+	// 重新創建文字drawable來應用新顏色
+	auto &img = ImagePoolManager::GetInstance();
+	m_Text->SetDrawable(
+		std::make_shared<Util::Text>(RESOURCE_DIR "/Font/zpix.ttf", 20, "ENTER開始OwOb", newColor, false));
+}
+
+void MainMenuScene::StartSlideAnimation()
+{
+	m_RedShawl->SetVisible(true);
+	m_IsSliding = true;
+	m_SlideTimer = 0.0f;
+
+	// 設置起始位置（螢幕右邊外側）和目標位置
+	m_TargetPosition = {237.0f, 22.0f}; // 目標的位置
+	m_StartPosition = glm::vec2((static_cast<float>(PTSD_Config::WINDOW_WIDTH) + m_RedShawl->GetScaledSize().x) / 2,
+								22.0f); // 螢幕右邊外側
+	m_RedShawl->m_Transform.translation = m_StartPosition;
+}
+
+void MainMenuScene::InitNewGameButton()
+{
+	auto &img = ImagePoolManager::GetInstance();
+
+	// 創建新遊戲按鈕回調函數
+	auto onClick = [this]()
+	{
+		LOG_DEBUG("New Game button clicked - resetting game progress");
+		AudioManager::GetInstance().PlaySFX("click");
+
+		// 只重置關卡進度，保留遊戲幣等永久數據
+		auto &sceneManager = SceneManager::GetInstance();
+		sceneManager.ResetGameProgress();
+
+		sceneManager.SetNextScene(SceneType::Lobby);
+	};
+
+	m_NewGameButton = std::make_shared<UIButton>(onClick, false);
+	m_NewGameButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_result/button_continue.png"));
+	m_NewGameButton->SetZIndex(3.0f);
+	m_NewGameButton->m_Transform.translation = {-200.0f, -100.0f}; // 左邊位置
+
+	// 創建新遊戲按鈕文字
+	m_NewGameButtonText->SetDrawable(
+		img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 32, "新遊戲", Util::Color(255, 255, 255), false));
+	m_NewGameButtonText->SetZIndex(4.0f); // 比按鈕高一層
+	m_NewGameButtonText->m_Transform.translation =
+		m_NewGameButton->m_Transform.translation + glm::vec2(15.0f, 0.0f); // 與按鈕相同位置
+}
+
+void MainMenuScene::InitContinueGameButton()
+{
+	auto &img = ImagePoolManager::GetInstance();
+
+	// 創建繼續遊戲按鈕回調函數
+	auto onClick = [this]()
+	{
+		LOG_DEBUG("Continue Game button clicked");
+		AudioManager::GetInstance().PlaySFX("click");
+		// 檢查是否有存檔數據
+		auto &saveManager = SaveManager::GetInstance();
+		if (saveManager.HasSaveData())
+		{
+			// 使用正常的場景切換機制，避免直接替換指標
+			auto &sceneManager = SceneManager::GetInstance();
+			// 根據存檔狀態決定目標場景
+			auto saveData = saveManager.GetSaveData();
+			if (saveData && saveData->isInGameProgress)
+			{
+				sceneManager.SetNextScene(SceneType::Dungeon);
+			}
+			else
+			{
+				sceneManager.SetNextScene(SceneType::Lobby);
+			}
+		}
+		else
+		{
+			LOG_INFO("No save data found for continue game");
+		}
+	};
+
+	m_ContinueGameButton = std::make_shared<UIButton>(onClick, false);
+	m_ContinueGameButton->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_result/button_continue.png"));
+	m_ContinueGameButton->SetZIndex(3.0f);
+	m_ContinueGameButton->m_Transform.translation = {200.0f, -100.0f}; // 右邊位置
+
+	// 創建繼續遊戲按鈕文字
+	m_ContinueGameButtonText->SetDrawable(
+		img.GetText(RESOURCE_DIR "/Font/zpix.ttf", 32, "繼續遊戲", Util::Color(255, 255, 255), false));
+	m_ContinueGameButtonText->SetZIndex(4.0f); // 比按鈕高一層
+	m_ContinueGameButtonText->m_Transform.translation =
+		m_ContinueGameButton->m_Transform.translation + glm::vec2(15.0f, 0.0f); // 與按鈕相同位置
 }

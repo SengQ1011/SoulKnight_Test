@@ -36,7 +36,21 @@
 void LobbyScene::Start()
 {
 	LOG_DEBUG("Entering Lobby Scene");
-	// 创建并初始化玩家
+
+	// 確保獲取場景數據
+	if (!m_SceneData)
+	{
+		Scene::Download();
+	}
+
+	// 檢查數據是否成功獲取
+	if (!m_SceneData)
+	{
+		LOG_ERROR("Failed to get scene data in LobbyScene::Start()");
+		return;
+	}
+
+	// 创建玩家角色
 	CreatePlayer();
 	CreateEnemy();
 

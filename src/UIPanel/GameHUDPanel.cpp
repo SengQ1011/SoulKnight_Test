@@ -3,21 +3,26 @@
 #include "Components/walletComponent.hpp"
 #include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
+#include "Room/DungeonMap.hpp"
 #include "Scene/SceneManager.hpp"
+#include "UIPanel/MinimapPanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
 #include "UIPanel/UIButton.hpp"
 #include "UIPanel/UIManager.hpp"
 #include "Util/Color.hpp"
+#include "Util/Input.hpp"
 #include "Util/Time.hpp"
 #include "config.hpp"
+
 
 
 // 暫停按鈕回調函數
 void OpenPausePanelFromHUD() { UIManager::GetInstance().ShowPanel("pause"); }
 
 GameHUDPanel::GameHUDPanel(const std::shared_ptr<HealthComponent> &healthComp,
-						   const std::shared_ptr<WalletComponent> &walletComp) :
-	m_PlayerHealthComponent(healthComp), m_PlayerWalletComponent(walletComp)
+						   const std::shared_ptr<WalletComponent> &walletComp,
+						   const std::shared_ptr<DungeonMap> &dungeonMap) :
+	m_PlayerHealthComponent(healthComp), m_PlayerWalletComponent(walletComp), m_DungeonMap(dungeonMap)
 {
 }
 
@@ -29,6 +34,13 @@ void GameHUDPanel::Start()
 	// 初始化玩家狀態面板
 	m_PlayerStatusPanel = std::make_shared<PlayerStatusPanel>(m_PlayerHealthComponent);
 	m_PlayerStatusPanel->Start();
+
+	// 初始化小地圖面板（如果有DungeonMap的話）
+	if (m_DungeonMap)
+	{
+		m_MinimapPanel = std::make_shared<MinimapPanel>(m_DungeonMap);
+		m_MinimapPanel->Start();
+	}
 
 	// 初始化暫停按鈕
 	InitializePauseButton();
@@ -65,6 +77,10 @@ void GameHUDPanel::Update()
 	if (m_PlayerStatusPanel)
 		m_PlayerStatusPanel->Update();
 
+	// 更新小地圖面板
+	if (m_MinimapPanel)
+		m_MinimapPanel->Update();
+
 	// 更新按鈕（考慮輸入阻擋）
 	if (m_PauseButton)
 	{
@@ -88,7 +104,10 @@ void GameHUDPanel::Update()
 	}
 
 	// 調試界面
-	DrawDebugUI();
+	if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	{
+		DrawDebugUI();
+	}
 }
 
 void GameHUDPanel::Show()
@@ -102,6 +121,10 @@ void GameHUDPanel::Show()
 	if (m_PlayerStatusPanel)
 		std::static_pointer_cast<UIPanel>(m_PlayerStatusPanel)->Show();
 
+	// 顯示小地圖面板
+	if (m_MinimapPanel)
+		m_MinimapPanel->Show();
+
 	StartShowAnimation();
 }
 
@@ -113,6 +136,10 @@ void GameHUDPanel::Hide()
 	// 隱藏子面板
 	if (m_PlayerStatusPanel)
 		std::static_pointer_cast<UIPanel>(m_PlayerStatusPanel)->Hide();
+
+	// 隱藏小地圖面板
+	if (m_MinimapPanel)
+		m_MinimapPanel->Hide();
 
 	StartHideAnimation();
 }
@@ -143,7 +170,7 @@ void GameHUDPanel::InitializeCoinDisplay()
 
 	// 創建金幣文字
 	m_CoinText = std::make_shared<nGameObject>();
-	m_CoinText->SetZIndex(86.0f); // 比背景高一層
+	m_CoinText->SetZIndex(m_CoinBackground->GetZIndex() + 0.1f); // 比背景高一層
 	m_CoinText->SetZIndexType(CUSTOM);
 
 	// 初始化文字內容
@@ -167,7 +194,7 @@ void GameHUDPanel::UpdateCoinDisplay()
 		// 更新文字內容
 		std::string coinText = std::to_string(currentCoins);
 		m_CoinText->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/zpix.TTF", 24, coinText,
-																		Util::Color(255, 255, 255),false));
+																		Util::Color(255, 255, 255), false));
 
 		// 更新文字位置（相對於背景位置 + 偏移）
 		m_CoinText->m_Transform.translation = m_CoinBackgroundPos + m_CoinTextOffset;

@@ -17,7 +17,7 @@ class LobbyRoom;
 class LobbyScene : public Scene
 {
 public:
-	LobbyScene() = default;
+	LobbyScene() : Scene(SceneType::Lobby) {}
 	~LobbyScene() override = default;
 
 	void Start() override;

@@ -5,16 +5,17 @@
 #ifndef TEST_SCENE_JX_HPP
 #define TEST_SCENE_JX_HPP
 
-#include "Scene/Scene.hpp"
-#include "Room/RoomCollisionManager.hpp"
-#include "ObserveManager/TrackingManager.hpp"
-#include "ObserveManager/InputManager.hpp"
 #include "Attack/AttackManager.hpp"
+#include "ObserveManager/InputManager.hpp"
+#include "ObserveManager/TrackingManager.hpp"
+#include "Room/RoomCollisionManager.hpp"
+#include "Scene/Scene.hpp"
+
 
 class TestScene_JX : public Scene
 {
 public:
-	TestScene_JX() = default;
+	TestScene_JX() : Scene(SceneType::Test_JX) {}
 	~TestScene_JX() override = default;
 
 	void Start() override;
@@ -37,4 +38,4 @@ protected:
 	float roomHeight = 0;
 };
 
-#endif //TEST_SCENE_JX_HPP
+#endif // TEST_SCENE_JX_HPP

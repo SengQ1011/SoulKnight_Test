@@ -19,7 +19,7 @@ class nGameObject;
 class TestScene_KC final : public Scene
 {
 public:
-	TestScene_KC() = default;
+	TestScene_KC() : Scene(SceneType::Test_KC) {}
 	~TestScene_KC() override = default;
 
 	void Start() override;

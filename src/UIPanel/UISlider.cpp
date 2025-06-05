@@ -100,7 +100,10 @@ void UISlider::Update()
 		// m_Button->m_Transform.scale = glm::vec2(16.0f, 48.0f) / m_Button->GetImageSize();
 	}
 
-	DrawDebugUI();
+	if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	{
+		DrawDebugUI();
+	}
 }
 
 // ==========================

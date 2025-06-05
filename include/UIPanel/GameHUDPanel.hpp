@@ -7,15 +7,18 @@
 
 class UIButton;
 class PlayerStatusPanel;
+class MinimapPanel;
 class HealthComponent;
 class WalletComponent;
+class DungeonMap;
 class nGameObject;
 
 class GameHUDPanel : public UIPanel
 {
 public:
 	explicit GameHUDPanel(const std::shared_ptr<HealthComponent> &healthComp,
-						  const std::shared_ptr<WalletComponent> &walletComp);
+						  const std::shared_ptr<WalletComponent> &walletComp,
+						  const std::shared_ptr<DungeonMap> &dungeonMap = nullptr);
 	~GameHUDPanel() override = default;
 	void Start() override;
 	void Update() override;
@@ -27,6 +30,7 @@ public:
 protected:
 	// 子面板
 	std::shared_ptr<PlayerStatusPanel> m_PlayerStatusPanel;
+	std::shared_ptr<MinimapPanel> m_MinimapPanel;
 
 	// HUD 元素
 	std::shared_ptr<UIButton> m_PauseButton;
@@ -62,6 +66,7 @@ private:
 
 	std::shared_ptr<HealthComponent> m_PlayerHealthComponent;
 	std::shared_ptr<WalletComponent> m_PlayerWalletComponent;
+	std::shared_ptr<DungeonMap> m_DungeonMap;
 
 	// 金幣數量快取，用於檢測變化
 	int m_LastCoinAmount = -1;

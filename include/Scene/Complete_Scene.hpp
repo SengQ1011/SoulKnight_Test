@@ -10,7 +10,7 @@
 class CompleteScene : public Scene
 {
 public:
-	CompleteScene() = default;
+	CompleteScene() : Scene(SceneType::Complete) {}
 	~CompleteScene() override = default;
 
 	void Start() override;
@@ -21,4 +21,4 @@ public:
 protected:
 };
 
-#endif //COMPLETE_SCENE_HPP
+#endif // COMPLETE_SCENE_HPP
