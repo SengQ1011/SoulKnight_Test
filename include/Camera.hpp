@@ -11,7 +11,7 @@
 #include "Util/Timer.hpp"
 #include "Util/Transform.hpp"
 
-
+// 前向聲明
 class nGameObject;
 
 class Camera : public InputObserver
@@ -70,6 +70,9 @@ private:
 	bool m_IsShaking = false;
 	std::mt19937 m_RandomGenerator;
 	std::uniform_real_distribution<float> m_RandomDistribution{-1.0f, 1.0f};
+
+	// 事件監聽器ID
+	size_t m_CameraShakeListenerID = 0;
 
 	void UpdateChildViewportPosition(const std::shared_ptr<nGameObject> &child);
 	bool NotShouldBeVisible(const std::shared_ptr<nGameObject> &child) const;

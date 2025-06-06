@@ -6,6 +6,7 @@
 
 #include "ObserveManager/EventManager.hpp"
 #include "Override/nGameObject.hpp"
+#include "Structs/EventInfo.hpp"
 #include "Structs/TakeDamageEventInfo.hpp"
 #include "Util/Time.hpp"
 
@@ -25,7 +26,7 @@ Camera::~Camera()
 {
 	// 清理事件監聽器，防止懸空指針
 	auto &eventManager = EventManager::GetInstance();
-	eventManager.Unsubscribe<CameraShakeEvent>();
+	eventManager.Unsubscribe<CameraShakeEvent>(m_CameraShakeListenerID);
 }
 
 void Camera::onInputReceived(const std::set<char> &keys)
@@ -263,7 +264,7 @@ void Camera::InitializeEventListeners()
 {
 	auto &eventManager = EventManager::GetInstance();
 
-	// 只監聽Camera抖動事件
-	eventManager.Subscribe<CameraShakeEvent>([this](const CameraShakeEvent &event)
-											 { StartShake(event.duration, event.intensity); });
+	// 只監聽Camera抖動事件，並保存監聽器ID
+	m_CameraShakeListenerID = eventManager.Subscribe<CameraShakeEvent>(
+		[this](const CameraShakeEvent &event) { StartShake(event.duration, event.intensity); });
 }

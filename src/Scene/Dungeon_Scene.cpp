@@ -111,13 +111,7 @@ void DungeonScene::Start()
 void DungeonScene::Update()
 {
 	// 先更新UI管理器，處理UI相關的輸入
-	UIManager::GetInstance().Update();
-
-	// 測試用：按P鍵顯示/隱藏暫停面板
-	if (Util::Input::IsKeyDown(Util::Keycode::P))
-	{
-		UIManager::GetInstance().TogglePanel("pause");
-	}
+	if (m_Player->IsActive()) UIManager::GetInstance().Update();
 
 	// Input处理 - 當暫停面板都沒有顯示時處理遊戲輸入
 	if (!UIManager::GetInstance().IsPanelVisible("pause"))

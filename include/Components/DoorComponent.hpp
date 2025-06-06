@@ -6,6 +6,7 @@
 #define DOORCOMPONENT_HPP
 
 #include "Component.hpp"
+#include "ObserveManager/EventManager.hpp"
 
 namespace Core
 {
@@ -15,7 +16,8 @@ namespace Core
 /**
  * @brief 門的專屬物件，需要CollisionComponent
  */
-class DoorComponent final : public Component {
+class DoorComponent final : public Component
+{
 public:
 	enum class State
 	{
@@ -23,8 +25,8 @@ public:
 		CLOSED = 1,
 	};
 
-	DoorComponent() = default;
-	~DoorComponent() override = default;
+	DoorComponent();
+	~DoorComponent() override;
 
 	void Init() override;
 	void Update() override;
@@ -33,7 +35,7 @@ public:
 	[[nodiscard]] State GetCurrentState() const { return m_currentState; }
 
 	/* ---Setter--- */
-	void SetState(const State newState) {m_currentState = newState;}
+	void SetState(const State newState) { m_currentState = newState; }
 
 	void DoorOpened();
 	void DoorClosed();
@@ -41,6 +43,10 @@ public:
 private:
 	State m_currentState = State::OPENED;
 	std::vector<std::shared_ptr<Core::Drawable>> m_drawables;
+
+	// 事件監聽器ID
+	EventManager::ListenerID m_DoorOpenListenerID = 0;
+	EventManager::ListenerID m_DoorCloseListenerID = 0;
 };
 
-#endif //DOORCOMPONENT_HPP
+#endif // DOORCOMPONENT_HPP

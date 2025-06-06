@@ -66,6 +66,7 @@ set(SRC_FILES
     Struct/CircleShape.cpp
     Struct/RectShape.cpp
     StructType.cpp
+    Structs/DeathEventInfo.cpp
     TalentDatabase.cpp
     Tool/Tool.cpp
     TriggerStrategy/AttackTriggerStrategy.cpp

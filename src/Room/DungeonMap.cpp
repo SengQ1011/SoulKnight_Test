@@ -56,7 +56,8 @@ void DungeonMap::Start()
 		if (!room)
 			continue;
 		room->Start(m_Player.lock());
-		room->CharacterEnter(m_Player.lock());
+		// 注意：不在初始化時就將玩家添加到所有房間
+		// room->PlayerEnter(m_Player.lock());
 		m_RoomInfo[i].room = room;
 
 		for (Direction dir : ALL_DIRECTIONS)
@@ -137,8 +138,19 @@ void DungeonMap::UpdateCurrentRoomIfNeeded()
 			LOG_ERROR("DungeonMap::UpdateCurrentRoomIfNeeded error IndexInside");
 			return;
 		}
+
+		// 從舊房間移除玩家（但不從場景中移除）
+		if (m_CurrentRoom)
+		{
+			m_CurrentRoom->RemovePlayerFromList(m_Player.lock());
+		}
+
+		// 切換到新房間並添加玩家
 		m_CurrentRoom = m_RoomInfo[IndexInside.y * 5 + IndexInside.x].room;
-		// if(m_CurrentRoom) m_CurrentRoom->OnStateChanged();
+		if (m_CurrentRoom)
+		{
+			m_CurrentRoom->PlayerEnter(m_Player.lock());
+		}
 	}
 }
 
