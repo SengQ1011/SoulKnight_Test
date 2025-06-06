@@ -40,23 +40,24 @@ set(SRC_FILES
     ObserveManager/AudioManager.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
+    Room/CollisionOptimizer.cpp
     Room/DungeonMap.cpp
     Room/DungeonRoom.cpp
+    Room/DungeonRoom_CollisionOptimization.cpp
     Room/LobbyRoom.cpp
     Room/MonsterRoom.cpp
+    Room/PortalRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
     Room/StartingRoom.cpp
     Room/UniformGrid.cpp
-    RoomObject/ObstacleObject.cpp
     SaveManager.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
     Scene/Dungeon_Scene.cpp
     Scene/Lobby_Scene.cpp
     Scene/MainMenu_Scene.cpp
-    Scene/PortalRoom.cpp
     Scene/Result_Scene.cpp
     Scene/Scene.cpp
     Scene/SceneManager.cpp
@@ -148,6 +149,7 @@ set(INCLUDE_FILES
     Observer.hpp
     Override/nGameObject.hpp
     RandomUtil.hpp
+    Room/CollisionOptimizer.hpp
     Room/DungeonMap.hpp
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
@@ -158,8 +160,8 @@ set(INCLUDE_FILES
     Room/RoomInteractionManager.hpp
     Room/StartingRoom.hpp
     Room/UniformGrid.hpp
-    RoomObject/ObstacleObject.hpp
-    RoomObject/RoomObject.hpp
+    RoomObject/DestructibleBox.hpp
+    RoomObject/WallObject.hpp
     SaveManager.hpp
     Scene/Complete_Scene.hpp
     Scene/DungeonLoading_Scene.hpp

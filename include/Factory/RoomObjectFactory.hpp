@@ -6,25 +6,31 @@
 #define ROOMOBJECTFACTORY_HPP
 
 #include "Factory.hpp"
+#include "glm/glm.hpp"
+
 class Loader;
 
 /// @brief:建造RoomObject前必須設置ScenePath(從Room取得)
-class RoomObjectFactory : public Factory{
+class RoomObjectFactory : public Factory
+{
 public:
-	explicit RoomObjectFactory(const std::shared_ptr<Loader>& loader) : m_Loader(loader) {}
+	explicit RoomObjectFactory(const std::shared_ptr<Loader> &loader) : m_Loader(loader) {}
 	~RoomObjectFactory() override = default;
 
 	// 根據配置文件創建物件
-	std::shared_ptr<nGameObject> createRoomObject(const std::string& _id, const std::string& _class = "");
-	//	TODO: std::shared_ptr<RoomObject> createWall(const std::string& _id, const std::string& _class);
+	std::shared_ptr<nGameObject> createRoomObject(const std::string &_id, const std::string &_class = "");
 
-	[[nodiscard]] std::string GetObjectDataFilePath() const {return m_ObjectDataFilePath;}
-	void SetObjectDataFilePath(const std::string &prePath) {m_ObjectDataFilePath = prePath+"ObjectData/";}
+	// 地形創建專用方法
+	std::shared_ptr<nGameObject> createWall(int row, int col, const glm::vec2 &worldPos);
+	std::shared_ptr<nGameObject> createFloor(const glm::vec2 &worldPos);
+	std::shared_ptr<nGameObject> createDoor(const glm::vec2 &worldPos);
+
+	[[nodiscard]] std::string GetObjectDataFilePath() const { return m_ObjectDataFilePath; }
+	void SetObjectDataFilePath(const std::string &prePath) { m_ObjectDataFilePath = prePath + "ObjectData/"; }
 
 	// TODO:測試std::string m_ObjectDataFilePath; /// @param:"Scene(Theme)/ObjectData/"作爲_id的前綴
-	std::string m_ObjectDataFilePath = JSON_DIR"/Lobby/ObjectData"; /// @param:"Scene(Theme)/ObjectData/"作爲_id的前綴
+	std::string m_ObjectDataFilePath = JSON_DIR "/Lobby/ObjectData"; /// @param:"Scene(Theme)/ObjectData/"作爲_id的前綴
 	std::weak_ptr<Loader> m_Loader;
-
 };
 
-#endif //ROOMOBJECTFACTORY_HPP
+#endif // ROOMOBJECTFACTORY_HPP

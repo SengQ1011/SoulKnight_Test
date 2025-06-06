@@ -58,7 +58,7 @@ protected:
 
 private:
 	std::weak_ptr<nGameObject> m_FollowTarget;
-	std::vector<std::shared_ptr<nGameObject>> m_Children;
+	std::vector<std::weak_ptr<nGameObject>> m_Children;
 	std::vector<std::weak_ptr<nGameObject>> m_ToAddList;
 	std::vector<std::weak_ptr<nGameObject>> m_ToRemoveList;
 

@@ -11,19 +11,22 @@
 
 
 AttackComponent::AttackComponent(const std::shared_ptr<Weapon> &initWeapon = nullptr, const float criticalRate = 0,
-								const int handBladeDamage = 0, const int collisionDamage = 0) :
-								m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), m_collisionDamage(collisionDamage),
-								m_currentWeapon(initWeapon){}
+								 const int handBladeDamage = 0, const int collisionDamage = 0) :
+	m_criticalRate(criticalRate), m_handBladeDamage(handBladeDamage), m_collisionDamage(collisionDamage),
+	m_currentWeapon(initWeapon)
+{
+}
 
 void AttackComponent::Init()
 {
 	// 每個角色都會武器，除了部分小怪
 	if (!m_currentWeapon)
-	   return;
+		return;
 	m_Weapons.push_back(m_currentWeapon);
 	// 武器記錄擁有者
 	auto character = GetOwner<Character>();
-	if (!character) {
+	if (!character)
+	{
 		LOG_ERROR("AttackComp::character is null");
 		return;
 	}
@@ -39,8 +42,9 @@ void AttackComponent::Init()
 	}
 	// 加入渲染樹
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	if (!scene) return;
-	scene->GetPendingObjects().push_back(m_currentWeapon); //暂时存入一次过设置渲染和镜头
+	if (!scene)
+		return;
+	scene->GetPendingObjects().emplace_back(m_currentWeapon); // 暂时存入一次过设置渲染和镜头
 	m_currentWeapon->SetRegisteredToScene(true);
 }
 
@@ -57,21 +61,23 @@ void AttackComponent::Update()
 		m_secondWeapon->UpdateCooldown(deltaTime);
 	}
 	// 更新切換冷卻時間
-	if(m_switchTimeCounter >=0) m_switchTimeCounter -= deltaTime;
-	if(m_pickUpWeaponTimeCounter >=0) m_pickUpWeaponTimeCounter -= deltaTime;
+	if (m_switchTimeCounter >= 0)
+		m_switchTimeCounter -= deltaTime;
+	if (m_pickUpWeaponTimeCounter >= 0)
+		m_pickUpWeaponTimeCounter -= deltaTime;
 }
 
 std::vector<int> AttackComponent::GetAllWeaponID() const
 {
 	std::vector<int> id;
-	for (auto& weapon : m_Weapons)
+	for (auto &weapon : m_Weapons)
 	{
 		id.push_back(weapon->GetWeaponID());
 	}
 	return id;
 }
 
-void AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon>& newWeapon)
+void AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
 {
 	auto character = GetOwner<Character>();
 	if (!character)
@@ -83,9 +89,11 @@ void AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon>& newWeapon)
 
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	auto room = scene->GetCurrentRoom();
-	if (!room) return;
+	if (!room)
+		return;
 	auto interactableManager = room->GetInteractionManager();
-	if (!interactableManager) {
+	if (!interactableManager)
+	{
 		LOG_ERROR("AddWeapon: InteractableManager is null");
 		return;
 	}
@@ -98,10 +106,10 @@ void AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon>& newWeapon)
 	else if (m_currentWeapon)
 		m_currentWeapon->SetControlVisible(false);
 
-	m_Weapons.push_back(newWeapon);          // 添加新武器列表
-	m_currentWeapon = newWeapon;         // 更新當前武器
-	m_currentWeapon->SetOwner(character);  // 當前武器添加擁有者的指標
-	if(auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+	m_Weapons.push_back(newWeapon); // 添加新武器列表
+	m_currentWeapon = newWeapon; // 更新當前武器
+	m_currentWeapon->SetOwner(character); // 當前武器添加擁有者的指標
+	if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
 	{
 		followerComp->SetFollower(character);
 	}
@@ -109,12 +117,12 @@ void AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon>& newWeapon)
 
 	if (!m_currentWeapon->IsRegisteredToScene())
 	{
-		scene->GetPendingObjects().push_back(m_currentWeapon);
+		scene->GetPendingObjects().emplace_back(m_currentWeapon);
 		m_currentWeapon->SetRegisteredToScene(true);
 	}
 }
 
-void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
+void AttackComponent::AddWeapon(const std::shared_ptr<Weapon> &newWeapon)
 {
 	auto character = GetOwner<Character>();
 	if (!character)
@@ -124,31 +132,30 @@ void AttackComponent::AddWeapon(const std::shared_ptr<Weapon>& newWeapon)
 		LOG_ERROR("over maxWeapon");
 		RemoveWeapon(m_currentWeapon); // 移除舊武器
 	}
-	if (m_currentWeapon) m_currentWeapon->SetControlVisible(false);
+	if (m_currentWeapon)
+		m_currentWeapon->SetControlVisible(false);
 
 	m_Weapons.push_back(newWeapon); // 添加新武器列表
 	m_currentWeapon = newWeapon; // 更新當前武器
 	m_currentWeapon->SetOwner(character); // 當前武器添加擁有者的指標
-	if(auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+	if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
 	{
 		followerComp->SetFollower(character);
 	}
 	m_currentWeapon->SetControlVisible(true);
 
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	scene->GetPendingObjects().push_back(m_currentWeapon);
+	scene->GetPendingObjects().emplace_back(m_currentWeapon);
 	m_currentWeapon->SetRegisteredToScene(true);
 }
 
-void AttackComponent::RemoveWeapon(const std::shared_ptr<Weapon>& weapon)
+void AttackComponent::RemoveWeapon(const std::shared_ptr<Weapon> &weapon)
 {
-    m_Weapons.erase(
-		std::remove(m_Weapons.begin(), m_Weapons.end(), weapon),
-			m_Weapons.end());
+	m_Weapons.erase(std::remove(m_Weapons.begin(), m_Weapons.end(), weapon), m_Weapons.end());
 	weapon->m_Transform.rotation = 0;
 	auto scale = weapon->m_Transform.scale;
 	weapon->m_Transform.scale = glm::vec2(std::abs(scale.x), std::abs(scale.y));
-	if(auto followerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+	if (auto followerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
 		followerComp->SetFollower(nullptr);
 }
 
@@ -166,9 +173,12 @@ void AttackComponent::switchWeapon()
 
 	// 找目前武器的位置
 	auto it = std::find(m_Weapons.begin(), m_Weapons.end(), m_currentWeapon);
-	if (it != m_Weapons.end() && std::next(it) != m_Weapons.end()) {
+	if (it != m_Weapons.end() && std::next(it) != m_Weapons.end())
+	{
 		m_currentWeapon = *std::next(it);
-	} else {
+	}
+	else
+	{
 		m_currentWeapon = m_Weapons.front(); // 循環回到第一把武器
 	}
 	m_currentWeapon->SetControlVisible(true);
@@ -176,172 +186,179 @@ void AttackComponent::switchWeapon()
 
 int AttackComponent::calculateDamage()
 {
-    // 計算總暴擊率
-    float totalCritRate = m_criticalRate + m_currentWeapon->GetCriticalRate();
+	// 計算總暴擊率
+	float totalCritRate = m_criticalRate + m_currentWeapon->GetCriticalRate();
 
-    // 限制暴擊率在0-100%之間
-    totalCritRate = std::clamp(totalCritRate, 0.0f, 1.0f);
+	// 限制暴擊率在0-100%之間
+	totalCritRate = std::clamp(totalCritRate, 0.0f, 1.0f);
 
-    // 是否觸發暴擊
-    bool isCrit = (rand() / static_cast<float>(RAND_MAX)) < totalCritRate;
+	// 是否觸發暴擊
+	bool isCrit = (rand() / static_cast<float>(RAND_MAX)) < totalCritRate;
 
-    // 傷害計算公式
-    int baseDamage = m_currentWeapon->GetDamage();
-    int finalDamage = isCrit ? baseDamage * (1.5) // 暴擊傷害==>150%
-                       : baseDamage; // 普通傷害
+	// 傷害計算公式
+	int baseDamage = m_currentWeapon->GetDamage();
+	int finalDamage = isCrit ? baseDamage * (1.5) // 暴擊傷害==>150%
+							 : baseDamage; // 普通傷害
 
-    return finalDamage;
+	return finalDamage;
 }
 
 void AttackComponent::TryAttack()
 {
-    auto character = GetOwner<Character>();
-    if (!character)
-       return;
+	auto character = GetOwner<Character>();
+	if (!character)
+		return;
 
-    const auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
-    if (!healthComponent) return;
-    if (const auto stateComp = character->GetComponent<StateComponent>(ComponentType::STATE))
-    {
-       if (auto statusEffects = stateComp->GetActiveEffects(); !statusEffects.empty())
-       {
-          const auto it = std::find_if(statusEffects.begin(), statusEffects.end(),
-                                  [](StatusEffect effect) {
-                                     return effect == StatusEffect::FROZEN;});
-          // 如果有Frozen異常狀態，就不能攻擊
-          if (it != statusEffects.end()) return;
-       }
-    }
-    const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
-    const float currentEnergy = healthComponent->GetCurrentEnergy();
-    const auto useEnergy = m_currentWeapon->GetEnergy();
+	const auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH);
+	if (!healthComponent)
+		return;
+	if (const auto stateComp = character->GetComponent<StateComponent>(ComponentType::STATE))
+	{
+		if (auto statusEffects = stateComp->GetActiveEffects(); !statusEffects.empty())
+		{
+			const auto it = std::find_if(statusEffects.begin(), statusEffects.end(),
+										 [](StatusEffect effect) { return effect == StatusEffect::FROZEN; });
+			// 如果有Frozen異常狀態，就不能攻擊
+			if (it != statusEffects.end())
+				return;
+		}
+	}
+	const bool isPlayer = (character->GetType() == CharacterType::PLAYER);
+	const float currentEnergy = healthComponent->GetCurrentEnergy();
+	const auto useEnergy = m_currentWeapon->GetEnergy();
 
-    if (isPlayer && currentEnergy <= 0 && useEnergy != 0)
-    {
-       LOG_DEBUG("AttackComponent: Not enough energy to attack");
-       return;
-    }
+	if (isPlayer && currentEnergy <= 0 && useEnergy != 0)
+	{
+		LOG_DEBUG("AttackComponent: Not enough energy to attack");
+		return;
+	}
 
-    // 主武器攻击
-    if (m_currentWeapon && m_currentWeapon->CanAttack())
-    {
-       if (currentEnergy >= m_currentWeapon->GetEnergy())
-       {
-          auto damage = calculateDamage();
-          m_currentWeapon->attack(damage);
+	// 主武器攻击
+	if (m_currentWeapon && m_currentWeapon->CanAttack())
+	{
+		if (currentEnergy >= m_currentWeapon->GetEnergy())
+		{
+			auto damage = calculateDamage();
+			m_currentWeapon->attack(damage);
 
-          if (isPlayer)
-          {
-             healthComponent->ConsumeEnergy(useEnergy);
-          }
-       }
-    }
-    // 双持模式逻辑
-    if (m_dualWield)
-    {
-       // 确保有第二把武器
-       if (!m_secondWeapon)
-       {
-          LOG_WARN("AttackComponent: Dual wield enabled but secondary weapon not ready");
-          return;
-       }
-       // 副武器攻击
-       if (m_dualWield && m_secondWeapon && m_secondWeapon->CanAttack())
-       {
-          if (currentEnergy >= m_secondWeapon->GetEnergy())
-          {
-             const auto damage = calculateDamage();
-             m_secondWeapon->attack(damage);
+			if (isPlayer)
+			{
+				healthComponent->ConsumeEnergy(useEnergy);
+			}
+		}
+	}
+	// 双持模式逻辑
+	if (m_dualWield)
+	{
+		// 确保有第二把武器
+		if (!m_secondWeapon)
+		{
+			LOG_WARN("AttackComponent: Dual wield enabled but secondary weapon not ready");
+			return;
+		}
+		// 副武器攻击
+		if (m_dualWield && m_secondWeapon && m_secondWeapon->CanAttack())
+		{
+			if (currentEnergy >= m_secondWeapon->GetEnergy())
+			{
+				const auto damage = calculateDamage();
+				m_secondWeapon->attack(damage);
 
-             if (isPlayer)
-             {
-                healthComponent->ConsumeEnergy(m_secondWeapon->GetEnergy());
-             }
-          }
-       }
-    }
+				if (isPlayer)
+				{
+					healthComponent->ConsumeEnergy(m_secondWeapon->GetEnergy());
+				}
+			}
+		}
+	}
 }
 
 // 技能：火力全開（雙武器）
 void AttackComponent::SetDualWield(bool enable)
 {
-    m_dualWield = enable;
-    if (!m_secondWeapon)
-    {
-       LOG_DEBUG("second weapon is nullptr");
-       return;
-    }
-    auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-    if (!enable)
-    {
-       scene->GetRoot().lock()->RemoveChild(m_secondWeapon);
-       // scene->GetCamera().lock()->RemoveChild(m_secondWeapon);
-       scene->GetCamera().lock()->MarkForRemoval(m_secondWeapon);
-       m_secondWeapon = nullptr;
-    }
-    else
-    {
-       scene->GetRoot().lock()->AddChild(m_secondWeapon);
-       scene->GetCamera().lock()->SafeAddChild(m_secondWeapon);
-    }
+	m_dualWield = enable;
+	if (!m_secondWeapon)
+	{
+		LOG_DEBUG("second weapon is nullptr");
+		return;
+	}
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!enable)
+	{
+		scene->GetRoot().lock()->RemoveChild(m_secondWeapon);
+		// scene->GetCamera().lock()->RemoveChild(m_secondWeapon);
+		scene->GetCamera().lock()->MarkForRemoval(m_secondWeapon);
+		m_secondWeapon = nullptr;
+	}
+	else
+	{
+		scene->GetRoot().lock()->AddChild(m_secondWeapon);
+		scene->GetCamera().lock()->SafeAddChild(m_secondWeapon);
+	}
 }
 
-void AttackComponent::OnTargetPositionUpdate(std::weak_ptr<Character> enemy) {
-    if (auto locked = enemy.lock()) {
-       this->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
-       // 通知目前武器最靠近的目標
-       if (const auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-          followerComp->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
-       }
-       // 若有雙武器也通知
-       if(m_dualWield) {
-          if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-             followerComp2->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
-          }
-       }
-    }
-}
-
-void AttackComponent::OnLostTarget() {
-    m_Target.reset();
-    for (const auto & weapon : m_Weapons) {
-       if (const auto followerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-          followerComp->SetTarget(nullptr);
-       }
-    }
-
-    if(m_dualWield) {
-       if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) {
-          followerComp2->SetTarget(nullptr);
-       }
-    }
-}
-
-std::vector<EventType> AttackComponent::SubscribedEventTypes() const
+void AttackComponent::OnTargetPositionUpdate(std::weak_ptr<Character> enemy)
 {
-    return {
-       EventType::Death
-    };
+	if (auto locked = enemy.lock())
+	{
+		this->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
+		// 通知目前武器最靠近的目標
+		if (const auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		{
+			followerComp->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
+		}
+		// 若有雙武器也通知
+		if (m_dualWield)
+		{
+			if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+			{
+				followerComp2->SetTarget(std::dynamic_pointer_cast<nGameObject>(locked));
+			}
+		}
+	}
 }
+
+void AttackComponent::OnLostTarget()
+{
+	m_Target.reset();
+	for (const auto &weapon : m_Weapons)
+	{
+		if (const auto followerComp = weapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		{
+			followerComp->SetTarget(nullptr);
+		}
+	}
+
+	if (m_dualWield)
+	{
+		if (const auto followerComp2 = m_secondWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		{
+			followerComp2->SetTarget(nullptr);
+		}
+	}
+}
+
+std::vector<EventType> AttackComponent::SubscribedEventTypes() const { return {EventType::Death}; }
 
 void AttackComponent::HandleEvent(const EventInfo &eventInfo)
 {
-    // {}可以在case裏形成額外作用域，用來在裏面定義變數
-    switch (eventInfo.GetEventType())
-    {
-    case EventType::Death:
-    {
-       if (const auto* deathEventInfo = dynamic_cast<const DeathEventInfo*>(&eventInfo)) {
-          // 清除武器
-          // m_Weapons.clear();
-          for (const auto & weapon : m_Weapons)
-          {
-             weapon->SetControlVisible(false);
-          }
-       }
-       break;
-    }
-    default:
-       break;
-    }
+	// {}可以在case裏形成額外作用域，用來在裏面定義變數
+	switch (eventInfo.GetEventType())
+	{
+	case EventType::Death:
+		{
+			if (const auto *deathEventInfo = dynamic_cast<const DeathEventInfo *>(&eventInfo))
+			{
+				// 清除武器
+				// m_Weapons.clear();
+				for (const auto &weapon : m_Weapons)
+				{
+					weapon->SetControlVisible(false);
+				}
+			}
+			break;
+		}
+	default:
+		break;
+	}
 }

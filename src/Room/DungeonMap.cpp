@@ -67,6 +67,9 @@ void DungeonMap::Start()
 			else
 				room->CreateWallInDirection(dir);
 		}
+
+		// 在所有地形生成完成後進行最終設置和優化
+		room->FinalizeRoomSetup();
 	}
 
 	// 設置房間間的連接關係

@@ -104,7 +104,8 @@ void LobbyScene::Update()
 				CreateEnemy();
 		}
 
-		if (Util::Input::IsKeyDown(Util::Keycode::T)) m_Camera->StartShake(0.3,5);
+		if (Util::Input::IsKeyDown(Util::Keycode::T))
+			m_Camera->StartShake(0.3, 5);
 
 		for (auto &[type, manager] : m_Managers)
 			manager->Update();
@@ -162,12 +163,12 @@ void LobbyScene::CreatePlayer()
 	{
 		// 将碰撞盒添加到场景根节点和相机
 		const auto visibleBox = collision->GetVisibleBox();
-		m_PendingObjects.push_back(visibleBox);
+		m_PendingObjects.emplace_back(visibleBox);
 		visibleBox->SetRegisteredToScene(true);
 	}
 
 	// 将玩家添加到场景根节点和相机
-	m_PendingObjects.push_back(m_Player);
+	m_PendingObjects.emplace_back(m_Player);
 	m_Player->SetRegisteredToScene(true);
 }
 
@@ -181,9 +182,9 @@ void LobbyScene::CreateEnemy()
 	const auto visibleBox = collision2->GetVisibleBox();
 	if (!visibleBox)
 		LOG_ERROR("collision2->GetBlackBox()");
-	m_PendingObjects.push_back(visibleBox);
+	m_PendingObjects.emplace_back(visibleBox);
 	visibleBox->SetRegisteredToScene(true);
-	m_PendingObjects.push_back(m_Enemy);
+	m_PendingObjects.emplace_back(m_Enemy);
 	m_Enemy->SetRegisteredToScene(true);
 }
 

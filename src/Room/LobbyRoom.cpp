@@ -4,24 +4,27 @@
 
 #include "Room/LobbyRoom.hpp"
 
-#include "Creature/Character.hpp"
 #include "Components/CollisionComponent.hpp"
+#include "Creature/Character.hpp"
 #include "Loader.hpp"
 #include "Util/Logger.hpp"
 
-void LobbyRoom::Start(const std::shared_ptr<Character>& player) {
-    LOG_DEBUG("Initial LobbyRoom start");
 
-    // 调用基类的Start方法
-    Room::Start(player);
+void LobbyRoom::Start(const std::shared_ptr<Character> &player)
+{
+	LOG_DEBUG("Initial LobbyRoom start");
+
+	// 调用基类的Start方法
+	Room::Start(player);
 
 	// 設置大廳特有的墻壁碰撞體
 	SetupWallColliders();
 }
 
-void LobbyRoom::Update() {
-    // 调用基类Update
-    Room::Update();
+void LobbyRoom::Update()
+{
+	// 调用基类Update
+	Room::Update();
 
 	// 更新所有墙壁碰撞体
 	// for (auto& wall : m_WallColliders) {
@@ -29,23 +32,27 @@ void LobbyRoom::Update() {
 	// }
 }
 
-void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character>& character) {
-    LOG_DEBUG("Character  {} entered the lobby", character->GetName());
+void LobbyRoom::OnCharacterEnter(const std::shared_ptr<Character> &character)
+{
+	LOG_DEBUG("Character  {} entered the lobby", character->GetName());
 
-    // 处理角色进入大厅的特殊逻辑
-    if (character->GetType() == CharacterType::PLAYER) {
-        // 玩家进入大厅的特殊处理
-        // 例如：播放背景音乐、触发NPC对话等
-    }
+	// 处理角色进入大厅的特殊逻辑
+	if (character->GetType() == CharacterType::PLAYER)
+	{
+		// 玩家进入大厅的特殊处理
+		// 例如：播放背景音乐、触发NPC对话等
+	}
 }
 
-void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character>& character) {
-    LOG_DEBUG("Character {} left the lobby", character->GetName());
+void LobbyRoom::OnCharacterExit(const std::shared_ptr<Character> &character)
+{
+	LOG_DEBUG("Character {} left the lobby", character->GetName());
 
-    // 处理角色离开大厅的特殊逻辑
-    if (character->GetType() == CharacterType::PLAYER) {
-        // 玩家离开大厅的特殊处理
-    }
+	// 处理角色离开大厅的特殊逻辑
+	if (character->GetType() == CharacterType::PLAYER)
+	{
+		// 玩家离开大厅的特殊处理
+	}
 }
 
 void LobbyRoom::LoadFromJSON()
@@ -55,24 +62,36 @@ void LobbyRoom::LoadFromJSON()
 }
 
 
-void LobbyRoom::SetupWallColliders() {
+void LobbyRoom::SetupWallColliders()
+{
 	LOG_DEBUG("Set Lobby wall collider");
 
 	// 根据预定义的偏移和尺寸创建墙壁碰撞体
-	for (size_t i = 0; i < m_WallColliderOffsets.size(); i++) {
+	for (size_t i = 0; i < m_WallColliderOffsets.size(); i++)
+	{
 		auto wallCollider = std::make_shared<nGameObject>("LobbyWall_" + std::to_string(i));
+
+		// 設置物件的世界座標為房間中心
+		wallCollider->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+
 		auto collisionComponent = wallCollider->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 
 		collisionComponent->SetOffset(m_WallColliderOffsets[i]);
 		collisionComponent->SetSize(m_WallColliderSizes[i]);
 		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
 
+		LOG_DEBUG("  Created LobbyWall_{}: worldCoord({:.1f}, {:.1f}) offset({:.1f}, {:.1f}) size({:.1f}, {:.1f})", i,
+				  wallCollider->GetWorldCoord().x, wallCollider->GetWorldCoord().y, m_WallColliderOffsets[i].x,
+				  m_WallColliderOffsets[i].y, m_WallColliderSizes[i].x, m_WallColliderSizes[i].y);
+
 		AddWallCollider(wallCollider);
 	}
 }
 
-void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject>& collider) {
-	if (collider) {
+void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject> &collider)
+{
+	if (collider)
+	{
 		m_WallColliders.emplace_back(collider);
 
 		RegisterCollisionManger(collider);

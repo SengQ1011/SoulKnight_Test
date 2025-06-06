@@ -268,7 +268,7 @@ void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &o
 	{
 		if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
 		{
-			scene->GetPendingObjects().push_back(object);
+			scene->GetPendingObjects().emplace_back(object);
 			object->SetRegisteredToScene(true);
 		}
 	}
@@ -287,7 +287,7 @@ void Room::RegisterCollisionManger(const std::shared_ptr<nGameObject> &object) c
 		{
 			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
 			{
-				scene->GetPendingObjects().push_back(colliderVisible);
+				scene->GetPendingObjects().emplace_back(colliderVisible);
 			}
 		}
 	}
@@ -302,7 +302,7 @@ void Room::RegisterInteractionManager(const std::shared_ptr<nGameObject> &object
 		{
 			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
 			{
-				scene->GetPendingObjects().push_back(promptObj);
+				scene->GetPendingObjects().emplace_back(promptObj);
 			}
 		}
 	}

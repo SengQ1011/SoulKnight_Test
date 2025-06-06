@@ -22,19 +22,22 @@ void Scene::Download()
 
 void Scene::FlushPendingObjectsToRendererAndCamera()
 {
-	for (const std::shared_ptr<nGameObject> &obj : m_PendingObjects)
+	for (const std::weak_ptr<nGameObject> &weakObj : m_PendingObjects)
 	{
+		auto obj = weakObj.lock();
 		if (!obj)
 			continue;
 
 		const auto renderer = m_Root;
 		const auto camera = m_Camera;
 
-		if (renderer && obj->GetDrawable())
+		// if (renderer && obj->GetDrawable())
+		if (renderer)
 			renderer->AddChild(obj);
 		if (camera)
 			camera->AddChild(obj);
 	}
+	LOG_DEBUG("Object NUM {}", m_PendingObjects.size());
 	m_PendingObjects.clear();
 }
 

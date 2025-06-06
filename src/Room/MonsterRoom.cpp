@@ -25,8 +25,7 @@
 
 void MonsterRoom::Start(const std::shared_ptr<Character> &player)
 {
-	Room::Start(player);
-	CreateGrid();
+	DungeonRoom::Start(player);
 	LoadCombatConfiguration();
 
 	// 先初始化戰鬥管理器
@@ -41,7 +40,7 @@ void MonsterRoom::Start(const std::shared_ptr<Character> &player)
 
 void MonsterRoom::Update()
 {
-	Room::Update();
+	DungeonRoom::Update();
 	m_CombatManager.Update();
 }
 
@@ -240,21 +239,16 @@ std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositions(int count)
 		return positions;
 	}
 
-	// 創建可用位置列表（避免修改原始 m_Mark）
+	// 創建可用位置列表（使用新的網格系統）
 	std::vector<glm::ivec2> availablePositions;
 	for (int row = startY; row < endY; ++row)
 	{
 		for (int col = startX; col < endX; ++col)
 		{
-			// 檢查邊界
-			if (row >= 0 && row < static_cast<int>(m_Mark.size()) && col >= 0 &&
-				col < static_cast<int>(m_Mark[row].size()))
+			// 使用新的網格系統檢查位置是否被阻擋
+			if (!IsGridPositionBlocked(row, col))
 			{
-				// 只有空白格子才能生成敵人
-				if (m_Mark[row][col] == 0)
-				{
-					availablePositions.push_back({col, row});
-				}
+				availablePositions.push_back({col, row});
 			}
 		}
 	}

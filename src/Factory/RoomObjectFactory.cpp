@@ -8,12 +8,14 @@
 #include "ImagePoolManager.hpp"
 #include "Loader.hpp"
 #include "Override/nGameObject.hpp"
-#include "RoomObject/ObstacleObject.hpp"
+#include "RoomObject/DestructibleBox.hpp"
+
+#include "RoomObject/WallObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
 // class可能是指定類型再用， 目前都是RoomObject
-std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::string& _id, const std::string& _class)
+std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::string &_id, const std::string &_class)
 {
 	if (!m_ObjectDataFilePath.data())
 	{
@@ -21,55 +23,152 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		return nullptr;
 	}
 
-	//是否是動畫
+	// 是否是動畫
 	bool isAnimated = false;
 	nlohmann::json jsonData = m_Loader.lock()->LoadObjectData(_id);
-	if (jsonData.contains("isAnimated")) isAnimated = jsonData["isAnimated"].get<bool>();
+	if (jsonData.contains("isAnimated"))
+		isAnimated = jsonData["isAnimated"].get<bool>();
 
 	std::shared_ptr<nGameObject> roomObject;
-	// 設置Drawable
-	if (jsonData.contains("path")) {
-		if (isAnimated)
+
+	// 根據 className 創建特定類型的對象
+	if (!_class.empty())
+	{
+		if (_class == "Wall" || _class == "WallObject")
 		{
-			std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
-			for (auto & i : path) i = RESOURCE_DIR + i;
-			std::shared_ptr<Animation> animation = std::make_shared<Animation>(path,true);
-			animation->PlayAnimation(true);
-			roomObject = animation;
-			// LOG_DEBUG("SEE {} {}",std::dynamic_pointer_cast<Animation>(roomObject)->IsLooping(),std::dynamic_pointer_cast<Animation>(roomObject)->IsPlaying());
+			LOG_DEBUG("  -> Creating WallObject");
+			roomObject = std::make_shared<WallObject>(_id);
+		}
+		else if (_class == "DestructibleBox")
+		{
+			LOG_DEBUG("  -> Creating DestructibleBox");
+			roomObject = std::make_shared<DestructibleBox>(_id);
 		}
 		else
 		{
-			roomObject = std::make_shared<nGameObject>(_id);
-			roomObject->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR+jsonData.at("path").get<std::string>()));
+			// 對於其他類型，使用原有邏輯
+			if (isAnimated)
+			{
+				LOG_DEBUG("  -> Creating Animation object");
+				std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
+				for (auto &i : path)
+					i = RESOURCE_DIR + i;
+				std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true);
+				animation->PlayAnimation(true);
+				roomObject = animation;
+			}
+			else
+			{
+				LOG_DEBUG("  -> Creating default nGameObject");
+				roomObject = std::make_shared<nGameObject>(_id);
+			}
 		}
-	} else {
+	}
+	else
+	{
+		// 沒有指定 className 時的默認行為
+		if (isAnimated)
+		{
+			LOG_DEBUG("  -> Creating Animation object (default)");
+			std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
+			for (auto &i : path)
+				i = RESOURCE_DIR + i;
+			std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true);
+			animation->PlayAnimation(true);
+			roomObject = animation;
+		}
+		else
+		{
+			LOG_DEBUG("  -> Creating default nGameObject");
+			roomObject = std::make_shared<nGameObject>(_id);
+		}
+	}
+
+	// 設置Drawable（Animation 已經在構造函數中設置了）
+	if (jsonData.contains("path") && !isAnimated)
+	{
+		roomObject->SetDrawable(
+			ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR + jsonData.at("path").get<std::string>()));
+	}
+	else if (!jsonData.contains("path") && !isAnimated)
+	{
 		LOG_WARN("RoomObjectFactory::createRoomObject: No path for {}", _id);
 	}
 
 	// 設置ZIndexLayer
-	if (jsonData.contains("ZIndex")) {
+	if (jsonData.contains("ZIndex"))
+	{
 		const auto zIndexStr = jsonData.at("ZIndex").get<std::string>();
 		roomObject->SetZIndexType(stringToZIndexType(zIndexStr));
-	} else {
+	}
+	else
+	{
 		LOG_WARN("RoomObjectFactory::createRoomObject: No ZIndex for {}", _id);
 		roomObject->SetZIndexType(ZIndexType::CUSTOM); // 設置默認值
 		roomObject->SetZIndex(100.0f);
 	}
 
 	// 設置posOffset
-	if (jsonData.contains("posOffset")) {
+	if (jsonData.contains("posOffset"))
+	{
 		const auto data_posOffset = jsonData.at("posOffset");
 		const auto posOffset = glm::vec2(data_posOffset[0].get<float>(), data_posOffset[1].get<float>());
 		roomObject->SetPosOffset(posOffset);
 	}
 
-	//設置Components
-	if (!jsonData.contains("components")) return roomObject; // 沒有就跳過
-	for (auto& component : jsonData.at("components"))
+	// 設置Components
+	if (!jsonData.contains("components"))
+		return roomObject; // 沒有就跳過
+	for (auto &component : jsonData.at("components"))
 	{
-		try { Factory::createComponent(roomObject, component); }
-		catch (const std::exception& e) { LOG_ERROR("RoomObjectFactory::createRoomObject: {}", e.what()); }
+		try
+		{
+			Factory::createComponent(roomObject, component);
+		}
+		catch (const std::exception &e)
+		{
+			LOG_ERROR("RoomObjectFactory::createRoomObject: {}", e.what());
+		}
 	}
 	return roomObject;
+}
+
+// 專門用於地形創建的方法
+std::shared_ptr<nGameObject> RoomObjectFactory::createWall(int row, int col, const glm::vec2 &worldPos)
+{
+	auto wall = std::static_pointer_cast<WallObject>(createRoomObject("w604", "Wall"));
+	if (wall)
+	{
+		wall->SetWorldCoord(worldPos);
+		wall->SetGridPosition({col, row});
+		// 調整牆壁的位置偏移
+		auto currentOffset = wall->GetPosOffset();
+		wall->SetPosOffset(currentOffset + glm::vec2{0, 1.5f});
+
+		LOG_DEBUG("  -> Wall created successfully with final position({:.1f}, {:.1f})", wall->GetWorldCoord().x,
+				  wall->GetWorldCoord().y);
+	}
+	return wall;
+}
+
+std::shared_ptr<nGameObject> RoomObjectFactory::createFloor(const glm::vec2 &worldPos)
+{
+	auto floor = createRoomObject("f601", "Floor");
+	if (floor)
+	{
+		floor->SetWorldCoord(worldPos);
+		LOG_DEBUG("  -> Floor created successfully");
+	}
+	return floor;
+}
+
+std::shared_ptr<nGameObject> RoomObjectFactory::createDoor(const glm::vec2 &worldPos)
+{
+	auto door = createRoomObject("object_door_0", "Door");
+	if (door)
+	{
+		door->SetWorldCoord(worldPos);
+		LOG_DEBUG("  -> Door created successfully");
+	}
+	return door;
 }

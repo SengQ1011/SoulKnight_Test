@@ -111,7 +111,8 @@ void DungeonScene::Start()
 void DungeonScene::Update()
 {
 	// 先更新UI管理器，處理UI相關的輸入
-	if (m_Player->IsActive()) UIManager::GetInstance().Update();
+	// if (m_Player->IsActive()) UIManager::GetInstance().Update();
+	UIManager::GetInstance().Update();
 
 	// Input处理 - 當暫停面板都沒有顯示時處理遊戲輸入
 	if (!UIManager::GetInstance().IsPanelVisible("pause"))
@@ -128,7 +129,7 @@ void DungeonScene::Update()
 			m_CurrentRoom = dungeonRoom;
 			dungeonRoom->Update();
 
-			dungeonRoom->DebugDungeonRoom();
+			// dungeonRoom->DebugDungeonRoom();
 		}
 
 		if (m_textTimer > 0)

@@ -5,23 +5,38 @@
 #ifndef DUNGEONROOM_HPP
 #define DUNGEONROOM_HPP
 
-#include "Factory/RoomFactory.hpp"
+#include <array>
+#include <memory>
 #include "Room.hpp"
 
+class CollisionComponent;
 struct Rect;
 
 // 前向聲明
 class DungeonRoom;
+class GridSystem;
+class RoomConnectionManager;
+class TerrainGenerator;
+struct CollisionRect;
 
-// 房间状态枚举
+// 常量定義
+namespace RoomConstants
+{
+	constexpr int GRID_SIZE = 35;
+	constexpr float CORRIDOR_WIDTH = 7.0f;
+	constexpr float INTERSECTION_THRESHOLD = 0.5f;
+} // namespace RoomConstants
+
+// 房間狀態枚舉
 enum class RoomState
 {
 	UNEXPLORED, // 未探索
 	EXPLORED, // 已探索
-	COMBAT, // 战斗中
+	COMBAT, // 戰鬥中
 	CLEANED, // 已清除
 };
 
+// 方向枚舉
 enum class Direction
 {
 	UP = 0,
@@ -30,6 +45,7 @@ enum class Direction
 	LEFT = 3
 };
 
+// 房間類型枚舉
 enum class RoomType
 {
 	EMPTY,
@@ -42,48 +58,64 @@ enum class RoomType
 	SPECIAL,
 };
 
-// 房間連接結構，記錄四個方向的相鄰房間
-struct RoomConnection
+// 房間連接管理器（分離出來的類）
+class RoomConnectionManager
 {
-	std::array<std::weak_ptr<DungeonRoom>, 4> neighbors; // 四個方向的相鄰房間
-	std::array<bool, 4> hasConnection = {false, false, false, false}; // 是否有通道連接
+public:
+	void SetNeighbor(Direction dir, const std::weak_ptr<DungeonRoom> &room);
+	void SetConnection(Direction dir, bool connected);
 
-	// 輔助方法
-	std::weak_ptr<DungeonRoom> GetNeighbor(Direction dir) const { return neighbors[static_cast<int>(dir)]; }
+	std::weak_ptr<DungeonRoom> GetNeighbor(Direction dir) const;
+	bool HasConnection(Direction dir) const;
 
-	void SetNeighbor(Direction dir, const std::weak_ptr<DungeonRoom> &room) { neighbors[static_cast<int>(dir)] = room; }
+	std::vector<std::weak_ptr<DungeonRoom>> GetConnectedNeighbors() const;
+	std::vector<Direction> GetConnectedDirections() const;
 
-	bool HasConnection(Direction dir) const { return hasConnection[static_cast<int>(dir)]; }
+private:
+	std::array<std::weak_ptr<DungeonRoom>, 4> m_Neighbors;
+	std::array<bool, 4> m_HasConnection = {false, false, false, false};
+};
 
-	void SetConnection(Direction dir, bool connected) { hasConnection[static_cast<int>(dir)] = connected; }
+// 網格系統管理器
+class GridSystem
+{
+public:
+	GridSystem();
 
-	// 獲取所有有連接的相鄰房間
-	std::vector<std::weak_ptr<DungeonRoom>> GetConnectedNeighbors() const
-	{
-		std::vector<std::weak_ptr<DungeonRoom>> connected;
-		for (int i = 0; i < 4; ++i)
-		{
-			if (hasConnection[i] && !neighbors[i].expired())
-			{
-				connected.push_back(neighbors[i]);
-			}
-		}
-		return connected;
-	}
+	void Initialize();
+	void MarkPosition(int row, int col, int value = 1);
+	bool IsPositionBlocked(int row, int col) const;
 
-	// 獲取所有有連接的方向
-	std::vector<Direction> GetConnectedDirections() const
-	{
-		std::vector<Direction> directions;
-		for (int i = 0; i < 4; ++i)
-		{
-			if (hasConnection[i])
-			{
-				directions.push_back(static_cast<Direction>(i));
-			}
-		}
-		return directions;
-	}
+	const std::vector<std::vector<int>> &GetGrid() const { return m_Grid; }
+
+	// 碰撞檢測相關
+	void UpdateGridFromObjects(const std::vector<std::shared_ptr<nGameObject>> &objects,
+							   const RoomSpaceInfo &spaceInfo);
+	float CalculateIntersectionArea(const Rect &a, const Rect &b) const;
+
+private:
+	std::vector<std::vector<int>> m_Grid;
+
+	bool IsValidPosition(int row, int col) const;
+};
+
+// 地形生成器
+class TerrainGenerator
+{
+public:
+	TerrainGenerator(std::weak_ptr<RoomObjectFactory> factory);
+
+	std::shared_ptr<nGameObject> CreateWall(int row, int col, const RoomSpaceInfo &spaceInfo);
+	std::shared_ptr<nGameObject> CreateFloor(int row, int col, const RoomSpaceInfo &spaceInfo);
+	std::shared_ptr<nGameObject> CreateDoor(int row, int col, const RoomSpaceInfo &spaceInfo);
+
+	void CreateCorridorInDirection(Direction dir, const RoomSpaceInfo &spaceInfo,
+								   std::function<void(std::shared_ptr<nGameObject>)> addObjectCallback);
+	void CreateWallInDirection(Direction dir, const RoomSpaceInfo &spaceInfo,
+							   std::function<void(std::shared_ptr<nGameObject>)> addObjectCallback);
+
+private:
+	std::weak_ptr<RoomObjectFactory> m_Factory;
 };
 
 class DungeonRoom : public Room
@@ -91,81 +123,82 @@ class DungeonRoom : public Room
 public:
 	explicit DungeonRoom(const glm::vec2 worldCoord, const std::shared_ptr<Loader> &loader,
 						 const std::shared_ptr<RoomObjectFactory> &room_object_factory,
-						 const glm::vec2 &mapGridPos = glm::vec2(0, 0), const RoomType roomType = RoomType::DUNGEON) :
-		Room(worldCoord, loader, room_object_factory), m_MapGridPos(mapGridPos), m_RoomType(roomType)
-	{
-	}
+						 const glm::vec2 &mapGridPos = glm::vec2(0, 0), const RoomType roomType = RoomType::DUNGEON);
+
 	~DungeonRoom() override = default;
 
-	// 重写基类方法
+	// 基類方法重寫
 	void Start(const std::shared_ptr<Character> &player) override;
 	void Update() override;
+	void LoadFromJSON() override;
 
-	// 房间状态管理
-	virtual void TryActivateByPlayer() { m_State = RoomState::EXPLORED; }
-	virtual void OnStateChanged() {} // 房间状态变化时會發生的事情
-	void SetState(RoomState newState)
-	{
-		if (m_State != newState)
-		{
-			m_State = newState;
-			OnStateChanged();
-		}
-	}
+	// 房間狀態管理
+	virtual void TryActivateByPlayer() { SetState(RoomState::EXPLORED); }
+	virtual void OnStateChanged() {} // 子類可重寫
+
+	void SetState(RoomState newState);
 	RoomState GetState() const { return m_State; }
 
-	std::vector<std::vector<int>> GetMark() const { return m_Mark; }
+	// 基本屬性訪問
 	RoomType GetRoomType() const { return m_RoomType; }
 	glm::vec2 GetMapGridPos() const { return m_MapGridPos; }
-	[[nodiscard]] bool IsPlayerInsideRegion() const; // 場景使用的 確認當前玩家所在的房間
-	[[nodiscard]] bool IsPlayerInsideRoom() const; // 房間使用的 處罰房間互動 關門放狗之類的
 
-	// 房間連接管理
-	const RoomConnection &GetRoomConnection() const { return m_RoomConnection; }
+	// 玩家位置檢測
+	[[nodiscard]] bool IsPlayerInsideRegion() const;
+	[[nodiscard]] bool IsPlayerInsideRoom() const;
+
+	// 房間連接管理（委託給 RoomConnectionManager）
 	void SetNeighborRoom(Direction dir, const std::weak_ptr<DungeonRoom> &neighbor, bool hasConnection = false);
 	std::weak_ptr<DungeonRoom> GetNeighborRoom(Direction dir) const;
 	bool HasConnectionToDirection(Direction dir) const;
 	std::vector<std::weak_ptr<DungeonRoom>> GetConnectedNeighbors() const;
 	std::vector<Direction> GetConnectedDirections() const;
 
-	void LoadFromJSON() override;
+	// 網格系統訪問（只讀）
+	const std::vector<std::vector<int>> &GetGridData() const;
+	bool IsGridPositionBlocked(int row, int col) const;
 
-	float IntersectionArea(const Rect &a, const Rect &b);
-	void CreateGrid();
+	// 地形生成
 	void CreateCorridorInDirection(Direction dir);
 	void CreateWallInDirection(Direction dir);
 
-	// 重写角色进入/离开处理
-	// void OnCharacterEnter(const std::shared_ptr<Character>& character) override;
-	// void OnCharacterExit(const std::shared_ptr<Character>& character) override;
+	// 房間設置完成後的最終處理
+	void FinalizeRoomSetup();
 
-	// 更新房间状态的辅助方法
-	// virtual void UpdateRoomState();
+	// 碰撞優化
+	void OptimizeWallCollisions();
 
+protected:
+	// 碰撞優化輔助方法
+	void RemoveWallCollisionComponents();
+	void RemoveVisibleBoxFromPendingObjects(const std::shared_ptr<CollisionComponent> &collisionComp,
+											const std::shared_ptr<Scene> &scene);
+	std::vector<std::shared_ptr<nGameObject>> CreateOptimizedColliders(const std::vector<CollisionRect> &regions);
+
+	// 調試功能
 	void DebugDungeonRoom();
 
 protected:
+	// 初始化方法
+	void InitializeGrid();
+
+	// 地形創建輔助方法
 	void CreateWall(int row, int col);
 	void CreateFloor(int row, int col);
 	void CreateDoor(int row, int col);
 
-	// 重写状态变化处理方法 TODO:給子類別
-	// void OnStateChanged(RoomState oldState, RoomState newState) override;
-
-	// 房间状态
+	// 成員變量
 	RoomState m_State = RoomState::UNEXPLORED;
-	glm::vec2 m_MapGridPos = glm::vec2(0, 0); // 房間在地圖的哪個位置
+	RoomType m_RoomType;
+	glm::vec2 m_MapGridPos = glm::vec2(0, 0);
+
+	// 門對象容器
 	std::vector<std::shared_ptr<nGameObject>> m_Doors;
 
-	// 網格處理
-	std::vector<std::vector<int>> m_Mark =
-		std::vector<std::vector<int>>(35, std::vector<int>(35, 0)); // 用來記錄處理的資料
-private:
-	RoomType m_RoomType;
-
-	// DungeonRoom類型 - 戰鬥房間（小怪，BOSS)， 特殊房間， 寶箱， 起始， 終點
-	// Room狀態 -
-	RoomConnection m_RoomConnection;
+	// 組合的管理器
+	std::unique_ptr<GridSystem> m_GridSystem;
+	std::unique_ptr<RoomConnectionManager> m_ConnectionManager;
+	std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
 };
 
 #endif // DUNGEONROOM_HPP

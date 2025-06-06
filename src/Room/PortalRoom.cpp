@@ -9,16 +9,15 @@
 
 void PortalRoom::Start(const std::shared_ptr<Character> &player)
 {
-	Room::Start(player);
+	DungeonRoom::Start(player);
 
-	CreateGrid();
 	CreatePortal();
 }
 
 
 void PortalRoom::Update()
 {
-	Room::Update();
+	DungeonRoom::Update();
 }
 
 void PortalRoom::LoadFromJSON()

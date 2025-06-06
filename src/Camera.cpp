@@ -12,8 +12,15 @@
 
 
 Camera::Camera(const std::vector<std::shared_ptr<nGameObject>> &pivotChildren) :
-	m_Children(pivotChildren), m_RandomGenerator(std::random_device{}())
+	m_RandomGenerator(std::random_device{}())
 {
+	// 將 shared_ptr 轉換為 weak_ptr
+	m_Children.reserve(pivotChildren.size());
+	for (const auto &child : pivotChildren)
+	{
+		m_Children.emplace_back(child);
+	}
+
 	m_CameraWorldCoord.translation = {0.0f, 0.0f};
 	m_CameraWorldCoord.rotation = 0.0f;
 	m_CameraWorldCoord.scale = glm::vec2{2.5f};
@@ -74,7 +81,7 @@ void Camera::AddChild(const std::shared_ptr<nGameObject> &child)
 {
 	if (child == nullptr)
 		return;
-	m_Children.push_back(child);
+	m_Children.emplace_back(child);
 	// 若為負的會影響物件池内的物件
 	glm::vec2 absScale = {std::abs(child->m_Transform.scale.x), std::abs(child->m_Transform.scale.y)};
 	// 如果尚未設置初始縮放
@@ -87,13 +94,22 @@ void Camera::AddChild(const std::shared_ptr<nGameObject> &child)
 
 void Camera::RemoveChild(const std::shared_ptr<nGameObject> &child)
 {
-	m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
+	m_Children.erase(std::remove_if(m_Children.begin(), m_Children.end(),
+									[&child](const std::weak_ptr<nGameObject> &weakChild)
+									{
+										auto sharedChild = weakChild.lock();
+										return !sharedChild || sharedChild == child;
+									}),
+					 m_Children.end());
 }
 
 void Camera::AddChildren(const std::vector<std::shared_ptr<nGameObject>> &children)
 {
 	m_Children.reserve(m_Children.size() + children.size());
-	m_Children.insert(m_Children.end(), children.begin(), children.end());
+	for (const auto &child : children)
+	{
+		m_Children.emplace_back(child);
+	}
 }
 
 void Camera::MarkForRemoval(const std::shared_ptr<nGameObject> &child) { m_ToRemoveList.emplace_back(child); }
@@ -101,7 +117,12 @@ void Camera::MarkForRemoval(const std::shared_ptr<nGameObject> &child) { m_ToRem
 
 bool Camera::FindChild(const std::shared_ptr<nGameObject> &child)
 {
-	return std::find(m_Children.begin(), m_Children.end(), child) != m_Children.end();
+	return std::find_if(m_Children.begin(), m_Children.end(),
+						[&child](const std::weak_ptr<nGameObject> &weakChild)
+						{
+							auto sharedChild = weakChild.lock();
+							return sharedChild && sharedChild == child;
+						}) != m_Children.end();
 }
 
 
@@ -124,8 +145,9 @@ void Camera::Update()
 	}
 	int i = 0;
 	// 對每個Object調位置
-	for (const auto &child : m_Children)
+	for (const auto &weakChild : m_Children)
 	{
+		auto child = weakChild.lock();
 		if (!child)
 			continue;
 		// IsInsideWindow來專門管理是否在視窗内
