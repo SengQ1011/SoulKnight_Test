@@ -1,0 +1,28 @@
+{
+    "id": "object_boxCommon_1",
+    "isAnimated": false,
+    "path": "/IcePlains/object_boxCommon_1.png",
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                16.0,
+                16.0
+            ],
+            "Offset": [
+                0.0,
+                -1.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": [
+                "Player_Projectile",
+                "Player_EffectAttack",
+                "Enemy_Projectile",
+                "Enemy_EffectAttack"
+            ],
+            "IsTrigger": false
+        }
+    ]
+}

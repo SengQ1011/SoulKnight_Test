@@ -7,7 +7,7 @@
     "tile_width": 16.0,
     "roomObject": [
         {
-            "ID": "floor1717",
+            "ID": "floor1717_1",
             "Class": "nGameObject",
             "Position": [
                 0.0,

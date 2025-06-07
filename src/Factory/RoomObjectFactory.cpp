@@ -22,7 +22,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		LOG_DEBUG("RoomObjectFactory::createRoomObject 沒設置ObjectDataPath");
 		return nullptr;
 	}
-	if (_id == "object_transferGate_0") LOG_DEBUG("YES1");
 	// 是否是動畫
 	bool isAnimated = false;
 	nlohmann::json jsonData = m_Loader.lock()->LoadObjectData(_id);
@@ -34,7 +33,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 	// 根據 className 創建特定類型的對象
 	if (!_class.empty())
 	{
-		if (_id == "object_transferGate_0") LOG_DEBUG("YES2");
 		if (_class == "Wall" || _class == "WallObject")
 		{
 			roomObject = std::make_shared<WallObject>(_id);
@@ -48,7 +46,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 			// 對於其他類型，使用原有邏輯
 			if (isAnimated)
 			{
-				if (_id == "object_transferGate_0") LOG_DEBUG("YES3");
 				std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
 				for (auto &i : path)
 					i = RESOURCE_DIR + i;
@@ -58,7 +55,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 			}
 			else
 			{
-				if (_id == "object_transferGate_0") LOG_DEBUG("YES4");
 				roomObject = std::make_shared<nGameObject>(_id);
 			}
 		}
@@ -68,7 +64,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		// 沒有指定 className 時的默認行為
 		if (isAnimated)
 		{
-			if (_id == "object_transferGate_0") LOG_DEBUG("YES5");
 			std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
 			for (auto &i : path)
 				i = RESOURCE_DIR + i;

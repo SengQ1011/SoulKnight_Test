@@ -51,7 +51,6 @@ set(SRC_FILES
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
     Room/StartingRoom.cpp
-    Room/TerrainVisualizer.cpp
     Room/UniformGrid.cpp
     SaveManager.cpp
     Scene/Complete_Scene.cpp
@@ -160,7 +159,6 @@ set(INCLUDE_FILES
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
     Room/StartingRoom.hpp
-    Room/TerrainVisualizer.hpp
     Room/UniformGrid.hpp
     RoomObject/DestructibleBox.hpp
     RoomObject/WallObject.hpp

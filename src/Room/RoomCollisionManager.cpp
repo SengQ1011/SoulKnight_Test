@@ -70,7 +70,7 @@ void RoomCollisionManager::Update()
 	{
 		ShowColliderBox();
 	}
-	
+
 	m_SpatialGrid.Clear();
 
 	for (const auto &weakObj : m_NGameObjects)
