@@ -53,9 +53,9 @@ private:
 	std::shared_ptr<Util::BGM> m_BGM;
 
 	// 0%~100%
-	float m_MasterVolume = 1.0f;
-	float m_SFXVolume = 1.0f;
-	float m_BGMVolume = 1.0f;
+	float m_MasterVolume = 0.3f;
+	float m_SFXVolume = 0.3f;
+	float m_BGMVolume = 0.3f;
 	bool m_Muted = false;
 
 	AudioManager() = default;

@@ -13,32 +13,64 @@
 
 class UIButton;
 class UIPanel;
+class MenuHUDPanel;
 class MainMenuScene : public Scene
 {
 public:
-	MainMenuScene() = default;
+	MainMenuScene() : Scene(SceneType::Menu) {}
 	~MainMenuScene() override = default;
 
 	void Start() override;
 	void Update() override;
 	void Exit() override;
+	void Upload() override; // 覆寫以避免上傳錯誤數據
 	SceneType Change() override;
 
 protected:
 	std::shared_ptr<Util::GameObject> m_Background = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Title = std::make_shared<Util::GameObject>();
-	std::shared_ptr<Util::GameObject> m_RedShawl = std::make_shared<Util::GameObject>();
+	std::shared_ptr<nGameObject> m_RedShawl;
 
 	std::shared_ptr<Util::GameObject> m_Text = std::make_shared<Util::GameObject>();
 	std::shared_ptr<Util::GameObject> m_Version = std::make_shared<Util::GameObject>();
 	std::shared_ptr<UIButton> m_SettingButton;
+	std::shared_ptr<UIButton> m_DeleteDataButton;
+
+	// MenuHUDPanel 替代個別按鈕
+	std::shared_ptr<MenuHUDPanel> m_MenuHUDPanel;
+
+	// 平移動畫相關變數
+	bool m_IsSliding = false;
+	float m_SlideTimer = 0.0f;
+	float m_SlideDuration = 0.4f; // 0.4秒平移時間
+	glm::vec2 m_StartPosition; // 起始位置（螢幕右邊）
+	glm::vec2 m_TargetPosition; // 目標位置
+
+	// 文字閃爍效果相關變數
+	float m_TextBlinkTimer = 0.0f;
+	float m_TextBlinkPeriod = 1.5f; // 1.5秒完成一個閃爍週期
 
 	void InitBackground();
 	void InitTitleAndDecor();
 	void InitTextLabels();
 	void InitSettingButton();
+	void InitDeleteDataButton();
 	void InitUIManager();
 	void InitAudioManager();
+
+	// 初始化MenuHUDPanel
+	void InitMenuHUDPanel();
+
+	// 動畫相關函式
+	void UpdateSlideAnimation();
+	void UpdateTextBlinkEffect();
+	void StartSlideAnimation();
+
+	// 檢查滑鼠是否點擊到按鈕上
+	bool IsMouseClickingOnButtons() const;
+
+	// 切換面板狀態變數
+	bool m_ShowMenuButtons = false;
 };
 
-#endif //MAINMENU_SCENE_HPP
+#endif // MAINMENU_SCENE_HPP

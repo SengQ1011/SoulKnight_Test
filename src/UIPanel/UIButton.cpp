@@ -14,7 +14,7 @@ void UIButton::Update()
 	nGameObject::Update();
 	if (!m_Active) return; // 不活躍不執行互動
 
-	DrawDebugUI(); // 顯示調整用 ImGui 視窗
+	// DrawDebugUI(); // 顯示調整用 ImGui 視窗
 
 	// -----------------------
 	// 支援可長按的按鈕邏輯

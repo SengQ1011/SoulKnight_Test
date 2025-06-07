@@ -7,23 +7,24 @@
 
 enum class ComponentType
 {
-	AI,				// 0
-	ANIMATION,		// 1
-	ATTACK,			// 2
-	CHEST,			// 3
-	COLLISION,		// 4
-	DOOR,			// 5
-	EFFECT_ATTACK,	// 6
-	FOLLOWER,		// 7
-	HEALTH,			// 8
-	INPUT,			// 9
-	INTERACTABLE,	// 10
-	MOVEMENT,		// 11
-	PROJECTILE,		// 12
-	SKILL,
-	STATE,
-	TALENT,
-	WALLET
+	AI,				 // 0
+	ANIMATION,		 // 1
+	ATTACK,			 // 2
+	CHEST,			 // 3
+	COLLISION,		 // 4
+	DOOR,			 // 5
+	EFFECT_ATTACK,	 // 6
+	FLICKER,		 // 7
+	FOLLOWER,		 // 8
+	HEALTH,			 // 9
+	INPUT,			 // 10
+	INTERACTABLE,	 // 11
+	MOVEMENT,		 // 12
+	PROJECTILE,		 // 13
+	SKILL,			 // 14
+	STATE,			 // 15
+	TALENT,			 // 16
+	WALLET			 // 17
 };
 
 enum class CharacterType
@@ -46,7 +47,8 @@ enum class State
 	DEAD
 };
 
-enum class StatusEffect {
+enum class StatusEffect
+{
 	NONE,
 	BURNS,		// 灼燒
 	POISON,		// 中毒
@@ -70,7 +72,8 @@ enum class EffectAttackType
 	ICE_SPIKE
 };
 
-enum class AttackType {
+enum class AttackType
+{
 	EFFECT_ATTACK,
 	PROJECTILE,
 	COLLISION,
@@ -86,7 +89,8 @@ enum class AttackStrategies
 	BOSS
 };
 
-enum class WeaponType {
+enum class WeaponType
+{
 	NONE,
 	// Melee
 	SWORD,				// 刀劍
@@ -104,14 +108,16 @@ enum class WeaponType {
 };
 
 
-enum class MonsterType {
+enum class MonsterType
+{
 	WANDER,		// 游蕩
 	ATTACK,		// 追蹤玩家
 	SUMMON,		// 召喚
 	BOSS
 };
 
-enum class enemyState {
+enum class enemyState
+{
 	IDLE,
 	WANDERING,
 	CHASING,
@@ -133,7 +139,7 @@ enum class ManagerTypes
 	TRACKING
 };
 
-enum ZIndexType: int
+enum ZIndexType : int
 {
 	FLOOR		= 0,	//  0 -  20
 	OBJECTLOW	= 20,	// 20 -  40
@@ -149,7 +155,8 @@ enum class ChestType
 	WEAPON
 };
 
-enum class InteractableType {
+enum class InteractableType
+{
 	NONE,
 	PORTAL,
 	SHOP,

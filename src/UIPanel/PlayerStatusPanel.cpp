@@ -13,6 +13,8 @@
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Text.hpp"
+#include "Util/Input.hpp"
+#include "Util/Keycode.hpp"
 #include "config.hpp"
 
 
@@ -22,7 +24,7 @@ void PlayerStatusPanel::Start()
 	m_PanelBackground = std::make_shared<nGameObject>();
 	m_PanelBackground->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_playerStatus/background_playerStatusPanel.png"));
-	m_PanelBackground->SetZIndex(90.0f);
+	m_PanelBackground->SetZIndex(89.0f);
 	m_PanelBackground->m_Transform.translation =
 		(glm::vec2(static_cast<float>(PTSD_Config::WINDOW_WIDTH), static_cast<float>(PTSD_Config::WINDOW_HEIGHT)) -
 		 m_PanelBackground->GetScaledSize()) *
@@ -98,7 +100,7 @@ void PlayerStatusPanel::Start()
 	m_SliderPlayerHP = std::make_shared<UISlider>(listenPlayerHP, trackHP, glm::vec2(3.0f, 4.0f), false);
 	m_SliderPlayerHP->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_playerStatus/groove_status.png"));
-	m_SliderPlayerHP->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
+	m_SliderPlayerHP->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
 	m_SliderPlayerHP->m_Transform.translation = m_PanelBackground->m_Transform.translation + offsetHP;
 	m_SliderPlayerHP->m_Transform.scale = glm::vec2(0.963f, 0.714f);
 	m_SliderPlayerHP->Start();
@@ -108,7 +110,7 @@ void PlayerStatusPanel::Start()
 	m_SliderPlayerArmor = std::make_shared<UISlider>(listenPlayerArmor, trackArmor, glm::vec2(3.0f, 4.0f), false);
 	m_SliderPlayerArmor->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_playerStatus/groove_status.png"));
-	m_SliderPlayerArmor->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
+	m_SliderPlayerArmor->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
 	m_SliderPlayerArmor->m_Transform.translation = m_PanelBackground->m_Transform.translation + offsetArmor;
 	m_SliderPlayerArmor->m_Transform.scale = glm::vec2(0.963f, 0.714f);
 	m_SliderPlayerArmor->Start();
@@ -118,7 +120,7 @@ void PlayerStatusPanel::Start()
 	m_SliderPlayerEnergy = std::make_shared<UISlider>(listenPlayerEnergy, trackEnergy, glm::vec2(3.0f, 4.0f), false);
 	m_SliderPlayerEnergy->SetDrawable(
 		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_playerStatus/groove_status.png"));
-	m_SliderPlayerEnergy->SetZIndex(m_PanelBackground->GetZIndex() + 1.0f);
+	m_SliderPlayerEnergy->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
 	m_SliderPlayerEnergy->m_Transform.translation = m_PanelBackground->m_Transform.translation + offsetEnergy;
 	m_SliderPlayerEnergy->m_Transform.scale = glm::vec2(0.963f, 0.714f);
 	m_SliderPlayerEnergy->Start();
@@ -127,8 +129,8 @@ void PlayerStatusPanel::Start()
 	// HP數值文字
 	m_TextPlayerHP = std::make_shared<nGameObject>();
 	m_TextPlayerHP->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/7",
-															 Util::Color::FromRGB(255, 255, 255), false));
-	m_TextPlayerHP->SetZIndex(m_SliderPlayerHP->GetZIndex() + 2.0f);
+																		Util::Color::FromRGB(255, 255, 255), false));
+	m_TextPlayerHP->SetZIndex(m_SliderPlayerHP->GetZIndex() + 0.2f);
 	m_TextPlayerHP->m_Transform.translation = m_SliderPlayerHP->m_Transform.translation + offsetText;
 	m_TextPlayerHP->m_Transform.scale = glm::vec2(1.0f, 1.0f);
 	m_GameObjects.push_back(m_TextPlayerHP);
@@ -136,17 +138,17 @@ void PlayerStatusPanel::Start()
 	// 護甲數值文字
 	m_TextPlayerArmor = std::make_shared<nGameObject>();
 	m_TextPlayerArmor->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/8",
-																Util::Color::FromRGB(255, 255, 255), false));
-	m_TextPlayerArmor->SetZIndex(m_SliderPlayerArmor->GetZIndex() + 2.0f);
+																		   Util::Color::FromRGB(255, 255, 255), false));
+	m_TextPlayerArmor->SetZIndex(m_SliderPlayerArmor->GetZIndex() + 0.2f);
 	m_TextPlayerArmor->m_Transform.translation = m_SliderPlayerArmor->m_Transform.translation + offsetText;
 	m_TextPlayerArmor->m_Transform.scale = glm::vec2(1.0f, 1.0f);
 	m_GameObjects.push_back(m_TextPlayerArmor);
 
 	// 能量數值文字
 	m_TextPlayerEnergy = std::make_shared<nGameObject>();
-	m_TextPlayerEnergy->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/180",
-																 Util::Color::FromRGB(255, 255, 255), false));
-	m_TextPlayerEnergy->SetZIndex(m_SliderPlayerEnergy->GetZIndex() + 2.0f);
+	m_TextPlayerEnergy->SetDrawable(ImagePoolManager::GetInstance().GetText(
+		RESOURCE_DIR "/Font/ariblk.ttf", 16, "0/180", Util::Color::FromRGB(255, 255, 255), false));
+	m_TextPlayerEnergy->SetZIndex(m_SliderPlayerEnergy->GetZIndex() + 0.2f);
 	m_TextPlayerEnergy->m_Transform.translation = m_SliderPlayerEnergy->m_Transform.translation + offsetText;
 	m_TextPlayerEnergy->m_Transform.scale = glm::vec2(1.0f, 1.0f);
 	m_GameObjects.push_back(m_TextPlayerEnergy);
@@ -219,7 +221,10 @@ void PlayerStatusPanel::Update()
 		}
 	}
 
-	DrawDebugUI();
+	if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	{
+		DrawDebugUI();
+	}
 	for (const std::shared_ptr<nGameObject> &gameObject : m_GameObjects)
 	{
 		gameObject->Update();

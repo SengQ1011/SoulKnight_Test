@@ -18,6 +18,7 @@ set(SRC_FILES
     Components/DoorComponent.cpp
     Components/EnemyAI/AttackStrategy.cpp
     Components/EnemyAI/MoveStrategy.cpp
+    Components/FlickerComponent.cpp
     Components/FollowerComponent.cpp
     Components/HealthComponent.cpp
     Components/InputComponent.cpp
@@ -71,12 +72,17 @@ set(SRC_FILES
     TriggerStrategy/BlockProjectileStrategy.cpp
     TriggerStrategy/KnockOffTriggerStrategy.cpp
     TriggerStrategy/ReflectTriggerStrategy.cpp
+    UIPanel/GameHUDPanel.cpp
+    UIPanel/MenuHUDPanel.cpp
+    UIPanel/MinimapPanel.cpp
+    UIPanel/PausePanel.cpp
     UIPanel/PlayerStatusPanel.cpp
     UIPanel/SettingPanel.cpp
     UIPanel/UIButton.cpp
     UIPanel/UIManager.cpp
     UIPanel/UIPanel.cpp
     UIPanel/UISlider.cpp
+    Util/Timer.cpp
     Weapon/GunWeapon.cpp
     Weapon/MeleeWeapon.cpp
     Weapon/Weapon.cpp
@@ -108,6 +114,7 @@ set(INCLUDE_FILES
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
+    Components/FlickerComponent.hpp
     Components/FollowerComponent.hpp
     Components/HealthComponent.hpp
     Components/InputComponent.hpp
@@ -118,7 +125,7 @@ set(INCLUDE_FILES
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
     Components/TriggerComponent.hpp
-    Components/WalletComponent.hpp
+    Components/walletComponent.hpp
     Creature/Character.hpp
     Cursor.hpp
     EnumTypes.hpp
@@ -186,12 +193,18 @@ set(INCLUDE_FILES
     TriggerStrategy/ITriggerStrategy.hpp
     TriggerStrategy/KnockOffTriggerStrategy.hpp
     TriggerStrategy/ReflectTriggerStrategy.hpp
+    UIPanel/GameHUDPanel.hpp
+    UIPanel/MenuHUDPanel.hpp
+    UIPanel/MinimapPanel.hpp
+    UIPanel/PausePanel.hpp
     UIPanel/PlayerStatusPanel.hpp
+    UIPanel/ResultPanel.hpp
     UIPanel/SettingPanel.hpp
     UIPanel/UIButton.hpp
     UIPanel/UIManager.hpp
     UIPanel/UIPanel.hpp
     UIPanel/UISlider.hpp
+    Util/Timer.hpp
     Weapon/GunWeapon.hpp
     Weapon/MeleeWeapon.hpp
     Weapon/Weapon.hpp

@@ -67,6 +67,7 @@ bool SaveManager::DeleteSave() {
 		std::string filename = saveDirectory + "save_game.json";
 
 		if (std::remove(filename.c_str()) == 0) {
+			LOG_INFO("Delete successfully");
 			// 清除内存中的数据(重置为空)
 			saveSlot = nullptr;
 			return true;

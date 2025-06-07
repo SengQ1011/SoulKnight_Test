@@ -20,7 +20,8 @@ enum class StageTheme
 	IcePlains,
 };
 
-class Scene {
+class Scene
+{
 public:
 	enum class SceneType
 	{
@@ -48,34 +49,42 @@ public:
 	virtual SceneType Change() = 0; // 換場景設置
 
 	std::shared_ptr<SaveData> GetSaveData() { return m_SceneData; };
-	std::weak_ptr<Util::Renderer> GetRoot() {return m_Root;}
-	std::weak_ptr<Camera> GetCamera() {return m_Camera;}
-	std::shared_ptr<Room> GetCurrentRoom() {return m_CurrentRoom;}
-	std::vector<std::shared_ptr<nGameObject>>& GetPendingObjects() {return m_PendingObjects;}
+	std::weak_ptr<Util::Renderer> GetRoot() { return m_Root; }
+	std::weak_ptr<Camera> GetCamera() { return m_Camera; }
+	std::shared_ptr<Room> GetCurrentRoom() { return m_CurrentRoom; }
+	std::vector<std::shared_ptr<nGameObject>> &GetPendingObjects() { return m_PendingObjects; }
 	std::shared_ptr<RoomCollisionManager> GetCurrentCollisionManager()
 	{
 		std::shared_ptr<RoomCollisionManager> collisionManager;
 		// 碰撞管理員可能在場景也可能在房間
-		if (m_CurrentRoom) {return m_CurrentRoom->GetCollisionManager();}
+		if (m_CurrentRoom)
+		{
+			return m_CurrentRoom->GetCollisionManager();
+		}
 		return GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION);
 	}
 
 	template <typename T>
-	std::shared_ptr<T> GetManager(const ManagerTypes managerName) {
+	std::shared_ptr<T> GetManager(const ManagerTypes managerName)
+	{
 		auto it = m_Managers.find(managerName);
-		if (it != m_Managers.end()) {
+		if (it != m_Managers.end())
+		{
 			return std::static_pointer_cast<T>(it->second);
 		}
-		return nullptr;  // 若找不到指定類型的 Manager 返回 nullptr
+		return nullptr; // 若找不到指定類型的 Manager 返回 nullptr
 	}
 
-	void AddManager(const ManagerTypes managerName, std::shared_ptr<IManager> manager) {
+	void AddManager(const ManagerTypes managerName, std::shared_ptr<IManager> manager)
+	{
 		m_Managers[managerName] = manager;
 		// LOG_DEBUG("Successfully added new Manager");
 	}
 
-	bool IsChange() const {return m_IsChange;}
-	void SetIsChange(const bool change) {m_IsChange = change;}
+	bool IsChange() const { return m_IsChange; }
+	void SetIsChange(const bool change) { m_IsChange = change; }
+
+	SceneType GetSceneType() const { return m_SceneType; }
 
 	void FlushPendingObjectsToRendererAndCamera();
 	void SavePlayerInformation(std::shared_ptr<Character> player) const;
@@ -88,7 +97,7 @@ protected:
 	std::shared_ptr<Util::Renderer> m_Root = std::make_shared<Util::Renderer>();
 	std::shared_ptr<Camera> m_Camera = std::make_shared<Camera>();
 	std::vector<std::shared_ptr<nGameObject>> m_PendingObjects; // DungeonScene预加载暂存
-	std::unordered_map<ManagerTypes, std::shared_ptr<IManager>> m_Managers;			// 存儲各種 Manager
+	std::unordered_map<ManagerTypes, std::shared_ptr<IManager>> m_Managers; // 存儲各種 Manager
 };
 
-#endif //SCENE_HPP
+#endif // SCENE_HPP

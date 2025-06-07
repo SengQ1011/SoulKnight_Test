@@ -6,6 +6,7 @@
 #include "Animation.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/EffectAttackComponent.hpp"
+#include "ObserveManager/EventManager.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "TriggerStrategy/AttackTriggerStrategy.hpp"
@@ -30,6 +31,12 @@ void EffectAttack::Init() {
  	m_animation = std::make_shared<Animation>(imagePaths, false, interval);
  	this->SetDrawable(m_animation->GetDrawable());
  	m_animation->PlayAnimation(true);
+
+	// TODO: 這裏可以work，但是 @錦鑫你看一下怎麽放比較舒服
+	if (m_effectType == EffectAttackType::MEDIUM_BOOM)
+	{
+		EventManager::TriggerCameraShake(0.5, 15);
+	}
 
  	// 只初始化碰撞組件，不加入渲染器
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
@@ -71,9 +78,9 @@ void EffectAttack::Init() {
  	CollisionComp->SetSize(glm::vec2(m_size));
 
  	// TODO測試
-	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
- 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
- 	currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
+	// const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+ // 	currentScene->GetRoot().lock()->AddChild(CollisionComp->GetVisibleBox());
+ // 	currentScene->GetCamera().lock()->SafeAddChild(CollisionComp->GetVisibleBox());
  }
 
 void EffectAttack::UpdateObject(const float deltaTime) {
