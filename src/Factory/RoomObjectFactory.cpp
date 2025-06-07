@@ -22,7 +22,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		LOG_DEBUG("RoomObjectFactory::createRoomObject 沒設置ObjectDataPath");
 		return nullptr;
 	}
-
+	if (_id == "object_transferGate_0") LOG_DEBUG("YES1");
 	// 是否是動畫
 	bool isAnimated = false;
 	nlohmann::json jsonData = m_Loader.lock()->LoadObjectData(_id);
@@ -34,14 +34,13 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 	// 根據 className 創建特定類型的對象
 	if (!_class.empty())
 	{
+		if (_id == "object_transferGate_0") LOG_DEBUG("YES2");
 		if (_class == "Wall" || _class == "WallObject")
 		{
-			LOG_DEBUG("  -> Creating WallObject");
 			roomObject = std::make_shared<WallObject>(_id);
 		}
 		else if (_class == "DestructibleBox")
 		{
-			LOG_DEBUG("  -> Creating DestructibleBox");
 			roomObject = std::make_shared<DestructibleBox>(_id);
 		}
 		else
@@ -49,7 +48,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 			// 對於其他類型，使用原有邏輯
 			if (isAnimated)
 			{
-				LOG_DEBUG("  -> Creating Animation object");
+				if (_id == "object_transferGate_0") LOG_DEBUG("YES3");
 				std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
 				for (auto &i : path)
 					i = RESOURCE_DIR + i;
@@ -59,7 +58,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 			}
 			else
 			{
-				LOG_DEBUG("  -> Creating default nGameObject");
+				if (_id == "object_transferGate_0") LOG_DEBUG("YES4");
 				roomObject = std::make_shared<nGameObject>(_id);
 			}
 		}
@@ -69,7 +68,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		// 沒有指定 className 時的默認行為
 		if (isAnimated)
 		{
-			LOG_DEBUG("  -> Creating Animation object (default)");
+			if (_id == "object_transferGate_0") LOG_DEBUG("YES5");
 			std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
 			for (auto &i : path)
 				i = RESOURCE_DIR + i;
@@ -79,7 +78,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		}
 		else
 		{
-			LOG_DEBUG("  -> Creating default nGameObject");
 			roomObject = std::make_shared<nGameObject>(_id);
 		}
 	}
@@ -144,9 +142,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createWall(int row, int col, con
 		// 調整牆壁的位置偏移
 		auto currentOffset = wall->GetPosOffset();
 		wall->SetPosOffset(currentOffset + glm::vec2{0, 1.5f});
-
-		LOG_DEBUG("  -> Wall created successfully with final position({:.1f}, {:.1f})", wall->GetWorldCoord().x,
-				  wall->GetWorldCoord().y);
 	}
 	return wall;
 }
@@ -157,7 +152,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createFloor(const glm::vec2 &wor
 	if (floor)
 	{
 		floor->SetWorldCoord(worldPos);
-		LOG_DEBUG("  -> Floor created successfully");
 	}
 	return floor;
 }
@@ -168,7 +162,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createDoor(const glm::vec2 &worl
 	if (door)
 	{
 		door->SetWorldCoord(worldPos);
-		LOG_DEBUG("  -> Door created successfully");
 	}
 	return door;
 }

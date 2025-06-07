@@ -18,6 +18,10 @@ public:
 
 	//----Getter----
 	[[nodiscard]] std::vector<std::shared_ptr<Character>> GetEnemies() const { return m_enemies; }
+	[[nodiscard]] const std::vector<std::shared_ptr<nGameObject>> &GetTerrainObjects() const
+	{
+		return m_terrainObjects;
+	}
 
 	//----Setter----
 	void SetPlayer(const std::shared_ptr<Character> &player);
@@ -32,6 +36,8 @@ public:
 			m_terrainObjects.push_back(terrain);
 		}
 	}
+	void RemoveTerrainObject(const std::shared_ptr<nGameObject> &terrain);
+	void RemoveTerrainObjects(const std::vector<std::shared_ptr<nGameObject>> &terrains);
 
 	// 視野檢測接口
 	bool HasLineOfSight(const glm::vec2 &from, const glm::vec2 &to) const;

@@ -49,6 +49,7 @@ void DungeonRoom::RemoveWallCollisionComponents()
 			continue;
 
 		// 從 PendingObjects 中移除 visibleBox
+		obj->RemoveComponent<CollisionComponent>(ComponentType::COLLISION);
 		RemoveVisibleBoxFromPendingObjects(collisionComp, scene);
 
 		// 從碰撞管理器中註銷物件
@@ -94,7 +95,7 @@ DungeonRoom::CreateOptimizedColliders(const std::vector<CollisionRect> &regions)
 		auto collider = std::make_shared<WallObject>("optimized_wall_collider_" + std::to_string(i));
 
 		// 設置物件的世界座標為房間中心（與 LobbyRoom 一致）
-		collider->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		collider->SetWorldCoord(region.worldPos);
 		collider->SetDrawable(img.GetImage(RESOURCE_DIR "/empty.png"));
 
 		// 添加碰撞組件，使用現有的碰撞系統
@@ -104,20 +105,16 @@ DungeonRoom::CreateOptimizedColliders(const std::vector<CollisionRect> &regions)
 			// 設置碰撞箱大小
 			collisionComp->SetSize(region.size);
 
-			// 計算相對於房間中心的偏移（與 LobbyRoom 的做法一致）
-			glm::vec2 offset = region.worldPos - m_RoomSpaceInfo.m_WorldCoord;
-			collisionComp->SetOffset(offset);
-
 			// 使用現有的碰撞層枚舉
 			collisionComp->SetCollisionLayer(CollisionLayers_Terrain);
 
 			// 設置碰撞遮罩 - 與所有移動物體碰撞
-			collisionComp->AddCollisionMask(CollisionLayers_Player);
-			collisionComp->AddCollisionMask(CollisionLayers_Enemy);
-			collisionComp->AddCollisionMask(CollisionLayers_Player_Projectile);
-			collisionComp->AddCollisionMask(CollisionLayers_Enemy_Projectile);
-			collisionComp->AddCollisionMask(CollisionLayers_Player_EffectAttack);
-			collisionComp->AddCollisionMask(CollisionLayers_Enemy_EffectAttack);
+			collisionComp->AddCollisionMask(CollisionLayers_Player |
+											CollisionLayers_Player_Projectile |
+											CollisionLayers_Player_EffectAttack |
+											CollisionLayers_Enemy |
+											CollisionLayers_Enemy_Projectile|
+											CollisionLayers_Enemy_EffectAttack);
 
 			// 設置為靜態碰撞體（不是觸發器）
 			collisionComp->SetTrigger(false);

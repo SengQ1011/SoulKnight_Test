@@ -3,9 +3,13 @@
 //
 
 #include "Room/PortalRoom.hpp"
+#include "Components/InteractableComponent.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 #include "Loader.hpp"
 #include "Override/nGameObject.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Util/Logger.hpp"
+
 
 void PortalRoom::Start(const std::shared_ptr<Character> &player)
 {
@@ -15,10 +19,7 @@ void PortalRoom::Start(const std::shared_ptr<Character> &player)
 }
 
 
-void PortalRoom::Update()
-{
-	DungeonRoom::Update();
-}
+void PortalRoom::Update() { DungeonRoom::Update(); }
 
 void PortalRoom::LoadFromJSON()
 {
@@ -28,10 +29,22 @@ void PortalRoom::LoadFromJSON()
 
 void PortalRoom::CreatePortal()
 {
-	const auto portal = m_Factory.lock()->createRoomObject("object_transferGate_0","portal");
-	portal->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
-	const auto interactionComp = portal->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
-	interactionComp->GetPromptObject()->SetWorldCoord(portal->GetWorldCoord() + glm::vec2(10.0f,portal->GetImageSize().y/2 - 10.0f));
-	RegisterObjectToSceneAndManager(portal);
-}
+	const auto portal = m_Factory.lock()->createRoomObject("object_transferGate_0", "portal");
+	if (!portal) return;
 
+	portal->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+
+	// 確保 InteractableComponent 存在
+	const auto interactionComp = portal->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
+	if (!interactionComp) return;
+
+	// 安全設置提示物件位置
+	if (const auto promptObj = interactionComp->GetPromptObject())
+	{
+		// 等待一幀確保動畫大小已初始化
+		glm::vec2 portalSize = portal->GetImageSize();
+		promptObj->SetWorldCoord(portal->GetWorldCoord());// + glm::vec2(10.0f, portalSize.y / 2));
+	}
+
+	AddRoomObject(portal);
+}

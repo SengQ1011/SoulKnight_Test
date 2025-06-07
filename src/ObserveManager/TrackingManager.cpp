@@ -61,6 +61,19 @@ void TrackingManager::RemoveEnemy(const std::shared_ptr<Character> &enemy)
 	m_enemies.erase(std::remove(m_enemies.begin(), m_enemies.end(), enemy), m_enemies.end());
 }
 
+void TrackingManager::RemoveTerrainObject(const std::shared_ptr<nGameObject> &terrain)
+{
+	m_terrainObjects.erase(std::remove(m_terrainObjects.begin(), m_terrainObjects.end(), terrain),
+						   m_terrainObjects.end());
+}
+
+void TrackingManager::RemoveTerrainObjects(const std::vector<std::shared_ptr<nGameObject>> &terrains)
+{
+	for (const auto &terrain : terrains)
+	{
+		RemoveTerrainObject(terrain);
+	}
+}
 
 // 射綫檢測：一條線段（從 rayStart 到 rayEnd）有沒有穿過一個矩形（rect）==》簡單 AABB 判斷
 bool TrackingManager::RayIntersectsRect(const glm::vec2 &rayStart, const glm::vec2 &rayEnd, const Rect &rect)
