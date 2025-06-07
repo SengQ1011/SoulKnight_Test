@@ -41,6 +41,30 @@ std::shared_ptr<T> nGameObject::GetComponent(const ComponentType type) //或許w
 	return nullptr;
 }
 
+template <typename T>
+bool nGameObject::RemoveComponent(ComponentType type)
+{
+	static_assert(std::is_base_of_v<Component, T>, "T must derive from Component");
+
+	auto it = m_Components.find(type);
+	if (it != m_Components.end()) {
+		auto component = it->second;
+
+		// 從事件訂閱者列表中移除該組件
+		for (auto& [eventType, subscribers] : m_EventSubscribers) {
+			auto subscriberIt = std::find(subscribers.begin(), subscribers.end(), component.get());
+			if (subscriberIt != subscribers.end()) {
+				subscribers.erase(subscriberIt);
+			}
+		}
+
+		// 從組件映射中移除
+		m_Components.erase(it);
+		return true;
+	}
+	return false;
+}
+
 template <typename EventT>
 void nGameObject::OnEvent(const EventT &eventInfo)
 {
@@ -55,7 +79,6 @@ void nGameObject::OnEvent(const EventT &eventInfo)
 	{
 		for (auto* component : it->second)
 		{
-			if (static_cast<int>(component->GetType()) == 11) LOG_DEBUG("Check");
 			component->HandleEvent(eventInfo);
 		}
 	}

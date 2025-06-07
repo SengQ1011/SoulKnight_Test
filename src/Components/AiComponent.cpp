@@ -17,7 +17,7 @@
 #include "Util/Time.hpp"
 
 AIComponent::AIComponent(const MonsterType MonsterType, const std::shared_ptr<IMoveStrategy> &moveStrategy,
-						 const std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> &attackStrategies,
+						 const std::unordered_map<AttackStrategies, std::shared_ptr<IAttackStrategy>> &attackStrategies,
 						 const std::shared_ptr<IUtilityStrategy> &utilityStrategies, const int monsterPoint) :
 	Component(ComponentType::AI), m_aiType(MonsterType), m_moveStrategy(moveStrategy),
 	m_attackStrategy(attackStrategies), m_utilityStrategy(utilityStrategies), m_monsterPoint(monsterPoint),
@@ -35,7 +35,7 @@ void AIComponent::Init()
 	m_readyAttackIcon->SetDrawable(ImagePoolManager::GetInstance().GetImage(imagePath));
 	m_readyAttackIcon->SetZIndexType(ZIndexType::UI);
 	m_readyAttackIcon->m_WorldCoord = GetOwner<Character>()->GetWorldCoord() + m_iconOffset;
-	// enemy->AddChild(m_readyAttackIcon);
+
 	HideReadyAttackIcon();
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	scene->GetRoot().lock()->AddChild(m_readyAttackIcon);
@@ -45,13 +45,6 @@ void AIComponent::Init()
 	m_context.moveComp = enemy->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
 	m_context.attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK);
 	m_context.stateComp = enemy->GetComponent<StateComponent>(ComponentType::STATE);
-
-	// if (auto attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
-	// 	if(auto currentWeapon = attackComp->GetCurrentWeapon()) {
-	// 		// auto type = currentWeapon->GetWeaponType();
-	// 	}
-	// }
-
 }
 
 
@@ -84,6 +77,18 @@ void AIComponent::SetEnemyState(const enemyState state)
 		stateComp->SetState(State::MOVING);
 	else if (state == enemyState::READY_ATTACK)
 		stateComp->SetState(State::ATTACK);
+	else if (state == enemyState::SKILL1)
+		stateComp->SetState(State::SKILL);
+	else if (state == enemyState::SKILL2)
+		stateComp->SetState(State::SKILL2);
+	else if (state == enemyState::SKILL3)
+		stateComp->SetState(State::SKILL3);
+	else if (state == enemyState::SKILL4)
+		stateComp->SetState(State::SKILL4);
+	else if (state == enemyState::SKILL5)
+		stateComp->SetState(State::SKILL5);
+	else
+		throw std::exception("Invalid state");
 }
 
 void AIComponent::ShowReadyAttackIcon() const {
@@ -98,7 +103,7 @@ void AIComponent::HideReadyAttackIcon()
 void AIComponent::OnPlayerPositionUpdate(std::weak_ptr<Character> player)
 {
 	m_Target = player;
-	if(m_aiType != MonsterType::WANDER)
+	if(m_aiType != MonsterType::WANDER && m_aiType != MonsterType::BOSS)
 	{
 		if (!m_AttackComponent) {
 			if (auto owner = GetOwner<Character>()) {

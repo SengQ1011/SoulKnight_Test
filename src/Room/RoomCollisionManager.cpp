@@ -115,7 +115,6 @@ void RoomCollisionManager::Update()
     for (const auto& pair : collisionPairs) {
         auto objectA = pair.first;
         auto objectB = pair.second;
-
         CollisionEventInfo info(objectA, objectB);
         CalculateCollisionDetails(objectA, objectB, info);
         DispatchCollision(objectA, objectB, info);

@@ -13,12 +13,13 @@ enum class ComponentType
 	CHEST,			// 3
 	COLLISION,		// 4
 	DOOR,			// 5
-	FOLLOWER,		// 6
-	HEALTH,			// 7
-	INPUT,			// 8
-	INTERACTABLE,	// 9
-	MOVEMENT,		// 10
-	PROJECTILE,		// 11
+	EFFECT_ATTACK,	// 6
+	FOLLOWER,		// 7
+	HEALTH,			// 8
+	INPUT,			// 9
+	INTERACTABLE,	// 10
+	MOVEMENT,		// 11
+	PROJECTILE,		// 12
 	SKILL,
 	STATE,
 	TALENT,
@@ -37,6 +38,10 @@ enum class State
 	STANDING,
 	MOVING,
 	SKILL,
+	SKILL2,
+	SKILL3,
+	SKILL4,
+	SKILL5,
 	ATTACK,
 	DEAD
 };
@@ -57,10 +62,12 @@ enum class EffectAttackType
 	SLASH,
 	LUNGE,
 	SHOCKWAVE,
+	LARGE_SHOCKWAVE,
 	ENERGY_WAVE,
 	LARGE_BOOM,
 	MEDIUM_BOOM,
-	SMALL_BOOM
+	SMALL_BOOM,
+	ICE_SPIKE
 };
 
 enum class AttackType {
@@ -68,6 +75,15 @@ enum class AttackType {
 	PROJECTILE,
 	COLLISION,
 	NONE
+};
+
+enum class AttackStrategies
+{
+	NONE,
+	COLLISION_ATTACK,
+	MELEE,
+	GUN,
+	BOSS
 };
 
 enum class WeaponType {
@@ -89,16 +105,22 @@ enum class WeaponType {
 
 
 enum class MonsterType {
+	WANDER,		// 游蕩
 	ATTACK,		// 追蹤玩家
 	SUMMON,		// 召喚
-	WANDER		// 游蕩
+	BOSS
 };
 
 enum class enemyState {
 	IDLE,
 	WANDERING,
 	CHASING,
-	READY_ATTACK
+	READY_ATTACK,
+	SKILL1,
+	SKILL2,
+	SKILL3,
+	SKILL4,
+	SKILL5
 };
 
 enum class ManagerTypes

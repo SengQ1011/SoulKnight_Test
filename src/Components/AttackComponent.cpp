@@ -40,7 +40,9 @@ void AttackComponent::Init()
 	// 加入渲染樹
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if (!scene) return;
-	scene->GetPendingObjects().push_back(m_currentWeapon); //暂时存入一次过设置渲染和镜头
+	// scene->GetPendingObjects().push_back(m_currentWeapon); //暂时存入一次过设置渲染和镜头
+	scene->GetRoot().lock()->AddChild(m_currentWeapon);
+	scene->GetCamera().lock()->SafeAddChild(m_currentWeapon);
 	m_currentWeapon->SetRegisteredToScene(true);
 }
 

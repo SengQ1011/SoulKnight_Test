@@ -90,7 +90,7 @@ void MonsterRoom::SpawnEnemiesInRoom()
 
 		glm::ivec2 grid = {col, row};
 		const glm::vec2 worldPos = Tool::RoomGridToWorld(grid, tileSize, roomCoord, region);
-		std::uniform_int_distribution<int> ID(1, 14);
+		std::uniform_int_distribution<int> ID(101, 101);
 
 		if (const auto enemy = SpawnEnemy(ID(rng), worldPos)) {
 			enemy->SetActive(false);
@@ -140,7 +140,7 @@ void MonsterRoom::OnStateChanged()
 			auto doorComp = door->GetComponent<DoorComponent>(ComponentType::DOOR);
 			if (doorComp) doorComp->DoorOpened(); // 通常 EXPLORED 要開門
 		}
-		// TODO: 顯示寶箱或獎勵生成
+		// 顯示寶箱或獎勵生成
 		if (const auto rewardChest = CreateChest(ChestType::REWARD))
 		{
 			rewardChest->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
@@ -203,10 +203,8 @@ bool MonsterRoom::CombatWaveInfo::IsFinished() const
 	return !isInCombat;
 }
 
-
-
-
-
-
-
-
+void MonsterRoom::AddEnemy(const std::shared_ptr<Character>& enemy)
+{
+	m_CombatWave.enemies.push_back(enemy);
+	++m_CombatWave.aliveEnemyCount;
+}

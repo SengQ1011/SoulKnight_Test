@@ -26,6 +26,15 @@ public:
 	std::shared_ptr<T> GetComponent(ComponentType type);
 
 	/**
+	 * @brief 移除指定類型的組件
+	 * @tparam T 組件類型
+	 * @param type 組件類型枚舉
+	 * @return 是否成功移除
+	 */
+	template <typename T>
+	bool RemoveComponent(ComponentType type);
+
+	/**
 	 * @brief 對nGameObject内部的事件分發
 	 * @tparam EventT EventInfo類別
 	 * @param eventInfo 事件資料

@@ -46,7 +46,7 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 		}
 		default:
 			break;
-		}
+	}
 }
 
 void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
@@ -83,7 +83,7 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 	}
 }
 
-void ProjectileComponent::HandleReflectEvent()
+void ProjectileComponent::HandleReflectEvent() const
 {
 	// LOG_DEBUG("reflect");
 	const auto proj = GetOwner<Projectile>();

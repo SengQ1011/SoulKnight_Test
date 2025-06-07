@@ -15,6 +15,10 @@ struct  EffectAttackInfo : public AttackInfo
 	EffectAttackType effectType = EffectAttackType::NONE;
 	bool canReflectBullet = false;
 	bool canBlockingBullet = true;
+
+	// for create ChainAttack
+	bool continuouslyExtending = false;
+	float intervalCreateChainAttack = 0.0f;
 };
 
 namespace EffectAssets {
@@ -44,6 +48,16 @@ namespace EffectAssets {
 			ResourcePath("/attackUI/shockwave/shockwave_5.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_6.png"),
 			ResourcePath("/attackUI/shockwave/shockwave_7.png")
+		}},
+		{EffectAttackType::LARGE_SHOCKWAVE,{
+			ResourcePath("/attackUI/shockwave/effect_shock2_0.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_1.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_2.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_3.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_4.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_5.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_6.png"),
+			ResourcePath("/attackUI/shockwave/effect_shock2_7.png")
 		}},
 		{EffectAttackType::ENERGY_WAVE,{
 			ResourcePath("/attackUI/energy_wave/energy_wave_0.png"),
@@ -76,7 +90,14 @@ namespace EffectAssets {
 			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_2.png"),
 			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_3.png"),
 			ResourcePath("/attackUI/boom/small_boom/element_exploded_fire_small_4.png")
-		}}
+		}},
+		{EffectAttackType::ICE_SPIKE,{
+			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png"),
+			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png"),
+			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png"),
+			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png"),
+			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png")
+		}},
 	};
 }
 
@@ -96,8 +117,10 @@ public:
 	[[nodiscard]] EffectAttackType GetEffectAttackType() const { return m_effectType; }
 	[[nodiscard]] std::shared_ptr<Animation> GetAnimation()const { return m_animation; }
 	[[nodiscard]] bool checkCanReflect() const { return m_reflectBullet; }
+	[[nodiscard]] bool IsCollisionWithTerrain() const { return m_collisionWithTerrain; }
 
 	//----Setter----
+	void SetIsCollisionWithTerrain(const bool isCollisionWithTerrain) { m_collisionWithTerrain = isCollisionWithTerrain; }
 	void ResetAll(const EffectAttackInfo &effectAttackInfo);
 
 protected:
@@ -106,6 +129,11 @@ protected:
 	bool m_reflectBullet = false;
 	bool m_bulletBlocking = true;
 	float m_shockwaveForce = 120.0f;
+	bool m_collisionWithTerrain = false;
+
+	float m_timer = 0.0f;
+	bool m_continuouslyExtending = false;
+	float m_intervalCreateChainAttack = 0.0f;
 };
 
 #endif //EFFECTATTACK_HPP

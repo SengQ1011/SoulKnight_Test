@@ -27,6 +27,7 @@ public:
 	void TryActivateByPlayer() override;
 	void OnStateChanged() override;
 
+	void AddEnemy(const std::shared_ptr<Character>& enemy);
 	void OnEnemyDied();
 
 private:

@@ -104,6 +104,7 @@ set(INCLUDE_FILES
     Components/CollisionComponent.hpp
     Components/Component.hpp
     Components/DoorComponent.hpp
+    Components/EffectAttackComponent.hpp
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp

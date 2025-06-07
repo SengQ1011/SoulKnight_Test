@@ -77,6 +77,7 @@ std::shared_ptr<ProjectileInfo> createChainedProjectileInfo(const nlohmann::json
 		proj->bubbleImagePath = RESOURCE_DIR + json["bubbleImagePath"].get<std::string>();
 	}
 	proj->chainProjectionNum = json["chainProjectionNum"].get<int>();
+	proj->AllRound = json["allRound"].get<bool>();
 
 	return proj;
 }
@@ -90,6 +91,11 @@ std::shared_ptr<EffectAttackInfo> createChainedEffectAttackInfo(const nlohmann::
 	effect->canReflectBullet = false;
 	effect->canBlockingBullet = false;
 	effect->effectType = stringToEffectAttackType(json["effectType"].get<std::string>());
+	if (json.contains("continuouslyExtending"))
+	{
+		effect->continuouslyExtending = json["continuouslyExtending"].get<bool>();
+		effect->intervalCreateChainAttack = json["intervalCreateChainAttack"].get<float>();
+	}
 	return effect;
 }
 
@@ -153,6 +159,7 @@ namespace WeaponFactory {
 								effectInfo.chainAttack.nextAttackInfo = createChainedEffectAttackInfo(chainedAttack);
 							}
 						}
+
 						meleeInfo.defaultEffectAttackInfo = effectInfo;
 
 						weaponPtr =  std::make_shared<MeleeWeapon>(meleeInfo);

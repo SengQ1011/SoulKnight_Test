@@ -11,6 +11,8 @@
 
 void AttackManager::spawnProjectile(const ProjectileInfo& projectileInfo)
 {
+	// 將生成操作加入隊列，延遲到下一幀執行
+	m_spawnQueue.push_back([this, projectileInfo]() {
 	const auto bullet = m_projectilePool.Acquire(projectileInfo);
 	if (bullet == nullptr) {LOG_ERROR("bullet from pool is nullptr!");}
 	bullet->Init(); // 只初始化碰撞組件，不處理渲染
@@ -24,9 +26,12 @@ void AttackManager::spawnProjectile(const ProjectileInfo& projectileInfo)
 	const std::shared_ptr<RoomCollisionManager> collisionManager = currentScene->GetCurrentCollisionManager();
 	collisionManager->RegisterNGameObject(bullet);
 	m_projectiles.push_back(bullet);
+	});
 }
 
 void AttackManager::spawnEffectAttack(const EffectAttackInfo &effectAttackInfo) {
+	// 將生成操作加入隊列，延遲到下一幀執行
+	m_spawnQueue.push_back([this, effectAttackInfo]() {
 	auto effectAttack = m_effectPool.Acquire(effectAttackInfo);
 	effectAttack->Init();
 
@@ -40,13 +45,20 @@ void AttackManager::spawnEffectAttack(const EffectAttackInfo &effectAttackInfo) 
 	collisionManager->RegisterNGameObject(effectAttack);
 
 	m_effects.push_back(effectAttack);
+	});
 }
 
 void AttackManager::Update() {
     if (m_projectiles.empty() && m_projectileRemovalQueue.empty() &&
-        m_effects.empty() && m_effectRemovalQueue.empty()) return;
+		m_effects.empty() && m_effectRemovalQueue.empty() && m_spawnQueue.empty()) return;
 
 	const float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+
+	// 執行所有延遲的 spawn 操作
+	for (auto& fn : m_spawnQueue) {
+		fn();
+	}
+	m_spawnQueue.clear();
 
     // 更新子彈與特效
     for (auto& bullet : m_projectiles) {
@@ -55,13 +67,6 @@ void AttackManager::Update() {
     for (auto& effect : m_effects) {
         effect->UpdateObject(deltaTime);
     }
-
-	// 執行所有延遲的 spawn 操作
-	for (auto& fn : m_spawnQueue) {
-		fn();
-	}
-	m_spawnQueue.clear();
-
 
     // 處理要移除的子彈
     {
@@ -120,7 +125,6 @@ void AttackManager::Update() {
         m_projectileRemovalQueue.pop_front();
 
         root->RemoveChild(bullet);
-        // camera->RemoveChild(bullet);
     	camera->MarkForRemoval(bullet);
         collisionManager->UnregisterNGameObject(bullet);
         m_projectilePool.Release(bullet);

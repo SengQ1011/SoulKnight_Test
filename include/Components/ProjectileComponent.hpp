@@ -19,7 +19,7 @@ public:
 	std::vector<EventType> SubscribedEventTypes() const override;
 	void HandleEvent(const EventInfo &eventInfo) override;
 	void HandleCollision(const CollisionEventInfo &info) override;
-	void HandleReflectEvent();
+	void HandleReflectEvent() const;
 
 	void TriggerChainAttack(const std::shared_ptr<Projectile>& projectile);
 private:

@@ -45,6 +45,10 @@ State stringToState(const std::string& stateStr) {
 	if (stateStr == "STANDING") return State::STANDING;
 	if (stateStr == "MOVING") return State::MOVING;
 	if (stateStr == "SKILL") return State::SKILL;
+	if (stateStr == "SKILL2") return State::SKILL2;
+	if (stateStr == "SKILL3") return State::SKILL3;
+	if (stateStr == "SKILL4") return State::SKILL4;
+	if (stateStr == "SKILL5") return State::SKILL5;
 	if (stateStr == "ATTACK") return State::ATTACK;
 	if (stateStr == "DEAD") return State::DEAD;
 	throw std::invalid_argument("Unknown state: " + stateStr);
@@ -55,10 +59,33 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(c
 	for (const auto& [key, value] : animationsJson.items()) {
 		State state = stringToState(key);
 		std::vector<std::string> frames;
-		for (const auto& frame : value) {
-			frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+
+		if (value.is_object() && value.contains("path")) {
+			float interval = 100.0f;
+			bool needLoop = false;
+
+			for (const auto& frame : value["path"]) {
+				frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+			}
+
+			if (value.contains("FPS")) {
+				const auto fps = value["FPS"].get<int>();
+				interval = 1000.0f / fps;
+			}
+
+			if (value.contains("Loop")) {
+				needLoop = value["Loop"].get<bool>();
+			}
+
+			animations[state] = std::make_shared<Animation>(frames, needLoop, interval);
+		} else if (value.is_array()) {
+			for (const auto& frame : value) {
+				frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+			}
+			animations[state] = std::make_shared<Animation>(frames, true);
+		} else {
+			throw std::invalid_argument("Unknown frames");
 		}
-		animations[state] = std::make_shared<Animation>(frames, true); // 使用 shared_ptr 包装 Animation
 	}
 	return animations;
 }
@@ -138,7 +165,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id) {
 			FollowerComp->Update(); // 直接更新一次位置
 			//FollowerComp->SetTargetMouse(true);
 
-			auto weapon2 = WeaponFactory::createWeapon(5);
+			auto weapon2 = WeaponFactory::createWeapon(2);
 			attackComponent->AddWeapon(weapon2);
 			LOG_DEBUG("Player created");
 			return player;
@@ -153,15 +180,17 @@ MonsterType stringToMonsterType(const std::string& stateStr) {
 	if (stateStr == "Attack") return MonsterType::ATTACK;
 	if (stateStr == "Summon") return MonsterType::SUMMON;
 	if (stateStr == "Wander") return MonsterType::WANDER;
+	if (stateStr == "Boss") return MonsterType::BOSS;
 }
 
-std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> stringToAtkStrategies(const nlohmann::json& atkStrategies){
-	std::unordered_map<AttackType, std::shared_ptr<IAttackStrategy>> strategies;
+std::unordered_map<AttackStrategies, std::shared_ptr<IAttackStrategy>> stringToAtkStrategies(const nlohmann::json& atkStrategies){
+	std::unordered_map<AttackStrategies, std::shared_ptr<IAttackStrategy>> strategies;
 	for (const auto& atkType : atkStrategies) {
-		if(atkType == "Collision") strategies[AttackType::COLLISION] = std::make_shared<CollisionAttack>();
-		if(atkType == "Melee") strategies[AttackType::EFFECT_ATTACK] = std::make_shared<MeleeAttack>();
-		if(atkType == "Gun") strategies[AttackType::PROJECTILE] = std::make_shared<GunAttack>();
-		if(atkType == "None")  strategies[AttackType::NONE] = std::make_shared<NoAttack>();
+		if(atkType == "Collision") strategies[AttackStrategies::COLLISION_ATTACK] = std::make_shared<CollisionAttack>();
+		if(atkType == "Melee") strategies[AttackStrategies::MELEE] = std::make_shared<MeleeAttack>();
+		if(atkType == "Gun") strategies[AttackStrategies::GUN] = std::make_shared<GunAttack>();
+		if(atkType == "Boss") strategies[AttackStrategies::BOSS] = std::make_shared<BossAttackStrategy>();
+		if(atkType == "None")  strategies[AttackStrategies::NONE] = std::make_shared<NoAttack>();
 	}
 	return strategies;
 }
@@ -208,7 +237,8 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id) {
         		moveStrategy = std::make_shared<ChaseMove>();
         	} else if (aiType == MonsterType::WANDER) {
         		moveStrategy = std::make_shared<WanderMove>();
-        	}
+        	} else if (aiType == MonsterType::BOSS)
+        		moveStrategy = std::make_shared<BossMove>();
         	else LOG_ERROR("{}'s moveType not found", id);
 
         	// 根據攻擊類型

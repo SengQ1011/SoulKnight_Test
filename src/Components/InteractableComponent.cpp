@@ -47,7 +47,7 @@ void InteractableComponent::Init()
 			{
 				if (const auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
 				{
-					walletComp->AddMoney(2);
+					walletComp->AddMoney(1);
 					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 					if (!currentScene) return;
 					currentScene->GetRoot().lock()->RemoveChild(target);
@@ -64,7 +64,7 @@ void InteractableComponent::Init()
 			{
 				if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
 				{
-					healthComp->AddCurrentEnergy(5);
+					healthComp->AddCurrentEnergy(8);
 					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 					if (!currentScene) return;
 					currentScene->GetRoot().lock()->RemoveChild(target);

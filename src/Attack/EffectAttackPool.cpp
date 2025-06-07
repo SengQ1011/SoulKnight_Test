@@ -4,8 +4,25 @@
 
 #include "Attack/EffectAttackPool.hpp"
 
-
 std::deque<std::shared_ptr<EffectAttack>> EffectAttackPool::pool;
+
+EffectAttackPool::EffectAttackPool()
+{
+	for (int i=0; i < 60; i++)
+	{
+		EffectAttackInfo effect_attack;
+		effect_attack.type = CharacterType::ENEMY;
+		effect_attack.size = 20.0f;
+		effect_attack.damage = 0;
+		effect_attack.elementalDamage = StatusEffect::NONE;
+		effect_attack.chainAttack.enabled = false;
+		effect_attack.canBlockingBullet = false;
+		effect_attack.canReflectBullet = false;
+		effect_attack.effectType = EffectAttackType::SLASH;
+		auto effect = std::make_shared<EffectAttack>(effect_attack);
+		pool.push_back(effect);
+	}
+}
 
 std::shared_ptr<EffectAttack> EffectAttackPool::Acquire(const EffectAttackInfo &effectAttackInfo) {
 	if (!pool.empty()) {
