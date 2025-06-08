@@ -40,6 +40,7 @@ set(SRC_FILES
     ObserveManager/AudioManager.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
+    Room/ChestRoom.cpp
     Room/CollisionOptimizer.cpp
     Room/DungeonMap.cpp
     Room/DungeonRoom.cpp
@@ -151,6 +152,7 @@ set(INCLUDE_FILES
     Observer.hpp
     Override/nGameObject.hpp
     RandomUtil.hpp
+    Room/ChestRoom.hpp
     Room/CollisionOptimizer.hpp
     Room/DungeonMap.hpp
     Room/DungeonRoom.hpp

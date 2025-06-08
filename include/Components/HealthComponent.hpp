@@ -28,7 +28,11 @@ public:
 
 	//----Setter----
 	void SetMaxHp(const int hp) { m_maxHp = hp; }
-	void SetCurrentHp(const int hp) { m_currentHp = hp; }
+	void SetCurrentHp(const int hp)
+	{
+		m_currentHp = hp;
+		if (m_currentHp <= 0) OnDeath();
+	}
 	void AddCurrentHp(const int hp){
 		if (m_currentHp + hp <= m_maxHp) m_currentHp += hp;
 		else m_currentHp = m_maxHp;

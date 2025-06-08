@@ -6,6 +6,7 @@
 #include <iostream>
 #include <random>
 #include "Creature/Character.hpp"
+#include "Room/ChestRoom.hpp"
 #include "Room/DungeonRoom.hpp"
 #include "Room/MonsterRoom.hpp"
 #include "Room/PortalRoom.hpp"
@@ -24,6 +25,9 @@ void DungeonMap::Start()
 
 	// 产生了主要路径
 	GenerateMainPath();
+
+	// 生成分支房間
+	GenerateBranches();
 
 	for (int i = 0; i < std::size(m_RoomInfo); ++i)
 	{
@@ -48,6 +52,15 @@ void DungeonMap::Start()
 		case RoomType::PORTAL:
 			room = std::make_shared<PortalRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
 												glm::vec2(x, y));
+			break;
+		case RoomType::CHEST:
+			room =
+				std::make_shared<ChestRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+			break;
+		case RoomType::SPECIAL:
+			// 暫時使用DungeonRoom作為基礎實現，未來可以創建專門的SpecialRoom
+			room = std::make_shared<MonsterRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
+												 glm::vec2(x, y), RoomType::SPECIAL);
 			break;
 		default:
 			break;
@@ -88,7 +101,8 @@ void DungeonMap::Update()
 	if (!m_CurrentRoom->IsPlayerInValidPosition())
 	{
 		const auto player = m_Player.lock();
-		if (!player) return;
+		if (!player)
+			return;
 
 		const auto prevRoom = m_PreviousRoom.lock();
 		if (prevRoom)
@@ -143,6 +157,217 @@ bool DungeonMap::GenerateMainPath()
 	return true;
 }
 
+bool DungeonMap::GenerateBranches()
+{
+	// 收集主路徑上的 MONSTER 房間位置
+	std::vector<glm::ivec2> monsterPositions;
+	for (int i = 0; i < 25; ++i)
+	{
+		if (m_RoomInfo[i].m_RoomType == RoomType::MONSTER)
+		{
+			const int x = i % 5;
+			const int y = i / 5;
+			monsterPositions.push_back({x, y});
+		}
+	}
+
+	if (monsterPositions.size() != 2)
+	{
+		LOG_ERROR("GenerateBranches: Expected 2 MONSTER rooms, found {}", monsterPositions.size());
+		return false;
+	}
+
+	// 收集所有主路徑 MONSTER 房間的可用方向
+	std::vector<std::pair<glm::ivec2, Direction>> availableDirections;
+	for (const auto &monsterPos : monsterPositions)
+	{
+		int monsterIndex = monsterPos.y * 5 + monsterPos.x;
+
+		// 檢查四個方向，排除已經被主路徑佔用的方向
+		for (Direction dir : ALL_DIRECTIONS)
+		{
+			// 跳過已經有連接的方向（主路徑方向）
+			if (m_RoomInfo[monsterIndex].m_Connections[static_cast<int>(dir)])
+				continue;
+
+			glm::ivec2 nextPos = Move(monsterPos, dir);
+
+			// 邊界檢查
+			if (nextPos.x < 0 || nextPos.x >= 5 || nextPos.y < 0 || nextPos.y >= 5)
+				continue;
+
+			int nextIndex = nextPos.y * 5 + nextPos.x;
+			// 確保目標位置是空的
+			if (m_RoomInfo[nextIndex].m_RoomType != RoomType::EMPTY)
+				continue;
+
+			availableDirections.push_back({monsterPos, dir});
+		}
+	}
+
+	if (availableDirections.empty())
+	{
+		LOG_WARN("GenerateBranches: No available directions for branch generation");
+		return true; // 不算失敗，只是沒有空間生成分支
+	}
+
+	LOG_DEBUG("GenerateBranches: Found {} available directions", availableDirections.size());
+
+	// Step 1: 確保生成至少 1個 CHEST 和 1個 SPECIAL
+	bool chestGenerated = false;
+	bool specialGenerated = false;
+	size_t directionsUsed = 0;
+
+	// 隨機排列可用方向
+	std::shuffle(availableDirections.begin(), availableDirections.end(), std::mt19937(std::random_device{}()));
+
+	// 優先生成 CHEST
+	if (directionsUsed < availableDirections.size() && !chestGenerated)
+	{
+		auto [monsterPos, dir] = availableDirections[directionsUsed];
+		glm::ivec2 branchPos = Move(monsterPos, dir);
+
+		int monsterIndex = monsterPos.y * 5 + monsterPos.x;
+		int branchIndex = branchPos.y * 5 + branchPos.x;
+
+		m_RoomInfo[branchIndex].m_RoomType = RoomType::CHEST;
+		m_RoomInfo[monsterIndex].m_Connections[static_cast<int>(dir)] = true;
+		m_RoomInfo[branchIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir))] = true;
+
+		chestGenerated = true;
+		directionsUsed++;
+
+		LOG_DEBUG("Generated guaranteed CHEST at ({}, {}) from MONSTER at ({}, {})", branchPos.x, branchPos.y,
+				  monsterPos.x, monsterPos.y);
+	}
+
+	// 然後生成 SPECIAL
+	if (directionsUsed < availableDirections.size() && !specialGenerated)
+	{
+		auto [monsterPos, dir] = availableDirections[directionsUsed];
+		glm::ivec2 branchPos = Move(monsterPos, dir);
+
+		int monsterIndex = monsterPos.y * 5 + monsterPos.x;
+		int branchIndex = branchPos.y * 5 + branchPos.x;
+
+		m_RoomInfo[branchIndex].m_RoomType = RoomType::SPECIAL;
+		m_RoomInfo[monsterIndex].m_Connections[static_cast<int>(dir)] = true;
+		m_RoomInfo[branchIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir))] = true;
+
+		specialGenerated = true;
+		directionsUsed++;
+
+		LOG_DEBUG("Generated guaranteed SPECIAL at ({}, {}) from MONSTER at ({}, {})", branchPos.x, branchPos.y,
+				  monsterPos.x, monsterPos.y);
+	}
+
+	// Step 2: 剩餘方向隨機生成房間 (MONSTER: 60%, SPECIAL: 35%, CHEST: 5%)
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> roomGenDist(0.0, 1.0);
+	std::uniform_real_distribution<> roomTypeDist(0.0, 1.0);
+
+	for (size_t i = directionsUsed; i < availableDirections.size(); ++i)
+	{
+		// 50% 機率生成房間
+		if (roomGenDist(gen) > 0.5)
+			continue;
+
+		auto [monsterPos, dir] = availableDirections[i];
+		glm::ivec2 branchPos = Move(monsterPos, dir);
+
+		int monsterIndex = monsterPos.y * 5 + monsterPos.x;
+		int branchIndex = branchPos.y * 5 + branchPos.x;
+
+		// 根據機率選擇房間類型
+		double typeRoll = roomTypeDist(gen);
+		RoomType branchType;
+		if (typeRoll < 0.6) // 60%
+		{
+			branchType = RoomType::MONSTER;
+		}
+		else if (typeRoll < 0.95) // 35%
+		{
+			branchType = RoomType::SPECIAL;
+		}
+		else // 5%
+		{
+			branchType = RoomType::CHEST;
+		}
+
+		m_RoomInfo[branchIndex].m_RoomType = branchType;
+		m_RoomInfo[monsterIndex].m_Connections[static_cast<int>(dir)] = true;
+		m_RoomInfo[branchIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir))] = true;
+
+		const char *roomTypeName = (branchType == RoomType::MONSTER) ? "MONSTER"
+			: (branchType == RoomType::SPECIAL)						 ? "SPECIAL"
+																	 : "CHEST";
+		LOG_DEBUG("Generated random {} at ({}, {}) from MONSTER at ({}, {})", roomTypeName, branchPos.x, branchPos.y,
+				  monsterPos.x, monsterPos.y);
+	}
+
+	// Step 3: 建立相鄰分支房間的連接（排除 STARTING/PORTAL）
+	GenerateAdjacentConnections();
+
+	return true;
+}
+
+void DungeonMap::GenerateAdjacentConnections()
+{
+	for (int i = 0; i < 25; ++i)
+	{
+		// 跳過空房間、STARTING 和 PORTAL 房間
+		if (m_RoomInfo[i].m_RoomType == RoomType::EMPTY || m_RoomInfo[i].m_RoomType == RoomType::STARTING ||
+			m_RoomInfo[i].m_RoomType == RoomType::PORTAL)
+			continue;
+
+		const int x = i % 5;
+		const int y = i / 5;
+
+		// 檢查四個方向的相鄰房間
+		for (Direction dir : ALL_DIRECTIONS)
+		{
+			glm::ivec2 neighborPos = glm::ivec2(x, y);
+			switch (dir)
+			{
+			case Direction::UP:
+				neighborPos.y -= 1;
+				break;
+			case Direction::DOWN:
+				neighborPos.y += 1;
+				break;
+			case Direction::LEFT:
+				neighborPos.x -= 1;
+				break;
+			case Direction::RIGHT:
+				neighborPos.x += 1;
+				break;
+			}
+
+			// 邊界檢查
+			if (neighborPos.x < 0 || neighborPos.x >= 5 || neighborPos.y < 0 || neighborPos.y >= 5)
+				continue;
+
+			int neighborIndex = neighborPos.y * 5 + neighborPos.x;
+
+			// 如果相鄰房間存在且不是 STARTING/PORTAL，建立連接
+			if (m_RoomInfo[neighborIndex].m_RoomType != RoomType::EMPTY &&
+				m_RoomInfo[neighborIndex].m_RoomType != RoomType::STARTING &&
+				m_RoomInfo[neighborIndex].m_RoomType != RoomType::PORTAL)
+			{
+				// 檢查是否已經有連接，避免重複設置
+				if (!m_RoomInfo[i].m_Connections[static_cast<int>(dir)])
+				{
+					m_RoomInfo[i].m_Connections[static_cast<int>(dir)] = true;
+					m_RoomInfo[neighborIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir))] = true;
+
+					LOG_DEBUG("Created adjacent connection between ({}, {}) and ({}, {})", x, y, neighborPos.x,
+							  neighborPos.y);
+				}
+			}
+		}
+	}
+}
 
 void DungeonMap::UpdateCurrentRoomIfNeeded()
 {

@@ -49,6 +49,9 @@ public:
 	// === 事件處理方法 ===
 	void OnEnemyDeathEvent(const struct EnemyDeathEvent &event);
 
+	// === Debug UI 功能 ===
+	void DrawDebugUI(); // 繪製房間Debug UI（包含CombatManager的Debug UI）
+
 private:
 	// === 戰鬥配置結構 ===
 	struct WaveConfig
@@ -89,6 +92,12 @@ private:
 		int GetCurrentWave() const { return m_CurrentWave; }
 		int GetTotalWaves() const { return static_cast<int>(m_WaveConfigs.size()); }
 		int GetAliveEnemiesInCurrentWave() const;
+
+		// === Debug UI 功能 ===
+		void DrawDebugUI(); // 繪製Debug UI介面
+		void DebugKillCurrentWaveEnemies(); // 一鍵殺光當前波次敵人
+		void DebugKillAllEnemies(); // 一鍵殺光全部敵人結束戰鬥
+		void DebugToggleDoors(); // 開關門觸發按鈕
 
 	private:
 		MonsterRoom *m_Room;

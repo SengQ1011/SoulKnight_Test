@@ -8,7 +8,7 @@
     "roomObject": [
         {
             "ID": "floor2727_1",
-            "Class": "nGameObject",
+            "Class": "Floor",
             "Position": [
                 0.0,
                 0.0

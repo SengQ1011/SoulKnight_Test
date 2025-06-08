@@ -54,6 +54,7 @@ void HealthComponent::Update()
 			m_armorRecoveryTimer = 0.0f;
 		}
 	}
+	if (m_currentHp <= 0) OnDeath();
 }
 
 void HealthComponent::HandleEvent(const EventInfo &eventInfo)
@@ -170,7 +171,7 @@ void HealthComponent::TakeDamage(int damage)
 	m_currentArmor = std::max(0, m_currentArmor - damage);
 	m_currentHp = std::max(0, m_currentHp - remainingDamage);
 
-	if (m_currentHp == 0)
+	if (m_currentHp <= 0)
 	{
 		OnDeath();
 	}

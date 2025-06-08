@@ -49,15 +49,17 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 				std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
 				for (auto &i : path)
 					i = RESOURCE_DIR + i;
-				std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true);
+				std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true, _class, 0);
+				// TODO interval 間隔
 				animation->PlayAnimation(true);
 				roomObject = animation;
 			}
 			else
 			{
-				roomObject = std::make_shared<nGameObject>(_id);
+				roomObject = std::make_shared<nGameObject>(_id, _class);
 			}
 		}
+		// roomObject
 	}
 	else
 	{

@@ -16,6 +16,7 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "imgui.h"
 
 
 #include "ObserveManager/EventManager.hpp"
@@ -436,6 +437,8 @@ void MonsterRoom::CombatManager::Update()
 	// 清理已死亡的敵人引用
 	CleanupDeadEnemies();
 
+	DrawDebugUI();
+
 	// 檢查波次完成狀態
 	if (m_CombatState == CombatState::WAVE_ACTIVE)
 	{
@@ -699,4 +702,199 @@ void MonsterRoom::RepositionPlayerIfNeeded()
 
 	LOG_INFO("Moved player from ({:.1f}, {:.1f}) to ({:.1f}, {:.1f}) - outside room", oldPos.x, oldPos.y, newPosition.x,
 			 newPosition.y);
+}
+
+// ===== MonsterRoom Debug UI 實現 =====
+void MonsterRoom::DrawDebugUI()
+{
+	ImGui::Begin("MonsterRoom Debug UI");
+
+	// === 房間基本信息 ===
+	if (ImGui::CollapsingHeader("Room Info", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		const char *stateNames[] = {"UNEXPLORED", "COMBAT", "EXPLORED"};
+		ImGui::Text("Room State: %s", stateNames[static_cast<int>(m_State)]);
+		ImGui::Text("Grid Position: (%.0f, %.0f)", m_MapGridPos.x, m_MapGridPos.y);
+		ImGui::Text("World Coord: (%.1f, %.1f)", m_RoomSpaceInfo.m_WorldCoord.x, m_RoomSpaceInfo.m_WorldCoord.y);
+	}
+
+	// === 戰鬥管理器 Debug UI ===
+	m_CombatManager.DrawDebugUI();
+
+	// === 房間操作 ===
+	if (ImGui::CollapsingHeader("Room Operations", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// 佈局更換功能
+		ImGui::Text("Layout Change:");
+		if (ImGui::Button("Change to Random Layout"))
+		{
+			ChangeLayoutRuntime("RANDOM");
+		}
+
+		// 房間狀態控制
+		ImGui::Separator();
+		ImGui::Text("Room State Control:");
+		if (ImGui::Button("Force Combat State"))
+		{
+			SetState(RoomState::COMBAT);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Force Explored State"))
+		{
+			SetState(RoomState::EXPLORED);
+		}
+	}
+
+	ImGui::End();
+}
+
+// ===== CombatManager Debug UI 實現 =====
+void MonsterRoom::CombatManager::DrawDebugUI()
+{
+	if (ImGui::CollapsingHeader("Combat Manager", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// === 戰鬥狀態信息 ===
+		const char *stateNames[] = {"INACTIVE", "WAVE_ACTIVE", "WAVE_CLEARING", "COMPLETED"};
+		ImGui::Text("Combat State: %s", stateNames[static_cast<int>(m_CombatState)]);
+		ImGui::Text("Current Wave: %d / %d", m_CurrentWave + 1, GetTotalWaves());
+		ImGui::Text("Alive Enemies: %d", GetAliveEnemiesInCurrentWave());
+
+		// === 戰鬥控制按鈕 ===
+		ImGui::Separator();
+		if (ImGui::Button("Kill Current Wave Enemies"))
+		{
+			DebugKillCurrentWaveEnemies();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Kill All Enemies"))
+		{
+			DebugKillAllEnemies();
+		}
+
+		// === 門控制 ===
+		ImGui::Separator();
+		if (ImGui::Button("Toggle Doors"))
+		{
+			DebugToggleDoors();
+		}
+
+		// === 詳細波次信息 ===
+		if (ImGui::CollapsingHeader("Wave Details"))
+		{
+			for (int wave = 0; wave < GetTotalWaves(); ++wave)
+			{
+				bool isCurrentWave = (wave == m_CurrentWave);
+				if (isCurrentWave)
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f)); // 黃色高亮
+
+				int aliveCount = 0;
+				int totalCount = 0;
+				if (wave < static_cast<int>(m_AllWaveEnemies.size()))
+				{
+					const auto &waveEnemies = m_AllWaveEnemies[wave];
+					totalCount = static_cast<int>(waveEnemies.size());
+					for (const auto &weakEnemy : waveEnemies)
+					{
+						if (auto enemy = weakEnemy.lock())
+						{
+							if (enemy->IsActive())
+								aliveCount++;
+						}
+					}
+				}
+
+				ImGui::Text("Wave %d: %d/%d alive", wave + 1, aliveCount, totalCount);
+
+				if (isCurrentWave)
+					ImGui::PopStyleColor();
+			}
+		}
+	}
+}
+
+void MonsterRoom::CombatManager::DebugKillCurrentWaveEnemies()
+{
+	if (m_CurrentWave >= static_cast<int>(m_AllWaveEnemies.size()))
+	{
+		LOG_WARN("DebugKillCurrentWaveEnemies: Invalid current wave {}", m_CurrentWave);
+		return;
+	}
+
+	const auto &currentWaveEnemies = m_AllWaveEnemies[m_CurrentWave];
+	int killedCount = 0;
+
+	for (const auto &weakEnemy : currentWaveEnemies)
+	{
+		if (auto enemy = weakEnemy.lock())
+		{
+			if (const auto &healthComp = enemy->GetComponent<HealthComponent>(ComponentType::HEALTH))
+			{
+				// 使用TakeDamage方法確保觸發死亡邏輯
+				int currentHp = healthComp->GetCurrentHp();
+				if (currentHp > 0)
+				{
+					healthComp->SetCurrentHp(0);
+					// healthComp->TakeDamage(currentHp + 1000); // 造成足夠傷害確保死亡
+					killedCount++;
+				}
+			}
+		}
+	}
+
+	LOG_INFO("Debug: Killed {} enemies in current wave {}", killedCount, m_CurrentWave + 1);
+}
+
+void MonsterRoom::CombatManager::DebugKillAllEnemies()
+{
+	int totalKilled = 0;
+
+	for (auto &waveEnemies : m_AllWaveEnemies)
+	{
+		for (const auto &weakEnemy : waveEnemies)
+		{
+			if (auto enemy = weakEnemy.lock())
+			{
+				if (const auto &healthComp = enemy->GetComponent<HealthComponent>(ComponentType::HEALTH))
+				{
+					// 使用TakeDamage方法確保觸發死亡邏輯
+					int currentHp = healthComp->GetCurrentHp();
+					healthComp->SetCurrentHp(0);
+					if (currentHp > 0)
+					{
+						healthComp->SetCurrentHp(0);
+						// healthComp->TakeDamage(currentHp + 1000); // 造成足夠傷害確保死亡
+						totalKilled++;
+					}
+				}
+			}
+		}
+	}
+
+	// 直接結束戰鬥
+	EndCombat();
+
+	LOG_INFO("Debug: Killed all {} enemies and ended combat", totalKilled);
+}
+
+void MonsterRoom::CombatManager::DebugToggleDoors()
+{
+	// if (!m_Room)
+	// {
+	// 	LOG_WARN("DebugToggleDoors: Room pointer is null");
+	// 	return;
+	// }
+	//
+	// if (m_Doors->GetComponent<DoorComponent>(ComponentType::DOOR)->GetCurrentState() == DoorComponent::State::OPENED)
+	// // 檢查當前門狀態，切換開關
+	// // 如果戰鬥中，打開門；如果非戰鬥中，關閉門
+	// if (IsInCombat())
+	// {
+	// 	m_Room->OpenDoors();
+	// 	LOG_INFO("Debug: Opened doors during combat");
+	// }
+	// else
+	// {
+	// 	m_Room->CloseDoors();
+	// 	LOG_INFO("Debug: Closed doors outside combat");
+	// }
 }

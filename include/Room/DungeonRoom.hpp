@@ -178,7 +178,6 @@ protected:
 	// 調試功能
 	void DebugDungeonRoom();
 
-protected:
 	// 初始化方法
 	void InitializeGrid();
 

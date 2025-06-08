@@ -243,8 +243,9 @@ void Camera::UpdateZIndex(const std::shared_ptr<nGameObject> &child) const
 bool Camera::NotShouldBeVisible(const std::shared_ptr<nGameObject> &child) const
 {
 	glm::vec2 delta = child->m_WorldCoord - m_CameraWorldCoord.translation;
-	float roomRegionSize = 16 * 35;
+	float roomRegionSize = 16.0f * 25.0f;
 	float threshold = roomRegionSize;
+	if (child->GetClassName() == "Floor") return false; // 大面積地板略過
 	return std::abs(delta.x) > threshold || std::abs(delta.y) > threshold;
 }
 
