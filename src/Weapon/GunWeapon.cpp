@@ -48,7 +48,8 @@ void GunWeapon::attack(const int damage) {
 	int numBullets = m_numOfBullets;
 
 	std::shared_ptr<nGameObject> target = nullptr;
-	if (const auto followComp = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER)) target = followComp->GetTarget();
+	if (const auto followComp = this->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		target = followComp->GetTarget();
 
 	for (int i = 0; i < numBullets; ++i) {
 		float angleOffset = 0.0f;

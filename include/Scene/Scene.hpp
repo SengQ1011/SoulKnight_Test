@@ -78,7 +78,7 @@ public:
 	void AddManager(const ManagerTypes managerName, std::shared_ptr<IManager> manager)
 	{
 		m_Managers[managerName] = manager;
-		LOG_DEBUG("Successfully added new Manager");
+		// LOG_DEBUG("Successfully added new Manager");
 	}
 
 	bool IsChange() const { return m_IsChange; }

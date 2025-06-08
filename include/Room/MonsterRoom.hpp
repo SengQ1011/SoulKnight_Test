@@ -48,6 +48,7 @@ public:
 
 	// === 事件處理方法 ===
 	void OnEnemyDeathEvent(const struct EnemyDeathEvent &event);
+	void AddEnemy(const std::shared_ptr<Character>& enemy);
 
 private:
 	// === 戰鬥配置結構 ===
@@ -83,6 +84,7 @@ private:
 		// 新增方法
 		void AddWaveEnemies(int waveIndex, const std::vector<std::shared_ptr<Character>> &enemies);
 		void ActivateCurrentWaveEnemies();
+		void AddEnemyToCurrentWave(const std::shared_ptr<Character>& enemy);
 
 		// 狀態查詢
 		CombatState GetState() const { return m_CombatState; }

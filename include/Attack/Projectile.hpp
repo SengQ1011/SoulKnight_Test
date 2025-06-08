@@ -25,6 +25,7 @@ struct ProjectileInfo : public AttackInfo
 
 	// chainAttack記錄
 	int chainProjectionNum = 0;
+	bool AllRound = false;
 };
 
 class Projectile : public Attack {
@@ -86,6 +87,7 @@ protected:
 
 	// chainAttack記錄
 	int m_chainProjectionNum = 0;
+	bool m_allRound = false;
 };
 
 #endif //PROJECTILE_HPP

@@ -35,7 +35,10 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 		case EventType::BlockedProjectileBySword:
 		{
 			if (const auto projectile = GetOwner<Projectile>())
+			{
 				projectile->MarkForRemoval();
+				projectile->TriggerChainAttack();
+			}
 			else LOG_WARN("projectile is NULL");
 			break;
 		}
@@ -46,7 +49,7 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 		}
 		default:
 			break;
-		}
+	}
 }
 
 void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
@@ -83,7 +86,7 @@ void ProjectileComponent::HandleCollision(const CollisionEventInfo &info) {
 	}
 }
 
-void ProjectileComponent::HandleReflectEvent()
+void ProjectileComponent::HandleReflectEvent() const
 {
 	// LOG_DEBUG("reflect");
 	const auto proj = GetOwner<Projectile>();
