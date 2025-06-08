@@ -1,23 +1,26 @@
 {
-  "id":"object_weaponChest",
-  "isAnimated": false,
-  "path": "/allChest/object_weaponChest_0.png",
-  "ZIndex": "OBJECTLOW",
-  "posOffset": [
-    0.0,
-    0.0
-  ],
-  "components": [
-    {
-      "Class": "INTERACTABLE",
-      "InteractionRadius": 20.0,
-      "InteractableType": "WEAPON_CHEST",
-      "IsAutoInteract": false
-    },
-    {
-      "Class": "CHEST",
-      "chestType": "REWARD",
-      "imagePaths": ["/allChest/object_weaponChest_0.png","/allChest/object_weaponChest_1.png"]
-    }
-  ]
+    "id": "object_weaponChest",
+    "isAnimated": false,
+    "path": "/allChest/object_weaponChest_0.png",
+    "ZIndex": "OBJECTLOW",
+    "posOffset": [
+        0.0,
+        0.0
+    ],
+    "components": [
+        {
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 20.0,
+            "InteractableType": "WEAPON_CHEST",
+            "IsAutoInteract": false
+        },
+        {
+            "Class": "CHEST",
+            "chestType": "REWARD",
+            "imagePaths": [
+                "/allChest/object_weaponChest_0.png",
+                "/allChest/object_weaponChest_1.png"
+            ]
+        }
+    ]
 }

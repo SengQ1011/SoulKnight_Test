@@ -16,7 +16,12 @@
                 -1.5
             ],
             "CollisionLayer": "Terrain",
-            "CollisionMask": ["None"],
+            "CollisionMask": [
+                "Player_Projectile",
+                "Player_EffectAttack",
+                "Enemy_Projectile",
+                "Enemy_EffectAttack"
+            ],
             "IsTrigger": false
         }
     ]

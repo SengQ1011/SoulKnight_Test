@@ -118,11 +118,11 @@ void InteractableComponent::Init()
 		case InteractableType::WEAPON:
 		{
 			m_InteractionCallback =
-			[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
 				if (const auto attackComp = interactor->GetComponent<AttackComponent>(ComponentType::ATTACK))
 				{
-					if(const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
+					if (const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
 					{
 						attackComp->PickUpWeapon(weapon);
 					}
@@ -130,6 +130,9 @@ void InteractableComponent::Init()
 			};
 			break;
 		}
+		default:
+			LOG_ERROR("InteractableComponent::Init() miss m_interactableType");
+		break;;
 	}
 
 	if (m_interactableType == InteractableType::COIN || m_interactableType == InteractableType::ENERGY_BALL)
@@ -176,7 +179,7 @@ void InteractableComponent::Update()
 	if (const auto owner = GetOwner<nGameObject>())
 	{
 		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() +
-									  glm::vec2(10.0f, owner->GetImageSize().y + std::sin(timer) * 10.0f));
+									  glm::vec2(10.0f, owner->GetImageSize().y/2.0f + std::sin(timer) * 10.0f));
 		timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
 		if (timer >= 3.1415)
 			timer = 0.0f;

@@ -32,49 +32,22 @@ void MenuHUDPanel::Start()
 		m_HasGameProgress = (saveData && saveData->isInGameProgress);
 	}
 
-	// 根據遊戲進度狀態調整按鈕位置和數量
-	if (m_HasGameProgress)
-	{
-		// 有遊戲進度：顯示兩個按鈕（新遊戲 + 繼續遊戲）
-		// 使用預設的左右位置
-	}
-	else
-	{
-		// 沒有遊戲進度：只顯示新遊戲按鈕，位置在中央
-		m_NewGameButtonVisiblePos = glm::vec2(0.0f, -280.0f);
-	}
+	// 設置按鈕佈局策略
+	SetupButtonLayout();
 
-	// 計算隱藏位置（屏幕下方外側）
-	const float windowHeight = static_cast<float>(PTSD_Config::WINDOW_HEIGHT);
-	const float offscreenOffset = 200.0f; // 額外的偏移量確保完全隱藏
-	m_NewGameButtonHiddenPos = glm::vec2(m_NewGameButtonVisiblePos.x, -(windowHeight * 0.5f + offscreenOffset));
-	m_ContinueGameButtonHiddenPos =
-		glm::vec2(m_ContinueGameButtonVisiblePos.x, -(windowHeight * 0.5f + offscreenOffset));
+	// 計算按鈕動畫的隱藏位置
+	CalculateHiddenPositions();
 
-	// 初始化按鈕
-	InitNewGameButton();
+	// 初始化遊戲界面按鈕
+	CreateButtons();
 
-	// 只有在有遊戲進度時才初始化繼續遊戲按鈕
-	if (m_HasGameProgress)
-	{
-		InitContinueGameButton();
-	}
+	// 將按鈕加入場景渲染器
+	AddButtonsToScene();
 
-	// 添加到場景渲染器
-	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	if (scene)
-	{
-		const auto renderer = scene->GetRoot().lock();
-		for (const auto &gameObject : m_GameObjects)
-		{
-			renderer->AddChild(gameObject);
-		}
-	}
-
-	// 設定初始位置為隱藏狀態
+	// 設定初始狀態：按鈕隱藏在屏幕外
 	UpdateButtonsPosition(0.0f);
 
-	// 默認隱藏
+	// 面板預設為隱藏狀態
 	UIPanel::Hide();
 }
 
@@ -316,4 +289,64 @@ bool MenuHUDPanel::IsMouseClickingOnButtons() const
 	}
 
 	return false; // 沒有點擊到任何按鈕
+}
+
+// 根據遊戲進度設置按鈕佈局
+void MenuHUDPanel::SetupButtonLayout()
+{
+	if (m_HasGameProgress)
+	{
+		// 有遊戲進度：顯示兩個按鈕（新遊戲 + 繼續遊戲）
+		m_NewGameButtonVisiblePos = glm::vec2(-150.0f, -280.0f); // 左邊
+		m_ContinueGameButtonVisiblePos = glm::vec2(150.0f, -280.0f); // 右邊
+	}
+	else
+	{
+		// 沒有遊戲進度：只顯示新遊戲按鈕，居中顯示
+		m_NewGameButtonVisiblePos = glm::vec2(0.0f, -280.0f);
+	}
+}
+
+// 計算按鈕動畫的隱藏位置（在屏幕下方外側）
+void MenuHUDPanel::CalculateHiddenPositions()
+{
+	const float windowHeight = static_cast<float>(PTSD_Config::WINDOW_HEIGHT);
+	const float offscreenOffset = 200.0f; // 額外偏移確保完全隱藏
+
+	// 計算隱藏位置：保持X座標不變，Y座標移到屏幕下方外側
+	m_NewGameButtonHiddenPos = glm::vec2(m_NewGameButtonVisiblePos.x, -(windowHeight * 0.5f + offscreenOffset));
+
+	m_ContinueGameButtonHiddenPos =
+		glm::vec2(m_ContinueGameButtonVisiblePos.x, -(windowHeight * 0.5f + offscreenOffset));
+}
+
+// 創建所需的按鈕
+void MenuHUDPanel::CreateButtons()
+{
+	// 總是創建新遊戲按鈕
+	InitNewGameButton();
+
+	// 只有當有遊戲進度時才創建繼續遊戲按鈕
+	if (m_HasGameProgress)
+	{
+		InitContinueGameButton();
+	}
+}
+
+// 將按鈕加入場景渲染器
+void MenuHUDPanel::AddButtonsToScene()
+{
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!scene)
+		return;
+
+	const auto renderer = scene->GetRoot().lock();
+	if (!renderer)
+		return;
+
+	// 將所有遊戲物件（按鈕和文字）加入到場景中
+	for (const auto &gameObject : m_GameObjects)
+	{
+		renderer->AddChild(std::static_pointer_cast<Util::GameObject>(gameObject));
+	}
 }

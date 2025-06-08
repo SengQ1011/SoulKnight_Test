@@ -9,7 +9,7 @@
 
 #include "Util/BGM.hpp"
 #include "Util/SFX.hpp"
-
+#include "Util/Timer.hpp"
 
 class UIButton;
 class UIPanel;
@@ -27,28 +27,27 @@ public:
 	SceneType Change() override;
 
 protected:
-	std::shared_ptr<Util::GameObject> m_Background = std::make_shared<Util::GameObject>();
-	std::shared_ptr<Util::GameObject> m_Title = std::make_shared<Util::GameObject>();
+	std::shared_ptr<nGameObject> m_Background;
+	std::shared_ptr<nGameObject> m_Title;
 	std::shared_ptr<nGameObject> m_RedShawl;
 
-	std::shared_ptr<Util::GameObject> m_Text = std::make_shared<Util::GameObject>();
-	std::shared_ptr<Util::GameObject> m_Version = std::make_shared<Util::GameObject>();
+	std::shared_ptr<nGameObject> m_Text;
+	std::shared_ptr<nGameObject> m_Version;
 	std::shared_ptr<UIButton> m_SettingButton;
 	std::shared_ptr<UIButton> m_DeleteDataButton;
 
 	// MenuHUDPanel 替代個別按鈕
 	std::shared_ptr<MenuHUDPanel> m_MenuHUDPanel;
 
-	// 平移動畫相關變數
-	bool m_IsSliding = false;
-	float m_SlideTimer = 0.0f;
-	float m_SlideDuration = 0.4f; // 0.4秒平移時間
+	// 動畫相關變數
+	Util::Timer m_SlideTimer{0.4f}; // 平移動畫計時器，持續時間0.4秒
+
 	glm::vec2 m_StartPosition; // 起始位置（螢幕右邊）
 	glm::vec2 m_TargetPosition; // 目標位置
 
-	// 文字閃爍效果相關變數
-	float m_TextBlinkTimer = 0.0f;
-	float m_TextBlinkPeriod = 1.5f; // 1.5秒完成一個閃爍週期
+	// 文字閃爍效果相關
+	float m_TextBlinkPeriod = 1.5f; // 閃爍週期（秒）
+	float m_TextBlinkTime = 0.0f; // 文字閃爍累積時間
 
 	void InitBackground();
 	void InitTitleAndDecor();
@@ -62,8 +61,9 @@ protected:
 	void InitMenuHUDPanel();
 
 	// 動畫相關函式
-	void UpdateSlideAnimation();
-	void UpdateTextBlinkEffect();
+	void InitSlideAnimation();
+	void UpdateAnimations();
+	void UpdateTextBlinkEffect(); // 持續的文字閃爍效果
 	void StartSlideAnimation();
 
 	// 檢查滑鼠是否點擊到按鈕上

@@ -1,6 +1,6 @@
 {
-  "id": "bound",
-  "isAnimated": false,
-  "path": "/bound.png",
-  "ZIndex": "CUSTOM"
+    "id": "bound",
+    "isAnimated": false,
+    "path": "/bound.png",
+    "ZIndex": "CUSTOM"
 }

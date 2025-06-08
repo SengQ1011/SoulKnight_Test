@@ -6,6 +6,7 @@
 #define EVENTMANAGER_HPP
 
 #include <functional>
+#include <memory>
 #include <type_traits>
 #include <typeindex>
 #include <unordered_map>
@@ -19,6 +20,7 @@ class EventManager
 {
 public:
 	using Listener = std::function<void(const EventInfo &)>;
+	using ListenerID = size_t;
 
 	static EventManager &GetInstance()
 	{
@@ -26,15 +28,17 @@ public:
 		return instance;
 	}
 
-	// 基本訂閱方法
-	void Subscribe(const std::type_index eventType, const Listener &listener)
+	// 基本訂閱方法（返回監聽器ID）
+	ListenerID Subscribe(const std::type_index eventType, const Listener &listener)
 	{
-		m_Listeners[eventType].push_back(listener);
+		ListenerID id = m_NextListenerID++;
+		m_Listeners[eventType].emplace_back(id, listener);
+		return id;
 	}
 
-	// 範本化訂閱方法，更類型安全
+	// 範本化訂閱方法，更類型安全（返回監聽器ID）
 	template <typename EventT>
-	void Subscribe(std::function<void(const EventT &)> listener)
+	ListenerID Subscribe(std::function<void(const EventT &)> listener)
 	{
 		auto wrapper = [listener](const EventInfo &info)
 		{
@@ -43,7 +47,30 @@ public:
 				listener(*specificEvent);
 			}
 		};
-		m_Listeners[typeid(EventT)].push_back(wrapper);
+		ListenerID id = m_NextListenerID++;
+		m_Listeners[typeid(EventT)].emplace_back(id, wrapper);
+		return id;
+	}
+
+	// 基於監聽器ID的取消訂閱
+	template <typename EventT>
+	bool Unsubscribe(ListenerID listenerID)
+	{
+		auto it = m_Listeners.find(typeid(EventT));
+		if (it != m_Listeners.end())
+		{
+			auto &listeners = it->second;
+			auto listenerIt = std::find_if(listeners.begin(), listeners.end(),
+										   [listenerID](const std::pair<ListenerID, Listener> &pair)
+										   { return pair.first == listenerID; });
+
+			if (listenerIt != listeners.end())
+			{
+				listeners.erase(listenerIt);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// 發送事件
@@ -52,9 +79,9 @@ public:
 		auto it = m_Listeners.find(info.GetType());
 		if (it != m_Listeners.end())
 		{
-			for (const auto &listener : it->second)
+			for (const auto &listenerPair : it->second)
 			{
-				listener(info);
+				listenerPair.second(info);
 			}
 		}
 	}
@@ -68,7 +95,7 @@ public:
 
 	// 取消訂閱（簡化版，清除所有該類型的監聽器）
 	template <typename EventT>
-	void Unsubscribe()
+	void UnsubscribeAll()
 	{
 		m_Listeners.erase(typeid(EventT));
 	}
@@ -89,7 +116,8 @@ public:
 	static void enemyDeathEvent() { SceneManager::GetInstance().receiveEnemyDeathEvent(); }
 
 private:
-	std::unordered_map<std::type_index, std::vector<Listener>> m_Listeners;
+	std::unordered_map<std::type_index, std::vector<std::pair<ListenerID, Listener>>> m_Listeners;
+	ListenerID m_NextListenerID = 1;
 };
 
 #endif // EVENTMANAGER_HPP

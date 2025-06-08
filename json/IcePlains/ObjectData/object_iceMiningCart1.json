@@ -1,0 +1,25 @@
+{
+    "id": "object_iceMiningCart1",
+    "isAnimated": false,
+    "path": "/IcePlains/object_iceMiningCart1.png",
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                29.0,
+                18.0
+            ],
+            "Offset": [
+                -1.5,
+                -8.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": [
+                "None"
+            ],
+            "IsTrigger": false
+        }
+    ]
+}

@@ -1,23 +1,23 @@
 {
-  "id":"object_coin",
-  "isAnimated": true,
-  "path": [
-    "/object/dropItem/allCoins/objects_copperCoin_0.png",
-    "/object/dropItem/allCoins/objects_copperCoin_1.png",
-    "/object/dropItem/allCoins/objects_copperCoin_2.png",
-    "/object/dropItem/allCoins/objects_copperCoin_3.png"
-  ],
-  "ZIndex": "OBJECTHIGH",
-  "posOffset": [
-    0.0,
-    0.0
-  ],
-  "components": [
-    {
-      "Class": "INTERACTABLE",
-      "InteractionRadius": 10.0,
-      "InteractableType": "COIN",
-      "IsAutoInteract": true
-    }
-  ]
+    "id": "object_coin",
+    "isAnimated": true,
+    "path": [
+        "/object/dropItem/allCoins/objects_copperCoin_0.png",
+        "/object/dropItem/allCoins/objects_copperCoin_1.png",
+        "/object/dropItem/allCoins/objects_copperCoin_2.png",
+        "/object/dropItem/allCoins/objects_copperCoin_3.png"
+    ],
+    "ZIndex": "OBJECTHIGH",
+    "posOffset": [
+        0.0,
+        0.0
+    ],
+    "components": [
+        {
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 10.0,
+            "InteractableType": "COIN",
+            "IsAutoInteract": true
+        }
+    ]
 }
