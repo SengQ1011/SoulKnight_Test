@@ -1,0 +1,25 @@
+{
+    "id": "object_shop_back",
+    "isAnimated": false,
+    "path": "/IcePlains/object_shop_back.png",
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "COLLISION",
+            "Size": [
+                87.0,
+                32.0
+            ],
+            "Offset": [
+                12.5,
+                -13.5
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": [
+                "None"
+            ],
+            "IsTrigger": false
+        }
+    ]
+}

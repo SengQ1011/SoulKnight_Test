@@ -37,14 +37,19 @@ enum class EventType
 	CameraShake,
 
 	// 視覺特效
-	StartFlicker
+	StartFlicker,
+
+	// 角色動作
+	EnemyDeath,
+
+	// 門相關
+	DoorOpen,
+	DoorClose
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
 
-	// 角色動作
 	// PlayerDeath,
-	// EnemyDeath,
 	// PlayerSpawned,
 	// EnemySpawned,
 	// UseSkill,
@@ -107,6 +112,18 @@ struct StartFlickerEvent : TypedEventInfo<StartFlickerEvent>
 		TypedEventInfo(EventType::StartFlicker), duration(dur), interval(inter)
 	{
 	}
+};
+
+// 門開啟事件
+struct DoorOpenEvent : TypedEventInfo<DoorOpenEvent>
+{
+	DoorOpenEvent() : TypedEventInfo(EventType::DoorOpen) {}
+};
+
+// 門關閉事件
+struct DoorCloseEvent : TypedEventInfo<DoorCloseEvent>
+{
+	DoorCloseEvent() : TypedEventInfo(EventType::DoorClose) {}
 };
 
 

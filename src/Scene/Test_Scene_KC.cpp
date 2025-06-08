@@ -171,12 +171,12 @@ void TestScene_KC::CreatePlayer()
 	{
 		// 将碰撞盒添加到场景根节点和相机
 		const auto visibleBox = collision->GetVisibleBox();
-		m_PendingObjects.push_back(visibleBox);
+		m_PendingObjects.emplace_back(visibleBox);
 		visibleBox->SetRegisteredToScene(true);
 	}
 
 	// 将玩家添加到场景根节点和相机
-	m_PendingObjects.push_back(m_Player);
+	m_PendingObjects.emplace_back(m_Player);
 	m_Player->SetRegisteredToScene(true);
 }
 

@@ -1,6 +1,16 @@
 {
     "id": "object_transferGate_0",
     "isAnimated": true,
+    "path": [
+        "/IcePlains/object_transferGate_0.png",
+        "/IcePlains/object_transferGate_1.png",
+        "/IcePlains/object_transferGate_2.png",
+        "/IcePlains/object_transferGate_3.png",
+        "/IcePlains/object_transferGate_4.png",
+        "/IcePlains/object_transferGate_5.png",
+        "/IcePlains/object_transferGate_6.png",
+        "/IcePlains/object_transferGate_7.png"
+    ],
     "ZIndex": "OBJECTLOW",
     "components": [
         {
@@ -21,15 +31,5 @@
                 "IsPromptVisible": false
             }
         }
-    ],
-    "path": [
-        "/IcePlains/object_transferGate_0.png",
-        "/IcePlains/object_transferGate_1.png",
-        "/IcePlains/object_transferGate_2.png",
-        "/IcePlains/object_transferGate_3.png",
-        "/IcePlains/object_transferGate_4.png",
-        "/IcePlains/object_transferGate_5.png",
-        "/IcePlains/object_transferGate_6.png",
-        "/IcePlains/object_transferGate_7.png"
     ]
 }

@@ -7,23 +7,23 @@
 
 enum class ComponentType
 {
-	AI,				 // 0
-	ANIMATION,		 // 1
-	ATTACK,			 // 2
-	CHEST,			 // 3
-	COLLISION,		 // 4
-	DOOR,			 // 5
-	FLICKER,		 // 6
-	FOLLOWER,		 // 7
-	HEALTH,			 // 8
-	INPUT,			 // 9
-	INTERACTABLE,	 // 10
-	MOVEMENT,		 // 11
-	PROJECTILE,		 // 12
-	SKILL,			 // 13
-	STATE,			 // 14
-	TALENT,			 // 15
-	WALLET			 // 16
+	AI, // 0
+	ANIMATION, // 1
+	ATTACK, // 2
+	CHEST, // 3
+	COLLISION, // 4
+	DOOR, // 5
+	FLICKER, // 6
+	FOLLOWER, // 7
+	HEALTH, // 8
+	INPUT, // 9
+	INTERACTABLE, // 10
+	MOVEMENT, // 11
+	PROJECTILE, // 12
+	SKILL, // 13
+	STATE, // 14
+	TALENT, // 15
+	WALLET // 16
 };
 
 enum class CharacterType
@@ -146,6 +146,22 @@ enum class InteractableType
 	WEAPON,
 	HP_POISON,
 	ENERGY_POISON
+};
+
+enum class EntityCategory
+{
+	PLAYER, // 玩家角色
+	ENEMY, // 敵人
+	NPC, // NPC
+	OTHER // 其他實體
+};
+
+enum class CombatState
+{
+	INACTIVE, // 戰鬥未開始
+	WAVE_ACTIVE, // 當前波次進行中
+	WAVE_CLEARING, // 當前波次清理完畢，準備下一波
+	COMPLETED // 所有波次完成
 };
 
 #endif // ENUMTYPES_HPP

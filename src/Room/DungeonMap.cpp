@@ -56,7 +56,8 @@ void DungeonMap::Start()
 		if (!room)
 			continue;
 		room->Start(m_Player.lock());
-		room->CharacterEnter(m_Player.lock());
+		// 注意：不在初始化時就將玩家添加到所有房間
+		// room->PlayerEnter(m_Player.lock());
 		m_RoomInfo[i].room = room;
 
 		for (Direction dir : ALL_DIRECTIONS)
@@ -66,6 +67,9 @@ void DungeonMap::Start()
 			else
 				room->CreateWallInDirection(dir);
 		}
+
+		// 在所有地形生成完成後進行最終設置和優化
+		room->FinalizeRoomSetup();
 	}
 
 	// 設置房間間的連接關係
@@ -79,6 +83,23 @@ void DungeonMap::Update()
 	// 當玩家走過門進入房間觸發轉換狀態
 	if (m_CurrentRoom && m_CurrentRoom->IsPlayerInsideRoom())
 		m_CurrentRoom->TryActivateByPlayer();
+
+	// 合法玩家位置 -- 怕出bug
+	if (!m_CurrentRoom->IsPlayerInValidPosition())
+	{
+		const auto player = m_Player.lock();
+		if (!player) return;
+
+		const auto prevRoom = m_PreviousRoom.lock();
+		if (prevRoom)
+		{
+			player->SetWorldCoord(prevRoom->GetRoomSpaceInfo().m_WorldCoord);
+		}
+		else
+		{
+			player->SetWorldCoord(m_CurrentRoom->GetRoomSpaceInfo().m_WorldCoord);
+		}
+	}
 }
 
 bool DungeonMap::GenerateMainPath()
@@ -137,8 +158,20 @@ void DungeonMap::UpdateCurrentRoomIfNeeded()
 			LOG_ERROR("DungeonMap::UpdateCurrentRoomIfNeeded error IndexInside");
 			return;
 		}
+
+		// 從舊房間移除玩家
+		if (m_CurrentRoom)
+		{
+			m_CurrentRoom->RemovePlayerFromList(m_Player.lock());
+			m_PreviousRoom = m_CurrentRoom; // 记录前一个房间 -- 重置位置用
+		}
+
+		// 切換到新房間並添加玩家
 		m_CurrentRoom = m_RoomInfo[IndexInside.y * 5 + IndexInside.x].room;
-		// if(m_CurrentRoom) m_CurrentRoom->OnStateChanged();
+		if (m_CurrentRoom)
+		{
+			m_CurrentRoom->PlayerEnter(m_Player.lock());
+		}
 	}
 }
 

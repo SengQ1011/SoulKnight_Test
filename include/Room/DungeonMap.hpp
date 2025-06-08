@@ -71,9 +71,9 @@ public:
 
 protected:
 	std::weak_ptr<Character> m_Player;
-	std::vector<std::shared_ptr<DungeonRoom>> m_Rooms; // << 改掉
 	RoomInfo m_RoomInfo[5 * 5];
 	std::shared_ptr<DungeonRoom> m_CurrentRoom;
+	std::weak_ptr<DungeonRoom> m_PreviousRoom;
 	DungeonMapSpaceInfo m_SpaceInfo;
 
 	std::weak_ptr<Loader> m_Loader;

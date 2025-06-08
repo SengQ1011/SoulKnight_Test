@@ -32,6 +32,8 @@
 #include "ImagePoolManager.hpp"
 #include "ObserveManager/AudioManager.hpp"
 #include "Room/DungeonMap.hpp"
+#include "Room/MonsterRoom.hpp"
+#include "Room/MonsterRoomTestUI.hpp"
 #include "UIPanel/GameHUDPanel.hpp"
 #include "UIPanel/PausePanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
@@ -98,6 +100,9 @@ void DungeonScene::Start()
 	// 初始化场景管理器
 	InitializeSceneManagers();
 
+	// 初始化測試UI
+	InitializeMonsterRoomTestUI();
+
 	FlushPendingObjectsToRendererAndCamera();
 
 	// 更新游戲數據
@@ -111,17 +116,15 @@ void DungeonScene::Start()
 void DungeonScene::Update()
 {
 	// 先更新UI管理器，處理UI相關的輸入
+	// if (m_Player->IsActive()) UIManager::GetInstance().Update();
 	UIManager::GetInstance().Update();
-
-	// 測試用：按P鍵顯示/隱藏暫停面板
-	if (Util::Input::IsKeyDown(Util::Keycode::P))
-	{
-		UIManager::GetInstance().TogglePanel("pause");
-	}
 
 	// Input处理 - 當暫停面板都沒有顯示時處理遊戲輸入
 	if (!UIManager::GetInstance().IsPanelVisible("pause"))
 	{
+		// 處理佈局更換相關輸入和UI
+		HandleLayoutChangeInput();
+
 		for (auto &[type, manager] : m_Managers)
 			manager->Update();
 
@@ -134,7 +137,7 @@ void DungeonScene::Update()
 			m_CurrentRoom = dungeonRoom;
 			dungeonRoom->Update();
 
-			dungeonRoom->DebugDungeonRoom();
+			// dungeonRoom->DebugDungeonRoom();
 		}
 
 		if (m_textTimer > 0)
@@ -154,6 +157,8 @@ void DungeonScene::Update()
 
 	// 更新渲染器（渲染總是需要更新）
 	m_Root->Update();
+
+	if (m_PendingObjects.size() > 0) FlushPendingObjectsToRendererAndCamera();
 }
 
 void DungeonScene::Exit()
@@ -527,5 +532,107 @@ void DungeonScene::OnStageCompleted()
 		{
 			SavePlayerInformation(m_Player);
 		}
+	}
+}
+
+void DungeonScene::InitializeMonsterRoomTestUI()
+{
+	// 暫時為空，等待當前房間變為 MonsterRoom 時再初始化
+	m_MonsterRoomTestUI = nullptr;
+	LOG_DEBUG("MonsterRoomTestUI initialized (deferred)");
+}
+
+void DungeonScene::HandleLayoutChangeInput()
+{
+	// 更新冷卻時間
+	if (m_LayoutChangeCooldown > 0.0f)
+	{
+		m_LayoutChangeCooldown -= Util::Time::GetDeltaTimeMs() / 1000.0f;
+	}
+
+	// 檢查當前房間是否為 MonsterRoom
+	if (auto currentRoom = m_Map->GetCurrentRoom())
+	{
+		if (auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(currentRoom))
+		{
+			// 如果 UI 尚未創建，現在創建它
+			if (!m_MonsterRoomTestUI)
+			{
+				m_MonsterRoomTestUI = std::make_shared<MonsterRoomTestUI>(monsterRoom);
+				LOG_DEBUG("MonsterRoomTestUI created for current MonsterRoom");
+			}
+
+			// 渲染 UI
+			m_MonsterRoomTestUI->RenderUI();
+
+			// 處理佈局更換請求
+			ProcessLayoutChangeRequest();
+		}
+		else
+		{
+			// 如果當前房間不是 MonsterRoom，清理 UI
+			if (m_MonsterRoomTestUI)
+			{
+				m_MonsterRoomTestUI = nullptr;
+				LOG_DEBUG("MonsterRoomTestUI cleared (not in MonsterRoom)");
+			}
+		}
+	}
+}
+
+void DungeonScene::ProcessLayoutChangeRequest()
+{
+	if (!m_MonsterRoomTestUI || !m_MonsterRoomTestUI->HasLayoutChangeRequest())
+		return;
+
+	// 檢查冷卻時間
+	if (m_LayoutChangeCooldown > 0.0f)
+	{
+		LOG_DEBUG("Layout change on cooldown, remaining: {:.2f}s", m_LayoutChangeCooldown);
+		m_MonsterRoomTestUI->ClearLayoutChangeRequest();
+		return;
+	}
+
+	std::string requestedLayout = m_MonsterRoomTestUI->GetRequestedLayout();
+	ChangeCurrentRoomLayout(requestedLayout);
+
+	// 清除請求並設置冷卻時間
+	m_MonsterRoomTestUI->ClearLayoutChangeRequest();
+	m_LayoutChangeCooldown = 1.0f; // 1秒冷卻時間
+
+	LOG_INFO("Layout change completed, cooldown activated");
+}
+
+void DungeonScene::ChangeCurrentRoomLayout(const std::string &layoutName)
+{
+	auto currentRoom = m_Map->GetCurrentRoom();
+	if (!currentRoom)
+	{
+		LOG_WARN("No current room available for layout change");
+		return;
+	}
+
+	auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(currentRoom);
+	if (!monsterRoom)
+	{
+		LOG_WARN("Current room is not a MonsterRoom, cannot change layout");
+		return;
+	}
+
+	if (!monsterRoom->CanChangeLayout())
+	{
+		LOG_WARN("MonsterRoom is in combat state, cannot change layout");
+		return;
+	}
+
+	try
+	{
+		// 執行佈局更換
+		monsterRoom->ChangeLayoutRuntime(layoutName);
+		LOG_INFO("Successfully changed room layout to: {}", layoutName.empty() ? "random" : layoutName);
+	}
+	catch (const std::exception &e)
+	{
+		LOG_ERROR("Failed to change room layout: {}", e.what());
 	}
 }

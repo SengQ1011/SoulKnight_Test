@@ -17,7 +17,6 @@
 
 #include "Attack/Attack.hpp"
 #include "Creature/Character.hpp"
-#include "Room/MonsterRoom.hpp"
 #include "Structs/DeathEventInfo.hpp"
 #include "Structs/TakeDamageEventInfo.hpp"
 
@@ -208,11 +207,14 @@ void HealthComponent::OnDeath() const
 	if (character->GetType() == CharacterType::ENEMY)
 	{
 		trackingManager->RemoveEnemy(character);
-		// TODO:因爲Lobby房間有小怪
-		auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(scene->GetCurrentRoom());
-		if (monsterRoom)
-			monsterRoom->OnEnemyDied();
-		LOG_DEBUG("HealthComponent::remove ");
+
+		// 使用事件系統通知敵人死亡
+		EnemyDeathEvent enemyDeathEvent(character);
+		EventManager::GetInstance().Emit(enemyDeathEvent);
+		// 通知場景纍加killCount
+		EventManager::enemyDeathEvent();
+
+		LOG_DEBUG("HealthComponent::Enemy died, event sent");
 		if (auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
 		{
 			aiComp->HideReadyAttackIcon();

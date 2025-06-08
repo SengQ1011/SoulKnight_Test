@@ -16,7 +16,9 @@
                 -6.5
             ],
             "CollisionLayer": "Terrain",
-            "CollisionMask": ["None"],
+            "CollisionMask": [
+                "None"
+            ],
             "IsTrigger": false
         }
     ]
