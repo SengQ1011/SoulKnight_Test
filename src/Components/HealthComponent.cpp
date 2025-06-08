@@ -18,6 +18,7 @@
 #include "Attack/Attack.hpp"
 #include "Creature/Character.hpp"
 #include "Structs/DeathEventInfo.hpp"
+#include "Structs/EventInfo.hpp"
 #include "Structs/TakeDamageEventInfo.hpp"
 
 
@@ -54,7 +55,10 @@ void HealthComponent::Update()
 			m_armorRecoveryTimer = 0.0f;
 		}
 	}
-	if (m_currentHp <= 0) OnDeath();
+	if (m_currentHp <= 0)
+	{
+		OnDeath();
+	}
 }
 
 void HealthComponent::HandleEvent(const EventInfo &eventInfo)
@@ -81,7 +85,6 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 			const auto owner = GetOwner<nGameObject>();
 			if (!owner)
 				return;
-
 			// 元素傷害
 			if (dmgInfo.elementalDamage != StatusEffect::NONE)
 			{
@@ -160,7 +163,6 @@ void HealthComponent::TakeDamage(int damage)
 		StartFlickerEvent flickerEvent(0.5f, 0.05f);
 		owner->OnEvent(flickerEvent);
 	}
-
 	// 天賦：破甲保護
 	if (m_breakProtection && damage > m_currentArmor && m_currentArmor > 0)
 	{
@@ -177,18 +179,25 @@ void HealthComponent::TakeDamage(int damage)
 	}
 }
 
-void HealthComponent::OnDeath() const
+void HealthComponent::OnDeath()
 {
+	const auto owner = GetOwner<nGameObject>();
+	if (!owner)
+		return;
+
+	// 檢查是否為可破壞物件
+	if (owner->GetClassName() == "DestructibleBox")
+	{
+		OnBreak();
+		return;
+	}
+
+	// 處理角色死亡
 	auto character = GetOwner<Character>();
 	if (!character)
 		return;
 	auto stateComponent = character->GetComponent<StateComponent>(ComponentType::STATE);
 	auto movementComp = character->GetComponent<MovementComponent>(ComponentType::MOVEMENT);
-	// TODO:銷毀武器
-	// if (const auto attackComp = character->GetComponent<AttackComponent>(ComponentType::ATTACK)) {
-	// 	attackComp->RemoveAllWeapon();
-	// }
-
 
 	const DeathEventInfo deathEventInfo{character};
 	character->OnEvent(deathEventInfo);
@@ -224,6 +233,17 @@ void HealthComponent::OnDeath() const
 	else
 	{
 		trackingManager->SetPlayer(nullptr);
-		// EventManager::GetInstance().Notify(deathEventInfo);
 	}
+}
+
+void HealthComponent::OnBreak()
+{
+	LOG_DEBUG("HealthComponent::OnBreak");
+	const auto owner = GetOwner<nGameObject>();
+	if (!owner)
+		return;
+
+	// 發送破壞事件給物件本身
+	BoxBreakEvent breakEvent;
+	owner->OnEvent(breakEvent);
 }

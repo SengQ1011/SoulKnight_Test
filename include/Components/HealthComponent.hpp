@@ -31,26 +31,38 @@ public:
 	void SetCurrentHp(const int hp)
 	{
 		m_currentHp = hp;
-		if (m_currentHp <= 0) OnDeath();
+		if (m_currentHp <= 0)
+			OnDeath();
 	}
-	void AddCurrentHp(const int hp){
-		if (m_currentHp + hp <= m_maxHp) m_currentHp += hp;
-		else m_currentHp = m_maxHp;
+	void AddCurrentHp(const int hp)
+	{
+		if (m_currentHp + hp <= m_maxHp)
+			m_currentHp += hp;
+		else
+			m_currentHp = m_maxHp;
 	}
 	void SetMaxArmor(const int armor) { m_maxArmor = armor; }
 	void AddCurrentArmor(const int armor)
 	{
-		if (m_currentArmor + armor <= m_maxArmor) m_currentArmor += armor;
-		else m_currentArmor = m_maxArmor;
+		if (m_currentArmor + armor <= m_maxArmor)
+			m_currentArmor += armor;
+		else
+			m_currentArmor = m_maxArmor;
 	}
 	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
 	void SetCurrentEnergy(const int energy) { m_currentEnergy = energy; }
 	void AddCurrentEnergy(const int energy)
 	{
-		if (m_currentEnergy + energy <= m_maxEnergy ) m_currentEnergy += energy;
-		else m_currentEnergy = m_maxEnergy;
+		if (m_currentEnergy + energy <= m_maxEnergy)
+			m_currentEnergy += energy;
+		else
+			m_currentEnergy = m_maxEnergy;
 	}
-	void ConsumeEnergy(const int energy) { if (m_currentEnergy - energy > 0) m_currentEnergy -= energy; }
+	void ConsumeEnergy(const int energy)
+	{
+		if (m_currentEnergy - energy > 0)
+			m_currentEnergy -= energy;
+	}
 	void SetInvincibleMode(const bool op) { m_invincibleMode = op; }
 	void SetBreakProtection(const bool breakProtection) { m_breakProtection = breakProtection; }
 
@@ -58,6 +70,9 @@ public:
 	void HandleCollision(const CollisionEventInfo &info) override;
 	void HandleEvent(const EventInfo &eventInfo) override;
 	std::vector<EventType> SubscribedEventTypes() const override;
+
+	// 破壞相關方法
+	void OnBreak();
 
 private:
 	int m_maxHp; // 生命上限
@@ -67,16 +82,15 @@ private:
 	int m_maxEnergy; // 能量上限
 	int m_currentEnergy; // 當前能量值
 	float m_armorRecoveryInterval = 2.0f;
-	float m_armorRecoveryTimer = 0.0f;	// 恢復護甲計時器
-	bool m_invincibleMode = false;		// 無敵模式
-	bool m_breakProtection = false;		// 天賦：破甲保護
-	std::unordered_map<int, float> m_recentAttackSources;	// 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
+	float m_armorRecoveryTimer = 0.0f; // 恢復護甲計時器
+	bool m_invincibleMode = false; // 無敵模式
+	bool m_breakProtection = false; // 天賦：破甲保護
+	std::unordered_map<int, float> m_recentAttackSources; // 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
 	float m_invincibleDuration = 0.5f; // 碰撞後對於同一個物件無敵時間（秒）
 
 	// 通知 StateComponent 角色死亡
-	void OnDeath() const;
+	void OnDeath();
 };
 
 
-
-#endif //HEALTHCOMPONENT_HPP
+#endif // HEALTHCOMPONENT_HPP

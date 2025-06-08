@@ -61,6 +61,7 @@ void Projectile::Init() {
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
 	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
+	CollisionComp->AddCollisionMask(CollisionLayers_DestructibleTerrain);
 	CollisionComp->SetSize(glm::vec2(m_size));
 
 	// TODO:測試子彈大小

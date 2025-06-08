@@ -15,7 +15,7 @@
                 0.0,
                 -1.5
             ],
-            "CollisionLayer": "Terrain",
+            "CollisionLayer": "DestructibleTerrain",
             "CollisionMask": [
                 "Player_Projectile",
                 "Player_EffectAttack",

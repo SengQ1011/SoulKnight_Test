@@ -320,7 +320,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 48.0,
                 113.5
@@ -332,7 +332,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 64.0,
                 113.5
@@ -344,7 +344,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 80.0,
                 113.5
@@ -404,7 +404,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 48.0,
                 97.5
@@ -416,7 +416,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 64.0,
                 97.5
@@ -428,7 +428,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 80.0,
                 97.5
@@ -464,7 +464,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 48.0,
                 81.5
@@ -476,7 +476,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 64.0,
                 81.5
@@ -488,7 +488,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 80.0,
                 81.5
@@ -596,7 +596,7 @@
         },
         {
             "ID": "object_boxRed",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -16.0,
                 1.5
@@ -632,7 +632,7 @@
         },
         {
             "ID": "object_boxRed",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -112.0,
                 -14.5
@@ -644,7 +644,7 @@
         },
         {
             "ID": "object_boxRed",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 48.0,
                 -14.5
@@ -776,7 +776,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -80.0,
                 -78.5
@@ -788,7 +788,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -64.0,
                 -78.5
@@ -800,7 +800,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -48.0,
                 -78.5
@@ -836,7 +836,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -80.0,
                 -94.5
@@ -848,7 +848,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -64.0,
                 -94.5
@@ -860,7 +860,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -48.0,
                 -94.5
@@ -920,7 +920,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -80.0,
                 -110.5
@@ -932,7 +932,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -64.0,
                 -110.5
@@ -944,7 +944,7 @@
         },
         {
             "ID": "object_boxCommon_1",
-            "Class": "nGameObject",
+            "Class": "DestructibleBox",
             "Position": [
                 -48.0,
                 -110.5

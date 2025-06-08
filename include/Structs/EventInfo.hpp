@@ -44,7 +44,10 @@ enum class EventType
 
 	// 門相關
 	DoorOpen,
-	DoorClose
+	DoorClose,
+
+	// 破壞物件相關
+	BoxBreak
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
@@ -126,5 +129,10 @@ struct DoorCloseEvent : TypedEventInfo<DoorCloseEvent>
 	DoorCloseEvent() : TypedEventInfo(EventType::DoorClose) {}
 };
 
+// 箱子破壞事件
+struct BoxBreakEvent : TypedEventInfo<BoxBreakEvent>
+{
+	BoxBreakEvent() : TypedEventInfo(EventType::BoxBreak) {}
+};
 
 #endif // EVENTINFO_HPP

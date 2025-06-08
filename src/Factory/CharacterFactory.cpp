@@ -144,6 +144,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id)
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);
 			CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
+			CollisionComp->AddCollisionMask(CollisionLayers_DestructibleTerrain);
 			CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 			CollisionComp->AddCollisionMask(CollisionLayers_Enemy_Projectile);
 			CollisionComp->AddCollisionMask(CollisionLayers_Enemy_EffectAttack);
@@ -276,6 +277,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id)
 			if (haveWeapon == 0 && isCollisionAttack)
 				collisionComp->AddCollisionMask(CollisionLayers_Player);
 			collisionComp->AddCollisionMask(CollisionLayers_Terrain);
+			collisionComp->AddCollisionMask(CollisionLayers_DestructibleTerrain);
 			collisionComp->AddCollisionMask(CollisionLayers_Player_Projectile);
 			collisionComp->AddCollisionMask(CollisionLayers_Player_EffectAttack);
 			collisionComp->SetSize(glm::vec2(bodySize));

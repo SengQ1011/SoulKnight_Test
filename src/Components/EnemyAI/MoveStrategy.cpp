@@ -48,7 +48,7 @@ void IMoveStrategy::CollisionAction(const CollisionEventInfo &info, const EnemyC
 
 	// 碰到地形回轉
 	if (const auto type = info.GetObjectB()->GetComponent<CollisionComponent>(ComponentType::COLLISION)->GetCollisionLayer();
-		type == CollisionLayers_Terrain)
+		type == CollisionLayers_Terrain || type == CollisionLayers_DestructibleTerrain)
 		ReflectMovement(info, ctx);
 }
 

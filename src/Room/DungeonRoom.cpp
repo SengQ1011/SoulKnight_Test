@@ -164,7 +164,7 @@ std::shared_ptr<nGameObject> TerrainGenerator::CreateWall(int row, int col, cons
 	pos += glm::vec2(0, 1.5f);
 
 	// 直接使用工廠的新方法
-	return factory->createWall(row, col, pos);
+	return factory->CreateWall(row, col, pos);
 }
 
 std::shared_ptr<nGameObject> TerrainGenerator::CreateFloor(int row, int col, const RoomSpaceInfo &spaceInfo)
@@ -177,7 +177,7 @@ std::shared_ptr<nGameObject> TerrainGenerator::CreateFloor(int row, int col, con
 		Tool::RoomGridToWorld({col, row}, spaceInfo.m_TileSize, spaceInfo.m_WorldCoord, spaceInfo.m_RoomRegion);
 
 	// 直接使用工廠的新方法
-	return factory->createFloor(pos);
+	return factory->CreateFloor(pos);
 }
 
 std::shared_ptr<nGameObject> TerrainGenerator::CreateDoor(int row, int col, const RoomSpaceInfo &spaceInfo)
@@ -190,7 +190,7 @@ std::shared_ptr<nGameObject> TerrainGenerator::CreateDoor(int row, int col, cons
 		Tool::RoomGridToWorld({col, row}, spaceInfo.m_TileSize, spaceInfo.m_WorldCoord, spaceInfo.m_RoomRegion);
 
 	// 直接使用工廠的新方法
-	return factory->createDoor(pos);
+	return factory->CreateDoor(pos);
 }
 
 // ===== DungeonRoom 實現 =====
@@ -209,10 +209,6 @@ void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 {
 	Room::Start(player);
 	InitializeGrid();
-
-	// 注意：碰撞優化將在 FinalizeRoomSetup() 中進行
-	LOG_DEBUG("DungeonRoom::Start - Room basic setup completed at {},{}",
-			  m_RoomSpaceInfo.m_WorldCoord.x, m_RoomSpaceInfo.m_WorldCoord.y);
 }
 
 void DungeonRoom::Update()

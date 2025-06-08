@@ -56,19 +56,31 @@ public:
 	template <typename EventT>
 	bool Unsubscribe(ListenerID listenerID)
 	{
-		auto it = m_Listeners.find(typeid(EventT));
-		if (it != m_Listeners.end())
-		{
-			auto &listeners = it->second;
-			auto listenerIt = std::find_if(listeners.begin(), listeners.end(),
-										   [listenerID](const std::pair<ListenerID, Listener> &pair)
-										   { return pair.first == listenerID; });
+		// 添加安全檢查
+		if (listenerID == 0)
+			return false;
 
-			if (listenerIt != listeners.end())
+		try
+		{
+			auto it = m_Listeners.find(typeid(EventT));
+			if (it != m_Listeners.end())
 			{
-				listeners.erase(listenerIt);
-				return true;
+				auto &listeners = it->second;
+				auto listenerIt = std::find_if(listeners.begin(), listeners.end(),
+											   [listenerID](const std::pair<ListenerID, Listener> &pair)
+											   { return pair.first == listenerID; });
+
+				if (listenerIt != listeners.end())
+				{
+					listeners.erase(listenerIt);
+					return true;
+				}
 			}
+		}
+		catch (...)
+		{
+			LOG_WARN("EventManager::Unsubscribe: Exception occurred during destruction");
+			return false;
 		}
 		return false;
 	}

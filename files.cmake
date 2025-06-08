@@ -55,6 +55,7 @@ set(SRC_FILES
     Room/RoomLayoutManager.cpp
     Room/StartingRoom.cpp
     Room/UniformGrid.cpp
+    RoomObject/DestructibleBox.cpp
     SaveManager.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp

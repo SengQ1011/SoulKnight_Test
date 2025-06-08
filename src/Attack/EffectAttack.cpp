@@ -66,6 +66,7 @@ void EffectAttack::Init()
 	{
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_EffectAttack);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_DestructibleTerrain);
 		if (m_bulletBlocking)
 			CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy_Projectile);
 	}
@@ -73,6 +74,7 @@ void EffectAttack::Init()
 	{
 		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Enemy_EffectAttack);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Player);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_DestructibleTerrain);
 	}
 
 	CollisionComp->SetSize(glm::vec2(m_size));

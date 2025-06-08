@@ -28,7 +28,18 @@ public:
 	~MonsterRoom() override
 	{
 		// 取消訂閱敵人死亡事件
-		EventManager::GetInstance().Unsubscribe<EnemyDeathEvent>(m_EnemyDeathListenerID);
+		// 添加安全檢查，避免在程序結束時存取已銷毀的EventManager
+		try
+		{
+			if (m_EnemyDeathListenerID != 0)
+			{
+				EventManager::GetInstance().Unsubscribe<EnemyDeathEvent>(m_EnemyDeathListenerID);
+			}
+		}
+		catch (...)
+		{
+			LOG_WARN("MonsterRoom::~MonsterRoom: Exception occurred during destruction");
+		}
 	}
 
 	void Start(const std::shared_ptr<Character> &player) override;

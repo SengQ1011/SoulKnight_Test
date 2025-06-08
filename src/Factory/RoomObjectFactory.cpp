@@ -14,12 +14,22 @@
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
+// 新增的頭文件
+#include "Creature/Character.hpp"
+#include "Components/AttackComponent.hpp"
+#include "Components/ChestComponent.hpp"
+#include "EnumTypes.hpp"
+#include "Factory/WeaponFactory.hpp"
+#include "Scene/SceneManager.hpp"
+#include "RandomUtil.hpp"
+
+
 // class可能是指定類型再用， 目前都是RoomObject
-std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::string &_id, const std::string &_class)
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::string &_id, const std::string &_class)
 {
 	if (!m_ObjectDataFilePath.data())
 	{
-		LOG_DEBUG("RoomObjectFactory::createRoomObject 沒設置ObjectDataPath");
+		LOG_DEBUG("RoomObjectFactory::createRoomObject no set ObjectDataPath");
 		return nullptr;
 	}
 	// 是否是動畫
@@ -39,7 +49,9 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 		}
 		else if (_class == "DestructibleBox")
 		{
+			LOG_DEBUG("RoomObjectFactory::createRoomObject destructibleBox");
 			roomObject = std::make_shared<DestructibleBox>(_id);
+			roomObject->AddComponent<HealthComponent>(ComponentType::HEALTH,1,0,0);
 		}
 		else
 		{
@@ -129,9 +141,9 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createRoomObject(const std::stri
 }
 
 // 專門用於地形創建的方法
-std::shared_ptr<nGameObject> RoomObjectFactory::createWall(int row, int col, const glm::vec2 &worldPos)
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateWall(int row, int col, const glm::vec2 &worldPos)
 {
-	auto wall = std::static_pointer_cast<WallObject>(createRoomObject("w604", "Wall"));
+	auto wall = std::static_pointer_cast<WallObject>(CreateRoomObject("w604", "Wall"));
 	if (wall)
 	{
 		wall->SetWorldCoord(worldPos);
@@ -143,9 +155,9 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createWall(int row, int col, con
 	return wall;
 }
 
-std::shared_ptr<nGameObject> RoomObjectFactory::createFloor(const glm::vec2 &worldPos)
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateFloor(const glm::vec2 &worldPos)
 {
-	auto floor = createRoomObject("f601", "Floor");
+	auto floor = CreateRoomObject("f601", "Floor");
 	if (floor)
 	{
 		floor->SetWorldCoord(worldPos);
@@ -153,12 +165,104 @@ std::shared_ptr<nGameObject> RoomObjectFactory::createFloor(const glm::vec2 &wor
 	return floor;
 }
 
-std::shared_ptr<nGameObject> RoomObjectFactory::createDoor(const glm::vec2 &worldPos)
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateDoor(const glm::vec2 &worldPos)
 {
-	auto door = createRoomObject("object_door_0", "Door");
+	auto door = CreateRoomObject("object_door_0", "Door");
 	if (door)
 	{
 		door->SetWorldCoord(worldPos);
 	}
 	return door;
+}
+
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateChest(ChestType type,
+															const std::shared_ptr<Character> &player)
+{
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	std::shared_ptr<nGameObject> chest;
+
+	if (type == ChestType::REWARD)
+	{
+		chest = CreateRoomObject("object_rewardChest");
+	}
+	else if (type == ChestType::WEAPON)
+	{
+		chest = CreateRoomObject("object_weaponChest");
+	}
+	if (!chest)
+		return nullptr;
+
+	if (const auto interactableComp = chest->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+	{
+		if (const auto textPrompt = interactableComp->GetPromptObject())
+		{
+			currentScene->GetPendingObjects().emplace_back(textPrompt);
+			textPrompt->SetRegisteredToScene(true);
+		}
+	}
+
+	if (auto chestComp = chest->GetComponent<ChestComponent>(ComponentType::CHEST))
+	{
+		std::vector<std::shared_ptr<nGameObject>> objects;
+		if (type == ChestType::REWARD)
+		{
+			int num1 = RandomUtil::RandomFloatInRange(5, 10);
+			int num2 = RandomUtil::RandomFloatInRange(5, 10);
+			// 生成金幣
+			for (int i = 0; i < num1; i++)
+			{
+				auto coin = CreateRoomObject("object_coin");
+				if (!coin)
+					LOG_ERROR("Failed to create room object");
+				currentScene->GetRoot().lock()->AddChild(coin);
+				currentScene->GetCamera().lock()->SafeAddChild(coin);
+				coin->SetRegisteredToScene(true);
+				coin->SetActive(false);
+				coin->SetControlVisible(false);
+				coin->SetInitialScale(glm::vec2(0.8f, 0.8f));
+
+				objects.push_back(coin);
+			}
+			// 生成能量球
+			for (int i = 0; i < num2; i++)
+			{
+				auto energyBall = CreateRoomObject("object_energyBall");
+				if (!energyBall)
+					LOG_ERROR("Failed to create room object");
+				currentScene->GetRoot().lock()->AddChild(energyBall);
+				currentScene->GetCamera().lock()->SafeAddChild(energyBall);
+				energyBall->SetRegisteredToScene(true);
+				energyBall->SetActive(false);
+				energyBall->SetControlVisible(false);
+				energyBall->SetInitialScale(glm::vec2(0.8f, 0.8f));
+
+				objects.push_back(energyBall);
+			}
+		}
+		else if (type == ChestType::WEAPON)
+		{
+			std::vector<int> allPlayerWeaponID;
+			if (auto attackComp = player->GetComponent<AttackComponent>(ComponentType::ATTACK))
+			{
+				allPlayerWeaponID = attackComp->GetAllWeaponID();
+			}
+			auto weapon = WeaponFactory::createRandomWeapon(allPlayerWeaponID);
+			if (!weapon)
+				LOG_ERROR("Failed to create room object");
+			currentScene->GetRoot().lock()->AddChild(weapon);
+			currentScene->GetCamera().lock()->SafeAddChild(weapon);
+			weapon->SetRegisteredToScene(true);
+			weapon->SetControlVisible(false);
+			objects.push_back(weapon);
+		}
+
+		chestComp->AddDropItems(objects);
+	}
+
+	// 因爲可能是在游戲中創建，要手動加入渲染器/manager
+	currentScene->GetRoot().lock()->AddChild(chest);
+	currentScene->GetCamera().lock()->SafeAddChild(chest);
+	chest->SetRegisteredToScene(true);
+
+	return chest;
 }

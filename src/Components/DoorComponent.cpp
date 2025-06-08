@@ -21,8 +21,22 @@ DoorComponent::DoorComponent()
 DoorComponent::~DoorComponent()
 {
 	// 在解構函數中取消訂閱事件
-	EventManager::GetInstance().Unsubscribe<DoorOpenEvent>(m_DoorOpenListenerID);
-	EventManager::GetInstance().Unsubscribe<DoorCloseEvent>(m_DoorCloseListenerID);
+	// 添加安全檢查，避免在程序結束時存取已銷毀的EventManager
+	try
+	{
+		if (m_DoorOpenListenerID != 0)
+		{
+			EventManager::GetInstance().Unsubscribe<DoorOpenEvent>(m_DoorOpenListenerID);
+		}
+		if (m_DoorCloseListenerID != 0)
+		{
+			EventManager::GetInstance().Unsubscribe<DoorCloseEvent>(m_DoorCloseListenerID);
+		}
+	}
+	catch (...)
+	{
+		LOG_WARN("DoorComponent::~DoorComponent: Exception occurred during destruction");
+	}
 }
 
 void DoorComponent::Init()

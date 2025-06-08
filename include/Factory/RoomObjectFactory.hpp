@@ -9,6 +9,9 @@
 #include "glm/glm.hpp"
 
 class Loader;
+class nGameObject;
+class Character;
+enum class ChestType;
 
 /// @brief:建造RoomObject前必須設置ScenePath(從Room取得)
 class RoomObjectFactory : public Factory
@@ -18,12 +21,15 @@ public:
 	~RoomObjectFactory() override = default;
 
 	// 根據配置文件創建物件
-	std::shared_ptr<nGameObject> createRoomObject(const std::string &_id, const std::string &_class = "");
+	std::shared_ptr<nGameObject> CreateRoomObject(const std::string &_id, const std::string &_class = "");
 
 	// 地形創建專用方法
-	std::shared_ptr<nGameObject> createWall(int row, int col, const glm::vec2 &worldPos);
-	std::shared_ptr<nGameObject> createFloor(const glm::vec2 &worldPos);
-	std::shared_ptr<nGameObject> createDoor(const glm::vec2 &worldPos);
+	std::shared_ptr<nGameObject> CreateWall(int row, int col, const glm::vec2 &worldPos);
+	std::shared_ptr<nGameObject> CreateFloor(const glm::vec2 &worldPos);
+	std::shared_ptr<nGameObject> CreateDoor(const glm::vec2 &worldPos);
+
+	// 寶箱創建方法
+	std::shared_ptr<nGameObject> CreateChest(ChestType type, const std::shared_ptr<Character> &player);
 
 	[[nodiscard]] std::string GetObjectDataFilePath() const { return m_ObjectDataFilePath; }
 	void SetObjectDataFilePath(const std::string &prePath) { m_ObjectDataFilePath = prePath + "ObjectData/"; }

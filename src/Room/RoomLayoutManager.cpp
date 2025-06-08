@@ -81,7 +81,6 @@ std::string RoomLayoutManager::GetRandomLayout(const std::string &roomType)
 	size_t randomIndex = dist(m_RandomEngine);
 
 	std::string selectedLayout = m_AvailableLayouts[roomType][randomIndex];
-	LOG_DEBUG("Randomly selected {} layout: {}", roomType, selectedLayout);
 
 	return selectedLayout;
 }

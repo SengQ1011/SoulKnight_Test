@@ -115,7 +115,7 @@ void InteractableComponent::Init()
 			};
 			break;
 		}
-		case InteractableType::WEAPON:
+	case InteractableType::WEAPON:
 		{
 			m_InteractionCallback =
 				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
@@ -130,9 +130,10 @@ void InteractableComponent::Init()
 			};
 			break;
 		}
-		default:
-			LOG_ERROR("InteractableComponent::Init() miss m_interactableType");
-		break;;
+	default:
+		LOG_ERROR("InteractableComponent::Init() miss m_interactableType");
+		break;
+		;
 	}
 
 	if (m_interactableType == InteractableType::COIN || m_interactableType == InteractableType::ENERGY_BALL)
@@ -149,10 +150,33 @@ void InteractableComponent::Init()
 			{
 				glm::vec2 direction = glm::normalize(playerPos - selfPos);
 				const float speed = 100.0f;
-				self->SetWorldCoord(selfPos+(direction * speed * (Util::Time::GetDeltaTimeMs() / 1000.0f)));
+				self->SetWorldCoord(selfPos + (direction * speed * (Util::Time::GetDeltaTimeMs() / 1000.0f)));
 			}
 		};
 	}
+
+	m_PromptUI = std::make_shared<nGameObject>("InteractableUI");
+	if (m_PromptUI)
+	{
+		// 設置UI的基本屬性
+		m_PromptUI->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_interactablePrompt.png"));
+		m_PromptUI->SetZIndexType(ZIndexType::CUSTOM);
+		m_PromptUI->SetZIndex(100.0f);
+		m_PromptUI->SetInitialScale(glm::vec2(2.0f));
+		m_PromptUI->SetInitialScaleSet(true);
+		m_PromptUI->SetControlVisible(false); // 初始隱藏
+
+		const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+		if (currentScene)
+		{
+			currentScene->GetPendingObjects().emplace_back(m_PromptUI);
+			m_PromptUI->SetRegisteredToScene(true);
+		}
+	}
+
+	// 初始化浮動計時器，設置為無限循環的2π週期
+	m_FloatTimer.SetDuration(1.0f); // 2π 秒為一個完整週期
+	m_FloatTimer.Start();
 }
 
 void InteractableComponent::Update()
@@ -174,16 +198,7 @@ void InteractableComponent::Update()
 			m_UpdateCallback(self, player);
 	}
 	// 更新位置
-	if (!m_PromptObject)
-		return;
-	if (const auto owner = GetOwner<nGameObject>())
-	{
-		m_PromptObject->SetWorldCoord(owner->GetWorldCoord() +
-									  glm::vec2(10.0f, owner->GetImageSize().y/2.0f + std::sin(timer) * 10.0f));
-		timer += Util::Time::GetDeltaTimeMs() / 1000.0f;
-		if (timer >= 3.1415)
-			timer = 0.0f;
-	}
+	UpdatePromptPositions();
 }
 
 bool InteractableComponent::OnInteract(const std::shared_ptr<Character> &interactor)
@@ -192,9 +207,11 @@ bool InteractableComponent::OnInteract(const std::shared_ptr<Character> &interac
 	if (m_InteractionCallback)
 	{
 		m_InteractionCallback(interactor, GetOwner<nGameObject>());
-		if(m_interactableType == InteractableType::REWARD_CHEST || m_interactableType == InteractableType::WEAPON_CHEST)
+		if (m_interactableType == InteractableType::REWARD_CHEST ||
+			m_interactableType == InteractableType::WEAPON_CHEST)
 		{
-			if (const auto interactableManager = SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager())
+			if (const auto interactableManager =
+					SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager())
 			{
 				LOG_DEBUG("InteractableComponent::Remove");
 				interactableManager->QueueUnregister(item);
@@ -210,8 +227,12 @@ void InteractableComponent::ShowPrompt(bool show)
 	if (m_PromptObject)
 	{
 		m_PromptObject->SetControlVisible(show);
-		m_IsPromptVisible = show;
 	}
+	if (m_PromptUI)
+	{
+		m_PromptUI->SetControlVisible(show);
+	}
+	m_IsPromptVisible = show;
 }
 
 bool InteractableComponent::IsInRange(const std::shared_ptr<Character> &character) const
@@ -225,4 +246,89 @@ bool InteractableComponent::IsInRange(const std::shared_ptr<Character> &characte
 
 	float distance = glm::length(character->GetWorldCoord() - owner->GetWorldCoord());
 	return distance <= m_InteractionRadius;
+}
+
+bool InteractableComponent::ShouldPromptFloat() const
+{
+	// 定義哪些互動類型需要浮動效果
+	switch (m_interactableType)
+	{
+	case InteractableType::REWARD_CHEST:
+	case InteractableType::WEAPON_CHEST:
+	case InteractableType::COIN:
+	case InteractableType::ENERGY_BALL:
+	case InteractableType::WEAPON:
+	case InteractableType::SHOP:
+	case InteractableType::NPC_DIALOGUE:
+	case InteractableType::HP_POISON:
+	case InteractableType::ENERGY_POISON:
+		return false; // 寶箱文字不浮動，保持固定位置
+
+	case InteractableType::PORTAL:
+	default:
+		return true; // 其他類型使用浮動效果
+	}
+}
+
+glm::vec2 InteractableComponent::UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner)
+{
+	glm::vec2 promptObjectOffset = glm::vec2(4.0f, 0.0f); // 好懸 爲什麽文字會自己偏移
+
+	if (m_PromptObject && owner)
+	{
+		// 計算 PromptObject 在 owner 上方的位置
+		promptObjectOffset.y = (owner->GetImageSize().y + m_PromptObject->GetImageSize().y) / 2.0f;
+		glm::vec2 promptObjectPosition = owner->GetWorldCoord() + promptObjectOffset;
+		m_PromptObject->SetWorldCoord(promptObjectPosition);
+	}
+
+	return promptObjectOffset;
+}
+
+void InteractableComponent::UpdatePromptPositions()
+{
+	if (!m_PromptObject)
+		return;
+
+	const auto owner = GetOwner<nGameObject>();
+	if (!owner)
+		return;
+
+	// 更新 PromptObject 位置
+	glm::vec2 promptObjectOffset = UpdatePromptObjectPosition(owner);
+
+	// 更新 PromptUI 位置
+	if (m_PromptUI)
+	{
+		UpdatePromptUIPosition(owner, promptObjectOffset);
+	}
+}
+
+void InteractableComponent::UpdatePromptUIPosition(const std::shared_ptr<nGameObject> &owner,
+												   const glm::vec2 &promptObjectOffset)
+{
+	if (!m_PromptUI || !m_PromptObject || !owner)
+		return;
+
+	// 更新浮動計時器
+	m_FloatTimer.Update();
+
+	// 如果計時器完成，重新開始（實現無限循環）
+	if (m_FloatTimer.IsFinished())
+	{
+		m_FloatTimer.Restart();
+	}
+
+	// 使用 Timer 的進度來計算浮動偏移
+	float progress = m_FloatTimer.GetProgress(); // 0.0f 到 1.0f
+	float radians = progress * 2.0f * static_cast<float>(M_PI); // 轉換為 0 到 2π 弧度
+	float floatOffset = std::sin(radians) * 2.5f; // 浮動範圍2.5像素
+
+	// 計算 PromptUI 位置：在 PromptObject 下方，加上浮動偏移
+	glm::vec2 promptUIOffset = glm::vec2(0.0f, promptObjectOffset.y);
+	promptUIOffset.y -= (m_PromptObject->GetImageSize().y + m_PromptUI->GetImageSize().y) / 2.0f;
+	promptUIOffset.y += floatOffset; // 添加浮動效果
+
+	glm::vec2 promptUIPosition = owner->GetWorldCoord() + promptUIOffset;
+	m_PromptUI->SetWorldCoord(promptUIPosition);
 }
