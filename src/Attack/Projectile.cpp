@@ -233,8 +233,5 @@ void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulle
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-	// 延緩發射
-	attackManager->EnqueueSpawn([=]() {
-		attackManager->spawnProjectile(bubbleInfo);
-	});
+	attackManager->spawnProjectile(bubbleInfo);
 }
