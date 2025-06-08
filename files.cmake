@@ -46,10 +46,12 @@ set(SRC_FILES
     Room/DungeonRoom_CollisionOptimization.cpp
     Room/LobbyRoom.cpp
     Room/MonsterRoom.cpp
+    Room/MonsterRoomTestUI.cpp
     Room/PortalRoom.cpp
     Room/Room.cpp
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
+    Room/RoomLayoutManager.cpp
     Room/StartingRoom.cpp
     Room/UniformGrid.cpp
     SaveManager.cpp
@@ -154,10 +156,12 @@ set(INCLUDE_FILES
     Room/DungeonRoom.hpp
     Room/LobbyRoom.hpp
     Room/MonsterRoom.hpp
+    Room/MonsterRoomTestUI.hpp
     Room/PortalRoom.hpp
     Room/Room.hpp
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
+    Room/RoomLayoutManager.hpp
     Room/StartingRoom.hpp
     Room/UniformGrid.hpp
     RoomObject/DestructibleBox.hpp

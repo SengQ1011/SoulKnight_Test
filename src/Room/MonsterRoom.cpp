@@ -46,8 +46,110 @@ void MonsterRoom::Update()
 
 void MonsterRoom::LoadFromJSON()
 {
-	const nlohmann::json jsonData = m_Loader.lock()->LoadMonsterRoomObjectPosition();
+	// 使用隨機佈局載入
+	const nlohmann::json jsonData = m_Loader.lock()->LoadMonsterRoomObjectPosition_Random();
 	InitializeRoomObjects(jsonData);
+}
+
+void MonsterRoom::LoadFromJSON_Specific(const std::string &layoutName)
+{
+	// 使用指定佈局載入（測試用）
+	const nlohmann::json jsonData = m_Loader.lock()->LoadMonsterRoomObjectPosition_Specific(layoutName);
+	InitializeRoomObjects(jsonData);
+}
+
+void MonsterRoom::ChangeLayoutRuntime(const std::string &layoutName)
+{
+	if (!CanChangeLayout())
+	{
+		LOG_WARN("Cannot change layout in current room state: {}", static_cast<int>(m_State));
+		return;
+	}
+
+	LOG_INFO("Changing room layout to: {}", layoutName.empty() ? "random" : layoutName);
+
+	// 1. 保存當前的連接資訊
+	std::vector<Direction> connectedDirections = GetConnectedDirections();
+
+	// 2. 清理現有房間物件（保留敵人和玩家）
+	ClearNonEssentialObjects();
+
+	// 3. 重新載入新佈局
+	if (layoutName.empty() || layoutName == "RANDOM")
+	{
+		LoadFromJSON(); // 使用隨機佈局
+	}
+	else
+	{
+		LoadFromJSON_Specific(layoutName); // 使用指定佈局
+	}
+
+	// 4. 重建網格系統
+	InitializeGrid();
+
+	// 5. 重建通道和牆壁（基於原有連接資訊）
+	RebuildConnectionsAndWalls();
+
+	// 6. 完成房間設置
+	FinalizeRoomSetup();
+
+	// 7. 重新定位所有實體，避免卡牆或位置衝突
+	RepositionEntitiesAfterLayoutChange();
+
+	LOG_INFO("Room layout changed successfully with {} connections restored", connectedDirections.size());
+}
+
+bool MonsterRoom::CanChangeLayout() const
+{
+	// 只允許在非戰鬥狀態下更換佈局
+	return m_State != RoomState::COMBAT;
+}
+
+void MonsterRoom::ClearNonEssentialObjects()
+{
+	// 清理所有房間物件，但保留敵人和玩家
+	auto objectsCopy = m_RoomObjects; // 複製避免迭代時修改
+	for (auto &obj : objectsCopy)
+	{
+		// 跳過角色實體（敵人和玩家）
+		if (const auto character = std::dynamic_pointer_cast<Character>(obj))
+		{
+			if (character->GetType() == CharacterType::PLAYER)
+				continue;
+			RemoveEntity(character);
+			continue;
+		}
+
+		// 移除其他物件（牆壁、地板、道具等）
+		RemoveRoomObject(obj);
+	}
+
+	// 清理門列表
+	m_Doors.clear();
+
+	LOG_DEBUG("Cleared {} non-essential objects", objectsCopy.size() - m_RoomObjects.size());
+}
+
+void MonsterRoom::RebuildConnectionsAndWalls()
+{
+	// 重建所有方向的通道或牆壁
+	const std::array<Direction, 4> allDirections = {Direction::UP, Direction::RIGHT, Direction::DOWN, Direction::LEFT};
+
+	for (Direction dir : allDirections)
+	{
+		if (HasConnectionToDirection(dir))
+		{
+			// 有連接的方向創建通道
+			CreateCorridorInDirection(dir);
+			LOG_DEBUG("Rebuilt corridor in direction: {}", static_cast<int>(dir));
+		}
+		else
+		{
+			// 無連接的方向創建牆壁
+			CreateWallInDirection(dir);
+			LOG_DEBUG("Rebuilt wall in direction: {}", static_cast<int>(dir));
+		}
+	}
 }
 
 void MonsterRoom::TryActivateByPlayer()
@@ -502,4 +604,99 @@ void MonsterRoom::CombatManager::SetEnemyVisible(const std::shared_ptr<Character
 			weapon->SetControlVisible(visible);
 		}
 	}
+}
+
+void MonsterRoom::RepositionEntitiesAfterLayoutChange()
+{
+	LOG_DEBUG("Starting entity repositioning after layout change");
+
+	// 重新定位怪物
+	RepositionEnemies();
+
+	// 重新定位玩家（如果需要）
+	RepositionPlayerIfNeeded();
+
+	LOG_DEBUG("Entity repositioning completed");
+}
+
+void MonsterRoom::RepositionEnemies()
+{
+	auto enemies = GetEnemies();
+	if (enemies.empty())
+	{
+		LOG_DEBUG("No enemies to reposition");
+		return;
+	}
+
+	LOG_DEBUG("Repositioning {} enemies", enemies.size());
+
+	// 生成新的安全位置
+	std::vector<glm::vec2> safePositions = GenerateSpawnPositions(static_cast<int>(enemies.size()));
+
+	if (safePositions.size() < enemies.size())
+	{
+		LOG_WARN("Not enough safe positions for all enemies. Expected {}, got {}", enemies.size(),
+				 safePositions.size());
+	}
+
+	// 重新定位每個怪物
+	for (size_t i = 0; i < enemies.size() && i < safePositions.size(); ++i)
+	{
+		auto enemy = enemies[i];
+		glm::vec2 oldPos = enemy->m_WorldCoord;
+		enemy->m_WorldCoord = safePositions[i];
+
+		LOG_DEBUG("Moved enemy from ({:.1f}, {:.1f}) to ({:.1f}, {:.1f})", oldPos.x, oldPos.y, safePositions[i].x,
+				  safePositions[i].y);
+	}
+}
+
+void MonsterRoom::RepositionPlayerIfNeeded()
+{
+	auto player = m_Player.lock();
+	if (!player)
+	{
+		LOG_DEBUG("No player to reposition");
+		return;
+	}
+
+	// 檢查玩家是否在房間內部
+	if (!IsPlayerInsideRoom())
+	{
+		LOG_DEBUG("Player is not inside room, no repositioning needed");
+		return;
+	}
+
+	LOG_DEBUG("Player is inside room, moving player outside");
+
+	const glm::vec2 &roomCenter = m_RoomSpaceInfo.m_WorldCoord;
+	const glm::vec2 &roomSize = m_RoomSpaceInfo.m_RoomSize;
+	const glm::vec2 &tileSize = m_RoomSpaceInfo.m_TileSize;
+	const glm::vec2 playerPos = player->m_WorldCoord;
+
+	// 計算玩家相對於房間中心的方向向量
+	glm::vec2 direction = playerPos - roomCenter;
+
+	// 如果玩家正好在房間中心，隨便選一個方向（向左）
+	if (glm::length(direction) < 1.0f)
+	{
+		direction = glm::vec2(-1.0f, 0.0f);
+	}
+	else
+	{
+		direction = glm::normalize(direction);
+	}
+
+	// 計算房間內範圍的一半長度（加上一點緩衝）
+	const float roomHalfSize = (roomSize.x * tileSize.x) / 2.0f;
+	const float safeDistance = roomHalfSize + 2.0f * tileSize.x; // 房間邊緣外2格
+
+	// 計算新位置：房間中心 + 方向 * 安全距離
+	glm::vec2 newPosition = roomCenter + direction * safeDistance;
+
+	glm::vec2 oldPos = player->m_WorldCoord;
+	player->m_WorldCoord = newPosition;
+
+	LOG_INFO("Moved player from ({:.1f}, {:.1f}) to ({:.1f}, {:.1f}) - outside room", oldPos.x, oldPos.y, newPosition.x,
+			 newPosition.y);
 }

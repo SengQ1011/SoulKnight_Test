@@ -117,6 +117,10 @@ public:
 	// 加载JSON配置
 	virtual void LoadFromJSON() = 0;
 
+	// 玩家位置檢測（基礎防漏洞機制）
+	[[nodiscard]] virtual bool IsPlayerInsideRegion() const;
+	[[nodiscard]] virtual bool IsPlayerInsideRoom(float epsilon = 16.0f) const;
+
 	// 創建物品
 	std::shared_ptr<nGameObject> CreateChest(ChestType type) const;
 
@@ -187,6 +191,11 @@ protected:
 	void RegisterCollisionManger(const std::shared_ptr<nGameObject> &object) const;
 	void RegisterInteractionManager(const std::shared_ptr<nGameObject> &object) const;
 	void RegisterTrackingManager(const std::shared_ptr<nGameObject> &object) const;
+
+	// 從管理員中反註冊
+	void UnregisterCollisionManager(const std::shared_ptr<nGameObject> &object) const;
+	void UnregisterInteractionManager(const std::shared_ptr<nGameObject> &object) const;
+	void UnregisterTrackingManager(const std::shared_ptr<nGameObject> &object) const;
 
 private:
 	// === 內部輔助方法 ===

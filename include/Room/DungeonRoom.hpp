@@ -143,9 +143,9 @@ public:
 	RoomType GetRoomType() const { return m_RoomType; }
 	glm::vec2 GetMapGridPos() const { return m_MapGridPos; }
 
-	// 玩家位置檢測
-	[[nodiscard]] bool IsPlayerInsideRegion() const;
-	[[nodiscard]] bool IsPlayerInsideRoom() const;
+	// 玩家位置檢測（擴展父類別的基礎檢測）
+	[[nodiscard]] bool IsPlayerInValidPosition() const; // 檢測玩家是否在合法位置
+	[[nodiscard]] bool IsPlayerInCorridor(float epsilon = 16.0f) const; // 檢測玩家是否在通道上
 
 	// 房間連接管理（委託給 RoomConnectionManager）
 	void SetNeighborRoom(Direction dir, const std::weak_ptr<DungeonRoom> &neighbor, bool hasConnection = false);
@@ -199,6 +199,14 @@ protected:
 	std::unique_ptr<GridSystem> m_GridSystem;
 	std::unique_ptr<RoomConnectionManager> m_ConnectionManager;
 	std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
+
+private:
+	// 輔助方法
+	[[nodiscard]] bool IsPlayerInCorridorDirection(const glm::vec2 &playerPos, const glm::vec2 &roomCenter,
+												   const glm::vec2 &roomSize, const glm::vec2 &tileSize, Direction dir,
+												   float epsilon) const;
+
+	// 房間狀態變更處理
 };
 
 #endif // DUNGEONROOM_HPP

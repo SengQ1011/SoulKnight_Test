@@ -83,6 +83,23 @@ void DungeonMap::Update()
 	// 當玩家走過門進入房間觸發轉換狀態
 	if (m_CurrentRoom && m_CurrentRoom->IsPlayerInsideRoom())
 		m_CurrentRoom->TryActivateByPlayer();
+
+	// 合法玩家位置 -- 怕出bug
+	if (!m_CurrentRoom->IsPlayerInValidPosition())
+	{
+		const auto player = m_Player.lock();
+		if (!player) return;
+
+		const auto prevRoom = m_PreviousRoom.lock();
+		if (prevRoom)
+		{
+			player->SetWorldCoord(prevRoom->GetRoomSpaceInfo().m_WorldCoord);
+		}
+		else
+		{
+			player->SetWorldCoord(m_CurrentRoom->GetRoomSpaceInfo().m_WorldCoord);
+		}
+	}
 }
 
 bool DungeonMap::GenerateMainPath()
@@ -142,10 +159,11 @@ void DungeonMap::UpdateCurrentRoomIfNeeded()
 			return;
 		}
 
-		// 從舊房間移除玩家（但不從場景中移除）
+		// 從舊房間移除玩家
 		if (m_CurrentRoom)
 		{
 			m_CurrentRoom->RemovePlayerFromList(m_Player.lock());
+			m_PreviousRoom = m_CurrentRoom; // 记录前一个房间 -- 重置位置用
 		}
 
 		// 切換到新房間並添加玩家

@@ -5,8 +5,6 @@
 #include "Room/DungeonRoom.hpp"
 
 #include <algorithm>
-#include <iostream>
-
 
 #include "Camera.hpp"
 #include "Components/CollisionComponent.hpp"
@@ -19,7 +17,6 @@
 #include "Loader.hpp"
 #include "RoomObject/WallObject.hpp"
 #include "Tool/Tool.hpp"
-
 
 // ===== RoomConnectionManager 實現 =====
 void RoomConnectionManager::SetNeighbor(Direction dir, const std::weak_ptr<DungeonRoom> &room)
@@ -214,13 +211,14 @@ void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 	InitializeGrid();
 
 	// 注意：碰撞優化將在 FinalizeRoomSetup() 中進行
-	LOG_DEBUG("DungeonRoom::Start - Room basic setup completed at ({:.1f}, {:.1f})", m_RoomSpaceInfo.m_WorldCoord.x,
-			  m_RoomSpaceInfo.m_WorldCoord.y);
+	LOG_DEBUG("DungeonRoom::Start - Room basic setup completed at {},{}",
+			  m_RoomSpaceInfo.m_WorldCoord.x, m_RoomSpaceInfo.m_WorldCoord.y);
 }
 
 void DungeonRoom::Update()
 {
 	Room::Update();
+
 	DebugDungeonRoom();
 }
 
@@ -239,35 +237,95 @@ void DungeonRoom::SetState(RoomState newState)
 	}
 }
 
-bool DungeonRoom::IsPlayerInsideRegion() const
+bool DungeonRoom::IsPlayerInValidPosition() const
 {
-	const auto player = m_Player.lock();
-	if (!player)
-		return false;
-
-	const auto roomWorldCoord = m_RoomSpaceInfo.m_WorldCoord;
-	const auto roomRegionInPixel = m_RoomSpaceInfo.m_RoomRegion * m_RoomSpaceInfo.m_TileSize;
-
-	return (player->m_WorldCoord.x < roomWorldCoord.x + roomRegionInPixel.x / 2.0f) &&
-		(player->m_WorldCoord.y < roomWorldCoord.y + roomRegionInPixel.y / 2.0f) &&
-		(player->m_WorldCoord.x > roomWorldCoord.x - roomRegionInPixel.x / 2.0f) &&
-		(player->m_WorldCoord.y > roomWorldCoord.y - roomRegionInPixel.y / 2.0f);
+	// 玩家在合法位置的條件：在房間區域內 且 (在房間內部 或 在通道上)
+	return IsPlayerInsideRegion() && (IsPlayerInsideRoom(-4.0f) || IsPlayerInCorridor(4.0f));
 }
 
-bool DungeonRoom::IsPlayerInsideRoom() const
+bool DungeonRoom::IsPlayerInCorridor(const float epsilon) const
 {
 	const auto player = m_Player.lock();
 	if (!player)
 		return false;
 
-	const auto roomWorldCoord = m_RoomSpaceInfo.m_WorldCoord;
-	const auto roomSizeInPixel = m_RoomSpaceInfo.m_RoomSize * m_RoomSpaceInfo.m_TileSize;
-	constexpr float epsilon = 16.0f;
+	const glm::vec2 &playerPos = player->m_WorldCoord;
+	const glm::vec2 &roomCenter = m_RoomSpaceInfo.m_WorldCoord;
+	const glm::vec2 &roomSize = m_RoomSpaceInfo.m_RoomSize;
+	const glm::vec2 &tileSize = m_RoomSpaceInfo.m_TileSize;
 
-	return (player->m_WorldCoord.x < roomWorldCoord.x + (roomSizeInPixel.x / 2.0f - epsilon)) &&
-		(player->m_WorldCoord.y < roomWorldCoord.y + (roomSizeInPixel.y / 2.0f - epsilon)) &&
-		(player->m_WorldCoord.x > roomWorldCoord.x - (roomSizeInPixel.x / 2.0f - epsilon)) &&
-		(player->m_WorldCoord.y > roomWorldCoord.y - (roomSizeInPixel.y / 2.0f - epsilon));
+	// 獲取所有有連接的方向
+	std::vector<Direction> connectedDirections = GetConnectedDirections();
+
+	// 檢查玩家是否在任何一個連接的通道中
+	for (Direction dir : connectedDirections)
+	{
+		if (IsPlayerInCorridorDirection(playerPos, roomCenter, roomSize, tileSize, dir, epsilon))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool DungeonRoom::IsPlayerInCorridorDirection(const glm::vec2 &playerPos, const glm::vec2 &roomCenter,
+											  const glm::vec2 &roomSize, const glm::vec2 &tileSize, Direction dir,
+											  const float epsilon) const
+{
+	const float corridorWidth = RoomConstants::CORRIDOR_WIDTH * tileSize.x;
+	const float roomHalfWidth = (roomSize.x * tileSize.x) / 2.0f;
+	const float roomHalfHeight = (roomSize.y * tileSize.y) / 2.0f;
+
+	switch (dir)
+	{
+	case Direction::UP:
+		{
+			// 檢查玩家是否在上方通道中（擴展 epsilon 範圍）
+			float corridorTop = roomCenter.y + (m_RoomSpaceInfo.m_RoomRegion.y * tileSize.y) / 2.0f + epsilon;
+			float corridorBottom = roomCenter.y + roomHalfHeight - epsilon;
+			float corridorLeft = roomCenter.x - corridorWidth / 2.0f - epsilon;
+			float corridorRight = roomCenter.x + corridorWidth / 2.0f + epsilon;
+
+			return (playerPos.x >= corridorLeft && playerPos.x <= corridorRight &&
+					playerPos.y <= corridorTop && playerPos.y >= corridorBottom);
+		}
+	case Direction::DOWN:
+		{
+			// 檢查玩家是否在下方通道中（擴展 epsilon 範圍）
+			float corridorTop = roomCenter.y - roomHalfHeight + epsilon;
+			float corridorBottom = roomCenter.y - (m_RoomSpaceInfo.m_RoomRegion.y * tileSize.y) / 2.0f - epsilon;
+			float corridorLeft = roomCenter.x - corridorWidth / 2.0f - epsilon;
+			float corridorRight = roomCenter.x + corridorWidth / 2.0f + epsilon;
+
+			return (playerPos.x >= corridorLeft && playerPos.x <= corridorRight &&
+					playerPos.y >= corridorBottom && playerPos.y <= corridorTop);
+		}
+	case Direction::LEFT:
+		{
+			// 檢查玩家是否在左側通道中（擴展 epsilon 範圍）
+			float corridorTop = roomCenter.y + corridorWidth / 2.0f + epsilon;
+			float corridorBottom = roomCenter.y - corridorWidth / 2.0f - epsilon;
+			float corridorLeft = roomCenter.x - (m_RoomSpaceInfo.m_RoomRegion.x * tileSize.x) / 2.0f - epsilon;
+			float corridorRight = roomCenter.x - roomHalfWidth + epsilon;
+
+			return (playerPos.x >= corridorLeft && playerPos.x <= corridorRight &&
+					playerPos.y >= corridorBottom && playerPos.y <= corridorTop);
+		}
+	case Direction::RIGHT:
+		{
+			// 檢查玩家是否在右側通道中（擴展 epsilon 範圍）
+			float corridorTop = roomCenter.y + corridorWidth / 2.0f + epsilon;
+			float corridorBottom = roomCenter.y - corridorWidth / 2.0f - epsilon;
+			float corridorLeft = roomCenter.x + roomHalfWidth - epsilon;
+			float corridorRight = roomCenter.x + (m_RoomSpaceInfo.m_RoomRegion.x * tileSize.x) / 2.0f + epsilon;
+
+			return (playerPos.x >= corridorLeft && playerPos.x <= corridorRight &&
+					playerPos.y >= corridorBottom && playerPos.y <= corridorTop);
+		}
+	}
+
+	return false;
 }
 
 // 房間連接管理（委託給 RoomConnectionManager）

@@ -11,6 +11,7 @@
 
 
 class DungeonMap;
+class MonsterRoomTestUI;
 
 class DungeonScene final : public Scene
 {
@@ -53,6 +54,10 @@ private:
 	std::shared_ptr<nGameObject> m_stageIcon;
 	float m_textTimer = 2.0f;
 
+	// MonsterRoom 測試UI
+	std::shared_ptr<MonsterRoomTestUI> m_MonsterRoomTestUI;
+	float m_LayoutChangeCooldown = 0.0f; // 佈局更換冷卻時間
+
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
@@ -61,6 +66,12 @@ private:
 	void InitializeStageText();
 	void InitializeStageIcon();
 	void DrawStageDebugUI(); // 調試界面
+
+	// 佈局更換相關方法
+	void HandleLayoutChangeInput(); // 處理佈局更換輸入
+	void ProcessLayoutChangeRequest(); // 處理佈局更換請求
+	void ChangeCurrentRoomLayout(const std::string &layoutName); // 更換當前房間佈局
+	void InitializeMonsterRoomTestUI(); // 初始化測試UI
 
 	// 以下為你原本地牢生成的函數
 	void BuildDungeon(); // 房間生成與初始化邏輯

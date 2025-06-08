@@ -335,50 +335,100 @@ void Room::RegisterTrackingManager(const std::shared_ptr<nGameObject> &object) c
 
 void Room::UnRegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &object) const
 {
+	if (!object)
+		return;
+
+	// === 第一步：從場景中移除物件 ===
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	const auto renderer = scene->GetRoot().lock();
-	const auto camera = scene->GetCamera().lock();
 	if (scene)
 	{
+		const auto renderer = scene->GetRoot().lock();
+		const auto camera = scene->GetCamera().lock();
+
 		if (renderer)
 			renderer->RemoveChild(object);
-		// if (camera) camera->RemoveChild(object);
 		if (camera)
 			camera->MarkForRemoval(object);
 	}
 
+	// === 第二步：從各個管理器中反註冊物件 ===
+	UnregisterCollisionManager(object);
+	UnregisterInteractionManager(object);
+	UnregisterTrackingManager(object);
+}
+
+void Room::UnregisterCollisionManager(const std::shared_ptr<nGameObject> &object) const
+{
 	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
 		m_CollisionManager->UnregisterNGameObject(object);
+
 		if (const std::shared_ptr<nGameObject> &colliderVisible = collComp->GetVisibleBox())
 		{
+			const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 			if (scene)
 			{
+				const auto renderer = scene->GetRoot().lock();
+				const auto camera = scene->GetCamera().lock();
+
 				if (renderer)
 					renderer->RemoveChild(colliderVisible);
-				// if (camera) camera->RemoveChild(colliderVisible);
 				if (camera)
 					camera->MarkForRemoval(colliderVisible);
 			}
 		}
 	}
+}
 
+void Room::UnregisterInteractionManager(const std::shared_ptr<nGameObject> &object) const
+{
 	if (const auto interactComp = object->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
 	{
 		m_InteractionManager->UnregisterInteractable(object);
+
 		if (const std::shared_ptr<nGameObject> &promptObj = interactComp->GetPromptObject())
 		{
+			const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 			if (scene)
 			{
+				const auto renderer = scene->GetRoot().lock();
+				const auto camera = scene->GetCamera().lock();
+
 				if (renderer)
 					renderer->RemoveChild(promptObj);
-				// if (camera) camera->RemoveChild(promptObj);
 				if (camera)
 					camera->MarkForRemoval(promptObj);
 			}
 		}
 	}
-	// TODO:沒有TrackingManager的自動化刪除
+}
+
+void Room::UnregisterTrackingManager(const std::shared_ptr<nGameObject> &object) const
+{
+	if (object->GetZIndexType() < ZIndexType::ATTACK)
+		return;
+
+	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION))
+	{
+		switch (collComp->GetCollisionLayer())
+		{
+		case CollisionLayers_Terrain:
+			m_TrackingManager->RemoveTerrainObject(object);
+			break;
+		case CollisionLayers_Enemy:
+			if (auto character = std::dynamic_pointer_cast<Character>(object))
+			{
+				m_TrackingManager->RemoveEnemy(character);
+			}
+			break;
+		case CollisionLayers_Player:
+			// 玩家通常不需要從 TrackingManager 中移除，因為它是全局追蹤的
+			// 但如果有需要，可以添加相應的方法
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
@@ -466,6 +516,37 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 	// 加入互動manager中
 	m_InteractionManager->RegisterInteractable(chest);
 	return chest;
+}
+
+// 玩家位置檢測方法（基礎防漏洞機制）
+bool Room::IsPlayerInsideRegion() const
+{
+	const auto player = m_Player.lock();
+	if (!player)
+		return false;
+
+	const auto roomWorldCoord = m_RoomSpaceInfo.m_WorldCoord;
+	const auto roomRegionInPixel = m_RoomSpaceInfo.m_RoomRegion * m_RoomSpaceInfo.m_TileSize;
+
+	return (player->m_WorldCoord.x < roomWorldCoord.x + roomRegionInPixel.x / 2.0f) &&
+		(player->m_WorldCoord.y < roomWorldCoord.y + roomRegionInPixel.y / 2.0f) &&
+		(player->m_WorldCoord.x > roomWorldCoord.x - roomRegionInPixel.x / 2.0f) &&
+		(player->m_WorldCoord.y > roomWorldCoord.y - roomRegionInPixel.y / 2.0f);
+}
+
+bool Room::IsPlayerInsideRoom(const float epsilon) const
+{
+	const auto player = m_Player.lock();
+	if (!player)
+		return false;
+
+	const auto roomWorldCoord = m_RoomSpaceInfo.m_WorldCoord;
+	const auto roomSizeInPixel = m_RoomSpaceInfo.m_RoomSize * m_RoomSpaceInfo.m_TileSize;
+
+	return (player->m_WorldCoord.x < roomWorldCoord.x + (roomSizeInPixel.x / 2.0f - epsilon)) &&
+		(player->m_WorldCoord.y < roomWorldCoord.y + (roomSizeInPixel.y / 2.0f - epsilon)) &&
+		(player->m_WorldCoord.x > roomWorldCoord.x - (roomSizeInPixel.x / 2.0f - epsilon)) &&
+		(player->m_WorldCoord.y > roomWorldCoord.y - (roomSizeInPixel.y / 2.0f - epsilon));
 }
 
 // === 私有輔助方法實現 ===

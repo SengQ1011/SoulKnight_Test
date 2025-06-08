@@ -36,6 +36,13 @@ public:
 
 	void LoadFromJSON() override;
 
+	// 測試用：載入指定佈局
+	void LoadFromJSON_Specific(const std::string &layoutName);
+
+	// 運行時佈局更換功能
+	void ChangeLayoutRuntime(const std::string &layoutName = "");
+	bool CanChangeLayout() const;
+
 	void TryActivateByPlayer() override;
 	void OnStateChanged() override;
 
@@ -111,6 +118,13 @@ private:
 	void CloseDoors();
 	void OpenDoors();
 	void SpawnRewardChest();
+
+	// 佈局更換相關輔助方法
+	void ClearNonEssentialObjects(); // 清理非關鍵物件
+	void RebuildConnectionsAndWalls(); // 重建通道和牆壁
+	void RepositionEntitiesAfterLayoutChange(); // 重新定位實體位置
+	void RepositionEnemies(); // 重新定位怪物
+	void RepositionPlayerIfNeeded(); // 重新定位玩家（如果需要）
 
 	// === 成員變量 ===
 	CombatManager m_CombatManager;

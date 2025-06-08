@@ -4,6 +4,7 @@
 
 #include "Room/LobbyRoom.hpp"
 
+#include <iostream>
 #include "Components/CollisionComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Loader.hpp"
@@ -25,6 +26,9 @@ void LobbyRoom::Update()
 {
 	// 调用基类Update
 	Room::Update();
+
+	// 簡單的防漏洞機制：檢測玩家是否在房間區域內
+	ValidatePlayerPosition();
 
 	// 更新所有墙壁碰撞体
 	// for (auto& wall : m_WallColliders) {
@@ -96,5 +100,21 @@ void LobbyRoom::AddWallCollider(const std::shared_ptr<nGameObject> &collider)
 
 		RegisterCollisionManger(collider);
 		RegisterTrackingManager(collider);
+	}
+}
+
+void LobbyRoom::ValidatePlayerPosition()
+{
+	// 簡單的防漏洞機制：只檢查玩家是否在房間區域內
+	if (!IsPlayerInsideRegion() || !IsPlayerInsideRoom(16.0f))
+	{
+		const auto player = m_Player.lock();
+		if (player)
+		{
+			// 將玩家移動到房間中心
+			const glm::vec2 &roomCenter = m_RoomSpaceInfo.m_WorldCoord;
+			player->m_WorldCoord = roomCenter;
+
+		}
 	}
 }
