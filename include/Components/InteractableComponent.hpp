@@ -61,6 +61,7 @@ public:
 	void SetInteractionRadius(const float radius) { m_InteractionRadius = radius; }
 	void SetAutoInteract(const bool autoInteract) { m_IsAutoInteract = autoInteract; }
 	void SetPromptUI(const std::shared_ptr<nGameObject> &promptUI) { m_PromptUI = promptUI; }
+	void SetInteractableType (const InteractableType type) { m_interactableType = type; }
 
 protected:
 	InteractableType m_interactableType;
@@ -80,8 +81,6 @@ protected:
 	Uint8 m_PromptColor = 0;
 
 private:
-	// 判斷提示文字是否需要浮動效果
-	bool ShouldPromptFloat() const;
 	// 更新提示UI的位置
 	void UpdatePromptPositions();
 	// 計算並設置 PromptObject 的位置，返回偏移量

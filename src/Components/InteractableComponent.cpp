@@ -248,28 +248,6 @@ bool InteractableComponent::IsInRange(const std::shared_ptr<Character> &characte
 	return distance <= m_InteractionRadius;
 }
 
-bool InteractableComponent::ShouldPromptFloat() const
-{
-	// 定義哪些互動類型需要浮動效果
-	switch (m_interactableType)
-	{
-	case InteractableType::REWARD_CHEST:
-	case InteractableType::WEAPON_CHEST:
-	case InteractableType::COIN:
-	case InteractableType::ENERGY_BALL:
-	case InteractableType::WEAPON:
-	case InteractableType::SHOP:
-	case InteractableType::NPC_DIALOGUE:
-	case InteractableType::HP_POISON:
-	case InteractableType::ENERGY_POISON:
-		return false; // 寶箱文字不浮動，保持固定位置
-
-	case InteractableType::PORTAL:
-	default:
-		return true; // 其他類型使用浮動效果
-	}
-}
-
 glm::vec2 InteractableComponent::UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner)
 {
 	glm::vec2 promptObjectOffset = glm::vec2(4.0f, 0.0f); // 好懸 爲什麽文字會自己偏移

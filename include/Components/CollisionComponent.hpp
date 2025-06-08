@@ -70,6 +70,7 @@ public:
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
+	void AddCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer |= collisionLayer; }
 	void AddCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask |= collisionMask; }
 	void ResetCollisionMask() { m_CollisionMask = CollisionLayers_None; }
 	void SetOffset(const glm::vec2 &offset) { m_Offset = offset; }

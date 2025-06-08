@@ -7,30 +7,33 @@
 
 enum class ComponentType
 {
-	AI, // 0
-	ANIMATION, // 1
-	ATTACK, // 2
-	CHEST, // 3
-	COLLISION, // 4
-	DOOR, // 5
-	FLICKER, // 6
-	FOLLOWER, // 7
-	HEALTH, // 8
-	INPUT, // 9
-	INTERACTABLE, // 10
-	MOVEMENT, // 11
-	PROJECTILE, // 12
-	SKILL, // 13
-	STATE, // 14
-	TALENT, // 15
-	WALLET // 16
+	AI,
+	ANIMATION,
+	ATTACK,
+	CHEST,
+	COLLISION,
+	DOOR,
+	DESTRUCTIBLE_EFFECT,
+	DROP,
+	FLICKER,
+	FOLLOWER,
+	HEALTH,
+	INPUT,
+	INTERACTABLE,
+	MOVEMENT,
+	PROJECTILE,
+	SKILL,
+	STATE,
+	TALENT,
+	WALLET
 };
 
 enum class CharacterType
 {
 	PLAYER,
 	ENEMY,
-	NPC
+	NPC,
+	NEUTRAL // 中性，不分敵我
 };
 
 enum class State

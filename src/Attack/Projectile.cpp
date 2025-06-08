@@ -60,6 +60,13 @@ void Projectile::Init() {
 		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
+	else
+	{
+		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
+		CollisionComp->AddCollisionLayer(CollisionLayers_Enemy_Projectile); //偷吃步
+		CollisionComp->AddCollisionMask(CollisionLayers_Player);
+		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
+	}
 	CollisionComp->AddCollisionMask(CollisionLayers_Terrain);
 	CollisionComp->AddCollisionMask(CollisionLayers_DestructibleTerrain);
 	CollisionComp->SetSize(glm::vec2(m_size));

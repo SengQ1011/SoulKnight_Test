@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "Components/CollisionComponent.hpp"
 #include "Override/nGameObject.hpp"
-#include "RoomObject/DestructibleBox.hpp"
+#include "RoomObject/DestructibleObject.hpp"
 #include "RoomObject/WallObject.hpp"
 #include "Structs/CollisionComponentStruct.hpp"
 #include "Util/Logger.hpp"
@@ -21,7 +21,7 @@ bool CollisionOptimizer::IsWallObject(const std::shared_ptr<nGameObject> &obj) c
 	}
 
 	// 排除可破壞物件
-	if (auto destructibleObj = std::dynamic_pointer_cast<DestructibleBox>(obj))
+	if (auto destructibleObj = std::dynamic_pointer_cast<DestructibleObject>(obj))
 	{
 		return false;
 	}

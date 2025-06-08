@@ -15,7 +15,9 @@ set(SRC_FILES
     Components/AttackComponent.cpp
     Components/ChestComponent.cpp
     Components/CollisionComponent.cpp
+    Components/DestructibleEffectComponent.cpp
     Components/DoorComponent.cpp
+    Components/DropComponent.cpp
     Components/EnemyAI/AttackStrategy.cpp
     Components/EnemyAI/MoveStrategy.cpp
     Components/FlickerComponent.cpp
@@ -30,6 +32,9 @@ set(SRC_FILES
     Components/TalentComponent.cpp
     Creature/Character.cpp
     Cursor.cpp
+    DestructionEffects/ExplosionEffect.cpp
+    DestructionEffects/IceSpikeEffect.cpp
+    DestructionEffects/PoisonCloudEffect.cpp
     Factory/CharacterFactory.cpp
     Factory/Factory.cpp
     Factory/RoomFactory.cpp
@@ -53,9 +58,10 @@ set(SRC_FILES
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
     Room/RoomLayoutManager.cpp
+    Room/SpecialRoom.cpp
     Room/StartingRoom.cpp
     Room/UniformGrid.cpp
-    RoomObject/DestructibleBox.cpp
+    RoomObject/DestructibleObject.cpp
     SaveManager.cpp
     Scene/Complete_Scene.cpp
     Scene/DungeonLoading_Scene.cpp
@@ -115,7 +121,9 @@ set(INCLUDE_FILES
     Components/CoinComponent.hpp
     Components/CollisionComponent.hpp
     Components/Component.hpp
+    Components/DestructibleEffectComponent.hpp
     Components/DoorComponent.hpp
+    Components/DropComponent.hpp
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
     Components/EnemyAI/UtilityStrategy.hpp
@@ -133,6 +141,10 @@ set(INCLUDE_FILES
     Components/walletComponent.hpp
     Creature/Character.hpp
     Cursor.hpp
+    DestructionEffects/ExplosionEffect.hpp
+    DestructionEffects/IDestructionEffect.hpp
+    DestructionEffects/IceSpikeEffect.hpp
+    DestructionEffects/PoisonCloudEffect.hpp
     EnumTypes.hpp
     Factory/CharacterFactory.hpp
     Factory/Factory.hpp
@@ -165,9 +177,10 @@ set(INCLUDE_FILES
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
     Room/RoomLayoutManager.hpp
+    Room/SpecialRoom.hpp
     Room/StartingRoom.hpp
     Room/UniformGrid.hpp
-    RoomObject/DestructibleBox.hpp
+    RoomObject/DestructibleObject.hpp
     RoomObject/WallObject.hpp
     SaveManager.hpp
     Scene/Complete_Scene.hpp

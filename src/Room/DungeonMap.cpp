@@ -10,6 +10,7 @@
 #include "Room/DungeonRoom.hpp"
 #include "Room/MonsterRoom.hpp"
 #include "Room/PortalRoom.hpp"
+#include "Room/SpecialRoom.hpp"
 #include "Room/StartingRoom.hpp"
 #include "Tool/Tool.hpp"
 #include "Util/Input.hpp"
@@ -58,9 +59,8 @@ void DungeonMap::Start()
 				std::make_shared<ChestRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
 			break;
 		case RoomType::SPECIAL:
-			// 暫時使用DungeonRoom作為基礎實現，未來可以創建專門的SpecialRoom
-			room = std::make_shared<MonsterRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
-												 glm::vec2(x, y), RoomType::SPECIAL);
+			room = std::make_shared<SpecialRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
+												 glm::vec2(x, y));
 			break;
 		default:
 			break;

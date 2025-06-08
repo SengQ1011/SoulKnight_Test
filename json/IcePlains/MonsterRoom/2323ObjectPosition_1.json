@@ -1,0 +1,3154 @@
+{
+    "room_region_y": 35.0,
+    "room_region_x": 35.0,
+    "room_size_y": 23,
+    "room_size_x": 23,
+    "tile_height": 16.0,
+    "tile_width": 16.0,
+    "roomObject": [
+        {
+            "ID": "floor2323_1",
+            "Class": "Floor",
+            "Position": [
+                0.0,
+                0.0
+            ],
+            "Size": [
+                368.0,
+                368.0
+            ]
+        },
+        {
+            "ID": "object_miningRail2",
+            "Class": "nGameObject",
+            "Position": [
+                -144.0,
+                144.5
+            ],
+            "Size": [
+                16.0,
+                17.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -120.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -88.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -56.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -24.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                8.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                40.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                72.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                104.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                120.0,
+                145.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail3",
+            "Class": "nGameObject",
+            "Position": [
+                144.5,
+                144.5
+            ],
+            "Size": [
+                17.0,
+                17.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                120.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                120.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                104.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                88.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                72.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                56.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                40.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                24.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                8.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                -8.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                -24.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                -40.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                -56.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                -72.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                -88.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                -104.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                -143.0,
+                -120.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail1",
+            "Class": "nGameObject",
+            "Position": [
+                145.0,
+                -120.0
+            ],
+            "Size": [
+                18.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_miningRail5",
+            "Class": "nGameObject",
+            "Position": [
+                -144.0,
+                -143.0
+            ],
+            "Size": [
+                16.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -120.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -104.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -72.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -40.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                -8.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                24.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                56.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                88.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail0",
+            "Class": "nGameObject",
+            "Position": [
+                120.0,
+                -143.0
+            ],
+            "Size": [
+                32.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "object_miningRail4",
+            "Class": "nGameObject",
+            "Position": [
+                144.5,
+                -143.0
+            ],
+            "Size": [
+                17.0,
+                18.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -160.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -144.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -128.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -112.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -96.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -80.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -64.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -48.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                48.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                64.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                80.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                96.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                112.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                128.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                144.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                160.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -160.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -144.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                144.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                160.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -160.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxGreen",
+            "Class": "DestructibleObject",
+            "Position": [
+                -144.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxGreen",
+            "Class": "DestructibleObject",
+            "Position": [
+                144.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                160.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -96.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -64.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                64.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                96.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -96.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -64.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                64.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                96.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                17.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxGreen",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                1.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -14.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -96.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -64.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                64.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                96.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -96.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -64.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -48.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxRed",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                48.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                64.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                96.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -160.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxGreen",
+            "Class": "DestructibleObject",
+            "Position": [
+                -144.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxGreen",
+            "Class": "DestructibleObject",
+            "Position": [
+                144.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                160.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -160.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -144.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                144.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                160.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -160.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -144.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -128.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -112.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -96.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -80.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -64.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                -48.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                48.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                64.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                80.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                96.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                112.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                128.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                144.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                160.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w604",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        }
+    ]
+}

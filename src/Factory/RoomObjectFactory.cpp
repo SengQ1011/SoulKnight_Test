@@ -8,20 +8,25 @@
 #include "ImagePoolManager.hpp"
 #include "Loader.hpp"
 #include "Override/nGameObject.hpp"
-#include "RoomObject/DestructibleBox.hpp"
+#include "RoomObject/DestructibleObject.hpp"
 
 #include "RoomObject/WallObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
 // 新增的頭文件
-#include "Creature/Character.hpp"
 #include "Components/AttackComponent.hpp"
 #include "Components/ChestComponent.hpp"
+#include "Components/DestructibleEffectComponent.hpp"
+#include "Components/DropComponent.hpp"
+#include "Creature/Character.hpp"
+#include "DestructionEffects/ExplosionEffect.hpp"
+#include "DestructionEffects/IceSpikeEffect.hpp"
+#include "DestructionEffects/PoisonCloudEffect.hpp"
 #include "EnumTypes.hpp"
 #include "Factory/WeaponFactory.hpp"
-#include "Scene/SceneManager.hpp"
 #include "RandomUtil.hpp"
+#include "Scene/SceneManager.hpp"
 
 
 // class可能是指定類型再用， 目前都是RoomObject
@@ -47,11 +52,49 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 		{
 			roomObject = std::make_shared<WallObject>(_id);
 		}
-		else if (_class == "DestructibleBox")
+		else if (_class == "DestructibleObject")
 		{
-			LOG_DEBUG("RoomObjectFactory::createRoomObject destructibleBox");
-			roomObject = std::make_shared<DestructibleBox>(_id);
-			roomObject->AddComponent<HealthComponent>(ComponentType::HEALTH,1,0,0);
+			LOG_DEBUG("RoomObjectFactory::createRoomObject destructibleObject");
+			roomObject = std::make_shared<DestructibleObject>(_id);
+			roomObject->AddComponent<HealthComponent>(ComponentType::HEALTH, 1, 0, 0);
+
+			if (_id == "object_boxRed")
+			{
+				auto explosionEffect = std::make_unique<ExplosionEffect>(40.0f, 8);
+				roomObject->AddComponent<DestructibleEffectComponent>(ComponentType::DESTRUCTIBLE_EFFECT,
+																	  std::move(explosionEffect));
+			}
+			else if (_id == "object_boxGreen")
+			{
+				// 綠色箱子：毒圈效果
+				auto poisonEffect = std::make_unique<PoisonCloudEffect>(60.0f, 3, 8.0f);
+				roomObject->AddComponent<DestructibleEffectComponent>(ComponentType::DESTRUCTIBLE_EFFECT,
+																	  std::move(poisonEffect));
+			}
+			else if (_id == "object_boxBlue")
+			{
+				// 藍色箱子：冰刺效果
+				auto iceSpikeEffect = std::make_unique<IceSpikeEffect>(8, 5, 250.0f);
+				roomObject->AddComponent<DestructibleEffectComponent>(ComponentType::DESTRUCTIBLE_EFFECT,
+																	  std::move(iceSpikeEffect));
+			}
+			else
+			{
+				const float hasDropItem = RandomUtil::RandomFloatInRange(0.0f, 1.0f);
+				if (hasDropItem < 0.2f)
+				{
+					int energyCount = RandomUtil::RandomIntInRange(1, 5);
+					auto energyBalls = CreateDropItems("object_energyBall", energyCount, 0.8f);
+
+					// 添加 DropComponent 來處理掉落
+					if (!energyBalls.empty())
+					{
+						auto dropComponent = roomObject->AddComponent<DropComponent>(
+							ComponentType::DROP, DropComponent::ScatterMode::SLIGHT);
+						dropComponent->AddDropItems(energyBalls);
+					}
+				}
+			}
 		}
 		else
 		{
@@ -175,8 +218,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateDoor(const glm::vec2 &worl
 	return door;
 }
 
-std::shared_ptr<nGameObject> RoomObjectFactory::CreateChest(ChestType type,
-															const std::shared_ptr<Character> &player)
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateChest(ChestType type, const std::shared_ptr<Character> &player)
 {
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	std::shared_ptr<nGameObject> chest;
@@ -201,62 +243,47 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateChest(ChestType type,
 		}
 	}
 
-	if (auto chestComp = chest->GetComponent<ChestComponent>(ComponentType::CHEST))
+	// 創建掉落物品並添加到 DropComponent
+	std::vector<std::shared_ptr<nGameObject>> objects;
+	if (type == ChestType::REWARD)
 	{
-		std::vector<std::shared_ptr<nGameObject>> objects;
-		if (type == ChestType::REWARD)
+		int coinCount = RandomUtil::RandomFloatInRange(5, 10);
+		int energyCount = RandomUtil::RandomFloatInRange(5, 10);
+
+		// 生成金幣
+		auto coins = CreateDropItems("object_coin", coinCount, 0.8f);
+		objects.insert(objects.end(), coins.begin(), coins.end());
+
+		// 生成能量球
+		auto energyBalls = CreateDropItems("object_energyBall", energyCount, 0.8f);
+		objects.insert(objects.end(), energyBalls.begin(), energyBalls.end());
+	}
+	else if (type == ChestType::WEAPON)
+	{
+		std::vector<int> allPlayerWeaponID;
+		if (auto attackComp = player->GetComponent<AttackComponent>(ComponentType::ATTACK))
 		{
-			int num1 = RandomUtil::RandomFloatInRange(5, 10);
-			int num2 = RandomUtil::RandomFloatInRange(5, 10);
-			// 生成金幣
-			for (int i = 0; i < num1; i++)
-			{
-				auto coin = CreateRoomObject("object_coin");
-				if (!coin)
-					LOG_ERROR("Failed to create room object");
-				currentScene->GetRoot().lock()->AddChild(coin);
-				currentScene->GetCamera().lock()->SafeAddChild(coin);
-				coin->SetRegisteredToScene(true);
-				coin->SetActive(false);
-				coin->SetControlVisible(false);
-				coin->SetInitialScale(glm::vec2(0.8f, 0.8f));
-
-				objects.push_back(coin);
-			}
-			// 生成能量球
-			for (int i = 0; i < num2; i++)
-			{
-				auto energyBall = CreateRoomObject("object_energyBall");
-				if (!energyBall)
-					LOG_ERROR("Failed to create room object");
-				currentScene->GetRoot().lock()->AddChild(energyBall);
-				currentScene->GetCamera().lock()->SafeAddChild(energyBall);
-				energyBall->SetRegisteredToScene(true);
-				energyBall->SetActive(false);
-				energyBall->SetControlVisible(false);
-				energyBall->SetInitialScale(glm::vec2(0.8f, 0.8f));
-
-				objects.push_back(energyBall);
-			}
+			allPlayerWeaponID = attackComp->GetAllWeaponID();
 		}
-		else if (type == ChestType::WEAPON)
-		{
-			std::vector<int> allPlayerWeaponID;
-			if (auto attackComp = player->GetComponent<AttackComponent>(ComponentType::ATTACK))
-			{
-				allPlayerWeaponID = attackComp->GetAllWeaponID();
-			}
-			auto weapon = WeaponFactory::createRandomWeapon(allPlayerWeaponID);
-			if (!weapon)
-				LOG_ERROR("Failed to create room object");
-			currentScene->GetRoot().lock()->AddChild(weapon);
-			currentScene->GetCamera().lock()->SafeAddChild(weapon);
-			weapon->SetRegisteredToScene(true);
-			weapon->SetControlVisible(false);
-			objects.push_back(weapon);
-		}
+		auto weapon = WeaponFactory::createRandomWeapon(allPlayerWeaponID);
+		if (!weapon)
+			LOG_ERROR("Failed to create room object");
+		currentScene->GetRoot().lock()->AddChild(weapon);
+		currentScene->GetCamera().lock()->SafeAddChild(weapon);
+		weapon->SetRegisteredToScene(true);
+		weapon->SetControlVisible(false);
+		objects.push_back(weapon);
+	}
 
-		chestComp->AddDropItems(objects);
+	// 添加 DropComponent 來處理掉落
+	if (!objects.empty())
+	{
+		// 根據寶箱類型選擇散佈模式
+		DropComponent::ScatterMode scatterMode =
+			(type == ChestType::WEAPON) ? DropComponent::ScatterMode::FIXED : DropComponent::ScatterMode::RANDOM;
+
+		auto dropComponent = chest->AddComponent<DropComponent>(ComponentType::DROP, scatterMode);
+		dropComponent->AddDropItems(objects);
 	}
 
 	// 因爲可能是在游戲中創建，要手動加入渲染器/manager
@@ -265,4 +292,39 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateChest(ChestType type,
 	chest->SetRegisteredToScene(true);
 
 	return chest;
+}
+
+std::vector<std::shared_ptr<nGameObject>> RoomObjectFactory::CreateDropItems(const std::string &itemType, int quantity,
+																			 float scale)
+{
+	std::vector<std::shared_ptr<nGameObject>> items;
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+
+	if (!currentScene)
+	{
+		LOG_ERROR("No current scene available for creating drop items");
+		return items;
+	}
+
+	for (int i = 0; i < quantity; i++)
+	{
+		auto item = CreateRoomObject(itemType);
+		if (!item)
+		{
+			LOG_ERROR("Failed to create drop item: {}", itemType);
+			continue;
+		}
+
+		// 設置物品屬性
+		currentScene->GetRoot().lock()->AddChild(item);
+		currentScene->GetCamera().lock()->SafeAddChild(item);
+		item->SetRegisteredToScene(true);
+		item->SetActive(false);
+		item->SetControlVisible(false);
+		item->SetInitialScale(glm::vec2(scale, scale));
+
+		items.push_back(item);
+	}
+
+	return items;
 }

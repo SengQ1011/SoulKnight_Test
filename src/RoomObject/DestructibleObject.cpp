@@ -2,18 +2,18 @@
 // Created by Assistant on 2025/1/20.
 //
 
-#include "RoomObject/DestructibleBox.hpp"
+#include "RoomObject/DestructibleObject.hpp"
 #include "Components/HealthComponent.hpp"
 #include "Structs/EventInfo.hpp"
 #include "Util/Logger.hpp"
 
-DestructibleBox::DestructibleBox(const std::string &baseName) : nGameObject(baseName, "DestructibleBox")
+DestructibleObject::DestructibleObject(const std::string &baseName) : nGameObject(baseName, "DestructibleObject")
 {
 	// 不在建構函數中添加組件，而是在工廠中添加
 }
 
 
-void DestructibleBox::OnEventReceived(const EventInfo &eventInfo)
+void DestructibleObject::OnEventReceived(const EventInfo &eventInfo)
 {
 	// 處理破壞事件
 	if (eventInfo.GetEventType() == EventType::BoxBreak)
@@ -23,14 +23,14 @@ void DestructibleBox::OnEventReceived(const EventInfo &eventInfo)
 	}
 }
 
-void DestructibleBox::OnDestroyed()
+void DestructibleObject::OnDestroyed()
 {
 	if (m_IsDestroyed)
 		return;
 
 	m_IsDestroyed = true;
 
-	LOG_DEBUG("DestructibleBox destroyed: {}", GetName());
+	LOG_DEBUG("DestructibleObject destroyed: {}", GetName());
 
 	// 可以在這裡添加破壞效果：
 	// - 播放破壞動畫

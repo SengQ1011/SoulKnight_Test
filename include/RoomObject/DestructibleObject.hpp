@@ -2,8 +2,8 @@
 // Created by Assistant on 2025/1/20.
 //
 
-#ifndef DESTRUCTIBLEBOX_HPP
-#define DESTRUCTIBLEBOX_HPP
+#ifndef DESTRUCTIBLEOBJECT_HPP
+#define DESTRUCTIBLEOBJECT_HPP
 
 #include <string>
 #include "Components/HealthComponent.hpp"
@@ -13,16 +13,16 @@
 // 前向聲明
 struct EventInfo;
 
-// 可破壞木箱類別 - 排除在碰撞優化之外
-class DestructibleBox : public nGameObject
+// 可破壞物件類別 - 排除在碰撞優化之外
+class DestructibleObject : public nGameObject
 {
 public:
-	explicit DestructibleBox(const std::string &baseName = "destructible_box");
+	explicit DestructibleObject(const std::string &baseName = "destructible_object");
 
-	~DestructibleBox() override = default;
+	~DestructibleObject() override = default;
 
 	// 重寫類別名稱
-	std::string GetClassName() const override { return "DestructibleBox"; }
+	std::string GetClassName() const override { return "DestructibleObject"; }
 
 	// 重寫事件接收處理
 	void OnEventReceived(const EventInfo &eventInfo) override;
@@ -35,4 +35,4 @@ private:
 	bool m_IsDestroyed = false;
 };
 
-#endif // DESTRUCTIBLEBOX_HPP
+#endif // DESTRUCTIBLEOBJECT_HPP

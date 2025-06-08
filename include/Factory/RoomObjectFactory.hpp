@@ -31,6 +31,10 @@ public:
 	// 寶箱創建方法
 	std::shared_ptr<nGameObject> CreateChest(ChestType type, const std::shared_ptr<Character> &player);
 
+	// 掉落物品創建方法
+	std::vector<std::shared_ptr<nGameObject>> CreateDropItems(const std::string &itemType, int quantity,
+															  float scale = 1.0f);
+
 	[[nodiscard]] std::string GetObjectDataFilePath() const { return m_ObjectDataFilePath; }
 	void SetObjectDataFilePath(const std::string &prePath) { m_ObjectDataFilePath = prePath + "ObjectData/"; }
 

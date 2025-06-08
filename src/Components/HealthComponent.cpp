@@ -186,7 +186,7 @@ void HealthComponent::OnDeath()
 		return;
 
 	// 檢查是否為可破壞物件
-	if (owner->GetClassName() == "DestructibleBox")
+	if (owner->GetClassName() == "DestructibleObject")
 	{
 		OnBreak();
 		return;

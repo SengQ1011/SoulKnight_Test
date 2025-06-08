@@ -76,6 +76,14 @@ void EffectAttack::Init()
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Player);
 		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_DestructibleTerrain);
 	}
+	else
+	{
+		CollisionComp->SetCollisionLayer(CollisionLayers::CollisionLayers_Player_EffectAttack);
+		CollisionComp->AddCollisionLayer(CollisionLayers::CollisionLayers_Enemy_EffectAttack); // 偷吃步
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Player);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_Enemy);
+		CollisionComp->AddCollisionMask(CollisionLayers::CollisionLayers_DestructibleTerrain);
+	}
 
 	CollisionComp->SetSize(glm::vec2(m_size));
 

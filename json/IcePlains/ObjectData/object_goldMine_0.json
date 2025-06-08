@@ -1,0 +1,26 @@
+{
+    "id": "object_goldMine_0",
+    "isAnimated": false,
+    "path": "/IcePlains/object_goldMine_0.png",
+    "ZIndex": "OBJECTHIGH",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "CollisionComponent",
+            "Size": [
+                35.0,
+                16.0
+            ],
+            "Offset": [
+                -0.5,
+                -9.0
+            ],
+            "CollisionLayer": "Terrain",
+            "CollisionMask": [
+                "Player_Projectile",
+                "Player_EffectAttack"
+            ],
+            "IsTrigger": false
+        }
+    ]
+}
