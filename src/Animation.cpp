@@ -36,8 +36,8 @@ bool Animation::IfAnimationEnds() const {
 // 自动播放（内部控制更新频率）
 void Animation::PlayAnimation(bool play) {
 	const auto animation = std::dynamic_pointer_cast<Util::Animation>(m_Drawable);
-
 	if (animation && animation->GetState() != Util::Animation::State::PLAY && play) {
+		animation->SetCurrentFrame(0);  // 重置到第一帧
 		animation->Play();  // 開始播放動畫
 	} else {
 		animation->Pause();

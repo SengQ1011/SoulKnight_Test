@@ -90,10 +90,10 @@ public:
     BossAttackStrategy() {
         // 初始化技能信息
         skills[BossSkillType::SKILL1] = {5.0f, 6.0f, 0.0f, false, 0.0f, 0};  // 雪球投掷：5秒冷却，6秒持续，沒有前摇，共3 輪（2s/1phase）
-        skills[BossSkillType::SKILL2] = {8.0f, 1.333f, 0.016f, false, 0.0f, 0};  // 雪花风暴：8秒冷却，2秒持续，0.016秒前摇
+        skills[BossSkillType::SKILL2] = {8.0f, 2.66, 0.055f, false, 0.0f, 0};  // 雪花风暴：8秒冷却，2秒持续，0.016秒前摇
         skills[BossSkillType::SKILL3] = {6.0f, 1.0f, 0.8f, false, 0.0f, 0};  // 火眼：6秒冷却，1秒持续，0.8秒前摇
         skills[BossSkillType::SKILL4] = {7.0f, 1.29f, 1.0f, false, 0.0f, 0};  // 冰霜荆棘：7秒冷却，1.5秒持续，0.4秒前摇
-        skills[BossSkillType::SKILL5] = {12.0f, 2.92f, 0.33f, false, 0.0f, 0}; // 雪人召唤：12秒冷却，4秒持续，0.2秒前摇
+        skills[BossSkillType::SKILL5] = {12.0f, 2.9166f, 0.5f, false, 0.0f, 0}; // 雪人召唤：12秒冷却，4秒持续，0.2秒前摇
     }
 
     [[nodiscard]] bool CanAttack(const EnemyContext &ctx) override;
@@ -120,7 +120,7 @@ private:
 
     void SpawnLargeSnowball(const EnemyContext& ctx, const glm::vec2& direction);
     void SpawnSmallSnowball(const EnemyContext& ctx, const glm::vec2& direction, const glm::vec2& offset);
-    void SpawnLongBUllet(const EnemyContext& ctx, const glm::vec2& direction);
+    void SpawnLongBullet(const EnemyContext& ctx, const glm::vec2& direction);
     void SpawnIceSpike(const EnemyContext& ctx, const glm::vec2& direction);
     void SpawnShockwave(const EnemyContext& ctx);
     void SpawnMiniSnowman(const EnemyContext& ctx, const glm::vec2& position);

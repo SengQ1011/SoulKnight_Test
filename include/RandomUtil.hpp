@@ -35,6 +35,14 @@ public:
 		// 使用極座標轉換為笛卡爾座標，生成一個單位向量
 		return glm::vec2(std::cos(angle), std::sin(angle));// 歸一化單位圓上的隨機點
 	}
+
+	// 打亂任意型別的vector
+	template <typename T>
+	static void RandomShuffle(std::vector<T>& vec) {
+		static std::mt19937 gen(std::random_device{}());
+		std::shuffle(vec.begin(), vec.end(), gen);
+	}
+
 };
 
 

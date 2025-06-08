@@ -157,20 +157,17 @@ void BossAttackStrategy::ExecuteSkill1(const EnemyContext& ctx)
 
 void BossAttackStrategy::ExecuteSkill2(const EnemyContext& ctx)
 {
-	auto target = ctx.GetAIComp()->GetTarget().lock();
-	if (!target) return;
-
 	auto& skillInfo = skills[currentSkill];
-	const float fireInterval = 0.05f;
+	const float fireInterval = 0.03f;
 	const float handOffset = 8.0f;
-	const float rotationSpeed = glm::two_pi<float>() / 1.333f;  // 一整圈時間 = 技能持續時間 → 完美形成一個漩渦
+	const float rotationSpeed = glm::two_pi<float>() / 1.317f;  // 一整圈時間 = 技能持續時間 → 完美形成一個漩渦
 
 	float timeElapsed = skillInfo.duration - skillInfo.activeTimer;
 
-	if (skillInfo.activeTimer <= skillInfo.duration - skillInfo.castTime - (skillInfo.currentPhase * fireInterval)) {
+	if (skillInfo.currentPhase < 70 && skillInfo.activeTimer <= skillInfo.duration - skillInfo.castTime - (skillInfo.currentPhase * fireInterval)) {
 
 		// 根據時間旋轉
-		float baseAngle = timeElapsed * rotationSpeed;
+		float baseAngle = -timeElapsed * rotationSpeed;
 
 		// 兩隻手在 baseAngle 前後各偏移一個固定角度
 		for (int i = 0; i < 2; ++i) {
@@ -205,7 +202,7 @@ void BossAttackStrategy::ExecuteSkill3(const EnemyContext& ctx)
 
 			// 以旋轉角度轉回方向向量
 			glm::vec2 newDirection = glm::vec2(cos(newRotation), sin(newRotation));
-			SpawnLongBUllet(ctx, newDirection);
+			SpawnLongBullet(ctx, newDirection);
 		}
 		skillInfo.currentPhase++;
 	}
@@ -242,8 +239,17 @@ void BossAttackStrategy::ExecuteSkill5(const EnemyContext& ctx)
 	if (!target) return;
 
 	auto& skillInfo = skills[currentSkill];
+
+	// 每輪動畫週期
+	const float animationCycle = 0.5833f;
+
+	// 下一階段觸發時間點 = 前搖 + N 個動畫週期
+	float triggerTime = skillInfo.duration - (skillInfo.castTime + animationCycle * skillInfo.currentPhase);
+
+	// 若已到達這個階段應該施放的時間，就觸發
 	if (skillInfo.currentPhase < 5 &&
-		skillInfo.activeTimer <= skillInfo.duration - (skillInfo.castTime * (skillInfo.currentPhase+1)) - (0.166f * skillInfo.currentPhase)) {
+		skillInfo.activeTimer <= triggerTime)
+	{
 		SpawnShockwave(ctx);
 		SpawnMiniSnowman(ctx, ctx.enemy->GetWorldCoord());
 		skillInfo.currentPhase++;
@@ -258,7 +264,7 @@ void BossAttackStrategy::SpawnLargeSnowball(const EnemyContext& ctx, const glm::
 	largeSnowBall.attackTransform.rotation = glm::atan(direction.y, direction.x);
 	largeSnowBall.direction = direction;
 	largeSnowBall.size = 16.0f;
-	largeSnowBall.damage = 3;
+	largeSnowBall.damage = 4;
 	largeSnowBall.elementalDamage = StatusEffect::NONE;
 	largeSnowBall.chainAttack.enabled = true;
 	largeSnowBall.imagePath = std::string(RESOURCE_DIR) + "/attackUI/bullet/bullet2/bullet2_3.png";
@@ -306,7 +312,7 @@ void BossAttackStrategy::SpawnSmallSnowball(const EnemyContext &ctx, const glm::
 	smallSnowBall.elementalDamage = StatusEffect::FROZEN;
 	smallSnowBall.chainAttack.enabled = false;
 	smallSnowBall.imagePath = std::string(RESOURCE_DIR) + "/attackUI/bullet/bullet_111.png";
-	smallSnowBall.speed = 100.0f;
+	smallSnowBall.speed = 120.0f;
 	smallSnowBall.canReboundBySword = false;
 	smallSnowBall.canTracking = false;
 	smallSnowBall.isBubble = false;
@@ -319,7 +325,7 @@ void BossAttackStrategy::SpawnSmallSnowball(const EnemyContext &ctx, const glm::
 	attackManager->spawnProjectile(smallSnowBall);
 }
 
-void BossAttackStrategy::SpawnLongBUllet(const EnemyContext &ctx, const glm::vec2 &direction)
+void BossAttackStrategy::SpawnLongBullet(const EnemyContext &ctx, const glm::vec2 &direction)
 {
 	ProjectileInfo longBullet;
 	longBullet.type = CharacterType::ENEMY;
@@ -351,15 +357,15 @@ void BossAttackStrategy::SpawnIceSpike(const EnemyContext& ctx, const glm::vec2&
 	iceSpike.attackTransform.translation = ctx.enemy->GetWorldCoord() + glm::vec2(0,-20.0f);
 	iceSpike.direction = direction;
 	iceSpike.size = 22.0f;
-	iceSpike.damage = 2;
-	iceSpike.elementalDamage = StatusEffect::FROZEN;
+	iceSpike.damage = 3;
+	iceSpike.elementalDamage = StatusEffect::NONE;
 	iceSpike.chainAttack.enabled = true;
 
 	iceSpike.canBlockingBullet = false;
 	iceSpike.canReflectBullet = false;
 	iceSpike.effectType = EffectAttackType::ICE_SPIKE;
 	iceSpike.continuouslyExtending = true;
-	iceSpike.intervalCreateChainAttack = 0.2f;
+	iceSpike.intervalCreateChainAttack = 0.1f;
 
 	// 淺複製
 	static auto copyAttack = std::make_shared<EffectAttackInfo>();
@@ -405,12 +411,30 @@ void BossAttackStrategy::SpawnMiniSnowman(const EnemyContext& ctx, const glm::ve
 	}
 	if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 	{
+		if (const auto currentRoom = currentScene->GetCurrentRoom())
+		{
+			if (const auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(currentRoom))
+			{
+				monsterRoom->AddEnemy(enemy);
+			}else
+			{
+				LOG_ERROR("no in monster room");
+				return;
+			}
+			if (const auto collisionManager = currentRoom->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION))
+			{
+				if (const auto collComp = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
+					collisionManager->RegisterNGameObject(enemy);
+				}
+			}
+		}
 		currentScene->GetRoot().lock()->AddChild(enemy);
 		currentScene->GetCamera().lock()->SafeAddChild(enemy);
 		enemy->SetRegisteredToScene(true);
 		enemy->SetInitialScale(glm::vec2(0.8f, 0.8f));
 		enemy->SetInitialScaleSet(true);
-		enemy->m_WorldCoord = ctx.enemy->GetWorldCoord() + glm::vec2(0,-10.0f);
+		enemy->m_WorldCoord = ctx.enemy->GetWorldCoord() + glm::vec2(0,-15.0f);
+
 		if (auto attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK))
 		{
 			const auto weapon = attackComp->GetCurrentWeapon();
@@ -418,29 +442,6 @@ void BossAttackStrategy::SpawnMiniSnowman(const EnemyContext& ctx, const glm::ve
 			{
 				followComp->SetFollower(enemy);
 				followComp->Update();
-			}
-		}
-		if (const auto currentRoom = currentScene->GetCurrentRoom())
-		{
-			if (const auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(currentRoom))
-			{
-				monsterRoom->AddEnemy(enemy);
-			}
-			if (const auto collisionManager = currentRoom->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION))
-			{
-				if (const auto collComp = enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION)) {
-					collisionManager->RegisterNGameObject(enemy);
-					if (const std::shared_ptr<nGameObject>& colliderVisible = collComp->GetVisibleBox())
-					{
-						currentScene->GetRoot().lock()->AddChild(colliderVisible);
-						currentScene->GetCamera().lock()->SafeAddChild(colliderVisible);
-					}
-				}
-			}
-			if (const auto trackingManager = currentRoom->GetManager<TrackingManager>(ManagerTypes::TRACKING))
-			{
-				LOG_DEBUG("add trackingManager");
-				trackingManager->AddEnemy(std::dynamic_pointer_cast<Character>(enemy));
 			}
 		}
 	}

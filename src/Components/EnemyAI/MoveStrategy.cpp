@@ -12,7 +12,7 @@
 #include "Util/Time.hpp"
 
 //============================= (Base) =============================
-void ReflectMovement(const CollisionEventInfo &info, const EnemyContext &ctx)
+void IMoveStrategy::ReflectMovement(const CollisionEventInfo &info, const EnemyContext &ctx)
 {
 	glm::vec2 oldDir = glm::normalize(ctx.moveComp->GetLastValidDirection());
 	glm::vec2 reflectDir = glm::reflect(oldDir, info.GetCollisionNormal());
@@ -26,7 +26,6 @@ void ReflectMovement(const CollisionEventInfo &info, const EnemyContext &ctx)
 	}
 	ctx.moveComp->SetDesiredDirection(reflectDir);
 }
-
 
 void IMoveStrategy::CollisionAction(const CollisionEventInfo &info, const EnemyContext &ctx)
 {
@@ -53,6 +52,118 @@ void IMoveStrategy::CollisionAction(const CollisionEventInfo &info, const EnemyC
 		ReflectMovement(info, ctx);
 }
 
+void IMoveStrategy::EnterWanderState(const EnemyContext &ctx, float minTime, float maxTime, float moveRatio) {
+	glm::vec2 deltaDir = glm::normalize(RandomUtil::RandomDirectionInsideUnitCircle()) * moveRatio;
+	ctx.moveComp->SetDesiredDirection(deltaDir);
+	// 設定移動持續時間
+	m_moveTimer = RandomUtil::RandomFloatInRange(minTime, maxTime);
+	ctx.GetAIComp()->SetEnemyState(enemyState::WANDERING);
+}
+
+void IMoveStrategy::RestIfNeeded(float deltaTime, const EnemyContext &ctx, float minTime, float maxTime) {
+	m_restTimer -= deltaTime;
+	if (m_restTimer <= 0.f) {
+		EnterWanderState(ctx, minTime, maxTime);
+	}
+}
+
+void IMoveStrategy::changeToIdle(const EnemyContext &ctx) {
+	const auto aiComp = ctx.GetAIComp();
+	// 移動結束，開始休息
+	ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0)); // 停止移動
+	m_restTimer = RandomUtil::RandomFloatInRange(2.0f, 5.0f); // 設定休息時間
+	aiComp->SetEnemyState(enemyState::IDLE);
+}
+
+void IMoveStrategy::MaintainDistanceMove(const EnemyContext& ctx, float optimalDistance, float speed, bool faceToTarget)
+{
+	// 維持距離移動
+	auto target = ctx.GetAIComp()->GetTarget().lock();
+	if (!target) return;
+
+	float currentDistance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
+	glm::vec2 direction;
+
+	if (currentDistance < optimalDistance * 0.8f) {
+		// 太近了，後退
+		direction = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
+		ctx.moveComp->SetDesiredDirection(direction * speed);
+	} else if (currentDistance > optimalDistance * 1.2f) {
+		// 太遠了，前進
+		direction = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord());
+		ctx.moveComp->SetDesiredDirection(direction * speed);
+	} else {
+		// 在最佳距離，停止移動
+		ctx.moveComp->SetDesiredDirection(glm::vec2(0.0f));
+	}
+
+	// 保持向著目標
+	if (faceToTarget)
+	{
+		if (target->GetWorldCoord().x > ctx.enemy->GetWorldCoord().x)
+			// 面向右邊
+			ctx.enemy->m_Transform.scale.x = std::abs(ctx.enemy->m_Transform.scale.x);
+		else
+			ctx.enemy->m_Transform.scale.x = -std::abs(ctx.enemy->m_Transform.scale.x);
+	}
+}
+
+void IMoveStrategy::MaintainCircleMove(const EnemyContext& ctx, float circleRadius, float speed)
+{
+	// 繞圈
+	const auto target = ctx.GetAIComp()->GetTarget().lock();
+	if (!target) return;
+
+	// 計算切線方向
+	glm::vec2 toTarget = target->GetWorldCoord() - ctx.enemy->GetWorldCoord();
+	glm::vec2 tangent = glm::normalize(glm::vec2(-toTarget.y, toTarget.x));
+	float currentDistance = glm::length(toTarget);
+
+	if (currentDistance < circleRadius * 0.8f) {
+		// 太近了，向外移動
+		glm::vec2 outward = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
+		ctx.moveComp->SetDesiredDirection((outward + tangent) * speed);
+	} else if (currentDistance > circleRadius * 1.2f) {
+		// 太遠了，向內移動
+		glm::vec2 inward = glm::normalize(toTarget);
+		ctx.moveComp->SetDesiredDirection((inward + tangent) * speed);
+	} else {
+		// 在正確距離，繞圈
+		ctx.moveComp->SetDesiredDirection(tangent * speed);
+	}
+}
+
+void IMoveStrategy::MaintainStrafeMove(const EnemyContext& ctx, float optimalDistance, float deltaTime, float speed)
+{
+	// 左右擺動==>蛇行
+	auto target = ctx.GetAIComp()->GetTarget().lock();
+	if (!target) return;
+
+	// 計算左右移動
+	glm::vec2 toTarget = target->GetWorldCoord() - ctx.enemy->GetWorldCoord();
+	glm::vec2 perpendicular = glm::normalize(glm::vec2(-toTarget.y, toTarget.x));
+	glm::vec2 direction;
+
+	// 使用累積的deltaTime來計算左右移動
+	static float accumulatedTime = 0.0f;
+	accumulatedTime += deltaTime;
+	float sideMovement = sin(accumulatedTime * 2.0f) * speed;
+
+	float currentDistance = glm::length(toTarget);
+	if (currentDistance < optimalDistance * 0.8f) {
+		// 太近了，後退
+		direction = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
+		ctx.moveComp->SetDesiredDirection((direction + perpendicular * sideMovement) * speed);
+	} else if (currentDistance > optimalDistance * 1.2f) {
+		// 太遠了，前進
+		direction = glm::normalize(toTarget);
+		ctx.moveComp->SetDesiredDirection((direction + perpendicular * sideMovement) * speed);
+	} else {
+		// 在最佳距離，只做左右移動
+		ctx.moveComp->SetDesiredDirection(perpendicular * sideMovement);
+	}
+}
+
 //============================= (Wander) =============================
 void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 {
@@ -60,16 +171,7 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 	switch (auto State = ctx.GetAIComp()->GetEnemyState()) {
 		// 待機狀態
 		case enemyState::IDLE:
-			m_restTimer -= deltaTime;
-			if (m_restTimer <= 0) {
-				// 休息結束，開始移動
-				constexpr float ratio = 0.2f;
-				const glm::vec2 deltaDisplacement = glm::normalize(RandomUtil::RandomDirectionInsideUnitCircle()) * ratio;
-				ctx.moveComp->SetDesiredDirection(deltaDisplacement);
-				// 設定移動持續時間
-				m_moveTimer = RandomUtil::RandomFloatInRange(2.0f, 6.5f);
-				aiComp->SetEnemyState(enemyState::WANDERING);
-			}
+			RestIfNeeded(deltaTime, ctx, 2.5f, 6.0f);
 			break;
 		case enemyState::WANDERING:
 			// 移動狀態
@@ -86,7 +188,6 @@ void WanderMove::Update(const EnemyContext &ctx, const float deltaTime)
 	}
 }
 
-
 //============================= (ChaseMove) =============================
 void checkHasTarget(const EnemyContext &ctx) {
 	auto AiComp = ctx.GetAIComp();
@@ -96,30 +197,15 @@ void checkHasTarget(const EnemyContext &ctx) {
 	}
 }
 
-void IMoveStrategy::changeToIdle(const EnemyContext &ctx) {
-	const auto aiComp = ctx.GetAIComp();
-	// 移動結束，開始休息
-	ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0)); // 停止移動
-	m_restTimer = RandomUtil::RandomFloatInRange(2.0f, 5.0f); // 設定休息時間
-	aiComp->SetEnemyState(enemyState::IDLE);
-}
-
 void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 	auto aiComp = ctx.GetAIComp();
 
 	switch (auto State = ctx.GetAIComp()->GetEnemyState()) {
 		case enemyState::IDLE:
-			m_restTimer -= deltaTime;
+			RestIfNeeded(deltaTime, ctx, 5.0f, 10.0f);
 			if(!m_mandatoryRest) {
 				checkHasTarget(ctx);
 				m_mandatoryRest = false;
-			}
-			if (m_restTimer <= 0) {
-				constexpr float ratio = 0.2f;
-				const glm::vec2 deltaDisplacement = glm::normalize(RandomUtil::RandomDirectionInsideUnitCircle()) * ratio;
-				ctx.moveComp->SetDesiredDirection(deltaDisplacement);
-				m_moveTimer = RandomUtil::RandomFloatInRange(5.0f, 10.0f);
-				aiComp->SetEnemyState(enemyState::WANDERING);
 			}
 			break;
 
@@ -180,7 +266,6 @@ void ChaseMove::ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameO
 	ctx.moveComp->SetDesiredDirection(dir);
 }
 
-
 void ChaseMove::MaintainOptimalRangeForGun(const EnemyContext &ctx, std::shared_ptr<nGameObject> target,
 										  const std::shared_ptr<IAttackStrategy>& gunStrategy) const
 {
@@ -215,7 +300,7 @@ void ChaseMove::checkAttackCondition(const EnemyContext &ctx) const
 {
 	const auto aiComp = ctx.GetAIComp();
 
-	// 检查所有攻击类型，避免重复代码
+	// 检查所有攻击类型
 	const std::array<AttackStrategies, 2> attackTypes = {AttackStrategies::MELEE, AttackStrategies::GUN};
 
 	for (const auto &attackType : attackTypes) {
@@ -229,23 +314,24 @@ void ChaseMove::checkAttackCondition(const EnemyContext &ctx) const
 	}
 }
 
+//============================= (BossMove) =============================
+void BossMove::refillSkillQueue() {
+	m_skillQueue.clear();
+	for (int i = static_cast<int>(enemyState::SKILL1); i <= static_cast<int>(enemyState::SKILL5); ++i) {
+		m_skillQueue.push_back(static_cast<enemyState>(i));
+	}
+	// 随机打乱
+	RandomUtil::RandomShuffle(m_skillQueue);
+}
 void BossMove::Update(const EnemyContext &ctx, float deltaTime)
 {
 	auto aiComp = ctx.GetAIComp();
-
 	switch (auto State = ctx.GetAIComp()->GetEnemyState()) {
 	case enemyState::IDLE:
-		m_restTimer -= deltaTime;
+		RestIfNeeded(deltaTime, ctx, 5.0f, 10.0f);
 		if(!m_mandatoryRest) {
 			checkHasTarget(ctx);
 			m_mandatoryRest = false;
-		}
-		if (m_restTimer <= 0) {
-			constexpr float ratio = 0.2f;
-			const glm::vec2 deltaDisplacement = glm::normalize(RandomUtil::RandomDirectionInsideUnitCircle()) * ratio;
-			ctx.moveComp->SetDesiredDirection(deltaDisplacement);
-			m_moveTimer = RandomUtil::RandomFloatInRange(5.0f, 10.0f);
-			aiComp->SetEnemyState(enemyState::WANDERING);
 		}
 		break;
 
@@ -260,19 +346,20 @@ void BossMove::Update(const EnemyContext &ctx, float deltaTime)
 	case enemyState::CHASING:
 		if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
 			const float distance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-			LOG_DEBUG("set skillState");
-			aiComp->SetEnemyState(enemyState::SKILL5);
+			// 每次追擊觸發技能前，都從queue裡 pop
+			if (m_skillQueue.empty()) {
+				refillSkillQueue();  // 重新填充並打亂
+			}
+			enemyState next = m_skillQueue.front();
+			m_skillQueue.erase(m_skillQueue.begin());
+			aiComp->SetEnemyState(next);
 
-			// // 根據距離選擇技能
-			// if (distance > 200.0f) {
-			// 	aiComp->SetEnemyState(enemyState::SKILL1); // 遠程攻擊
-			// } else if (distance < 100.0f) {
-			// 	aiComp->SetEnemyState(enemyState::SKILL4); // 近戰攻擊
-			// } else {
-			// 	// 隨機選擇其他技能
-			// 	int randomSkill = RandomUtil::RandomIntInRange(1, 5);
-			// 	aiComp->SetEnemyState(static_cast<enemyState>(static_cast<int>(enemyState::SKILL1) + randomSkill - 1));
-			// }
+			if (aiComp->GetEnemyState() == enemyState::SKILL4 && !m_hasJumpTarget) {
+				if (const auto target = aiComp->GetTarget().lock(); target) {
+					m_jumpTargetPos = target->GetWorldCoord();
+					m_hasJumpTarget = true;
+				}
+			}
 		} else {
 			changeToIdle(ctx);
 		}
@@ -298,8 +385,8 @@ void BossMove::UpdateSkillState(const EnemyContext &ctx, float deltaTime)
 
 	if (aiComp->GetSkillTimer() <= 0) {
 		// 技能結束，回到休息狀態
-		LOG_DEBUG("BossMove::end");
 		m_mandatoryRest = true;
+		m_hasJumpTarget = false;
 		changeToIdle(ctx);
 	} else {
 		// 根據不同技能執行不同的移動邏輯
@@ -327,126 +414,62 @@ void BossMove::UpdateSkillState(const EnemyContext &ctx, float deltaTime)
 
 void BossMove::UpdateSkill1MoveState(const EnemyContext &ctx, float deltaTime)
 {
-	// 技能1：遠程攻擊，保持距離
-	if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
-		const float optimalDistance = 150.0f;
-		const float currentDistance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-		
-		if (currentDistance < optimalDistance * 0.8f) {
-			// 太近了，後退
-			glm::vec2 direction = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection(direction * 0.3f);
-		} else if (currentDistance > optimalDistance * 1.2f) {
-			// 太遠了，前進
-			glm::vec2 direction = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection(direction * 0.2f);
-		} else {
-			// 在最佳距離，停止移動
-			ctx.moveComp->SetDesiredDirection(glm::vec2(0.0f));
-		}
-	}
+	MaintainDistanceMove(ctx, 150.0f, 0.3f, true);
 }
 
 void BossMove::UpdateSkill2MoveState(const EnemyContext &ctx, float deltaTime)
 {
-	// 技能2：環形彈幕，繞著玩家轉圈
-	const auto aiComp = ctx.GetAIComp();
-	if (const auto target = aiComp->GetTarget().lock(); target != nullptr) {
-		const float circleRadius = 100.0f;
-		const float currentDistance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-		
-		// 計算切線方向
-		glm::vec2 toTarget = target->GetWorldCoord() - ctx.enemy->GetWorldCoord();
-		glm::vec2 tangent = glm::vec2(-toTarget.y, toTarget.x);
-		tangent = glm::normalize(tangent);
-		
-		// 調整距離
-		if (currentDistance < circleRadius * 0.8f) {
-			// 太近了，向外移動
-			glm::vec2 outward = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection((outward + tangent) * 0.3f);
-		} else if (currentDistance > circleRadius * 1.2f) {
-			// 太遠了，向內移動
-			glm::vec2 inward = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection((inward + tangent) * 0.3f);
-		} else {
-			// 在正確距離，繞圈
-			ctx.moveComp->SetDesiredDirection(tangent * 0.3f);
-		}
-	}
-	const auto boss =  aiComp->GetOwner<Character>();
-	boss->m_Transform.scale.x = std::abs(boss->m_Transform.scale.x);
+	// 繞著玩家轉圈
+	MaintainCircleMove(ctx, 100.0f, 0.2f);
+	ctx.enemy->m_Transform.scale.x = std::abs(ctx.enemy->m_Transform.scale.x);
 }
 
 void BossMove::UpdateSkill3MoveState(const EnemyContext &ctx, float deltaTime)
 {
-	// 技能3：追蹤彈幕，保持中等距離
-	if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
-		const float optimalDistance = 150.0f;
-		const float currentDistance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-		
-		if (currentDistance < optimalDistance * 0.8f) {
-			// 太近了，後退
-			glm::vec2 direction = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection(direction * 0.3f);
-		} else if (currentDistance > optimalDistance * 1.2f) {
-			// 太遠了，前進
-			glm::vec2 direction = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection(direction * 0.2f);
-		} else {
-			// 在最佳距離，停止移動
-			ctx.moveComp->SetDesiredDirection(glm::vec2(0.0f));
-		}
-	}
+	// 保持中等距離
+	MaintainDistanceMove(ctx, 150.0f, 0.2f, true);
 }
 
 void BossMove::UpdateSkill4MoveState(const EnemyContext &ctx, float deltaTime)
 {
-	// 技能4：近戰範圍攻擊，追擊玩家
-	if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
-		const float attackDistance = 100.0f;
-		const float currentDistance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-		
-		if (currentDistance > attackDistance) {
-			// 追擊玩家
-			glm::vec2 direction = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection(direction * 0.4f);
-		} else {
-			// 在攻擊範圍內，停止移動
+	// 技能4：跳向玩家位置
+	const auto attackStrategy = ctx.GetAIComp()->GetAttackStrategy(AttackStrategies::BOSS);
+	if(const auto& bossAttackStrategy = std::dynamic_pointer_cast<BossAttackStrategy>(attackStrategy))
+	{
+		auto& skill = bossAttackStrategy->GetCurrentSkillInfo();
+		// 前搖 + 空中階段（跳躍中）：移動到目標位置
+		if (skill.activeTimer < skill.castTime) {
+			if (m_hasJumpTarget) {
+				glm::vec2 toTarget = m_jumpTargetPos - ctx.enemy->GetWorldCoord();
+				if (glm::length(toTarget) > 5.0f) {
+					ctx.moveComp->SetDesiredDirection(glm::normalize(toTarget) * 0.5f);
+					ctx.moveComp->SetCurrentSpeedRatio(ctx.moveComp->GetSpeedRatio() * 1.5f);
+				} else {
+					ctx.moveComp->SetDesiredDirection(glm::vec2(0.0f));
+				}
+			}
+		}
+		// 落地階段：保持不動
+		else {
 			ctx.moveComp->SetDesiredDirection(glm::vec2(0.0f));
 		}
+
+		// 面向跳躍方向
+		if (m_hasJumpTarget) {
+			ctx.enemy->m_Transform.scale.x = (m_jumpTargetPos.x > ctx.enemy->GetWorldCoord().x)
+				? std::abs(ctx.enemy->m_Transform.scale.x)
+				: -std::abs(ctx.enemy->m_Transform.scale.x);
+		}
 	}
+	else
+	{
+		LOG_ERROR("BossMove::UpdateSkill4MoveState==>can't get strategy");
+	}
+
 }
 
 void BossMove::UpdateSkill5MoveState(const EnemyContext &ctx, float deltaTime)
 {
-	// 技能5：多重散射，保持中等距離並左右移動
-	if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
-		const float optimalDistance = 250.0f;
-		const float currentDistance = glm::distance(target->GetWorldCoord(), ctx.enemy->GetWorldCoord());
-		
-		// 計算左右移動
-		glm::vec2 toTarget = target->GetWorldCoord() - ctx.enemy->GetWorldCoord();
-		glm::vec2 perpendicular = glm::vec2(-toTarget.y, toTarget.x);
-		perpendicular = glm::normalize(perpendicular);
-		
-		// 使用累積的deltaTime來計算左右移動
-		static float accumulatedTime = 0.0f;
-		accumulatedTime += deltaTime;
-		float sideMovement = sin(accumulatedTime * 2.0f) * 0.3f;
-		
-		if (currentDistance < optimalDistance * 0.8f) {
-			// 太近了，後退
-			glm::vec2 direction = glm::normalize(ctx.enemy->GetWorldCoord() - target->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection((direction + perpendicular * sideMovement) * 0.3f);
-		} else if (currentDistance > optimalDistance * 1.2f) {
-			// 太遠了，前進
-			glm::vec2 direction = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord());
-			ctx.moveComp->SetDesiredDirection((direction + perpendicular * sideMovement) * 0.3f);
-		} else {
-			// 在最佳距離，只做左右移動
-			ctx.moveComp->SetDesiredDirection(perpendicular * sideMovement);
-		}
-	}
+	// 左右移動
+	MaintainStrafeMove(ctx, 80.0f, deltaTime, 0.2f);
 }
-

@@ -35,7 +35,10 @@ void ProjectileComponent::HandleEvent(const EventInfo &eventInfo)
 		case EventType::BlockedProjectileBySword:
 		{
 			if (const auto projectile = GetOwner<Projectile>())
+			{
 				projectile->MarkForRemoval();
+				projectile->TriggerChainAttack();
+			}
 			else LOG_WARN("projectile is NULL");
 			break;
 		}

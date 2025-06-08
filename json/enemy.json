@@ -478,10 +478,10 @@
                 "/boss/Ice_Plain/Snowman_King/Snowman_King_skill1/Snowman_King_skill1_2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill1/Snowman_King_skill1_3.png"]
       },
       "SKILL2": {
-        "Loop": false,
+        "Loop": true,
         "FPS": 18,
         "path": [
-          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_00.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_01.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_01.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_01.png",
           "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_02.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_03.png",
           "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_04.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_05.png",
           "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_06.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_07.png",
