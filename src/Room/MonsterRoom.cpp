@@ -213,6 +213,22 @@ void MonsterRoom::OnEnemyDeathEvent(const EnemyDeathEvent &event)
 	m_CombatManager.OnEnemyDied();
 }
 
+void MonsterRoom::AddEnemy(const std::shared_ptr<Character>& enemy)
+{
+	if (!enemy) {
+		LOG_ERROR("MonsterRoom::AddEnemy: Enemy is null");
+		return;
+	}
+
+	enemy->SetActive(true);
+	SetEnemyVisible(enemy, true);
+
+	// 使用新的Room API添加敌人
+	SpawnEntity(enemy, EntityCategory::ENEMY);
+
+	m_CombatManager.AddEnemyToCurrentWave(enemy);
+}
+
 std::shared_ptr<Character> MonsterRoom::SpawnEnemy(int enemyType, glm::vec2 position)
 {
 	auto enemy = CharacterFactory::GetInstance().createEnemy(enemyType);
@@ -493,6 +509,13 @@ void MonsterRoom::CombatManager::ActivateCurrentWaveEnemies()
 			enemy->SetActive(true); // 激活怪物
 			SetEnemyVisible(enemy, true);
 		}
+	}
+}
+
+void MonsterRoom::CombatManager::AddEnemyToCurrentWave(const std::shared_ptr<Character>& enemy)
+{
+	if (m_CurrentWave >= 0 && m_CurrentWave < static_cast<int>(m_AllWaveEnemies.size())) {
+		m_AllWaveEnemies[m_CurrentWave].push_back(enemy);
 	}
 }
 

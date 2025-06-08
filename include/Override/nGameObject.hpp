@@ -28,8 +28,6 @@ public:
 	std::shared_ptr<T> AddComponent(ComponentType type, Args &&...args);
 	template <typename T>
 	std::shared_ptr<T> GetComponent(ComponentType type);
-	template <typename T>
-	bool RemoveComponent(ComponentType type);
 
 	/**
 	 * @brief 移除指定類型的組件

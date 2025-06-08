@@ -25,23 +25,6 @@ enum class ComponentType
 	STATE,			 // 15
 	TALENT,			 // 16
 	WALLET			 // 17
-	AI, // 0
-	ANIMATION, // 1
-	ATTACK, // 2
-	CHEST, // 3
-	COLLISION, // 4
-	DOOR, // 5
-	FLICKER, // 6
-	FOLLOWER, // 7
-	HEALTH, // 8
-	INPUT, // 9
-	INTERACTABLE, // 10
-	MOVEMENT, // 11
-	PROJECTILE, // 12
-	SKILL, // 13
-	STATE, // 14
-	TALENT, // 15
-	WALLET // 16
 };
 
 enum class CharacterType
