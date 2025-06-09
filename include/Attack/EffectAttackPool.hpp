@@ -10,6 +10,8 @@
 
 class EffectAttackPool {
 public:
+	explicit EffectAttackPool();
+	~EffectAttackPool() = default;
 	std::shared_ptr<EffectAttack> Acquire(const EffectAttackInfo &effect_attack_info);
 
 	void Release(const std::shared_ptr<EffectAttack> &effectAttack) { pool.push_back(std::move(effectAttack)); }

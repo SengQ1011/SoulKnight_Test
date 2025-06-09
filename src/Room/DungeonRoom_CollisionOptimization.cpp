@@ -49,7 +49,7 @@ void DungeonRoom::RemoveWallCollisionComponents()
 			continue;
 
 		// 從 PendingObjects 中移除 visibleBox
-		obj->RemoveComponent<CollisionComponent>(ComponentType::COLLISION);
+		auto check = obj->RemoveComponent<CollisionComponent>(ComponentType::COLLISION);
 		RemoveVisibleBoxFromPendingObjects(collisionComp, scene);
 
 		// 從碰撞管理器中註銷物件

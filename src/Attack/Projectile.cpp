@@ -22,7 +22,8 @@ Projectile::Projectile(const ProjectileInfo& projectileInfo)
 								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
 								m_canTracking(projectileInfo.canTracking), m_Target(projectileInfo.target),
 								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
-								m_bubbleImagePath(projectileInfo.bubbleImagePath), m_chainProjectionNum(projectileInfo.chainProjectionNum) {}
+								m_bubbleImagePath(projectileInfo.bubbleImagePath), m_chainProjectionNum(projectileInfo.chainProjectionNum),
+								m_allRound(projectileInfo.AllRound){}
 
 //=========================== (實作) ================================//
 void Projectile::Init() {
@@ -209,6 +210,7 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 	m_bubbleStayTime = 3.0f;
 
 	m_chainProjectionNum = projectileInfo.chainProjectionNum;
+	m_allRound = projectileInfo.AllRound;
 }
 
 
@@ -239,8 +241,5 @@ void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulle
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
-	// 延緩發射
-	attackManager->EnqueueSpawn([=]() {
-		attackManager->spawnProjectile(bubbleInfo);
-	});
+	attackManager->spawnProjectile(bubbleInfo);
 }

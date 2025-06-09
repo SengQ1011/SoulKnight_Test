@@ -123,6 +123,7 @@ set(INCLUDE_FILES
     Components/Component.hpp
     Components/DestructibleEffectComponent.hpp
     Components/DoorComponent.hpp
+    Components/EffectAttackComponent.hpp
     Components/DropComponent.hpp
     Components/EnemyAI/AttackStrategy.hpp
     Components/EnemyAI/MoveStrategy.hpp
@@ -138,7 +139,7 @@ set(INCLUDE_FILES
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
     Components/TriggerComponent.hpp
-    Components/walletComponent.hpp
+    Components/WalletComponent.hpp
     Creature/Character.hpp
     Cursor.hpp
     DestructionEffects/ExplosionEffect.hpp

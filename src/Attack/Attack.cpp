@@ -22,7 +22,6 @@ void Attack::TriggerChainAttack() const
  	if (!chainAttackInfo.enabled) return;
  	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
  	if (!currentScene) return;
-
  	const auto attackManager = currentScene->GetManager<AttackManager>(ManagerTypes::ATTACK);
  	if (!attackManager) return;
 
@@ -30,12 +29,30 @@ void Attack::TriggerChainAttack() const
  	{
  		const auto effectInfoPtr = std::dynamic_pointer_cast<EffectAttackInfo>(chainAttackInfo.nextAttackInfo);
  		if (!effectInfoPtr) return;
-
  		effectInfoPtr->type = this->GetAttackLayerType();
  		effectInfoPtr->attackTransform = this->GetTransform();
- 		effectInfoPtr->attackTransform.translation = this->GetWorldCoord();
+ 		// 重新複製並更新 nextAttackInfo
+ 		if (effectInfoPtr->continuouslyExtending)
+ 		{
+ 			auto offset = this->m_direction * this->m_size;
+ 			effectInfoPtr->attackTransform.translation = this->GetWorldCoord() + offset;
+ 			effectInfoPtr->direction = this->m_direction;
+
+ 			effectInfoPtr->chainAttack.enabled = true;
+ 			effectInfoPtr->chainAttack.attackType = AttackType::EFFECT_ATTACK;
+ 			// 淺複製一份新的 EffectAttackInfo
+ 			auto copyAttack = std::make_shared<EffectAttackInfo>(*effectInfoPtr);
+ 			// 避免遞迴爆炸：重設 chainAttack
+ 			copyAttack->chainAttack = {}; // 或 clear 掉
+ 			effectInfoPtr->chainAttack.nextAttackInfo = copyAttack;
+ 		}
+ 		else
+ 		{
+ 			effectInfoPtr->attackTransform.translation = this->GetWorldCoord();
+ 			effectInfoPtr->direction = glm::vec2(0.0f);
+ 		}
+
  		effectInfoPtr->attackTransform.scale = glm::vec2(1.0f);
- 		effectInfoPtr->direction = glm::vec2(0.0f);
  		attackManager->spawnEffectAttack(*effectInfoPtr);
  	}
  	else if (chainAttackInfo.attackType == AttackType::PROJECTILE)
@@ -45,7 +62,6 @@ void Attack::TriggerChainAttack() const
 
  		const int numBullets = projInfoPtr->chainProjectionNum;
  		if (numBullets <= 0) return;
-
  		ProjectileInfo baseInfo = *projInfoPtr; // 淺複製一次
 
  		baseInfo.type = this->GetAttackLayerType();

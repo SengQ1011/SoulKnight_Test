@@ -444,7 +444,7 @@
       "y": 0.0
     },
     "elementalDamage": "NONE",
-    "attackRange": 32.0,
+    "attackRange": 28.0,
     "EffectAttackType": "SHOCKWAVE"
   },
   {
@@ -484,7 +484,8 @@
       "bulletIsBubble": false,
       "bubbleTrail": false,
       "bubbleImagePath": "",
-      "chainProjectionNum": 12
+      "chainProjectionNum": 12,
+      "allRound": false
     }
   }
 ]

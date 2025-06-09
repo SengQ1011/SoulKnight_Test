@@ -213,7 +213,7 @@
     "attackType": ["Gun"],
     "haveWeapon": 1,
     "weaponId": 505,
-    "size": 16.0
+    "size": 32.0
   }, {
     "ID": 11,
     "Type": "ENEMY",
@@ -396,6 +396,142 @@
     "haveWeapon": 1,
     "weaponId": 509,
     "size": 32.0
+  },
+  {
+    "ID": 19,
+    "Type": "ENEMY",
+    "name": "Golden_Beetle",
+    "monsterType": "Wander",
+    "isElite": false,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy37_GoldenBeetle/enemy37_4.png","/monster/Icefield/enemy37_GoldenBeetle/enemy37_5.png"],
+      "MOVING": ["/monster/Icefield/enemy37_GoldenBeetle/enemy37_0.png", "/monster/Icefield/enemy37_GoldenBeetle/enemy37_1.png",
+        "/monster/Icefield/enemy37_GoldenBeetle/enemy37_2.png","/monster/Icefield/enemy37_GoldenBeetle/enemy37_3.png"],
+      "DEAD": ["/monster/Icefield/enemy37_GoldenBeetle/enemy37_6.png"]
+    },
+    "monsterPoint": 1,
+    "maxHp": 8,
+    "speed": 0.7,
+    "attackType": ["Collision"],
+    "haveWeapon": 0,
+    "collisionDamage": 2,
+    "size": 16.0
+  },
+  {
+    "ID": 20,
+    "Type": "ENEMY",
+    "name": "Golden_Beetle",
+    "monsterType": "Wander",
+    "isElite": true,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy37_GoldenBeetle/enemy37_4.png","/monster/Icefield/enemy37_GoldenBeetle/enemy37_5.png"],
+      "MOVING": ["/monster/Icefield/enemy37_GoldenBeetle/enemy37_0.png", "/monster/Icefield/enemy37_GoldenBeetle/enemy37_1.png",
+                  "/monster/Icefield/enemy37_GoldenBeetle/enemy37_2.png","/monster/Icefield/enemy37_GoldenBeetle/enemy37_3.png"],
+      "DEAD": ["/monster/Icefield/enemy37_GoldenBeetle/enemy37_6.png"]
+    },
+    "monsterPoint": 1,
+    "maxHp": 40,
+    "speed": 0.7,
+    "attackType": ["Collision"],
+    "haveWeapon": 0,
+    "collisionDamage": 4,
+    "size": 28.0
+  },
+  {
+    "ID": 21,
+    "Type": "ENEMY",
+    "name": "Little_Snowman",
+    "monsterType": "Attack",
+    "isElite": false,
+    "animations": {
+      "STANDING": ["/monster/Icefield/enemy46_LittleSnowman/enemy46_4.png", "/monster/Icefield/enemy46_LittleSnowman/enemy46_5.png"],
+      "MOVING": ["/monster/Icefield/enemy46_LittleSnowman/enemy46_0.png", "/monster/Icefield/enemy46_LittleSnowman/enemy46_1.png",
+                "/monster/Icefield/enemy46_LittleSnowman/enemy46_2.png", "/monster/Icefield/enemy46_LittleSnowman/enemy46_3.png"],
+      "ATTACK": ["/monster/Icefield/enemy46_LittleSnowman/enemy46_0.png", "/monster/Icefield/enemy46_LittleSnowman/enemy46_1.png",
+                "/monster/Icefield/enemy46_LittleSnowman/enemy46_2.png", "/monster/Icefield/enemy46_LittleSnowman/enemy46_3.png"],
+      "DEAD": ["/monster/Icefield/enemy46_LittleSnowman/enemy46_6.png"]
+    },
+    "monsterPoint": 0,
+    "maxHp": 4,
+    "speed": 0.7,
+    "attackType": ["Melee"],
+    "haveWeapon": 1,
+    "weaponId": 508,
+    "size": 12.0
+  },
+  {
+    "ID": 101,
+    "Type": "ENEMY",
+    "name": "Snowman_King",
+    "monsterType": "Boss",
+    "isElite": true,
+    "animations": {
+      "STANDING": ["/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing1.png",
+                 "/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing3.png"],
+      "MOVING": ["/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing1.png",
+                "/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing3.png"],
+      "ATTACK": ["/boss/Ice_Plain/Snowman_King/Snowman_King_standing/Snowman_King_standing0.png"],
+      "SKILL": {
+        "Loop": true,
+        "FPS": 8,
+        "path":["/boss/Ice_Plain/Snowman_King/Snowman_King_skill1/Snowman_King_skill1_0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill1/Snowman_King_skill1_1.png",
+                "/boss/Ice_Plain/Snowman_King/Snowman_King_skill1/Snowman_King_skill1_2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill1/Snowman_King_skill1_3.png"]
+      },
+      "SKILL2": {
+        "Loop": true,
+        "FPS": 18,
+        "path": [
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_01.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_01.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_02.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_03.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_04.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_05.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_06.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_07.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_08.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_09.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_10.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_11.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_12.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_13.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_14.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_15.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_16.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_17.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_18.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_19.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_20.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_21.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_22.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill2/Snowman_King_skill2_23.png"
+        ]
+      },
+      "SKILL3": {
+        "Loop": false,
+        "FPS": 8,
+        "path": [
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_1.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_3.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_4.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_5.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_6.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill3/Snowman_King_skill3_7.png"
+        ]
+      },
+      "SKILL4": {
+        "Loop": false,
+        "FPS": 7,
+        "path": ["/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_1.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_1.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_3.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_4.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_5.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_6.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_7.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill4/Snowman_King_skill4_8.png"]
+      },
+      "SKILL5": {
+        "Loop": true,
+        "FPS": 12,
+        "path": ["/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_1.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_0.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_1.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_2.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_3.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_4.png", "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_5.png",
+          "/boss/Ice_Plain/Snowman_King/Snowman_King_skill5/Snowman_King_skill5_6.png"]
+      },
+      "DEAD": ["/boss/Ice_Plain/Snowman_King/boss13_8.png"]
+    },
+    "monsterPoint": 50,
+    "maxHp": 400,
+    "speed": 0.7,
+    "attackType": ["Boss"],
+    "haveWeapon": 0,
+    "size": 48.0
   }
 ]
 
