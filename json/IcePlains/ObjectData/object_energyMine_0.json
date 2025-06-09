@@ -1,12 +1,15 @@
 {
     "id": "object_energyMine_0",
     "isAnimated": false,
-    "path": "/IcePlains/object_energyMine_0.png",
+    "path": [
+        "/IcePlains/object_energyMine_0.png",
+        "/IcePlains/object_energyMine_1.png"
+    ],
     "ZIndex": "OBJECTHIGH",
     "components": [
         {
             "Name": "collision_box",
-            "Class": "CollisionComponent",
+            "Class": "COLLISION",
             "Size": [
                 35.0,
                 16.0
@@ -15,8 +18,9 @@
                 -0.5,
                 -10.0
             ],
-            "CollisionLayer": "Terrain",
+            "CollisionLayer": "DestructibleTerrain",
             "CollisionMask": [
+                "Player",
                 "Player_Projectile",
                 "Player_EffectAttack"
             ],

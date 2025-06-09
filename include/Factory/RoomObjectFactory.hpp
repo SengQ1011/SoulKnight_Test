@@ -8,6 +8,9 @@
 #include "Factory.hpp"
 #include "glm/glm.hpp"
 
+
+enum class MineType;
+class DestructibleObject;
 class Loader;
 class nGameObject;
 class Character;
@@ -30,6 +33,8 @@ public:
 
 	// 寶箱創建方法
 	std::shared_ptr<nGameObject> CreateChest(ChestType type, const std::shared_ptr<Character> &player);
+
+	std::shared_ptr<DestructibleObject> CreateMine(MineType type);
 
 	// 掉落物品創建方法
 	std::vector<std::shared_ptr<nGameObject>> CreateDropItems(const std::string &itemType, int quantity,

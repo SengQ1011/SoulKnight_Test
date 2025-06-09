@@ -136,6 +136,12 @@ enum class ChestType
 	WEAPON
 };
 
+enum class MineType
+{
+	ENERGY,
+	GOLD
+};
+
 enum class InteractableType
 {
 	NONE,

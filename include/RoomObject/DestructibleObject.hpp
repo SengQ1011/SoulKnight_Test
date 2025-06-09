@@ -5,10 +5,16 @@
 #ifndef DESTRUCTIBLEOBJECT_HPP
 #define DESTRUCTIBLEOBJECT_HPP
 
+#include <memory>
 #include <string>
-#include "Components/HealthComponent.hpp"
+#include <vector>
 #include "Override/nGameObject.hpp"
 
+
+namespace Core
+{
+	class Drawable;
+}
 
 // 前向聲明
 struct EventInfo;
@@ -17,7 +23,8 @@ struct EventInfo;
 class DestructibleObject : public nGameObject
 {
 public:
-	explicit DestructibleObject(const std::string &baseName = "destructible_object");
+	explicit DestructibleObject(const std::string &baseName = "destructible_object",
+								std::vector<std::string> imagePaths = {});
 
 	~DestructibleObject() override = default;
 
@@ -33,6 +40,8 @@ public:
 
 private:
 	bool m_IsDestroyed = false;
+	std::vector<std::string> m_imagePaths = {};
+	std::vector<std::shared_ptr<Core::Drawable>> m_drawables = {};
 };
 
 #endif // DESTRUCTIBLEOBJECT_HPP

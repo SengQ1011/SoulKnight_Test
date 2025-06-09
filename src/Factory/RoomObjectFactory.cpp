@@ -55,7 +55,29 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 		else if (_class == "DestructibleObject")
 		{
 			LOG_DEBUG("RoomObjectFactory::createRoomObject destructibleObject");
-			roomObject = std::make_shared<DestructibleObject>(_id);
+
+			// 從 JSON 中讀取圖片路徑陣列
+			std::vector<std::string> imagePaths;
+			if (jsonData.contains("path"))
+			{
+				if (jsonData["path"].is_array())
+				{
+					// 如果 path 是陣列，讀取所有圖片路徑
+					auto pathArray = jsonData["path"].get<std::vector<std::string>>();
+					for (const auto &path : pathArray)
+					{
+						imagePaths.push_back(path);
+					}
+				}
+				else if (jsonData["path"].is_string())
+				{
+					// 如果 path 是字串，只有一張圖片
+					imagePaths.push_back(jsonData["path"].get<std::string>());
+				}
+			}
+
+			// 創建 DestructibleObject，傳遞圖片陣列
+			roomObject = std::make_shared<DestructibleObject>(_id, imagePaths);
 			roomObject->AddComponent<HealthComponent>(ComponentType::HEALTH, 1, 0, 0);
 
 			if (_id == "object_boxRed")
@@ -78,7 +100,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 				roomObject->AddComponent<DestructibleEffectComponent>(ComponentType::DESTRUCTIBLE_EFFECT,
 																	  std::move(iceSpikeEffect));
 			}
-			else
+			else if (_id.find("object_boxCommon") != std::string::npos)
 			{
 				const float hasDropItem = RandomUtil::RandomFloatInRange(0.0f, 1.0f);
 				if (hasDropItem < 0.2f)
@@ -134,11 +156,24 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 		}
 	}
 
-	// 設置Drawable（Animation 已經在構造函數中設置了）
-	if (jsonData.contains("path") && !isAnimated)
+	// 設置Drawable（Animation 和 DestructibleObject 已經在構造函數中設置了）
+	if (jsonData.contains("path") && !isAnimated && _class != "DestructibleObject")
 	{
-		roomObject->SetDrawable(
-			ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR + jsonData.at("path").get<std::string>()));
+		// 對於非 DestructibleObject 的物件，設置單一圖片
+		if (jsonData["path"].is_string())
+		{
+			roomObject->SetDrawable(
+				ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR + jsonData.at("path").get<std::string>()));
+		}
+		else if (jsonData["path"].is_array())
+		{
+			// 如果是陣列但不是 DestructibleObject，使用第一張圖片
+			auto pathArray = jsonData["path"].get<std::vector<std::string>>();
+			if (!pathArray.empty())
+			{
+				roomObject->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR + pathArray[0]));
+			}
+		}
 	}
 	else if (!jsonData.contains("path") && !isAnimated)
 	{
@@ -293,6 +328,84 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateChest(ChestType type, cons
 
 	return chest;
 }
+
+std::shared_ptr<DestructibleObject> RoomObjectFactory::CreateMine(MineType type)
+{
+	std::shared_ptr<DestructibleObject> mine;
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+
+	switch (type)
+	{
+	case MineType::ENERGY:
+		{
+			// 創建能量礦物
+			mine = std::static_pointer_cast<DestructibleObject>(
+				CreateRoomObject("object_energyMine_0", "DestructibleObject"));
+
+			if (mine)
+			{
+				int energyCount = RandomUtil::RandomIntInRange(10, 15);
+				auto energyBalls = CreateDropItems("object_energyBall", energyCount, 0.8f);
+
+				// 添加 DropComponent 來處理掉落
+				if (!energyBalls.empty())
+				{
+					auto dropComponent =
+						mine->AddComponent<DropComponent>(ComponentType::DROP, DropComponent::ScatterMode::RANDOM);
+					dropComponent->AddDropItems(energyBalls);
+				}
+
+				if (auto healthComponent = mine->GetComponent<HealthComponent>(ComponentType::HEALTH))
+				{
+					healthComponent->SetMaxHp(10);
+					healthComponent->SetCurrentHp(10);
+				}
+			}
+			break;
+		}
+	case MineType::GOLD:
+		{
+			// 創建金幣礦物
+			mine = std::static_pointer_cast<DestructibleObject>(
+				CreateRoomObject("object_goldMine_0", "DestructibleObject"));
+
+			if (mine)
+			{
+				int coinCount = RandomUtil::RandomIntInRange(5, 15);
+				auto coins = CreateDropItems("object_coin", coinCount, 0.8f);
+
+				// 添加 DropComponent 來處理掉落
+				if (!coins.empty())
+				{
+					auto dropComponent =
+						mine->AddComponent<DropComponent>(ComponentType::DROP, DropComponent::ScatterMode::SLIGHT);
+					dropComponent->AddDropItems(coins);
+				}
+
+				if (auto healthComponent = mine->GetComponent<HealthComponent>(ComponentType::HEALTH))
+				{
+					healthComponent->SetMaxHp(10);
+					healthComponent->SetCurrentHp(10);
+				}
+			}
+			break;
+		}
+	default:
+		LOG_ERROR("Failed to RoomObjectFactory::CreateMine: Unknown mine type");
+		return nullptr;
+	}
+
+	// 如果是在遊戲中創建，要手動加入渲染器/manager
+	if (mine && currentScene)
+	{
+		currentScene->GetRoot().lock()->AddChild(mine);
+		currentScene->GetCamera().lock()->SafeAddChild(mine);
+		mine->SetRegisteredToScene(true);
+	}
+
+	return mine;
+}
+
 
 std::vector<std::shared_ptr<nGameObject>> RoomObjectFactory::CreateDropItems(const std::string &itemType, int quantity,
 																			 float scale)

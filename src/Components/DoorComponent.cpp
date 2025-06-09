@@ -4,6 +4,7 @@
 
 #include "Components/DoorComponent.hpp"
 
+#include <iostream>
 #include "Override/nGameObject.hpp"
 #include "Structs/EventInfo.hpp"
 #include "Util/Image.hpp"
@@ -24,18 +25,39 @@ DoorComponent::~DoorComponent()
 	// 添加安全檢查，避免在程序結束時存取已銷毀的EventManager
 	try
 	{
+		// 檢查 EventManager 是否仍然有效
+		if (!EventManager::IsValid())
+		{
+// 使用 std::cout 進行調試輸出（相對安全）
+#ifdef _DEBUG
+			try
+			{
+				std::cout << "DoorComponent::~DoorComponent: EventManager is being destroyed, skipping unsubscribe"
+						  << std::endl;
+			}
+			catch (...)
+			{
+				// 靜默處理輸出異常
+			}
+#endif
+			return;
+		}
+
 		if (m_DoorOpenListenerID != 0)
 		{
 			EventManager::GetInstance().Unsubscribe<DoorOpenEvent>(m_DoorOpenListenerID);
+			m_DoorOpenListenerID = 0;
 		}
 		if (m_DoorCloseListenerID != 0)
 		{
 			EventManager::GetInstance().Unsubscribe<DoorCloseEvent>(m_DoorCloseListenerID);
+			m_DoorCloseListenerID = 0;
 		}
 	}
 	catch (...)
 	{
-		LOG_WARN("DoorComponent::~DoorComponent: Exception occurred during destruction");
+		// 不使用 LOG_WARN，因為 spdlog 可能已經被銷毀
+		// 在析構函數中靜默處理異常
 	}
 }
 

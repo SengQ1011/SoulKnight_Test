@@ -3,13 +3,29 @@
 //
 
 #include "RoomObject/DestructibleObject.hpp"
-#include "Components/HealthComponent.hpp"
+#include "ImagePoolManager.hpp"
 #include "Structs/EventInfo.hpp"
 #include "Util/Logger.hpp"
 
-DestructibleObject::DestructibleObject(const std::string &baseName) : nGameObject(baseName, "DestructibleObject")
+
+DestructibleObject::DestructibleObject(const std::string &baseName, std::vector<std::string> imagePaths) :
+	nGameObject(baseName, "DestructibleObject"), m_imagePaths(imagePaths)
 {
-	// 不在建構函數中添加組件，而是在工廠中添加
+	// 初始化照片陣列
+	if (!m_imagePaths.empty())
+	{
+		auto &imagePoolManager = ImagePoolManager::GetInstance();
+		for (auto &imagePath : m_imagePaths)
+		{
+			const auto drawable = imagePoolManager.GetImage(RESOURCE_DIR + imagePath);
+			m_drawables.emplace_back(drawable);
+		}
+
+		// 設置預設照片 (index 0)
+		SetActive(true);
+		SetControlVisible(true);
+		SetDrawable(m_drawables[0]);
+	}
 }
 
 
@@ -32,13 +48,24 @@ void DestructibleObject::OnDestroyed()
 
 	LOG_DEBUG("DestructibleObject destroyed: {}", GetName());
 
-	// 可以在這裡添加破壞效果：
+	// 切換到破壞後的照片 (index 1)
+	if (m_drawables.size() > 1)
+	{
+		SetDrawable(m_drawables[1]);
+		SetActive(false);
+		LOG_DEBUG("Switched to destroyed image for: {}", GetName());
+	}
+	else
+	{
+		// 如果沒有破壞後的照片，則隱藏物件
+		SetActive(false);
+		SetControlVisible(false);
+		LOG_DEBUG("No destroyed image available, hiding object: {}", GetName());
+	}
+
+	// 可以在這裡添加其他破壞效果：
 	// - 播放破壞動畫
 	// - 產生掉落物品
 	// - 播放破壞音效
 	// - 移除碰撞體
-
-	// 暫時簡單地隱藏物件
-	SetActive(false);
-	SetControlVisible(false);
 }
