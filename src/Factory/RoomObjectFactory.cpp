@@ -146,7 +146,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 			std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
 			for (auto &i : path)
 				i = RESOURCE_DIR + i;
-			std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true);
+			std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true, "Animation", 0);
 			animation->PlayAnimation(true);
 			roomObject = animation;
 		}

@@ -24,7 +24,9 @@ enum class ComponentType
 	SKILL,			 // 14
 	STATE,			 // 15
 	TALENT,			 // 16
-	WALLET			 // 17
+	WALLET,			 // 17
+	DESTRUCTIBLE_EFFECT,
+	DROP,
 };
 
 enum class CharacterType
