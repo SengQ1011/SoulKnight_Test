@@ -69,7 +69,8 @@ enum class EffectAttackType
 	LARGE_BOOM,
 	MEDIUM_BOOM,
 	SMALL_BOOM,
-	ICE_SPIKE
+	ICE_SPIKE,
+	POISON_AREA
 };
 
 enum class AttackType

@@ -67,11 +67,11 @@ void IMoveStrategy::RestIfNeeded(float deltaTime, const EnemyContext &ctx, float
 	}
 }
 
-void IMoveStrategy::changeToIdle(const EnemyContext &ctx) {
+void IMoveStrategy::changeToIdle(const EnemyContext &ctx, float minTime, float maxTime) {
 	const auto aiComp = ctx.GetAIComp();
 	// 移動結束，開始休息
 	ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0)); // 停止移動
-	m_restTimer = RandomUtil::RandomFloatInRange(2.0f, 5.0f); // 設定休息時間
+	m_restTimer = RandomUtil::RandomFloatInRange(minTime, maxTime); // 設定休息時間
 	aiComp->SetEnemyState(enemyState::IDLE);
 }
 
@@ -214,7 +214,7 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 			m_moveTimer -= deltaTime;
 			checkHasTarget(ctx);
 			if (m_moveTimer <= 0) {
-				changeToIdle(ctx);
+				changeToIdle(ctx, 2.0f, 5.0f);
 			}
 			break;
 		case enemyState::CHASING:
@@ -228,7 +228,7 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 				}
 
 				checkAttackCondition(ctx);
-			} else changeToIdle(ctx);
+			} else changeToIdle(ctx, 2.0f, 5.0f);
 			break;
 
 		case enemyState::READY_ATTACK:
@@ -339,7 +339,7 @@ void BossMove::Update(const EnemyContext &ctx, float deltaTime)
 		m_moveTimer -= deltaTime;
 		checkHasTarget(ctx);
 		if (m_moveTimer <= 0) {
-			changeToIdle(ctx);
+			changeToIdle(ctx, 3.0f, 5.0f);
 		}
 		break;
 
@@ -361,7 +361,7 @@ void BossMove::Update(const EnemyContext &ctx, float deltaTime)
 				}
 			}
 		} else {
-			changeToIdle(ctx);
+			changeToIdle(ctx, 2.0f, 5.0f);
 		}
 		break;
 
@@ -387,7 +387,7 @@ void BossMove::UpdateSkillState(const EnemyContext &ctx, float deltaTime)
 		// 技能結束，回到休息狀態
 		m_mandatoryRest = true;
 		m_hasJumpTarget = false;
-		changeToIdle(ctx);
+		changeToIdle(ctx, 6.0f, 10.0f);
 	} else {
 		// 根據不同技能執行不同的移動邏輯
 		switch (aiComp->GetEnemyState()) {

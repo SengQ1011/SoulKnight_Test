@@ -28,6 +28,8 @@ void EffectAttack::Init() {
 	const auto& imagePaths = EffectAssets::EFFECT_IMAGE_PATHS.at(m_effectType);
 	float interval = 400 / imagePaths.size();
 	if (m_effectType == EffectAttackType::LARGE_SHOCKWAVE) interval *= 2.0f;
+	else if(m_effectType == EffectAttackType::POISON_AREA) interval = 4000 / imagePaths.size();
+
  	m_animation = std::make_shared<Animation>(imagePaths, false, interval);
  	this->SetDrawable(m_animation->GetDrawable());
  	m_animation->PlayAnimation(true);
