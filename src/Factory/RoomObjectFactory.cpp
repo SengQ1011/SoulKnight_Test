@@ -173,11 +173,14 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 		}
 		else if (jsonData["path"].is_array())
 		{
-			// 如果是陣列但不是 DestructibleObject，使用第一張圖片
+			// 如果是陣列，隨機選擇一張圖片
 			auto pathArray = jsonData["path"].get<std::vector<std::string>>();
 			if (!pathArray.empty())
 			{
-				roomObject->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR + pathArray[0]));
+				// 使用 RandomUtil 隨機選擇一個索引
+				int randomIndex = RandomUtil::RandomIntInRange(0, static_cast<int>(pathArray.size()) - 1);
+				roomObject->SetDrawable(
+					ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR + pathArray[randomIndex]));
 			}
 		}
 	}
@@ -227,7 +230,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 // 專門用於地形創建的方法
 std::shared_ptr<nGameObject> RoomObjectFactory::CreateWall(int row, int col, const glm::vec2 &worldPos)
 {
-	auto wall = std::static_pointer_cast<WallObject>(CreateRoomObject("w604", "Wall"));
+	auto wall = std::static_pointer_cast<WallObject>(CreateRoomObject("w600", "Wall"));
 	if (wall)
 	{
 		wall->SetWorldCoord(worldPos);
@@ -241,7 +244,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateWall(int row, int col, con
 
 std::shared_ptr<nGameObject> RoomObjectFactory::CreateFloor(const glm::vec2 &worldPos)
 {
-	auto floor = CreateRoomObject("f601", "Floor");
+	auto floor = CreateRoomObject("f600", "Floor");
 	if (floor)
 	{
 		floor->SetWorldCoord(worldPos);
