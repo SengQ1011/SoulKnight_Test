@@ -56,18 +56,30 @@ public:
 	[[nodiscard]] bool IsAutoInteract() const { return m_IsAutoInteract; }
 	[[nodiscard]] std::shared_ptr<nGameObject> GetPromptObject() const { return m_PromptObject; }
 	[[nodiscard]] std::shared_ptr<nGameObject> GetPromptUI() const { return m_PromptUI; }
+	[[nodiscard]] bool IsComponentActive() const { return m_IsComponentActive; }
 
 	// Setter
 	void SetInteractionRadius(const float radius) { m_InteractionRadius = radius; }
 	void SetAutoInteract(const bool autoInteract) { m_IsAutoInteract = autoInteract; }
 	void SetPromptUI(const std::shared_ptr<nGameObject> &promptUI) { m_PromptUI = promptUI; }
-	void SetInteractableType (const InteractableType type) { m_interactableType = type; }
+	void SetPromptObject(const std::shared_ptr<nGameObject> &promptObject) { m_PromptObject = promptObject; }
+	void SetInteractableType(const InteractableType type) { m_interactableType = type; }
+	void SetComponentActive(const bool active)
+	{
+		m_IsComponentActive = active;
+		if (!active)
+			ShowPrompt(false);
+	}
+
+	// 更新 PromptObject 的文本內容
+	void SetPromptText(const std::string &text);
 
 protected:
 	InteractableType m_interactableType;
 	float m_InteractionRadius;
 	bool m_IsAutoInteract = false;
 	bool m_IsPromptVisible = false;
+	bool m_IsComponentActive = true;
 
 	InteractionCallback m_InteractionCallback;
 	UpdateCallback m_UpdateCallback;

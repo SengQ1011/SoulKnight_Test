@@ -303,6 +303,13 @@ void Room::RegisterInteractionManager(const std::shared_ptr<nGameObject> &object
 				scene->GetPendingObjects().emplace_back(promptObj);
 			}
 		}
+		if (const std::shared_ptr<nGameObject> &promptUI = interactComp->GetPromptUI())
+		{
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(promptUI);
+			}
+		}
 	}
 }
 
@@ -396,6 +403,20 @@ void Room::UnregisterInteractionManager(const std::shared_ptr<nGameObject> &obje
 					renderer->RemoveChild(promptObj);
 				if (camera)
 					camera->MarkForRemoval(promptObj);
+			}
+		}
+		if (const std::shared_ptr<nGameObject> &promptUI = interactComp->GetPromptUI())
+		{
+			const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+			if (scene)
+			{
+				const auto renderer = scene->GetRoot().lock();
+				const auto camera = scene->GetCamera().lock();
+
+				if (renderer)
+					renderer->RemoveChild(promptUI);
+				if (camera)
+					camera->MarkForRemoval(promptUI);
 			}
 		}
 	}

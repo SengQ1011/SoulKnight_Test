@@ -11,6 +11,7 @@
 #include "Components/WalletComponent.hpp"
 #include "Creature/Character.hpp"
 #include "Scene/Dungeon_Scene.hpp"
+#include "Shop/ShopTable.hpp"
 #include "Weapon/Weapon.hpp"
 
 
@@ -43,16 +44,32 @@ void InteractableComponent::Init()
 					targetScene = Scene::SceneType::DungeonLoad;
 					break;
 				case Scene::SceneType::Dungeon:
+				case Scene::SceneType::DungeonLoad:
 					// 地牢的傳送門進入下一關或結算
 					// 只有在地牢中的傳送門才會增加關卡數
 					{
+						// 先檢查當前關卡數來決定是否已經在Boss關
+						auto saveData = SaveManager::GetInstance().GetSaveData();
+						bool isBossStage = (saveData && saveData->gameProgress.currentStage == 5);
+
 						// 嘗試將當前場景轉換為 DungeonScene
 						if (auto dungeonScene = std::dynamic_pointer_cast<DungeonScene>(scene))
 						{
 							dungeonScene->OnStageCompleted();
 						}
+
+						// 如果是Boss關（第5關）完成，直接進入結算場景
+						if (isBossStage)
+						{
+							// 完成第5關（Boss關）後進入結算場景
+							targetScene = Scene::SceneType::Result;
+						}
+						else
+						{
+							// 其他情況進入下一關
+							targetScene = Scene::SceneType::DungeonLoad;
+						}
 					}
-					targetScene = Scene::SceneType::DungeonLoad;
 					break;
 				default:
 					// 預設行為：使用舊的切換方式
@@ -118,16 +135,232 @@ void InteractableComponent::Init()
 	case InteractableType::WEAPON:
 		{
 			m_InteractionCallback =
-				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+				[this](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
 				if (const auto attackComp = interactor->GetComponent<AttackComponent>(ComponentType::ATTACK))
 				{
 					if (const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
 					{
-						attackComp->PickUpWeapon(weapon);
+						// 🔥 關鍵修復：只有拾取成功時才停用 InteractableComponent
+						bool pickupSuccess = attackComp->PickUpWeapon(weapon);
+
+						if (pickupSuccess)
+						{
+							ShowPrompt(false);
+							// 武器被拾取後停用 InteractableComponent
+							SetComponentActive(false);
+						}
+						// 如果拾取失敗（例如冷卻期間），保持互動組件活躍
 					}
 				}
 			};
+
+
+			// 為武器創建文字提示，參考寶箱的設置
+			if (!m_PromptObject)
+			{
+				auto weaponPrompt = std::make_shared<nGameObject>("WeaponPrompt");
+				std::shared_ptr<Core::Drawable> promptText;
+				if (const auto weapon = GetOwner<Weapon>())
+				{
+					promptText =
+						ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f,
+																weapon->GetName(), Util::Color(255, 255, 255), false);
+				}
+				else
+				{
+					promptText = ImagePoolManager::GetInstance().GetText(
+						RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f, "武器", Util::Color(255, 255, 255), false);
+				}
+				weaponPrompt->SetDrawable(promptText);
+				weaponPrompt->SetZIndexType(ZIndexType::UI);
+				weaponPrompt->SetZIndex(10.0f);
+				weaponPrompt->SetControlVisible(false);
+				weaponPrompt->SetInitialScale(glm::vec2(0.5f));
+				weaponPrompt->SetInitialScaleSet(true);
+
+				const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+				if (currentScene)
+				{
+					currentScene->GetPendingObjects().emplace_back(weaponPrompt);
+					weaponPrompt->SetRegisteredToScene(true);
+				}
+
+				m_PromptObject = weaponPrompt;
+			}
+			break;
+		}
+	case InteractableType::SHOP_TABLE:
+		{
+			m_InteractionCallback =
+				[this](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+			{
+				// 將 target 轉換為 ShopTable
+				if (auto shopTable = std::dynamic_pointer_cast<ShopTable>(target))
+				{
+					shopTable->PurchaseItem(interactor);
+				}
+			};
+
+			// 為商品桌子創建價格提示
+			if (!m_PromptObject)
+			{
+				auto pricePrompt = std::make_shared<nGameObject>("ShopTablePrompt");
+
+				// 從 ShopTable 取得價格資訊
+				if (auto shopTable = GetOwner<ShopTable>())
+				{
+					std::string priceText = std::to_string(shopTable->GetPrice()) + " 金幣";
+					auto promptText = std::make_shared<Util::Text>(RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f,
+																   priceText, Util::Color(255, 255, 0), false);
+					pricePrompt->SetDrawable(promptText);
+				}
+				// else
+				// {
+				// 	auto promptText = ImagePoolManager::GetInstance().GetText(
+				// 		RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f, "商品", Util::Color(255, 255, 255), false);
+				// 	pricePrompt->SetDrawable(promptText);
+				// }
+
+				pricePrompt->SetZIndexType(ZIndexType::UI);
+				pricePrompt->SetZIndex(10.0f);
+				pricePrompt->SetControlVisible(false);
+				pricePrompt->SetInitialScale(glm::vec2(0.5f));
+				pricePrompt->SetInitialScaleSet(true);
+
+				const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+				if (currentScene)
+				{
+					currentScene->GetPendingObjects().emplace_back(pricePrompt);
+					pricePrompt->SetRegisteredToScene(true);
+				}
+
+				m_PromptObject = pricePrompt;
+			}
+			break;
+		}
+	case InteractableType::HP_POISON:
+		{
+			// 從 ShopTable 取得價格資訊
+			if (auto item = GetOwner<nGameObject>())
+			{
+				std::string priceText;
+				if (item->GetName().find("small") != std::string::npos)
+				{
+					priceText = "小回復藥水";
+					m_InteractionCallback =
+						[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+					{
+						if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
+						{
+							healthComp->AddCurrentHp(1);
+							target->SetControlVisible(false);
+							target->SetActive(false);
+						}
+					};
+				}
+				else
+				{
+					priceText = "大回復藥水";
+					m_InteractionCallback =
+						[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+					{
+						if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
+						{
+							healthComp->AddCurrentHp(4);
+							target->SetControlVisible(false);
+							target->SetActive(false);
+						}
+					};
+				}
+
+				// 為商品桌子創建價格提示
+				if (!m_PromptObject)
+				{
+					auto hpPotionPromp = std::make_shared<nGameObject>("hpPotionPrompt");
+
+					auto promptText = ImagePoolManager::GetInstance().GetText(
+						RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f, priceText, Util::Color(255, 255, 0), false);
+					hpPotionPromp->SetDrawable(promptText);
+
+					hpPotionPromp->SetZIndexType(ZIndexType::UI);
+					hpPotionPromp->SetZIndex(10.0f);
+					hpPotionPromp->SetControlVisible(false);
+					hpPotionPromp->SetInitialScale(glm::vec2(0.5f));
+					hpPotionPromp->SetInitialScaleSet(true);
+
+					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+					if (currentScene)
+					{
+						currentScene->GetPendingObjects().emplace_back(hpPotionPromp);
+						hpPotionPromp->SetRegisteredToScene(true);
+					}
+
+					m_PromptObject = hpPotionPromp;
+				}
+			}
+			break;
+		}
+	case InteractableType::ENERGY_POISON:
+		{
+			// 從 ShopTable 取得價格資訊
+			if (auto item = GetOwner<nGameObject>())
+			{
+				std::string priceText;
+				if (item->GetName().find("small") != std::string::npos)
+				{
+					priceText = "小能量藥水";
+					m_InteractionCallback =
+						[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+					{
+						if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
+						{
+							healthComp->AddCurrentEnergy(50);
+							target->SetControlVisible(false);
+							target->SetActive(false);
+						}
+					};
+				}
+				else
+				{
+					priceText = "大能量藥水";
+					m_InteractionCallback =
+						[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
+					{
+						if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
+						{
+							healthComp->AddCurrentEnergy(100);
+							target->SetControlVisible(false);
+							target->SetActive(false);
+						}
+					};
+				}
+
+				// 為能量藥水創建價格提示
+				if (!m_PromptObject)
+				{
+					auto energyPotionPrompt = std::make_shared<nGameObject>("energyPotionPrompt");
+
+					auto promptText = ImagePoolManager::GetInstance().GetText(
+						RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f, priceText, Util::Color(0, 255, 255), false);
+					energyPotionPrompt->SetDrawable(promptText);
+
+					energyPotionPrompt->SetZIndexType(ZIndexType::UI);
+					energyPotionPrompt->SetZIndex(10.0f);
+					energyPotionPrompt->SetControlVisible(false);
+					energyPotionPrompt->SetInitialScale(glm::vec2(0.5f));
+					energyPotionPrompt->SetInitialScaleSet(true);
+
+					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+					if (currentScene)
+					{
+						currentScene->GetPendingObjects().emplace_back(energyPotionPrompt);
+						energyPotionPrompt->SetRegisteredToScene(true);
+					}
+
+					m_PromptObject = energyPotionPrompt;
+				}
+			}
 			break;
 		}
 	default:
@@ -181,6 +414,10 @@ void InteractableComponent::Init()
 
 void InteractableComponent::Update()
 {
+	// 如果組件非激活狀態，停止更新
+	if (!m_IsComponentActive)
+		return;
+
 	if (m_UpdateCallback)
 	{
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -210,6 +447,12 @@ bool InteractableComponent::OnInteract(const std::shared_ptr<Character> &interac
 		if (m_interactableType == InteractableType::REWARD_CHEST ||
 			m_interactableType == InteractableType::WEAPON_CHEST)
 		{
+			// 立即隱藏提示詞，避免在移除前還會顯示
+			ShowPrompt(false);
+
+			// 寶箱被開啟後停用 InteractableComponent
+			SetComponentActive(false);
+
 			if (const auto interactableManager =
 					SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager())
 			{
@@ -309,4 +552,16 @@ void InteractableComponent::UpdatePromptUIPosition(const std::shared_ptr<nGameOb
 
 	glm::vec2 promptUIPosition = owner->GetWorldCoord() + promptUIOffset;
 	m_PromptUI->SetWorldCoord(promptUIPosition);
+}
+
+void InteractableComponent::SetPromptText(const std::string &text)
+{
+	if (!m_PromptObject)
+		return;
+
+	// 嘗試將 Drawable 轉換為 Text 物件
+	if (const auto drawable = std::dynamic_pointer_cast<Util::Text>(m_PromptObject->GetDrawable()))
+	{
+		drawable->SetText(text);
+	}
 }

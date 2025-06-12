@@ -59,7 +59,7 @@ public:
 
 	// === 事件處理方法 ===
 	void OnEnemyDeathEvent(const struct EnemyDeathEvent &event);
-	void AddEnemy(const std::shared_ptr<Character>& enemy);
+	void AddEnemy(const std::shared_ptr<Character> &enemy);
 
 	// === Debug UI 功能 ===
 	void DrawDebugUI(); // 繪製房間Debug UI（包含CombatManager的Debug UI）
@@ -98,7 +98,7 @@ private:
 		// 新增方法
 		void AddWaveEnemies(int waveIndex, const std::vector<std::shared_ptr<Character>> &enemies);
 		void ActivateCurrentWaveEnemies();
-		void AddEnemyToCurrentWave(const std::shared_ptr<Character>& enemy);
+		void AddEnemyToCurrentWave(const std::shared_ptr<Character> &enemy);
 
 		// 狀態查詢
 		CombatState GetState() const { return m_CombatState; }
@@ -110,7 +110,6 @@ private:
 		void DrawDebugUI(); // 繪製Debug UI介面
 		void DebugKillCurrentWaveEnemies(); // 一鍵殺光當前波次敵人
 		void DebugKillAllEnemies(); // 一鍵殺光全部敵人結束戰鬥
-		void DebugToggleDoors(); // 開關門觸發按鈕
 
 	private:
 		MonsterRoom *m_Room;
@@ -136,7 +135,18 @@ private:
 	void SetEnemyVisible(const std::shared_ptr<Character> &enemy, bool visible); // 同時控制敵人和武器的可見性
 	void LoadCombatConfiguration();
 	void PreSpawnAllWaveEnemies(); // 預先生成所有波次的怪物
-	std::vector<glm::vec2> GenerateSpawnPositions(int count); // 生成隨機位置
+	std::vector<glm::vec2> GenerateSpawnPositions(int count); // 生成隨機位置（向後兼容）
+	std::vector<glm::vec2> GenerateSpawnPositionsWithSize(int count,
+														  const glm::vec2 &entitySize); // 根據實體大小生成位置
+	std::vector<glm::vec2> GenerateSpawnPositionsWithSizeAndExclusions(
+		int count, const glm::vec2 &entitySize,
+		const std::vector<glm::ivec2> &occupiedPositions); // 根據實體大小生成位置並避開已佔用區域
+	bool IsAreaClearForEntity(const glm::ivec2 &gridPos, int entityGridWidth,
+							  int entityGridHeight) const; // 檢查區域是否足夠容納實體
+	bool IsAreaOverlapWithOccupied(const glm::ivec2 &gridPos, int entityGridWidth, int entityGridHeight,
+								   const std::vector<glm::ivec2> &occupiedPositions) const; // 檢查是否與已佔用位置重疊
+	void RecordOccupiedPositions(const glm::vec2 &worldPos, const glm::vec2 &entitySize,
+								 std::vector<glm::ivec2> &occupiedPositions); // 記錄實體佔用的網格位置
 	void CloseDoors();
 	void OpenDoors();
 	void SpawnRewardChest();

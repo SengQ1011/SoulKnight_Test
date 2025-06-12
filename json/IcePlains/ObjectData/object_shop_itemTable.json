@@ -20,6 +20,12 @@
                 "None"
             ],
             "IsTrigger": false
+        },
+        {
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 30.0,
+            "InteractableType": "SHOP_TABLE",
+            "IsAutoInteract": false
         }
     ]
 }

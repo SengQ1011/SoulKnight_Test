@@ -6,14 +6,18 @@
 #include <iostream>
 #include <random>
 #include "Creature/Character.hpp"
+#include "Room/BossRoom.hpp"
 #include "Room/ChestRoom.hpp"
 #include "Room/DungeonRoom.hpp"
 #include "Room/MonsterRoom.hpp"
 #include "Room/PortalRoom.hpp"
+#include "Room/ShopRoom.hpp"
 #include "Room/SpecialRoom.hpp"
 #include "Room/StartingRoom.hpp"
+#include "SaveManager.hpp"
 #include "Tool/Tool.hpp"
 #include "Util/Input.hpp"
+#include "Util/Logger.hpp"
 
 void DungeonMap::Start()
 {
@@ -50,13 +54,17 @@ void DungeonMap::Start()
 			room = std::make_shared<MonsterRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
 												 glm::vec2(x, y));
 			break;
+		case RoomType::BOSS:
+			room =
+				std::make_shared<BossRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+			break;
 		case RoomType::PORTAL:
 			room = std::make_shared<PortalRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
 												glm::vec2(x, y));
 			break;
 		case RoomType::CHEST:
 			room =
-				std::make_shared<ChestRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
+				std::make_shared<ShopRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(), glm::vec2(x, y));
 			break;
 		case RoomType::SPECIAL:
 			room = std::make_shared<SpecialRoom>(roomPosition, m_Loader.lock(), m_RoomObjectFactory.lock(),
@@ -146,14 +154,32 @@ bool DungeonMap::GenerateMainPath()
 	if (!dir3Opt)
 		return false;
 	Direction dir3 = *dir3Opt;
-	glm::ivec2 portal = Move(monster2, dir3);
-	int portalIndex = portal.y * 5 + portal.x;
-	m_RoomInfo[portalIndex].m_RoomType = RoomType::PORTAL;
-	m_RoomInfo[mon2Index].m_Connections[static_cast<int>(dir3)] = true;
-	m_RoomInfo[portalIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir3))] = true;
+	glm::ivec2 finalRoom = Move(monster2, dir3);
+	int finalRoomIndex = finalRoom.y * 5 + finalRoom.x;
 
-	LOG_DEBUG("Main path: START ({}, {}) -> MON1 ({}, {}) -> MON2 ({}, {}) -> PORTAL ({}, {})", start.x, start.y,
-			  monster1.x, monster1.y, monster2.x, monster2.y, portal.x, portal.y);
+	// 檢查當前關卡是否為第5關（最後一關）
+	bool isLastStage = false;
+	if (SaveManager::GetInstance().HasSaveData())
+	{
+		auto saveData = SaveManager::GetInstance().GetSaveData();
+		if (saveData && saveData->gameProgress.currentStage == 5)
+		{
+			isLastStage = true;
+		}
+	}
+
+	// 根據是否為最後一關決定房間類型
+	if (isLastStage)
+	{
+		m_RoomInfo[finalRoomIndex].m_RoomType = RoomType::BOSS;
+	}
+	else
+	{
+		m_RoomInfo[finalRoomIndex].m_RoomType = RoomType::PORTAL;
+	}
+
+	m_RoomInfo[mon2Index].m_Connections[static_cast<int>(dir3)] = true;
+	m_RoomInfo[finalRoomIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir3))] = true;
 	return true;
 }
 
@@ -211,8 +237,6 @@ bool DungeonMap::GenerateBranches()
 		return true; // 不算失敗，只是沒有空間生成分支
 	}
 
-	LOG_DEBUG("GenerateBranches: Found {} available directions", availableDirections.size());
-
 	// Step 1: 確保生成至少 1個 CHEST 和 1個 SPECIAL
 	bool chestGenerated = false;
 	bool specialGenerated = false;
@@ -256,9 +280,6 @@ bool DungeonMap::GenerateBranches()
 
 		specialGenerated = true;
 		directionsUsed++;
-
-		LOG_DEBUG("Generated guaranteed SPECIAL at ({}, {}) from MONSTER at ({}, {})", branchPos.x, branchPos.y,
-				  monsterPos.x, monsterPos.y);
 	}
 
 	// Step 2: 剩餘方向隨機生成房間 (MONSTER: 60%, SPECIAL: 35%, CHEST: 5%)
@@ -298,12 +319,6 @@ bool DungeonMap::GenerateBranches()
 		m_RoomInfo[branchIndex].m_RoomType = branchType;
 		m_RoomInfo[monsterIndex].m_Connections[static_cast<int>(dir)] = true;
 		m_RoomInfo[branchIndex].m_Connections[static_cast<int>(GetOppositeDirection(dir))] = true;
-
-		const char *roomTypeName = (branchType == RoomType::MONSTER) ? "MONSTER"
-			: (branchType == RoomType::SPECIAL)						 ? "SPECIAL"
-																	 : "CHEST";
-		LOG_DEBUG("Generated random {} at ({}, {}) from MONSTER at ({}, {})", roomTypeName, branchPos.x, branchPos.y,
-				  monsterPos.x, monsterPos.y);
 	}
 
 	// Step 3: 建立相鄰分支房間的連接（排除 STARTING/PORTAL）
@@ -316,9 +331,9 @@ void DungeonMap::GenerateAdjacentConnections()
 {
 	for (int i = 0; i < 25; ++i)
 	{
-		// 跳過空房間、STARTING 和 PORTAL 房間
+		// 跳過空房間、STARTING、PORTAL 和 BOSS 房間
 		if (m_RoomInfo[i].m_RoomType == RoomType::EMPTY || m_RoomInfo[i].m_RoomType == RoomType::STARTING ||
-			m_RoomInfo[i].m_RoomType == RoomType::PORTAL)
+			m_RoomInfo[i].m_RoomType == RoomType::PORTAL || m_RoomInfo[i].m_RoomType == RoomType::BOSS)
 			continue;
 
 		const int x = i % 5;
@@ -350,10 +365,11 @@ void DungeonMap::GenerateAdjacentConnections()
 
 			int neighborIndex = neighborPos.y * 5 + neighborPos.x;
 
-			// 如果相鄰房間存在且不是 STARTING/PORTAL，建立連接
+			// 如果相鄰房間存在且不是 STARTING/PORTAL/BOSS，建立連接
 			if (m_RoomInfo[neighborIndex].m_RoomType != RoomType::EMPTY &&
 				m_RoomInfo[neighborIndex].m_RoomType != RoomType::STARTING &&
-				m_RoomInfo[neighborIndex].m_RoomType != RoomType::PORTAL)
+				m_RoomInfo[neighborIndex].m_RoomType != RoomType::PORTAL &&
+				m_RoomInfo[neighborIndex].m_RoomType != RoomType::BOSS)
 			{
 				// 檢查是否已經有連接，避免重複設置
 				if (!m_RoomInfo[i].m_Connections[static_cast<int>(dir)])

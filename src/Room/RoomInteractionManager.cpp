@@ -16,7 +16,22 @@ void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObj
 	const auto comp = interactable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE);
 	if (!comp)
 		return;
-	LOG_DEBUG("Successfully registered interactable");
+
+	// 檢查是否已經註冊，避免重複註冊
+	for (const auto &entry : m_InteractableObjects)
+	{
+		if (!entry.obj.expired())
+		{
+			auto obj = entry.obj.lock();
+			if (obj && obj.get() == interactable.get())
+			{
+				LOG_DEBUG("Interactable already registered, skipping: {}", interactable->GetName());
+				return;
+			}
+		}
+	}
+
+	LOG_DEBUG("Successfully registered interactable: {}", interactable->GetName());
 	InteractableEntry entry;
 	entry.obj = interactable;
 	entry.comp = comp; // shared_ptr → weak_ptr 自動轉換
@@ -47,27 +62,27 @@ std::shared_ptr<nGameObject> RoomInteractionManager::GetClosestInteractable(floa
 	auto player = m_Player.lock();
 	if (!player)
 		return nullptr;
+
 	// 記錄最靠近的object和距離
 	std::shared_ptr<nGameObject> closestInteractable = nullptr;
 	float closestDistance = maxRadius;
 
-	for (const auto &entry : m_InteractableObjects) // 不能并行因爲會改變外面值
+	for (const auto &entry : m_InteractableObjects)
 	{
-		LOG_DEBUG("RoomInteractionManager::GetClosestInteractable");
-
 		// 先檢查 weak_ptr 是否已經失效
 		if (entry.obj.expired() || entry.comp.expired())
 			continue;
 
 		auto obj = entry.obj.lock();
 		auto comp = entry.comp.lock();
-		if (!obj || !comp)
+		if (!obj || !comp || !comp->IsComponentActive())
 			continue;
 
 		try
 		{
-			if (const float distance = glm::length(obj->GetWorldCoord() - player->GetWorldCoord()); // 取得之間距離
-				distance < closestDistance && distance <= comp->GetInteractionRadius()) // 小於最靠近距離 在互動範圍裏
+			// 修正：兩個 nGameObject 之間的距離計算
+			const float distance = glm::length(obj->GetWorldCoord() - player->GetWorldCoord());
+			if (distance < closestDistance && distance <= comp->GetInteractionRadius())
 			{
 				closestInteractable = obj;
 				closestDistance = distance;
@@ -171,17 +186,23 @@ void RoomInteractionManager::Update()
 		++it;
 	}
 
-	// 第二階段：處理收集到的有效物件
+	// 第二階段：使用現有方法找到最靠近的可互動物件
+	std::shared_ptr<nGameObject> closestInteractable = GetClosestInteractable(1000.0f);
+
+	// 第三階段：處理所有物件的顯示和自動互動
 	for (const auto &[obj, comp] : validObjects)
 	{
 		try
 		{
-			// 再次檢查物件是否仍然有效（可能在前面的處理中被銷毀）
-			if (!obj || !comp || !obj->IsActive())
+			// 再次檢查物件是否仍然有效
+			if (!obj || !comp || !obj->IsActive() || !comp->IsComponentActive())
 				continue;
 
 			const bool inRange = comp->IsInRange(player);
-			comp->ShowPrompt(inRange);
+
+			// 只有最靠近的物件才顯示提示
+			const bool shouldShowPrompt = inRange && (obj == closestInteractable);
+			comp->ShowPrompt(shouldShowPrompt);
 
 			// 若是自動互動的，直接觸發
 			if (inRange && comp->IsAutoInteract())

@@ -45,6 +45,7 @@ set(SRC_FILES
     ObserveManager/AudioManager.cpp
     ObserveManager/InputManager.cpp
     ObserveManager/TrackingManager.cpp
+    Room/BossRoom.cpp
     Room/ChestRoom.cpp
     Room/CollisionOptimizer.cpp
     Room/DungeonMap.cpp
@@ -58,6 +59,7 @@ set(SRC_FILES
     Room/RoomCollisionManager.cpp
     Room/RoomInteractionManager.cpp
     Room/RoomLayoutManager.cpp
+    Room/ShopRoom.cpp
     Room/SpecialRoom.cpp
     Room/StartingRoom.cpp
     Room/UniformGrid.cpp
@@ -73,6 +75,7 @@ set(SRC_FILES
     Scene/SceneManager.cpp
     Scene/Test_Scene_JX.cpp
     Scene/Test_Scene_KC.cpp
+    Shop/ShopTable.cpp
     Skill/FullFirepower.cpp
     Struct/CircleShape.cpp
     Struct/RectShape.cpp
@@ -166,6 +169,7 @@ set(INCLUDE_FILES
     Observer.hpp
     Override/nGameObject.hpp
     RandomUtil.hpp
+    Room/BossRoom.hpp
     Room/ChestRoom.hpp
     Room/CollisionOptimizer.hpp
     Room/DungeonMap.hpp
@@ -178,6 +182,7 @@ set(INCLUDE_FILES
     Room/RoomCollisionManager.hpp
     Room/RoomInteractionManager.hpp
     Room/RoomLayoutManager.hpp
+    Room/ShopRoom.hpp
     Room/SpecialRoom.hpp
     Room/StartingRoom.hpp
     Room/UniformGrid.hpp
@@ -194,6 +199,7 @@ set(INCLUDE_FILES
     Scene/SceneManager.hpp
     Scene/Test_Scene_JX.hpp
     Scene/Test_Scene_KC.hpp
+    Shop/ShopTable.hpp
     Skill/FullFirepower.hpp
     Skill/Skill.hpp
     StructType.hpp

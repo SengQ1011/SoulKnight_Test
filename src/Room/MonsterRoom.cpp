@@ -214,9 +214,10 @@ void MonsterRoom::OnEnemyDeathEvent(const EnemyDeathEvent &event)
 	m_CombatManager.OnEnemyDied();
 }
 
-void MonsterRoom::AddEnemy(const std::shared_ptr<Character>& enemy)
+void MonsterRoom::AddEnemy(const std::shared_ptr<Character> &enemy)
 {
-	if (!enemy) {
+	if (!enemy)
+	{
 		LOG_ERROR("MonsterRoom::AddEnemy: Enemy is null");
 		return;
 	}
@@ -233,6 +234,7 @@ void MonsterRoom::AddEnemy(const std::shared_ptr<Character>& enemy)
 std::shared_ptr<Character> MonsterRoom::SpawnEnemy(int enemyType, glm::vec2 position)
 {
 	auto enemy = CharacterFactory::GetInstance().createEnemy(enemyType);
+	// auto enemy = CharacterFactory::GetInstance().createEnemy(101);
 	enemy->m_WorldCoord = position;
 	enemy->SetActive(false); // 默認未激活，等待波次開始
 	SetEnemyVisible(enemy, false);
@@ -279,16 +281,8 @@ void MonsterRoom::LoadCombatConfiguration()
 
 void MonsterRoom::PreSpawnAllWaveEnemies()
 {
-	// 生成足夠的隨機位置（所有波次的怪物總數）
-	int totalEnemies = 0;
-	for (const auto &config : m_WaveConfigs)
-	{
-		totalEnemies += config.enemyCount;
-	}
-
-	std::vector<glm::vec2> allPositions = GenerateSpawnPositions(totalEnemies);
-	int positionIndex = 0;
-
+	// 改進的算法：為每個怪物單獨生成適合其體型的位置
+	std::vector<glm::ivec2> occupiedPositions; // 追蹤已佔用的網格位置
 
 	// 為每個波次生成怪物
 	for (size_t waveIndex = 0; waveIndex < m_WaveConfigs.size(); ++waveIndex)
@@ -299,29 +293,53 @@ void MonsterRoom::PreSpawnAllWaveEnemies()
 		// 生成當前波次的怪物
 		for (int enemyIndex = 0; enemyIndex < config.enemyCount; ++enemyIndex)
 		{
-			if (positionIndex >= static_cast<int>(allPositions.size()))
+			int enemyType = config.enemyTypes[enemyIndex];
+
+			// 首先創建怪物以獲取其體型信息
+			auto tempEnemy = CharacterFactory::GetInstance().createEnemy(enemyType);
+			if (!tempEnemy)
 			{
-				LOG_ERROR("Not enough spawn positions! Needed {}, got {}", totalEnemies, allPositions.size());
-				break;
+				LOG_ERROR("Failed to create enemy type {} for size checking", enemyType);
+				continue;
 			}
 
-			int enemyType = config.enemyTypes[enemyIndex];
-			glm::vec2 position = allPositions[positionIndex++];
+			// 獲取怪物的實際體型
+			glm::vec2 enemySize(16.0f, 16.0f); // 預設大小
+			if (auto collisionComp = tempEnemy->GetComponent<CollisionComponent>(ComponentType::COLLISION))
+			{
+				enemySize = collisionComp->GetSize();
+			}
 
+			// 生成適合該體型的位置（避開已佔用位置）
+			auto availablePositions = GenerateSpawnPositionsWithSizeAndExclusions(1, enemySize, occupiedPositions);
+
+			if (availablePositions.empty())
+			{
+				LOG_WARN("No available position for enemy type {} with size {}x{}", enemyType, enemySize.x,
+						 enemySize.y);
+				continue;
+			}
+
+			glm::vec2 position = availablePositions[0];
+
+			// 記錄此怪物佔用的網格位置
+			RecordOccupiedPositions(position, enemySize, occupiedPositions);
+
+			// 設置怪物位置並添加到場景
 			auto enemy = SpawnEnemy(enemyType, position);
 			if (enemy)
 			{
 				waveEnemies.push_back(enemy);
+
+				// 顯示第一波次敵人
+				if (waveIndex == 0)
+				{
+					SetEnemyVisible(enemy, true);
+				}
 			}
 			else
 			{
 				LOG_ERROR("Failed to spawn enemy type {}", enemyType);
-			}
-
-			// 顯示第一波次敵人
-			if (waveIndex == 0)
-			{
-				SetEnemyVisible(enemy, true);
 			}
 		}
 
@@ -331,6 +349,12 @@ void MonsterRoom::PreSpawnAllWaveEnemies()
 }
 
 std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositions(int count)
+{
+	// 使用預設體型進行向後兼容
+	return GenerateSpawnPositionsWithSize(count, glm::vec2(16.0f, 16.0f));
+}
+
+std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositionsWithSize(int count, const glm::vec2 &entitySize)
 {
 	std::vector<glm::vec2> positions;
 	const glm::vec2 &tileSize = m_RoomSpaceInfo.m_TileSize;
@@ -343,29 +367,34 @@ std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositions(int count)
 	const int roomWidth = static_cast<int>(roomSize.x);
 	const int roomHeight = static_cast<int>(roomSize.y);
 
-	// 修正：計算房間內部可生成的區域（避免邊界）
+	// 計算實體需要佔用的網格大小
+	const int entityGridWidth = static_cast<int>(std::ceil(entitySize.x / tileSize.x));
+	const int entityGridHeight = static_cast<int>(std::ceil(entitySize.y / tileSize.y));
+
+	// 修正：計算房間內部可生成的區域（避免邊界，並考慮實體大小）
 	const int centerX = regionWidth / 2;
 	const int centerY = regionHeight / 2;
 	const int startX = centerX - roomWidth / 2 + 1; // 避開邊界牆壁
 	const int startY = centerY - roomHeight / 2 + 1;
-	const int endX = centerX + roomWidth / 2 - 1;
-	const int endY = centerY + roomHeight / 2 - 1;
+	const int endX = centerX + roomWidth / 2 - 1 - (entityGridWidth - 1); // 減去實體寬度
+	const int endY = centerY + roomHeight / 2 - 1 - (entityGridHeight - 1); // 減去實體高度
 
 	// 確保範圍有效
 	if (startX >= endX || startY >= endY)
 	{
-		LOG_ERROR("Invalid spawn area: startX={}, endX={}, startY={}, endY={}", startX, endX, startY, endY);
+		LOG_ERROR("Invalid spawn area for entity size {}x{}: startX={}, endX={}, startY={}, endY={}", entitySize.x,
+				  entitySize.y, startX, endX, startY, endY);
 		return positions;
 	}
 
-	// 創建可用位置列表（使用新的網格系統）
+	// 創建可用位置列表（使用體型感知的檢查）
 	std::vector<glm::ivec2> availablePositions;
 	for (int row = startY; row < endY; ++row)
 	{
 		for (int col = startX; col < endX; ++col)
 		{
-			// 使用新的網格系統檢查位置是否被阻擋
-			if (!IsGridPositionBlocked(row, col))
+			// 檢查實體佔用的所有網格是否都可用
+			if (IsAreaClearForEntity({col, row}, entityGridWidth, entityGridHeight))
 			{
 				availablePositions.push_back({col, row});
 			}
@@ -375,7 +404,8 @@ std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositions(int count)
 	// 檢查是否有足夠的可用位置
 	if (availablePositions.size() < static_cast<size_t>(count))
 	{
-		LOG_ERROR("Not enough available positions! Requested: {}, Available: {}", count, availablePositions.size());
+		LOG_WARN("Not enough available positions for entity size {}x{}! Requested: {}, Available: {}", entitySize.x,
+				 entitySize.y, count, availablePositions.size());
 		// 返回所有可用位置，而不是失敗
 		count = static_cast<int>(availablePositions.size());
 	}
@@ -384,15 +414,147 @@ std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositions(int count)
 	std::mt19937 rng(std::random_device{}());
 	std::shuffle(availablePositions.begin(), availablePositions.end(), rng);
 
-	// 轉換為世界座標
+	// 轉換為世界座標（格子左上角 → 實體中心）
 	for (int i = 0; i < count && i < static_cast<int>(availablePositions.size()); ++i)
 	{
 		const glm::ivec2 &gridPos = availablePositions[i];
-		glm::vec2 worldPos = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
-		positions.push_back(worldPos);
+		// 獲取格子左上角的世界座標
+		glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
+
+		// 計算實體中心的世界座標
+		glm::vec2 entityCenter = gridTopLeft + glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+
+		positions.push_back(entityCenter);
 	}
 
 	return positions;
+}
+
+bool MonsterRoom::IsAreaClearForEntity(const glm::ivec2 &gridPos, int entityGridWidth, int entityGridHeight) const
+{
+	// 檢查實體佔用的所有網格是否都可用
+	for (int row = gridPos.y; row < gridPos.y + entityGridHeight; ++row)
+	{
+		for (int col = gridPos.x; col < gridPos.x + entityGridWidth; ++col)
+		{
+			// 檢查網格是否超出邊界或被阻擋
+			if (IsGridPositionBlocked(row, col))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositionsWithSizeAndExclusions(int count, const glm::vec2 &entitySize,
+														 const std::vector<glm::ivec2> &occupiedPositions)
+{
+	std::vector<glm::vec2> positions;
+	const glm::vec2 &tileSize = m_RoomSpaceInfo.m_TileSize;
+	const glm::vec2 &roomSize = m_RoomSpaceInfo.m_RoomSize;
+	const glm::vec2 &region = m_RoomSpaceInfo.m_RoomRegion;
+	const glm::vec2 &roomCoord = m_RoomSpaceInfo.m_WorldCoord;
+
+	const int regionWidth = static_cast<int>(region.x);
+	const int regionHeight = static_cast<int>(region.y);
+	const int roomWidth = static_cast<int>(roomSize.x);
+	const int roomHeight = static_cast<int>(roomSize.y);
+
+	// 計算實體需要佔用的網格大小
+	const int entityGridWidth = static_cast<int>(std::ceil(entitySize.x / tileSize.x));
+	const int entityGridHeight = static_cast<int>(std::ceil(entitySize.y / tileSize.y));
+
+	// 計算可生成區域
+	const int centerX = regionWidth / 2;
+	const int centerY = regionHeight / 2;
+	const int startX = centerX - roomWidth / 2 + 1;
+	const int startY = centerY - roomHeight / 2 + 1;
+	const int endX = centerX + roomWidth / 2 - 1 - (entityGridWidth - 1);
+	const int endY = centerY + roomHeight / 2 - 1 - (entityGridHeight - 1);
+
+	if (startX >= endX || startY >= endY)
+	{
+		LOG_WARN("Invalid spawn area for entity size {}x{}", entitySize.x, entitySize.y);
+		return positions;
+	}
+
+	// 創建可用位置列表
+	std::vector<glm::ivec2> availablePositions;
+	for (int row = startY; row < endY; ++row)
+	{
+		for (int col = startX; col < endX; ++col)
+		{
+			// 檢查是否與已佔用位置重疊
+			if (IsAreaOverlapWithOccupied({col, row}, entityGridWidth, entityGridHeight, occupiedPositions))
+			{
+				continue;
+			}
+
+			// 檢查實體佔用的所有網格是否都可用
+			if (IsAreaClearForEntity({col, row}, entityGridWidth, entityGridHeight))
+			{
+				availablePositions.push_back({col, row});
+			}
+		}
+	}
+
+	// 隨機選擇位置
+	std::mt19937 rng(std::random_device{}());
+	std::shuffle(availablePositions.begin(), availablePositions.end(), rng);
+
+	// 轉換為世界座標
+	int actualCount = std::min(count, static_cast<int>(availablePositions.size()));
+	for (int i = 0; i < actualCount; ++i)
+	{
+		const glm::ivec2 &gridPos = availablePositions[i];
+		glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
+		glm::vec2 entityCenter = gridTopLeft + glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+		positions.push_back(entityCenter);
+	}
+
+	return positions;
+}
+
+bool MonsterRoom::IsAreaOverlapWithOccupied(const glm::ivec2 &gridPos, int entityGridWidth, int entityGridHeight,
+											const std::vector<glm::ivec2> &occupiedPositions) const
+{
+	// 檢查新實體的佔用區域是否與已佔用位置重疊
+	for (const auto &occupied : occupiedPositions)
+	{
+		// 簡單矩形重疊檢測
+		if (gridPos.x < occupied.x + 1 && gridPos.x + entityGridWidth > occupied.x && gridPos.y < occupied.y + 1 &&
+			gridPos.y + entityGridHeight > occupied.y)
+		{
+			return true; // 有重疊
+		}
+	}
+	return false; // 無重疊
+}
+
+void MonsterRoom::RecordOccupiedPositions(const glm::vec2 &worldPos, const glm::vec2 &entitySize,
+										  std::vector<glm::ivec2> &occupiedPositions)
+{
+	const glm::vec2 &tileSize = m_RoomSpaceInfo.m_TileSize;
+	const glm::vec2 &roomCoord = m_RoomSpaceInfo.m_WorldCoord;
+	const glm::vec2 &region = m_RoomSpaceInfo.m_RoomRegion;
+
+	// 計算實體佔用的網格大小
+	const int entityGridWidth = static_cast<int>(std::ceil(entitySize.x / tileSize.x));
+	const int entityGridHeight = static_cast<int>(std::ceil(entitySize.y / tileSize.y));
+
+	// 計算實體左上角對應的網格位置
+	glm::vec2 entityTopLeft = worldPos - glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+	glm::ivec2 startGrid = Tool::WorldToRoomGrid(entityTopLeft, tileSize, roomCoord, region);
+
+	// 記錄所有佔用的網格位置
+	for (int row = startGrid.y; row < startGrid.y + entityGridHeight; ++row)
+	{
+		for (int col = startGrid.x; col < startGrid.x + entityGridWidth; ++col)
+		{
+			occupiedPositions.push_back({col, row});
+		}
+	}
 }
 
 void MonsterRoom::CloseDoors()
@@ -419,7 +581,20 @@ void MonsterRoom::SpawnRewardChest()
 {
 	if (const auto rewardChest = CreateChest(ChestType::REWARD))
 	{
-		rewardChest->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		// 使用與怪物生成相同的隨機位置邏輯
+		std::vector<glm::vec2> availablePositions = GenerateSpawnPositions(1);
+
+		if (!availablePositions.empty())
+		{
+			// 設置寶箱位置為隨機空地
+			rewardChest->SetWorldCoord(availablePositions[0]);
+		}
+		else
+		{
+			// 如果沒有可用位置，則放在房間中心作為備選方案
+			LOG_WARN("No available positions for reward chest, placing at room center");
+			rewardChest->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		}
 	}
 }
 
@@ -515,9 +690,10 @@ void MonsterRoom::CombatManager::ActivateCurrentWaveEnemies()
 	}
 }
 
-void MonsterRoom::CombatManager::AddEnemyToCurrentWave(const std::shared_ptr<Character>& enemy)
+void MonsterRoom::CombatManager::AddEnemyToCurrentWave(const std::shared_ptr<Character> &enemy)
 {
-	if (m_CurrentWave >= 0 && m_CurrentWave < static_cast<int>(m_AllWaveEnemies.size())) {
+	if (m_CurrentWave >= 0 && m_CurrentWave < static_cast<int>(m_AllWaveEnemies.size()))
+	{
 		m_AllWaveEnemies[m_CurrentWave].push_back(enemy);
 	}
 }
@@ -796,9 +972,16 @@ void MonsterRoom::CombatManager::DrawDebugUI()
 
 		// === 門控制 ===
 		ImGui::Separator();
-		if (ImGui::Button("Toggle Doors"))
+		if (ImGui::Button("Open Doors"))
 		{
-			DebugToggleDoors();
+			DoorOpenEvent openEvent;
+			EventManager::GetInstance().Emit(openEvent);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Close Doors"))
+		{
+			DoorCloseEvent closeEvent;
+			EventManager::GetInstance().Emit(closeEvent);
 		}
 
 		// === 詳細波次信息 ===
@@ -897,27 +1080,4 @@ void MonsterRoom::CombatManager::DebugKillAllEnemies()
 	EndCombat();
 
 	LOG_INFO("Debug: Killed all {} enemies and ended combat", totalKilled);
-}
-
-void MonsterRoom::CombatManager::DebugToggleDoors()
-{
-	// if (!m_Room)
-	// {
-	// 	LOG_WARN("DebugToggleDoors: Room pointer is null");
-	// 	return;
-	// }
-	//
-	// if (m_Doors->GetComponent<DoorComponent>(ComponentType::DOOR)->GetCurrentState() == DoorComponent::State::OPENED)
-	// // 檢查當前門狀態，切換開關
-	// // 如果戰鬥中，打開門；如果非戰鬥中，關閉門
-	// if (IsInCombat())
-	// {
-	// 	m_Room->OpenDoors();
-	// 	LOG_INFO("Debug: Opened doors during combat");
-	// }
-	// else
-	// {
-	// 	m_Room->CloseDoors();
-	// 	LOG_INFO("Debug: Closed doors outside combat");
-	// }
 }

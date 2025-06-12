@@ -7,24 +7,24 @@
 
 enum class ComponentType
 {
-	AI,				 // 0
-	ANIMATION,		 // 1
-	ATTACK,			 // 2
-	CHEST,			 // 3
-	COLLISION,		 // 4
-	DOOR,			 // 5
-	EFFECT_ATTACK,	 // 6
-	FLICKER,		 // 7
-	FOLLOWER,		 // 8
-	HEALTH,			 // 9
-	INPUT,			 // 10
-	INTERACTABLE,	 // 11
-	MOVEMENT,		 // 12
-	PROJECTILE,		 // 13
-	SKILL,			 // 14
-	STATE,			 // 15
-	TALENT,			 // 16
-	WALLET,			 // 17
+	AI, // 0
+	ANIMATION, // 1
+	ATTACK, // 2
+	CHEST, // 3
+	COLLISION, // 4
+	DOOR, // 5
+	EFFECT_ATTACK, // 6
+	FLICKER, // 7
+	FOLLOWER, // 8
+	HEALTH, // 9
+	INPUT, // 10
+	INTERACTABLE, // 11
+	MOVEMENT, // 12
+	PROJECTILE, // 13
+	SKILL, // 14
+	STATE, // 15
+	TALENT, // 16
+	WALLET, // 17
 	DESTRUCTIBLE_EFFECT,
 	DROP,
 };
@@ -53,12 +53,12 @@ enum class State
 enum class StatusEffect
 {
 	NONE,
-	BURNS,		// 灼燒
-	POISON,		// 中毒
-	ELECTRIC,	// 感電
-	DIZZINESS,	// 眩暈
-	FROZEN,		// 冰凍
-	FATIGUE		// 疲勞
+	BURNS, // 灼燒
+	POISON, // 中毒
+	ELECTRIC, // 感電
+	DIZZINESS, // 眩暈
+	FROZEN, // 冰凍
+	FATIGUE // 疲勞
 };
 
 enum class EffectAttackType
@@ -96,26 +96,26 @@ enum class WeaponType
 {
 	NONE,
 	// Melee
-	SWORD,				// 刀劍
-	HAMMER,				// 錘子
-	AXEnCLUB,			// 斧頭or棍棒
-	SPEAR,				// 長槍/長矛
+	SWORD, // 刀劍
+	HAMMER, // 錘子
+	AXEnCLUB, // 斧頭or棍棒
+	SPEAR, // 長槍/長矛
 	// Gun
-	PISTOL,				// 手槍
-	RIFLE,				// 步槍
-	SNIPER,				// 狙擊槍
-	SHOTGUN,			// 霰彈槍
-	ROCKET_LAUNCHER,	// 火箭炮
-	BOWnCROSSBOW,		// 弓or弩
-	STAFF,				// 法杖
+	PISTOL, // 手槍
+	RIFLE, // 步槍
+	SNIPER, // 狙擊槍
+	SHOTGUN, // 霰彈槍
+	ROCKET_LAUNCHER, // 火箭炮
+	BOWnCROSSBOW, // 弓or弩
+	STAFF, // 法杖
 };
 
 
 enum class MonsterType
 {
-	WANDER,		// 游蕩
-	ATTACK,		// 追蹤玩家
-	SUMMON,		// 召喚
+	WANDER, // 游蕩
+	ATTACK, // 追蹤玩家
+	SUMMON, // 召喚
 	BOSS
 };
 
@@ -144,12 +144,12 @@ enum class ManagerTypes
 
 enum ZIndexType : int
 {
-	FLOOR		= 0,	//  0 -  20
-	OBJECTLOW	= 20,	// 20 -  40
-	ATTACK		= 40,	// 40 -  60
-	OBJECTHIGH	= 60,	// 60 -  80
-	UI			= 80,	// 80 -  99
-	CUSTOM		=100,   // dont care
+	FLOOR = 0, //  0 -  20
+	OBJECTLOW = 20, // 20 -  40
+	ATTACK = 40, // 40 -  60
+	OBJECTHIGH = 60, // 60 -  80
+	UI = 80, // 80 -  99
+	CUSTOM = 100, // dont care
 };
 
 enum class ChestType
@@ -168,7 +168,7 @@ enum class InteractableType
 {
 	NONE,
 	PORTAL,
-	SHOP,
+	SHOP_TABLE,
 	NPC_DIALOGUE,
 	REWARD_CHEST,
 	WEAPON_CHEST,
@@ -176,7 +176,19 @@ enum class InteractableType
 	ENERGY_BALL,
 	WEAPON,
 	HP_POISON,
-	ENERGY_POISON
+	ENERGY_POISON,
+};
+
+enum class PotionType
+{
+	HEALTH,
+	ENERGY
+};
+
+enum class PotionSize
+{
+	SMALL,
+	BIG
 };
 
 enum class EntityCategory

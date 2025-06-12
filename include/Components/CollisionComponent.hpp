@@ -58,6 +58,7 @@ public:
 
 	// Getter
 	[[nodiscard]] Rect GetBounds() const;
+	[[nodiscard]] glm::vec2 GetSize() const { return m_Size; };
 	[[nodiscard]] std::shared_ptr<AreaShape> GetAreaShape() const; // 新添加
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const { return m_CollisionLayer; }
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const { return m_CollisionMask; }

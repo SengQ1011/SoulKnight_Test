@@ -5,16 +5,20 @@
 #ifndef ROOMOBJECTFACTORY_HPP
 #define ROOMOBJECTFACTORY_HPP
 
+#include "EnumTypes.hpp"
 #include "Factory.hpp"
 #include "glm/glm.hpp"
 
 
 enum class MineType;
+enum class ShopItemType;
 class DestructibleObject;
 class Loader;
 class nGameObject;
 class Character;
 enum class ChestType;
+
+// 藥水相關枚舉已移至 EnumTypes.hpp
 
 /// @brief:建造RoomObject前必須設置ScenePath(從Room取得)
 class RoomObjectFactory : public Factory
@@ -34,7 +38,15 @@ public:
 	// 寶箱創建方法
 	std::shared_ptr<nGameObject> CreateChest(ChestType type, const std::shared_ptr<Character> &player);
 
+	// 商店桌子創建方法
+	std::shared_ptr<nGameObject> CreateShopTable(ShopItemType itemType, int price,
+												 const std::shared_ptr<Character> &player,
+												 PotionSize potionSize = PotionSize::SMALL);
+
 	std::shared_ptr<DestructibleObject> CreateMine(MineType type);
+
+	// 藥水創建方法
+	std::shared_ptr<nGameObject> CreatePotion(PotionType potionType, PotionSize potionSize = PotionSize::SMALL);
 
 	// 掉落物品創建方法
 	std::vector<std::shared_ptr<nGameObject>> CreateDropItems(const std::string &itemType, int quantity,

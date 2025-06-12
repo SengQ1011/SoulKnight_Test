@@ -83,10 +83,7 @@ void ChestComponent::ChestOpened()
 	if (m_drawables.size() > 1)
 		chest->SetDrawable(m_drawables[1]); // 開啟狀態的圖片
 
-	// 發送寶箱開啟事件，讓 DropComponent 處理掉落
-	const auto owner = GetOwner<nGameObject>();
-	if (!owner)
-		return;
 	ChestOpenEvent chestOpenEvent;
-	owner->OnEvent(chestOpenEvent);
+	chest->OnEvent(chestOpenEvent);
+	chest->SetActive(false);
 }

@@ -322,6 +322,7 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id)
 			if (haveWeapon == 0 && isCollisionAttack)
 				collisionComp->AddCollisionMask(CollisionLayers_Player);
 			collisionComp->AddCollisionMask(CollisionLayers_Terrain);
+			collisionComp->AddCollisionMask(CollisionLayers_DestructibleTerrain);
 			collisionComp->AddCollisionMask(CollisionLayers_Player_Projectile);
 			collisionComp->AddCollisionMask(CollisionLayers_Player_EffectAttack);
 			collisionComp->SetSize(glm::vec2(bodySize));

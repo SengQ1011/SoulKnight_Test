@@ -19,6 +19,7 @@
 #include "Components/ChestComponent.hpp"
 #include "Components/DestructibleEffectComponent.hpp"
 #include "Components/DropComponent.hpp"
+#include "Components/WalletComponent.hpp"
 #include "Creature/Character.hpp"
 #include "DestructionEffects/ExplosionEffect.hpp"
 #include "DestructionEffects/IceSpikeEffect.hpp"
@@ -27,6 +28,7 @@
 #include "Factory/WeaponFactory.hpp"
 #include "RandomUtil.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Shop/ShopTable.hpp"
 
 
 // class可能是指定類型再用， 目前都是RoomObject
@@ -117,6 +119,10 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 					}
 				}
 			}
+		}
+		else if (_class == "ShopTable")
+		{
+			roomObject = std::make_shared<ShopTable>(_id, _class);
 		}
 		else
 		{
@@ -406,6 +412,130 @@ std::shared_ptr<DestructibleObject> RoomObjectFactory::CreateMine(MineType type)
 	return mine;
 }
 
+std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType itemType, int price,
+																const std::shared_ptr<Character> &player,
+																PotionSize potionSize)
+{
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+
+	// 使用基本的商品桌子對象
+	auto shopTableBase = CreateRoomObject("object_shop_itemTable", "ShopTable");
+	if (!shopTableBase)
+		return nullptr;
+
+	// 轉換為 ShopTable 類型並初始化
+	auto shopTable = std::dynamic_pointer_cast<ShopTable>(shopTableBase);
+	if (!shopTable)
+		return nullptr;
+
+	std::string tableName = "ShopTable_" + std::to_string(static_cast<int>(itemType));
+	shopTable->Initialize(tableName, itemType, price, potionSize);
+	if (const auto interactableComp = shopTable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+	{
+		std::string priceText = std::to_string(price) + " 金幣";
+		interactableComp->SetPromptText(priceText);
+	}
+
+	// 創建商品並設置在桌子上方
+	std::shared_ptr<nGameObject> currentItem = nullptr;
+	glm::vec2 itemOffset = glm::vec2(0, -20); // 商品在桌子上方20像素
+
+	switch (itemType)
+	{
+	case ShopItemType::HEALTH_POTION:
+		{
+			currentItem = CreatePotion(PotionType::HEALTH, potionSize);
+			break;
+		}
+	case ShopItemType::ENERGY_POTION:
+		{
+			currentItem = CreatePotion(PotionType::ENERGY, potionSize);
+			break;
+		}
+	case ShopItemType::WEAPON:
+		{
+			// 獲取玩家現有武器ID列表，避免重複
+			std::vector<int> allPlayerWeaponID;
+			if (auto attackComp = player->GetComponent<AttackComponent>(ComponentType::ATTACK))
+			{
+				allPlayerWeaponID = attackComp->GetAllWeaponID();
+			}
+
+			// 創建隨機武器
+			currentItem = WeaponFactory::createRandomWeapon(allPlayerWeaponID);
+			if (!currentItem)
+			{
+				LOG_ERROR("Failed to create random weapon for shop");
+				return shopTable;
+			}
+			break;
+		}
+	}
+
+	// 設置商品位置和狀態
+	if (currentItem && currentScene)
+	{
+		// 設置當前商品引用，桌子會在 Update 中更新商品位置
+		shopTable->SetCurrentItem(currentItem);
+		currentItem->SetWorldCoord(shopTable->GetWorldCoord() + itemOffset);
+		currentItem->SetZIndexType(UI);
+
+		// 註冊商品到場景
+		if (itemType == ShopItemType::WEAPON)
+		{
+			// currentScene->GetRoot().lock()->AddChild(currentItem);
+			// currentScene->GetCamera().lock()->SafeAddChild(currentItem);
+			currentScene->GetPendingObjects().emplace_back(currentItem);
+			currentItem->SetRegisteredToScene(true);
+			currentItem->SetControlVisible(true);
+		}
+		else
+		{
+			currentScene->GetPendingObjects().emplace_back(currentItem);
+			currentItem->SetRegisteredToScene(true);
+		}
+
+		// 將商品的 InteractableComponent 設為不活躍（購買前不能直接拾取）
+		if (auto itemInteractable = currentItem->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+		{
+			itemInteractable->SetComponentActive(false);
+		}
+	}
+
+	return shopTable;
+}
+
+std::shared_ptr<nGameObject> RoomObjectFactory::CreatePotion(PotionType potionType, PotionSize potionSize)
+{
+	// 根據藥水類型和大小決定 JSON ID
+	std::string jsonId;
+
+	switch (potionType)
+	{
+	case PotionType::HEALTH:
+		jsonId = (potionSize == PotionSize::SMALL) ? "object_smallHealthPotion" : "object_bigHealthPotion";
+		break;
+
+	case PotionType::ENERGY:
+		jsonId = (potionSize == PotionSize::SMALL) ? "object_smallEnergyPotion" : "object_bigEnergyPotion";
+		break;
+
+	default:
+		LOG_ERROR("Unknown potion type");
+		return nullptr;
+	}
+
+	// 使用 JSON 配置創建藥水（會自動創建 InteractableComponent）
+	std::shared_ptr<nGameObject> potion = CreateRoomObject(jsonId);
+
+	if (!potion)
+	{
+		LOG_ERROR("Failed to create potion using JSON config: {}", jsonId);
+		return nullptr;
+	}
+
+	return potion;
+}
 
 std::vector<std::shared_ptr<nGameObject>> RoomObjectFactory::CreateDropItems(const std::string &itemType, int quantity,
 																			 float scale)

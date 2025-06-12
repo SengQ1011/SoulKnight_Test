@@ -15,6 +15,7 @@
 #include "StructType.hpp"
 
 #include "Factory/CharacterFactory.hpp"
+#include "Room/BossRoom.hpp"
 #include "Room/MonsterRoom.hpp"
 #include "Weapon/Weapon.hpp"
 
@@ -413,12 +414,17 @@ void BossAttackStrategy::SpawnMiniSnowman(const EnemyContext& ctx, const glm::ve
 	{
 		if (const auto currentRoom = currentScene->GetCurrentRoom())
 		{
+			// switch (currentRoom.);
 			if (const auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(currentRoom))
 			{
 				monsterRoom->AddEnemy(enemy);
-			}else
+			}else if (const auto bossRoom = std::dynamic_pointer_cast<BossRoom>(currentRoom))
 			{
-				LOG_ERROR("no in monster room");
+				bossRoom->AddEnemy(enemy);
+			}
+			else
+			{
+				LOG_ERROR("no in monster room | boss room");
 				return;
 			}
 			if (const auto collisionManager = currentRoom->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION))
@@ -428,9 +434,6 @@ void BossAttackStrategy::SpawnMiniSnowman(const EnemyContext& ctx, const glm::ve
 				}
 			}
 		}
-		currentScene->GetRoot().lock()->AddChild(enemy);
-		currentScene->GetCamera().lock()->SafeAddChild(enemy);
-		enemy->SetRegisteredToScene(true);
 		enemy->SetInitialScale(glm::vec2(0.8f, 0.8f));
 		enemy->SetInitialScaleSet(true);
 		enemy->m_WorldCoord = ctx.enemy->GetWorldCoord() + glm::vec2(0,-15.0f);

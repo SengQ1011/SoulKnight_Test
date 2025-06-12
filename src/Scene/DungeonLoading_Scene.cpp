@@ -10,6 +10,7 @@
 #include "Override/nGameObject.hpp"
 #include "SaveManager.hpp"
 #include "Scene/Dungeon_Scene.hpp"
+#include "Util/Logger.hpp"
 #include "Util/Text.hpp"
 
 
@@ -61,18 +62,8 @@ Scene::SceneType DungeonLoadingScene::Change()
 {
 	if (m_DungeonReady)
 	{
-		// 已完成1-4了 ==> 進入boss關卡
-		if (m_SceneData->gameProgress.currentStage == 4)
-		{
-			// return Scene::SceneType::DungeonBOSS;
-			return Scene::SceneType::Dungeon;
-		}
-		// 已完成boss關卡 ==> 結算
-		if (m_SceneData->gameProgress.currentStage == 5)
-		{
-			return Scene::SceneType::Result;
-		}
-		// otherwise
+		// DungeonLoadingScene 只負責切換到 Dungeon_Scene
+		LOG_DEBUG("DungeonLoadingScene: Loading complete, entering Dungeon");
 		return Scene::SceneType::Dungeon;
 	}
 	return Scene::SceneType::Null;
