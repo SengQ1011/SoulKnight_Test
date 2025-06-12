@@ -17,6 +17,7 @@
 
 MonsterRoomTestUI::MonsterRoomTestUI(std::shared_ptr<MonsterRoom> monsterRoom) : m_MonsterRoom(monsterRoom)
 {
+	if (monsterRoom->GetRoomType() != RoomType::MONSTER) return;
 	RefreshAvailableLayouts();
 }
 

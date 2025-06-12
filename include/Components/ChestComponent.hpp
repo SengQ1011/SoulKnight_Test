@@ -6,9 +6,13 @@
 #define CHESTCOMPONENT_HPP
 
 #include "Component.hpp"
-namespace Core { class Drawable; }
+namespace Core
+{
+	class Drawable;
+}
 
-class ChestComponent final : public Component {
+class ChestComponent final : public Component
+{
 public:
 	enum class ChestState
 	{
@@ -21,15 +25,14 @@ public:
 
 	void Init() override;
 	void Update() override;
-	void HandleEvent(const EventInfo& eventInfo) override;
+	void HandleEvent(const EventInfo &eventInfo) override;
 	void HandleCollision(const CollisionEventInfo &info) override;
 
 	/* ---Getter--- */
 	[[nodiscard]] ChestState GetCurrentState() const { return m_currentState; }
 
 	/* ---Setter--- */
-	void SetState(const ChestState newState) {m_currentState = newState;}
-	void AddDropItems(const std::vector<std::shared_ptr<nGameObject>>& items) {m_dropItems = items;}
+	void SetState(const ChestState newState) { m_currentState = newState; }
 
 	void ChestOpened();
 
@@ -38,7 +41,6 @@ private:
 	ChestState m_currentState = ChestState::CLOSED;
 	std::vector<std::string> m_imagePaths;
 	std::vector<std::shared_ptr<Core::Drawable>> m_drawables;
-	std::vector<std::shared_ptr<nGameObject>> m_dropItems;
 };
 
-#endif //CHESTCOMPONENT_HPP
+#endif // CHESTCOMPONENT_HPP

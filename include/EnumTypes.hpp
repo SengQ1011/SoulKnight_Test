@@ -25,14 +25,17 @@ enum class ComponentType
 	SPIKE,			 // 15
 	STATE,			 // 16
 	TALENT,			 // 17
-	WALLET			 // 18
+	WALLET,			 // 18
+	DESTRUCTIBLE_EFFECT,
+	DROP,
 };
 
 enum class CharacterType
 {
 	PLAYER,
 	ENEMY,
-	NPC
+	NPC,
+	NEUTRAL // 中性，不分敵我
 };
 
 enum class State
@@ -112,9 +115,9 @@ enum class WeaponType
 
 enum class MonsterType
 {
-	WANDER,		// 游蕩
-	ATTACK,		// 追蹤玩家
-	SUMMON,		// 召喚
+	WANDER, // 游蕩
+	ATTACK, // 追蹤玩家
+	SUMMON, // 召喚
 	BOSS
 };
 
@@ -157,11 +160,17 @@ enum class ChestType
 	WEAPON
 };
 
+enum class MineType
+{
+	ENERGY,
+	GOLD
+};
+
 enum class InteractableType
 {
 	NONE,
 	PORTAL,
-	SHOP,
+	SHOP_TABLE,
 	NPC_DIALOGUE,
 	REWARD_CHEST,
 	WEAPON_CHEST,
@@ -169,7 +178,19 @@ enum class InteractableType
 	ENERGY_BALL,
 	WEAPON,
 	HP_POISON,
-	ENERGY_POISON
+	ENERGY_POISON,
+};
+
+enum class PotionType
+{
+	HEALTH,
+	ENERGY
+};
+
+enum class PotionSize
+{
+	SMALL,
+	BIG
 };
 
 enum class EntityCategory

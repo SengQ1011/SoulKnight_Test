@@ -164,7 +164,7 @@ std::shared_ptr<nGameObject> TerrainGenerator::CreateWall(int row, int col, cons
 	pos += glm::vec2(0, 1.5f);
 
 	// 直接使用工廠的新方法
-	return factory->createWall(row, col, pos);
+	return factory->CreateWall(row, col, pos);
 }
 
 std::shared_ptr<nGameObject> TerrainGenerator::CreateFloor(int row, int col, const RoomSpaceInfo &spaceInfo)
@@ -177,7 +177,7 @@ std::shared_ptr<nGameObject> TerrainGenerator::CreateFloor(int row, int col, con
 		Tool::RoomGridToWorld({col, row}, spaceInfo.m_TileSize, spaceInfo.m_WorldCoord, spaceInfo.m_RoomRegion);
 
 	// 直接使用工廠的新方法
-	return factory->createFloor(pos);
+	return factory->CreateFloor(pos);
 }
 
 std::shared_ptr<nGameObject> TerrainGenerator::CreateDoor(int row, int col, const RoomSpaceInfo &spaceInfo)
@@ -190,7 +190,7 @@ std::shared_ptr<nGameObject> TerrainGenerator::CreateDoor(int row, int col, cons
 		Tool::RoomGridToWorld({col, row}, spaceInfo.m_TileSize, spaceInfo.m_WorldCoord, spaceInfo.m_RoomRegion);
 
 	// 直接使用工廠的新方法
-	return factory->createDoor(pos);
+	return factory->CreateDoor(pos);
 }
 
 // ===== DungeonRoom 實現 =====

@@ -48,6 +48,7 @@ public:
 
 	// 房間生成
 	bool GenerateMainPath();
+	bool GenerateBranches(); // 生成分支房間
 
 	void SetPlayer(const std::shared_ptr<Character> &player) { m_Player = player; }
 
@@ -85,6 +86,7 @@ protected:
 	std::optional<Direction> GetRandomValidDirection(const glm::ivec2 &currentPos,
 													 const std::set<Direction> &exclude = {});
 	void SetupRoomConnections(); // 設置房間間的連接關係
+	void GenerateAdjacentConnections(); // 生成相鄰房間連接
 };
 
 #endif // DUNGEONMAP_HPP

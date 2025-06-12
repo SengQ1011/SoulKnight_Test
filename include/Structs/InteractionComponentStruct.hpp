@@ -66,7 +66,7 @@ inline InteractableType StringToInteractableType(const std::string& typeStr)
 {
 	static const std::unordered_map<std::string, InteractableType> strToType {
 		        {"PORTAL", InteractableType::PORTAL},
-				{"SHOP", InteractableType::SHOP},
+				{"SHOP_TABLE", InteractableType::SHOP_TABLE},
 				{"NPC_DIALOGUE", InteractableType::NPC_DIALOGUE},
 				{"REWARD_CHEST", InteractableType::REWARD_CHEST},
 				{"WEAPON_CHEST", InteractableType::WEAPON_CHEST},

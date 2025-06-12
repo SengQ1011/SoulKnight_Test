@@ -6,6 +6,7 @@
 #define ATTACKTRIGGERSTRATEGY_HPP
 
 #include "ITriggerStrategy.hpp"
+enum class StatusEffect;
 
 class AttackTriggerStrategy : public ITriggerStrategy {
 public:

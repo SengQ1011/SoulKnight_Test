@@ -10,7 +10,7 @@
   "components": [
     {
       "Name": "collision_box",
-      "Class": "COLLISION",
+      "Class": "CollisionComponent",
       "Size": [
         16.0,
         16.0
@@ -19,7 +19,7 @@
         0.0,
         0.0
       ],
-      "CollisionLayer": "PickUp",
+      "CollisionLayer": "None",
       "CollisionMask": [
         "Player"
       ],

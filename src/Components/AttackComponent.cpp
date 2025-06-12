@@ -42,7 +42,8 @@ void AttackComponent::Init()
 	}
 	// 加入渲染樹
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	if (!scene) return;
+	if (!scene)
+		return;
 	// scene->GetPendingObjects().push_back(m_currentWeapon); //暂时存入一次过设置渲染和镜头
 	scene->GetRoot().lock()->AddChild(m_currentWeapon);
 	scene->GetCamera().lock()->SafeAddChild(m_currentWeapon);
@@ -78,48 +79,87 @@ std::vector<int> AttackComponent::GetAllWeaponID() const
 	return id;
 }
 
-void AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
+bool AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
 {
 	auto character = GetOwner<Character>();
 	if (!character)
-		return;
+		return false;
 	if (m_pickUpWeaponTimeCounter > 0)
-		return;
-	// 重置冷卻時間
-	m_pickUpWeaponTimeCounter = m_pickUpWeaponCooldown;
+		return false;
 
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	auto room = scene->GetCurrentRoom();
 	if (!room)
-		return;
+		return false;
 	auto interactableManager = room->GetInteractionManager();
 	if (!interactableManager)
 	{
 		LOG_ERROR("AddWeapon: InteractableManager is null");
-		return;
+		return false;
 	}
-	interactableManager->QueueUnregister(newWeapon);
+
+	// 🔥 關鍵修復：先處理所有邏輯，確定成功後才取消註冊
+	std::shared_ptr<Weapon> weaponToDropIfAny = nullptr;
+
+	// 檢查是否需要丟棄舊武器
 	if (m_Weapons.size() >= m_maxWeapon)
 	{
-		interactableManager->RegisterInteractable(m_currentWeapon);
-		RemoveWeapon(m_currentWeapon); // 移除舊武器
+		weaponToDropIfAny = m_currentWeapon;
 	}
-	else if (m_currentWeapon)
-		m_currentWeapon->SetControlVisible(false);
 
-	m_Weapons.push_back(newWeapon); // 添加新武器列表
-	m_currentWeapon = newWeapon; // 更新當前武器
-	m_currentWeapon->SetOwner(character); // 當前武器添加擁有者的指標
-	if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+	try
 	{
-		followerComp->SetFollower(character);
+		// 重置冷卻時間
+		m_pickUpWeaponTimeCounter = m_pickUpWeaponCooldown;
+
+		// 處理舊武器（如果需要）
+		if (weaponToDropIfAny)
+		{
+			// 重新激活舊武器的 InteractableComponent
+			if (auto interactableComp =
+					weaponToDropIfAny->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+			{
+				interactableComp->SetComponentActive(true);
+			}
+			RemoveWeapon(weaponToDropIfAny); // 移除舊武器
+		}
+		else if (m_currentWeapon)
+		{
+			m_currentWeapon->SetControlVisible(false);
+		}
+
+		// 添加新武器
+		m_Weapons.push_back(newWeapon);
+		m_currentWeapon = newWeapon;
+		m_currentWeapon->SetOwner(character);
+
+		if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		{
+			followerComp->SetFollower(character);
+		}
+		m_currentWeapon->SetControlVisible(true);
+
+		if (!m_currentWeapon->IsRegisteredToScene())
+		{
+			scene->GetPendingObjects().emplace_back(m_currentWeapon);
+			m_currentWeapon->SetRegisteredToScene(true);
+		}
+
+		interactableManager->QueueUnregister(newWeapon);
+
+		if (weaponToDropIfAny)
+		{
+			interactableManager->RegisterInteractable(weaponToDropIfAny);
+		}
+
+		LOG_DEBUG("Successfully picked up weapon: {}", newWeapon->GetName());
+		return true;
 	}
-	m_currentWeapon->SetControlVisible(true);
-
-	if (!m_currentWeapon->IsRegisteredToScene())
+	catch (...)
 	{
-		scene->GetPendingObjects().emplace_back(m_currentWeapon);
-		m_currentWeapon->SetRegisteredToScene(true);
+		LOG_ERROR("Failed to pick up weapon: {}", newWeapon->GetName());
+		// 如果出現異常，不進行任何註冊操作，保持原狀
+		return false;
 	}
 }
 

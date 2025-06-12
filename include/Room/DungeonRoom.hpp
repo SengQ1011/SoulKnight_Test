@@ -103,16 +103,11 @@ private:
 class TerrainGenerator
 {
 public:
-	TerrainGenerator(std::weak_ptr<RoomObjectFactory> factory);
+	explicit TerrainGenerator(std::weak_ptr<RoomObjectFactory> factory);
 
 	std::shared_ptr<nGameObject> CreateWall(int row, int col, const RoomSpaceInfo &spaceInfo);
 	std::shared_ptr<nGameObject> CreateFloor(int row, int col, const RoomSpaceInfo &spaceInfo);
 	std::shared_ptr<nGameObject> CreateDoor(int row, int col, const RoomSpaceInfo &spaceInfo);
-
-	void CreateCorridorInDirection(Direction dir, const RoomSpaceInfo &spaceInfo,
-								   std::function<void(std::shared_ptr<nGameObject>)> addObjectCallback);
-	void CreateWallInDirection(Direction dir, const RoomSpaceInfo &spaceInfo,
-							   std::function<void(std::shared_ptr<nGameObject>)> addObjectCallback);
 
 private:
 	std::weak_ptr<RoomObjectFactory> m_Factory;
@@ -178,7 +173,6 @@ protected:
 	// 調試功能
 	void DebugDungeonRoom();
 
-protected:
 	// 初始化方法
 	void InitializeGrid();
 

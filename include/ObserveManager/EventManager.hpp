@@ -28,6 +28,29 @@ public:
 		return instance;
 	}
 
+	// 檢查 EventManager 是否仍然有效
+	static bool IsValid()
+	{
+		static bool *isDestroyed = GetDestroyedFlag();
+		return !(*isDestroyed);
+	}
+
+	// 標記 EventManager 即將被銷毀
+	static void MarkDestroyed()
+	{
+		static bool *isDestroyed = GetDestroyedFlag();
+		*isDestroyed = true;
+	}
+
+private:
+	// 獲取銷毀標誌的靜態指標
+	static bool *GetDestroyedFlag()
+	{
+		static bool isDestroyed = false;
+		return &isDestroyed;
+	}
+
+public:
 	// 基本訂閱方法（返回監聽器ID）
 	ListenerID Subscribe(const std::type_index eventType, const Listener &listener)
 	{
@@ -56,19 +79,42 @@ public:
 	template <typename EventT>
 	bool Unsubscribe(ListenerID listenerID)
 	{
-		auto it = m_Listeners.find(typeid(EventT));
-		if (it != m_Listeners.end())
-		{
-			auto &listeners = it->second;
-			auto listenerIt = std::find_if(listeners.begin(), listeners.end(),
-										   [listenerID](const std::pair<ListenerID, Listener> &pair)
-										   { return pair.first == listenerID; });
+		// 添加安全檢查
+		if (listenerID == 0)
+			return false;
 
-			if (listenerIt != listeners.end())
+		// 檢查 EventManager 是否仍然有效
+		if (!IsValid())
+		{
+			// 不使用 LOG_DEBUG，因為 spdlog 可能已經被銷毀
+			return false;
+		}
+
+		try
+		{
+			// 檢查容器是否有效
+			if (m_Listeners.empty())
+				return false;
+
+			auto it = m_Listeners.find(typeid(EventT));
+			if (it != m_Listeners.end())
 			{
-				listeners.erase(listenerIt);
-				return true;
+				auto &listeners = it->second;
+				auto listenerIt = std::find_if(listeners.begin(), listeners.end(),
+											   [listenerID](const std::pair<ListenerID, Listener> &pair)
+											   { return pair.first == listenerID; });
+
+				if (listenerIt != listeners.end())
+				{
+					listeners.erase(listenerIt);
+					return true;
+				}
 			}
+		}
+		catch (...)
+		{
+
+			return false;
 		}
 		return false;
 	}
@@ -114,6 +160,13 @@ public:
 
 	// 保留原有的敵人死亡事件（向下兼容）
 	static void enemyDeathEvent() { SceneManager::GetInstance().receiveEnemyDeathEvent(); }
+
+	// 析構函數
+	~EventManager()
+	{
+		MarkDestroyed();
+		m_Listeners.clear();
+	}
 
 private:
 	std::unordered_map<std::type_index, std::vector<std::pair<ListenerID, Listener>>> m_Listeners;

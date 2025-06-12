@@ -2,7 +2,7 @@
     "id": "object_weaponChest",
     "isAnimated": false,
     "path": "/allChest/object_weaponChest_0.png",
-    "ZIndex": "OBJECTLOW",
+    "ZIndex": "OBJECTHIGH",
     "posOffset": [
         0.0,
         0.0
@@ -10,9 +10,21 @@
     "components": [
         {
             "Class": "INTERACTABLE",
-            "InteractionRadius": 20.0,
+            "InteractionRadius": 32.0,
             "InteractableType": "WEAPON_CHEST",
-            "IsAutoInteract": false
+            "IsAutoInteract": false,
+            "PromptObject": {
+                "PromptFontPath": "/Font/jf-openhuninn-2.1.ttf",
+                "PromptFontSize": 32.0,
+                "PromptText": "寶箱",
+                "PromptColor": [
+                    255,
+                    255,
+                    255,
+                    0
+                ],
+                "IsPromptVisible": false
+            }
         },
         {
             "Class": "CHEST",

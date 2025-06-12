@@ -1,0 +1,18 @@
+{
+    "id": "object_smallHealthPotion",
+    "isAnimated": false,
+    "path": "/Items/object_smallHealthPotion.png",
+    "ZIndex": "OBJECTHIGH",
+    "posOffset": [
+        0.0,
+        0.0
+    ],
+    "components": [
+        {
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 10.0,
+            "InteractableType": "HP_POISON",
+            "IsAutoInteract": false
+        }
+    ]
+}

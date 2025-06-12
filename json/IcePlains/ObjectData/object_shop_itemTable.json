@@ -2,7 +2,7 @@
     "id": "object_shop_itemTable",
     "isAnimated": false,
     "path": "/IcePlains/object_shop_itemTable.png",
-    "ZIndex": "OBJECTHIGH",
+    "ZIndex": "OBJECTLOW",
     "components": [
         {
             "Name": "collision_box",
@@ -20,6 +20,12 @@
                 "None"
             ],
             "IsTrigger": false
+        },
+        {
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 30.0,
+            "InteractableType": "SHOP_TABLE",
+            "IsAutoInteract": false
         }
     ]
 }

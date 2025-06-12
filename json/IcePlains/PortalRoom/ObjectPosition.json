@@ -8,7 +8,7 @@
     "roomObject": [
         {
             "ID": "floor1313_1",
-            "Class": "nGameObject",
+            "Class": "Floor",
             "Position": [
                 0.0,
                 0.0
@@ -19,7 +19,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -31,7 +31,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -80.0,
@@ -43,7 +43,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -64.0,
@@ -55,7 +55,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -48.0,
@@ -67,7 +67,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 48.0,
@@ -79,7 +79,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 64.0,
@@ -91,7 +91,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 80.0,
@@ -103,7 +103,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -115,7 +115,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -127,7 +127,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -139,7 +139,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -151,7 +151,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -163,7 +163,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -175,7 +175,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -187,7 +187,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -199,7 +199,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -211,7 +211,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -223,7 +223,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -235,7 +235,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -247,7 +247,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
@@ -259,7 +259,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -96.0,
@@ -271,7 +271,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -80.0,
@@ -283,7 +283,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -64.0,
@@ -295,7 +295,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 -48.0,
@@ -307,7 +307,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 48.0,
@@ -319,7 +319,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 64.0,
@@ -331,7 +331,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 80.0,
@@ -343,7 +343,7 @@
             ]
         },
         {
-            "ID": "w604",
+            "ID": "w600",
             "Class": "WallObject",
             "Position": [
                 96.0,
