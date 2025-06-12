@@ -97,6 +97,24 @@ namespace EffectAssets
 			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png"),
 			ResourcePath("/attackUI/bullet/bullet2/bullet2_8.png")
 		}},
+		{EffectAttackType::POISON_AREA,{
+			ResourcePath("/attackUI/poisonArea/poisonArea_00.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_01.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_02.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_03.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_04.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_05.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_06.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_07.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_08.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_09.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_10.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_11.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_12.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_13.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_14.png"),
+			ResourcePath("/attackUI/poisonArea/poisonArea_15.png")
+		}}
 	};
 }
 

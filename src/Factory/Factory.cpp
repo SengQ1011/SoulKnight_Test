@@ -13,6 +13,7 @@
 #include "Components/CollisionComponent.hpp"
 #include "Components/DoorComponent.hpp"
 #include "Components/InteractableComponent.hpp"
+#include "Components/SpikeComponent.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string &zIndexStr)
 {
@@ -87,6 +88,18 @@ void Factory::createComponent(const std::shared_ptr<nGameObject> &object, const 
 					 LOG_ERROR("Factory::createComponent CHEST parsing failed: {}", e.what());
 				 }
 			 }},
+			{"SPIKE",
+				[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+				{
+					try {
+						auto imagePaths = json.at("imagePaths").get<std::vector<std::string>>();
+						const auto damage = json.at("damage").get<int>();
+						object->AddComponent<SpikeComponent>(ComponentType::SPIKE, imagePaths, damage);
+					} catch (const std::exception& e) {
+						LOG_ERROR("Factory::createComponent SPIKE parsing failed: {}", e.what());
+					}
+				}
+			}
 		};
 	const std::string &componentClass = json.at("Class").get<std::string>();
 
@@ -105,7 +118,7 @@ std::shared_ptr<Animation> Factory::parseAnimations(const nlohmann::json &animat
 	{
 		frames.push_back(RESOURCE_DIR + frame.get<std::string>());
 	}
-	auto animations = std::make_shared<Animation>(frames, needLoop, "Animation", 0);
+	auto animations = std::make_shared<Animation>(frames, needLoop, 0, "Animation");
 
 	return animations;
 }

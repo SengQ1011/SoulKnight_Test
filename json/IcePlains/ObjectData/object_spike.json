@@ -1,0 +1,36 @@
+{
+  "id": "object_spike",
+  "isAnimated": false,
+  "path": "/IcePlains/spike/object_spike_2.png",
+  "ZIndex": "OBJECTLOW",
+  "posOffset": [
+    0.0,
+    0.0
+  ],
+  "components": [
+    {
+      "Name": "collision_box",
+      "Class": "COLLISION",
+      "Size": [
+        16.0,
+        16.0
+      ],
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "CollisionLayer": "PickUp",
+      "CollisionMask": [
+        "Player",
+        "Enemy"
+      ],
+      "IsTrigger": true
+    },
+    {
+      "Name": "spike_Comp",
+      "Class": "SPIKE",
+      "imagePaths": ["/IcePlains/spike/object_spike_2.png","/IcePlains/spike/object_spike_0.png"],
+      "damage": 2
+    }
+  ]
+}

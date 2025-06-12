@@ -5,6 +5,8 @@
 //CollisionComponent.cpp
 
 #include "Components/CollisionComponent.hpp"
+#include "TriggerStrategy/SpeedZoneStrategy.hpp"
+#include "Util/Logger.hpp"
 
 #include "Structs/RectShape.hpp"
 #include "Structs/CircleShape.hpp"
@@ -25,6 +27,20 @@ void CollisionComponent::Init()
 	m_ColliderVisibleBox->SetZIndex(0.1);
 	m_ColliderVisibleBox->SetZIndexType(ZIndexType::UI);
 	m_ColliderVisibleBox->SetInitialScaleSet(true);
+
+	// 创建 TriggerStrategy
+	if (m_IsTrigger && !m_TriggerStrategyType.empty()) {
+		LOG_DEBUG("check");
+		if (m_TriggerStrategyType == "SpeedZone") {
+			try {
+				float speedMultiplier = m_TriggerStrategyConfig.value("speedMultiplier", 1.0f);
+				float duration = m_TriggerStrategyConfig.value("duration", 1.0f);
+				AddTriggerStrategy(std::make_unique<SpeedZoneStrategy>(speedMultiplier, duration));
+			} catch (const std::exception& e) {
+				LOG_ERROR("Failed to create SpeedZoneStrategy: {}", e.what());
+			}
+		}
+	}
 }
 
 void CollisionComponent::SetColliderBoxColor(const std::string &color) const // Blue - 未定義， Yellow - 碰撞, Red - 正常

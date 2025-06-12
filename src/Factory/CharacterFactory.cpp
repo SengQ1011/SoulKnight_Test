@@ -92,7 +92,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(c
 				needLoop = value["Loop"].get<bool>();
 			}
 
-			animations[state] = std::make_shared<Animation>(frames, needLoop, "Character", interval);
+			animations[state] = std::make_shared<Animation>(frames, needLoop, interval, "Character");
 		}
 		else if (value.is_array())
 		{
@@ -100,7 +100,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(c
 			{
 				frames.push_back(RESOURCE_DIR + frame.get<std::string>());
 			}
-			animations[state] = std::make_shared<Animation>(frames, true, "Animation", 0);
+			animations[state] = std::make_shared<Animation>(frames, true, 0, "Animation");
 		}
 		else
 		{
@@ -194,7 +194,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id)
 			FollowerComp->Update(); // 直接更新一次位置
 			// FollowerComp->SetTargetMouse(true);
 
-			auto weapon2 = WeaponFactory::createWeapon(2);
+			auto weapon2 = WeaponFactory::createWeapon(5);
 			attackComponent->AddWeapon(weapon2);
 			LOG_DEBUG("Player created");
 			return player;

@@ -81,7 +81,7 @@ void RoomCollisionManager::Update()
 
 		const std::shared_ptr<CollisionComponent> collider =
 			obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-		if (!collider)
+		if (!collider || !collider->IsActive())
 			continue;
 
 		m_SpatialGrid.Insert(obj, collider->GetBounds());
