@@ -33,9 +33,12 @@ void EffectAttack::Init()
 	float interval = 400 / imagePaths.size();
 	if (m_effectType == EffectAttackType::LARGE_SHOCKWAVE)
 		interval *= 2.0f;
-	m_animation = std::make_shared<Animation>(imagePaths, false, "EffectAttack", interval);
-	this->SetDrawable(m_animation->GetDrawable());
-	m_animation->PlayAnimation(true);
+	else if(m_effectType == EffectAttackType::POISON_AREA)
+		interval = 4000 / imagePaths.size();
+
+ 	m_animation = std::make_shared<Animation>(imagePaths, false, interval, "Animation");
+ 	this->SetDrawable(m_animation->GetDrawable());
+ 	m_animation->PlayAnimation(true);
 
 	// TODO: 這裏可以work，但是 @錦鑫你看一下怎麽放比較舒服
 	if (m_effectType == EffectAttackType::MEDIUM_BOOM)
@@ -152,7 +155,7 @@ void EffectAttack::ResetAll(const EffectAttackInfo &effectAttackInfo)
 	m_timer = effectAttackInfo.intervalCreateChainAttack;
 
 	auto &paths = EffectAssets::EFFECT_IMAGE_PATHS.at(effectAttackInfo.effectType);
-	m_animation = std::make_shared<Animation>(paths, false, "Animation", 0);
+	m_animation = std::make_shared<Animation>(paths, false, 0, "Animation");
 	this->m_markRemove = false;
 
 	if (this->RemoveComponent<EffectAttackComponent>(ComponentType::EFFECT_ATTACK))

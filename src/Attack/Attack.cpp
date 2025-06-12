@@ -49,6 +49,7 @@ void Attack::TriggerChainAttack() const
  		else
  		{
  			effectInfoPtr->attackTransform.translation = this->GetWorldCoord();
+ 			effectInfoPtr->attackTransform.rotation = 0.0f;
  			effectInfoPtr->direction = glm::vec2(0.0f);
  		}
 

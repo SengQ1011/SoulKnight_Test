@@ -5,8 +5,8 @@
 #include "Animation.hpp"
 #include "Util/Logger.hpp"
 
-Animation::Animation(const std::vector<std::string> &AnimationPaths, bool needLoop, const std::string &_class,
-					 float interval) :
+Animation::Animation(const std::vector<std::string> &AnimationPaths, bool needLoop, float interval,
+					const std::string &_class) :
 	m_AnimationPaths(AnimationPaths), m_Looping(needLoop), nGameObject("Animation", _class)
 {
 	if (interval == 0)

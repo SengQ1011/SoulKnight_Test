@@ -14,7 +14,8 @@ class Skill;
 class SkillComponent : public Component
 {
 public:
-	explicit SkillComponent(std::shared_ptr<Skill> skill) : m_skill(std::move(skill)) {};
+	explicit SkillComponent(std::shared_ptr<Skill> skill)
+		: Component(ComponentType::SKILL), m_skill(std::move(skill)) {};
 	~SkillComponent() override = default;
 
 	void Update() override;

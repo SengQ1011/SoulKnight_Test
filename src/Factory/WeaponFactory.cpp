@@ -49,6 +49,8 @@ EffectAttackType stringToEffectAttackType(const std::string& str) {
 	if (str == "LARGE_BOOM") return EffectAttackType::LARGE_BOOM;
 	if (str == "MEDIUM_BOOM") return EffectAttackType::MEDIUM_BOOM;
 	if (str == "SMALL_BOOM") return EffectAttackType::SMALL_BOOM;
+	if (str == "ICE_SPIKE") return EffectAttackType::ICE_SPIKE;
+	if (str == "POISON_AREA") return EffectAttackType::POISON_AREA;
 }
 
 StatusEffect stringToStatusEffect(const std::string& str) {

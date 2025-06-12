@@ -12,7 +12,7 @@
 #include "TriggerStrategy/ITriggerStrategy.hpp"
 
 #include <unordered_set>
-#include "Override/nGameObject.hpp" // TODO: refactor
+#include "Override/nGameObject.hpp"
 #include "Structs/AreaShape.hpp"
 
 
@@ -39,7 +39,9 @@ public:
 	explicit CollisionComponent(const StructCollisionComponent &data) :
 		Component(data.m_Type), m_Size(glm::vec2(data.m_Size[0], data.m_Size[1])),
 		m_Offset(data.m_Offset[0], data.m_Offset[1]), m_CollisionLayer(data.m_CollisionLayer),
-		m_CollisionMask(data.m_CollisionMask), m_IsTrigger(data.m_IsTrigger)
+		m_CollisionMask(data.m_CollisionMask), m_IsTrigger(data.m_IsTrigger),
+		m_TriggerStrategyType(data.m_TriggerStrategyType),
+		m_TriggerStrategyConfig(data.m_TriggerStrategyConfig)
 	{
 	}
 
@@ -114,6 +116,9 @@ private:
 	static std::shared_ptr<Core::Drawable> s_RedColliderImage;
 	static std::shared_ptr<Core::Drawable> s_BlueColliderImage;
 	static std::shared_ptr<Core::Drawable> s_YellowColliderImage;
+
+	std::string m_TriggerStrategyType;
+	nlohmann::json m_TriggerStrategyConfig;
 };
 
 

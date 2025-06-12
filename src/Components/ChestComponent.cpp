@@ -2,6 +2,8 @@
 // Created by QuzzS on 2025/4/25.
 //
 
+#include <utility>
+
 #include "Components/ChestComponent.hpp"
 
 #include "Factory/RoomObjectFactory.hpp"
@@ -13,10 +15,8 @@
 #include "Structs/EventInfo.hpp"
 #include "Util/Image.hpp"
 
-ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths) :
-	m_chestType(chestType), m_imagePaths(imagePaths)
-{
-}
+ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths)
+								: Component(ComponentType::CHEST), m_chestType(chestType), m_imagePaths(std::move(imagePaths)){}
 
 
 void ChestComponent::Init()
