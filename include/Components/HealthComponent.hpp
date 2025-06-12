@@ -28,7 +28,7 @@ public:
 
 	//----Setter----
 	void SetMaxHp(const int hp) { m_maxHp = hp; }
-	void SetCurrentHp(const int hp) { m_currentHp = hp; }
+	void SetCurrentHp(const int hp) { if(hp <= m_maxHp) m_currentHp = hp; }
 	void AddCurrentHp(const int hp){
 		if (m_currentHp + hp <= m_maxHp) m_currentHp += hp;
 		else m_currentHp = m_maxHp;
@@ -40,7 +40,7 @@ public:
 		else m_currentArmor = m_maxArmor;
 	}
 	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
-	void SetCurrentEnergy(const int energy) { m_currentEnergy = energy; }
+	void SetCurrentEnergy(const int energy) { if(energy <= m_maxEnergy)m_currentEnergy = energy; }
 	void AddCurrentEnergy(const int energy)
 	{
 		if (m_currentEnergy + energy <= m_maxEnergy ) m_currentEnergy += energy;

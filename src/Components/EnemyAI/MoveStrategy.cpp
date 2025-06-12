@@ -387,7 +387,7 @@ void BossMove::UpdateSkillState(const EnemyContext &ctx, float deltaTime)
 		// 技能結束，回到休息狀態
 		m_mandatoryRest = true;
 		m_hasJumpTarget = false;
-		changeToIdle(ctx, 6.0f, 10.0f);
+		changeToIdle(ctx, 3.0f, 6.0f);
 	} else {
 		// 根據不同技能執行不同的移動邏輯
 		switch (aiComp->GetEnemyState()) {

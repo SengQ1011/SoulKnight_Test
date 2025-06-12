@@ -453,7 +453,7 @@
     },
     "monsterPoint": 0,
     "maxHp": 4,
-    "speed": 0.7,
+    "speed": 0.5,
     "attackType": ["Melee"],
     "haveWeapon": 1,
     "weaponId": 508,
