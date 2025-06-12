@@ -478,7 +478,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 		// 設置當前商品引用，桌子會在 Update 中更新商品位置
 		shopTable->SetCurrentItem(currentItem);
 		currentItem->SetWorldCoord(shopTable->GetWorldCoord() + itemOffset);
-		currentItem->SetZIndexType(UI);
+		currentItem->SetZIndexType(OBJECTHIGH);
 
 		// 註冊商品到場景
 		if (itemType == ShopItemType::WEAPON)
