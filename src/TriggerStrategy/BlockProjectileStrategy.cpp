@@ -13,7 +13,6 @@ void BlockProjectileStrategy::OnTriggerEnter(std::shared_ptr<nGameObject> self, 
 	auto target = std::dynamic_pointer_cast<Projectile>(other);
 	if (!target) return;
 
-
 	// 發送阻擋事件
 	const BlockProjectileEventInfo blockEvent;
 	other->OnEvent(blockEvent);

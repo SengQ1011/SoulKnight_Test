@@ -58,6 +58,7 @@ public:
 
 	// Getter
 	[[nodiscard]] Rect GetBounds() const;
+	[[nodiscard]] glm::vec2 GetSize() const { return m_Size; };
 	[[nodiscard]] std::shared_ptr<AreaShape> GetAreaShape() const; // 新添加
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const { return m_CollisionLayer; }
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const { return m_CollisionMask; }
@@ -70,6 +71,7 @@ public:
 
 	// Setter
 	void SetCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer = collisionLayer; }
+	void AddCollisionLayer(const glm::uint8_t collisionLayer) { m_CollisionLayer |= collisionLayer; }
 	void AddCollisionMask(const glm::uint8_t collisionMask) { m_CollisionMask |= collisionMask; }
 	void ResetCollisionMask() { m_CollisionMask = CollisionLayers_None; }
 	void SetOffset(const glm::vec2 &offset) { m_Offset = offset; }

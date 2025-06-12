@@ -9,7 +9,7 @@
 
 class Animation;
 
-struct  EffectAttackInfo : public AttackInfo
+struct EffectAttackInfo : public AttackInfo
 {
 	~EffectAttackInfo() override = default;
 	EffectAttackType effectType = EffectAttackType::NONE;
@@ -21,10 +21,9 @@ struct  EffectAttackInfo : public AttackInfo
 	float intervalCreateChainAttack = 0.0f;
 };
 
-namespace EffectAssets {
-	inline std::string ResourcePath(const std::string& relative) {
-		return std::string(RESOURCE_DIR) + relative;
-	}
+namespace EffectAssets
+{
+	inline std::string ResourcePath(const std::string &relative) { return std::string(RESOURCE_DIR) + relative; }
 
 	inline const std::unordered_map<EffectAttackType, std::vector<std::string>> EFFECT_IMAGE_PATHS = {
 		{EffectAttackType::SLASH, {
@@ -101,7 +100,8 @@ namespace EffectAssets {
 	};
 }
 
-class EffectAttack : public Attack {
+class EffectAttack : public Attack
+{
 public:
 	// 因爲斬擊/刺擊/震蕩波都是使用統一的動畫
 	// 不需要在建構子中加入animation
@@ -115,7 +115,7 @@ public:
 	//----Getter----
 	std::string GetName() const override { return "EffectAttack"; }
 	[[nodiscard]] EffectAttackType GetEffectAttackType() const { return m_effectType; }
-	[[nodiscard]] std::shared_ptr<Animation> GetAnimation()const { return m_animation; }
+	[[nodiscard]] std::shared_ptr<Animation> GetAnimation() const { return m_animation; }
 	[[nodiscard]] bool checkCanReflect() const { return m_reflectBullet; }
 	[[nodiscard]] bool IsCollisionWithTerrain() const { return m_collisionWithTerrain; }
 
@@ -136,4 +136,4 @@ protected:
 	float m_intervalCreateChainAttack = 0.0f;
 };
 
-#endif //EFFECTATTACK_HPP
+#endif // EFFECTATTACK_HPP

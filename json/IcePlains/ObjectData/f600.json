@@ -1,0 +1,13 @@
+{
+    "id": "f600",
+    "isAnimated": false,
+    "path": [
+        "/IcePlains/f601.png",
+        "/IcePlains/f602.png",
+        "/IcePlains/f603.png",
+        "/IcePlains/f604.png",
+        "/IcePlains/f605.png",
+        "/IcePlains/f606.png"
+    ],
+    "ZIndex": "FLOOR"
+}

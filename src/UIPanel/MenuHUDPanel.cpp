@@ -131,7 +131,7 @@ void MenuHUDPanel::InitContinueGameButton()
 			auto saveData = saveManager.GetSaveData();
 			if (saveData && saveData->isInGameProgress)
 			{
-				sceneManager.SetNextScene(Scene::SceneType::Dungeon);
+				sceneManager.SetNextScene(Scene::SceneType::DungeonLoad);
 			}
 			else
 			{

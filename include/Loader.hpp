@@ -25,6 +25,18 @@ public:
 	{
 		return readJsonFile(JSON_DIR "/" + m_Theme + "/PortalRoom/ObjectPosition.json");
 	}
+	nlohmann::ordered_json LoadSpecialRoomObjectPosition()
+	{
+		return readJsonFile(JSON_DIR "/" + m_Theme + "/SpecialRoom/ObjectPosition.json");
+	}
+	nlohmann::ordered_json LoadShopRoomObjectPosition()
+	{
+		return readJsonFile(JSON_DIR "/" + m_Theme + "/SpecialRoom/ShopObjectPosition.json");
+	}
+	nlohmann::ordered_json LoadBossRoomObjectPosition()
+	{
+		return readJsonFile(JSON_DIR "/" + m_Theme + "/BossRoom/BossObjectPosition_1.json");
+	}
 
 	// 原有的固定方法（向後兼容）
 	nlohmann::ordered_json LoadMonsterRoomObjectPosition()

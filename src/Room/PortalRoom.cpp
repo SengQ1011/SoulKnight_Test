@@ -29,7 +29,7 @@ void PortalRoom::LoadFromJSON()
 
 void PortalRoom::CreatePortal()
 {
-	const auto portal = m_Factory.lock()->createRoomObject("object_transferGate_0", "portal");
+	const auto portal = m_Factory.lock()->CreateRoomObject("object_transferGate_0", "portal");
 	if (!portal) return;
 
 	portal->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);

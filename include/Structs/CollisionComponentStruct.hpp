@@ -23,7 +23,7 @@ enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子�
 	CollisionLayers_Enemy_Projectile = 1 << 3,	//00001000 敵人子彈層
 	CollisionLayers_Player_EffectAttack = 1 << 4,	//00010000 玩家子彈層
 	CollisionLayers_Enemy_EffectAttack = 1 << 5,	//00100000 敵人子彈層
-	CollisionLayers_Pickup = 1 << 6,		// 拾取物層
+	CollisionLayers_DestructibleTerrain = 1 << 6,		// 拾取物層
 	CollisionLayers_Terrain = 1 << 7,		// 地形層
 };
 
@@ -46,7 +46,7 @@ inline std::unordered_map<std::string, CollisionLayers> m_String2CollisionLayer 
 	{"Enemy_Projectile", CollisionLayers_Enemy_Projectile},
 	{"Player_EffectAttack", CollisionLayers_Player_EffectAttack},
 	{"Enemy_EffectAttack", CollisionLayers_Enemy_EffectAttack},
-	{"Pickup", CollisionLayers_Pickup},
+	{"DestructibleTerrain", CollisionLayers_DestructibleTerrain},
 	{"Terrain", CollisionLayers_Terrain},
 };
 

@@ -1,0 +1,18 @@
+{
+    "id": "object_bigEnergyPotion",
+    "isAnimated": false,
+    "path": "/Items/object_bigEnergyPotion.png",
+    "ZIndex": "OBJECTHIGH",
+    "posOffset": [
+        0.0,
+        0.0
+    ],
+    "components": [
+        {
+            "Class": "INTERACTABLE",
+            "InteractionRadius": 10.0,
+            "InteractableType": "ENERGY_POISON",
+            "IsAutoInteract": false
+        }
+    ]
+}

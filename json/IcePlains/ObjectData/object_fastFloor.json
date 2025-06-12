@@ -1,0 +1,26 @@
+{
+    "id": "object_fastFloor",
+    "isAnimated": false,
+    "path": "/IcePlains/object_fastFloor.png",
+    "ZIndex": "OBJECTLOW",
+    "components": [
+        {
+            "Name": "collision_box",
+            "Class": "CollisionComponent",
+            "Size": [
+                16.0,
+                16.0
+            ],
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "CollisionLayer": "None",
+            "CollisionMask": [
+                "Player",
+                "Enemy"
+            ],
+            "IsTrigger": true
+        }
+    ]
+}

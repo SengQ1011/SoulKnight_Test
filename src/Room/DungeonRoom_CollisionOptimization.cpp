@@ -109,12 +109,7 @@ DungeonRoom::CreateOptimizedColliders(const std::vector<CollisionRect> &regions)
 			collisionComp->SetCollisionLayer(CollisionLayers_Terrain);
 
 			// 設置碰撞遮罩 - 與所有移動物體碰撞
-			collisionComp->AddCollisionMask(CollisionLayers_Player |
-											CollisionLayers_Player_Projectile |
-											CollisionLayers_Player_EffectAttack |
-											CollisionLayers_Enemy |
-											CollisionLayers_Enemy_Projectile|
-											CollisionLayers_Enemy_EffectAttack);
+			collisionComp->AddCollisionMask(CollisionLayers_None);
 
 			// 設置為靜態碰撞體（不是觸發器）
 			collisionComp->SetTrigger(false);

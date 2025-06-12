@@ -524,7 +524,12 @@ void DungeonScene::OnStageCompleted()
 	// 處理關卡完成時的邏輯
 	if (m_SceneData)
 	{
-		m_SceneData->gameProgress.currentStage++;
+		// TODO： 如果有第二章節以上這裏要再改改
+		const auto currentStage = m_SceneData->gameProgress.currentStage;
+		if (currentStage < 5)
+		{
+			m_SceneData->gameProgress.currentStage++;
+		}
 		LOG_INFO("Stage completed! Current stage: {}", m_SceneData->gameProgress.currentStage);
 
 		// 保存玩家資訊

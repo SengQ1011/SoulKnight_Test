@@ -540,7 +540,7 @@ std::string MinimapPanel::GetRoomIconPath(RoomType type) const
 	case RoomType::PORTAL:
 		return RESOURCE_DIR "/UI/miniMap/portalRoom_icon.png";
 	case RoomType::BOSS:
-		return RESOURCE_DIR "/UI/miniMap/room_explored.png"; // 暫時使用探索房間圖標
+		return RESOURCE_DIR "/UI/miniMap/bossRoom_icon.png"; // 暫時使用探索房間圖標
 	case RoomType::CHEST:
 		return RESOURCE_DIR "/UI/miniMap/chestRoom_icon.png";
 	case RoomType::SPECIAL:
