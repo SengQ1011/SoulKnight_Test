@@ -141,7 +141,6 @@ void InteractableComponent::Init()
 				{
 					if (const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
 					{
-						// 🔥 關鍵修復：只有拾取成功時才停用 InteractableComponent
 						bool pickupSuccess = attackComp->PickUpWeapon(weapon);
 
 						if (pickupSuccess)

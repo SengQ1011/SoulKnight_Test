@@ -158,7 +158,8 @@ void DungeonScene::Update()
 	// 更新渲染器（渲染總是需要更新）
 	m_Root->Update();
 
-	if (m_PendingObjects.size() > 0) FlushPendingObjectsToRendererAndCamera();
+	if (m_PendingObjects.size() > 0)
+		FlushPendingObjectsToRendererAndCamera();
 }
 
 void DungeonScene::Exit()
