@@ -30,16 +30,13 @@ public:
 	void SetMaxHp(const int hp) { m_maxHp = hp; }
 	void SetCurrentHp(const int hp)
 	{
-		m_currentHp = hp;
-		if (m_currentHp <= 0)
-			OnDeath();
+		if(hp <= m_maxHp) m_currentHp = hp;
+		if (m_currentHp <= 0) OnDeath();
 	}
 	void AddCurrentHp(const int hp)
 	{
-		if (m_currentHp + hp <= m_maxHp)
-			m_currentHp += hp;
-		else
-			m_currentHp = m_maxHp;
+		if (m_currentHp + hp <= m_maxHp) m_currentHp += hp;
+		else m_currentHp = m_maxHp;
 	}
 	void SetMaxArmor(const int armor) { m_maxArmor = armor; }
 	void AddCurrentArmor(const int armor)
@@ -50,7 +47,7 @@ public:
 			m_currentArmor = m_maxArmor;
 	}
 	void SetMaxEnergy(const int energy) { m_maxEnergy = energy; }
-	void SetCurrentEnergy(const int energy) { m_currentEnergy = energy; }
+	void SetCurrentEnergy(const int energy) { if(energy <= m_maxEnergy)m_currentEnergy = energy; }
 	void AddCurrentEnergy(const int energy)
 	{
 		if (m_currentEnergy + energy <= m_maxEnergy)
@@ -60,7 +57,7 @@ public:
 	}
 	void ConsumeEnergy(const int energy)
 	{
-		if (m_currentEnergy - energy > 0)
+		if (m_currentEnergy - energy >= 0)
 			m_currentEnergy -= energy;
 	}
 	void SetInvincibleMode(const bool op) { m_invincibleMode = op; }
@@ -82,10 +79,10 @@ private:
 	int m_maxEnergy; // 能量上限
 	int m_currentEnergy; // 當前能量值
 	float m_armorRecoveryInterval = 2.0f;
-	float m_armorRecoveryTimer = 0.0f; // 恢復護甲計時器
-	bool m_invincibleMode = false; // 無敵模式
-	bool m_breakProtection = false; // 天賦：破甲保護
-	std::unordered_map<int, float> m_recentAttackSources; // 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
+	float m_armorRecoveryTimer = 0.0f;	// 恢復護甲計時器
+	bool m_invincibleMode = false;		// 無敵模式
+	bool m_breakProtection = false;		// 天賦：破甲保護
+	std::unordered_map<int, float> m_recentAttackSources;	// 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
 	float m_invincibleDuration = 0.5f; // 碰撞後對於同一個物件無敵時間（秒）
 
 	// 通知 StateComponent 角色死亡

@@ -209,6 +209,10 @@ void DungeonRoom::Start(const std::shared_ptr<Character> &player)
 {
 	Room::Start(player);
 	InitializeGrid();
+
+	// 注意：碰撞優化將在 FinalizeRoomSetup() 中進行
+	// LOG_DEBUG("DungeonRoom::Start - Room basic setup completed at {},{}",
+	// 		  m_RoomSpaceInfo.m_WorldCoord.x, m_RoomSpaceInfo.m_WorldCoord.y);
 }
 
 void DungeonRoom::Update()

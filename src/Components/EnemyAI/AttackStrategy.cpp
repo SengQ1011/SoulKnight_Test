@@ -359,7 +359,7 @@ void BossAttackStrategy::SpawnIceSpike(const EnemyContext& ctx, const glm::vec2&
 	iceSpike.direction = direction;
 	iceSpike.size = 22.0f;
 	iceSpike.damage = 3;
-	iceSpike.elementalDamage = StatusEffect::NONE;
+	iceSpike.elementalDamage = StatusEffect::FROZEN;
 	iceSpike.chainAttack.enabled = true;
 
 	iceSpike.canBlockingBullet = false;
