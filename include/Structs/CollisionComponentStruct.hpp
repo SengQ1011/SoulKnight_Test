@@ -13,6 +13,8 @@
 
 #include "EventInfo.hpp"
 
+
+class ITriggerStrategy;
 class nGameObject;
 
 enum CollisionLayers : glm::uint8_t { //不用class因爲不想重載運算子直接用uint8_t的運算子
@@ -36,6 +38,8 @@ struct StructCollisionComponent
 	uint8_t m_CollisionLayer = CollisionLayers_None;
 	uint8_t m_CollisionMask = CollisionLayers_None;
 	bool m_IsTrigger = false;
+	std::string m_TriggerStrategyType = ""; // TriggerStrategy 类型
+	nlohmann::json m_TriggerStrategyConfig = nlohmann::json::object(); // TriggerStrategy 配置
 };
 
 inline std::unordered_map<std::string, CollisionLayers> m_String2CollisionLayer = {
@@ -58,7 +62,9 @@ inline void to_json(nlohmann::ordered_json &j, const StructCollisionComponent &c
 		  {"Offset",c.m_Offset},
 		  {"CollisionLayer",c.m_CollisionLayer},
 		  {"CollisionMask",c.m_CollisionMask},
-		  {"IsTrigger",c.m_IsTrigger}};
+		  {"IsTrigger",c.m_IsTrigger},
+		  {"TriggerStrategyType", c.m_TriggerStrategyType},
+		  {"TriggerStrategyConfig", c.m_TriggerStrategyConfig}};
 }
 
 inline void from_json(const nlohmann::ordered_json& j, StructCollisionComponent &c) {
@@ -66,13 +72,50 @@ inline void from_json(const nlohmann::ordered_json& j, StructCollisionComponent 
 	j.at("Size").get_to(c.m_Size);
 	j.at("Offset").get_to(c.m_Offset);
 
-	c.m_CollisionLayer = m_String2CollisionLayer.find(j.at("CollisionLayer").get<std::string>())->second;
-
-	for (const auto& it : j.at("CollisionMask"))
-	{
-		c.m_CollisionMask |= (m_String2CollisionLayer.find(it.get<std::string>())->second);
+	// CollisionLayer
+	if (j.contains("CollisionLayer") && j.at("CollisionLayer").is_string()) {
+		auto layerStr = j.at("CollisionLayer").get<std::string>();
+		auto it = m_String2CollisionLayer.find(layerStr);
+		if (it != m_String2CollisionLayer.end()) {
+			c.m_CollisionLayer = it->second;
+		} else {
+			c.m_CollisionLayer = CollisionLayers_None;
+			// LOG_ERROR("Unknown CollisionLayer: {}", layerStr);
+		}
+	} else {
+		c.m_CollisionLayer = CollisionLayers_None;
 	}
+
+	// CollisionMask
+	c.m_CollisionMask = CollisionLayers_None;
+	if (j.contains("CollisionMask") && j.at("CollisionMask").is_array()) {
+		for (const auto& maskStr : j.at("CollisionMask")) {
+			if (maskStr.is_string()) {
+				auto maskIt = m_String2CollisionLayer.find(maskStr.get<std::string>());
+				if (maskIt != m_String2CollisionLayer.end()) {
+					c.m_CollisionMask |= maskIt->second;
+				} else {
+					// LOG_ERROR("Unknown CollisionMask: {}", maskStr.get<std::string>());
+				}
+			}
+		}
+	}
+
 	j.at("IsTrigger").get_to(c.m_IsTrigger);
+
+	// TriggerStrategyType
+	if (j.contains("TriggerStrategyType") && j.at("TriggerStrategyType").is_string()) {
+		j.at("TriggerStrategyType").get_to(c.m_TriggerStrategyType);
+	} else {
+		c.m_TriggerStrategyType = "";
+	}
+
+	// TriggerStrategyConfig
+	if (j.contains("TriggerStrategyConfig") && j.at("TriggerStrategyConfig").is_object()) {
+		c.m_TriggerStrategyConfig = j.at("TriggerStrategyConfig");
+	} else {
+		c.m_TriggerStrategyConfig = nlohmann::json::object();
+	}
 }
 
 // TODO: 嘗試重構中

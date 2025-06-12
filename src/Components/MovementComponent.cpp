@@ -8,6 +8,7 @@
 #include "Attack/EffectAttack.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Structs/KnockOffEventInfo.hpp"
+#include "Structs/SpeedChangeEventInfo.hpp"
 #include "Util/Time.hpp"
 
 
@@ -27,9 +28,19 @@ void MovementComponent::Update()
 		if (m_SpeedEffectDuration <= 0.0f)
 		{
 			m_SpeedEffectDuration = 0.0f;
-			m_currentSpeedRatio = m_SpeedRatio; // 恢復正常速度
 		}
 	}
+
+	// 處理平滑恢復(平滑过渡回原始速度)
+	if (m_SpeedEffectDuration <= 0.0f && std::abs(m_currentSpeedRatio - m_SpeedRatio) > 0.01f)
+	{
+		m_currentSpeedRatio = glm::mix(m_currentSpeedRatio, m_SpeedRatio, deltaTime * 2.0f);
+		if (std::abs(m_currentSpeedRatio - m_SpeedRatio) < 0.01f)
+		{
+			m_currentSpeedRatio = m_SpeedRatio;
+		}
+	}
+
 
 	// ===== 移動邏輯核心 =====
 	constexpr float baseSpeed = 120.0f; // 基础速度
@@ -210,7 +221,6 @@ void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 	{
 		case EventType::Collision:
 		{
-			// LOG_DEBUG("MovementComponent::HandleEvent1");
 			const auto& collisionInfo = dynamic_cast<const CollisionEventInfo&>(eventInfo);
 			HandleCollision(collisionInfo);
 			break;
@@ -222,6 +232,14 @@ void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 			SetImpulseVelocity(knockOffInfo.impulseVelocity);
 			break;
 		}
+		case EventType::SpeedChanged:
+		{
+			// LOG_DEBUG("SpeedChanged");
+			const auto& speedChangedInfo = dynamic_cast<const SpeedChangeEventInfo&>(eventInfo);
+			SetCurrentSpeedRatio(speedChangedInfo.speedRatio);
+			m_SpeedEffectDuration = speedChangedInfo.durationTime; // 设置持续时间
+			break;
+		}
 		default:
 			break;
 	}
@@ -231,7 +249,8 @@ std::vector<EventType> MovementComponent::SubscribedEventTypes() const
 {
 	return {
 		EventType::Collision,
-		EventType::KnockOff
+		EventType::KnockOff,
+		EventType::SpeedChanged
 	};
 }
 

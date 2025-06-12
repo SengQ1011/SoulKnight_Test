@@ -22,9 +22,10 @@ enum class ComponentType
 	MOVEMENT,		 // 12
 	PROJECTILE,		 // 13
 	SKILL,			 // 14
-	STATE,			 // 15
-	TALENT,			 // 16
-	WALLET			 // 17
+	SPIKE,			 // 15
+	STATE,			 // 16
+	TALENT,			 // 17
+	WALLET			 // 18
 };
 
 enum class CharacterType

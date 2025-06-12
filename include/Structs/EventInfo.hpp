@@ -39,7 +39,8 @@ enum class EventType
 	// 視覺特效
 	StartFlicker,
 
-	// 角色動作
+	// 角色行爲
+	SpeedChanged,
 	EnemyDeath,
 
 	// 門相關
@@ -48,6 +49,8 @@ enum class EventType
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
+
+
 
 	// PlayerDeath,
 	// PlayerSpawned,

@@ -26,6 +26,7 @@ set(SRC_FILES
     Components/MovementComponent.cpp
     Components/ProjectileComponent.cpp
     Components/SkillComponent.cpp
+    Components/SpikeComponent.cpp
     Components/StateComponent.cpp
     Components/TalentComponent.cpp
     Creature/Character.cpp
@@ -76,6 +77,7 @@ set(SRC_FILES
     TriggerStrategy/BlockProjectileStrategy.cpp
     TriggerStrategy/KnockOffTriggerStrategy.cpp
     TriggerStrategy/ReflectTriggerStrategy.cpp
+    TriggerStrategy/SpeedZoneStrategy.cpp
     UIPanel/GameHUDPanel.cpp
     UIPanel/MenuHUDPanel.cpp
     UIPanel/MinimapPanel.cpp
@@ -127,6 +129,7 @@ set(INCLUDE_FILES
     Components/MovementComponent.hpp
     Components/ProjectileComponent.hpp
     Components/SkillComponent.hpp
+    Components/SpikeComponent.hpp
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
     Components/TriggerComponent.hpp
@@ -193,6 +196,7 @@ set(INCLUDE_FILES
     Structs/PositionChangedEvent.hpp
     Structs/RectShape.hpp
     Structs/ReflectProjectileEventInfo.hpp
+    Structs/SpeedChangeEventInfo.hpp
     Structs/TakeDamageEventInfo.hpp
     Structs/ValueChangedEvent.hpp
     Tool/Tool.hpp
@@ -201,6 +205,7 @@ set(INCLUDE_FILES
     TriggerStrategy/ITriggerStrategy.hpp
     TriggerStrategy/KnockOffTriggerStrategy.hpp
     TriggerStrategy/ReflectTriggerStrategy.hpp
+    TriggerStrategy/SpeedZoneStrategy.hpp
     UIPanel/GameHUDPanel.hpp
     UIPanel/MenuHUDPanel.hpp
     UIPanel/MinimapPanel.hpp

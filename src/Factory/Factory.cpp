@@ -12,6 +12,7 @@
 #include "Components/CollisionComponent.hpp"
 #include "Components/DoorComponent.hpp"
 #include "Components/InteractableComponent.hpp"
+#include "Components/SpikeComponent.hpp"
 
 ZIndexType Factory::stringToZIndexType(const std::string& zIndexStr) {
 	if (zIndexStr == "FLOOR") return FLOOR;
@@ -79,6 +80,18 @@ void Factory::createComponent(const std::shared_ptr<nGameObject>& object, const 
 				}
 			}
 		},
+		{"SPIKE",
+			[](const std::shared_ptr<nGameObject>& object, const nlohmann::json &json)
+			{
+				try {
+					auto imagePaths = json.at("imagePaths").get<std::vector<std::string>>();
+					const auto damage = json.at("damage").get<int>();
+					object->AddComponent<SpikeComponent>(ComponentType::SPIKE, imagePaths, damage);
+				} catch (const std::exception& e) {
+					LOG_ERROR("Factory::createComponent SPIKE parsing failed: {}", e.what());
+				}
+			}
+		}
 	};
 	const std::string& componentClass = json.at("Class").get<std::string>();
 
