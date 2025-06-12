@@ -21,7 +21,7 @@ public:
 	void addObserver(const std::shared_ptr<InputObserver> &observer) {
 		if (observer) {
 			m_Observer.push_back(observer);
-			LOG_DEBUG("Add New Observer");
+			// LOG_DEBUG("Add New Observer");
 		}else {
 			LOG_ERROR("Failed to Add New Observer");
 		}

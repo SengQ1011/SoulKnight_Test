@@ -32,7 +32,7 @@ protected:
 	float m_moveTimer = 0; // 移動時間計時器
 	float m_detectionRange = 150.0f;
 
-	void changeToIdle(const EnemyContext &ctx);
+	void changeToIdle(const EnemyContext &ctx, float minTime, float maxTime);
 	void ReflectMovement(const CollisionEventInfo &info, const EnemyContext &ctx);
 	void EnterWanderState(const EnemyContext &ctx, float minTime, float maxTime, float moveRatio = 0.2f);
 	void RestIfNeeded(float deltaTime, const EnemyContext &ctx, float minTime, float maxTime);

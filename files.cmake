@@ -82,6 +82,7 @@ set(SRC_FILES
     UIPanel/PausePanel.cpp
     UIPanel/PlayerStatusPanel.cpp
     UIPanel/SettingPanel.cpp
+    UIPanel/TalentSelectionPanel.cpp
     UIPanel/UIButton.cpp
     UIPanel/UIManager.cpp
     UIPanel/UIPanel.cpp
@@ -129,7 +130,7 @@ set(INCLUDE_FILES
     Components/StateComponent.hpp
     Components/TalentComponet.hpp
     Components/TriggerComponent.hpp
-    Components/WalletComponent.hpp
+    Components/walletComponent.hpp
     Creature/Character.hpp
     Cursor.hpp
     EnumTypes.hpp
@@ -207,6 +208,7 @@ set(INCLUDE_FILES
     UIPanel/PlayerStatusPanel.hpp
     UIPanel/ResultPanel.hpp
     UIPanel/SettingPanel.hpp
+    UIPanel/TalentSelectionPanel.hpp
     UIPanel/UIButton.hpp
     UIPanel/UIManager.hpp
     UIPanel/UIPanel.hpp
