@@ -92,7 +92,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(c
 				needLoop = value["Loop"].get<bool>();
 			}
 
-			animations[state] = std::make_shared<Animation>(frames, needLoop, "Character", interval);
+			animations[state] = std::make_shared<Animation>(frames, needLoop, interval, "Character");
 		}
 		else if (value.is_array())
 		{
@@ -100,7 +100,7 @@ std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(c
 			{
 				frames.push_back(RESOURCE_DIR + frame.get<std::string>());
 			}
-			animations[state] = std::make_shared<Animation>(frames, true, "Animation", 0);
+			animations[state] = std::make_shared<Animation>(frames, true, 0, "Animation");
 		}
 		else
 		{

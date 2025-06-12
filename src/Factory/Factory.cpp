@@ -118,7 +118,7 @@ std::shared_ptr<Animation> Factory::parseAnimations(const nlohmann::json &animat
 	{
 		frames.push_back(RESOURCE_DIR + frame.get<std::string>());
 	}
-	auto animations = std::make_shared<Animation>(frames, needLoop, "Animation", 0);
+	auto animations = std::make_shared<Animation>(frames, needLoop, 0, "Animation");
 
 	return animations;
 }

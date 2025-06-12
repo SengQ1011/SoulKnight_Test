@@ -10,7 +10,7 @@
   "components": [
     {
       "Name": "collision_box",
-      "Class": "CollisionComponent",
+      "Class": "COLLISION",
       "Size": [
         16.0,
         16.0
