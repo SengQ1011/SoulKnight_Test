@@ -20,7 +20,7 @@ public:
 	void Init() override;
 	void Update() override;
 	void SetAnimation(State state);
-	void SetSkillEffect(bool play);
+	void SetSkillEffect(bool play, glm::vec2 offset= glm::vec2(0.0f, 0.0f));
 	bool IsUsingSkillEffect() const { return m_useSkillEffect; }
 
 	[[nodiscard]] std::shared_ptr<Animation> GetCurrentAnimation() const { return m_currentAnimation; }

@@ -21,7 +21,8 @@ void NPCComponent::Init() {
 }
 
 void NPCComponent::CreatePromptObject() {
-    if (!m_promptObject) {
+    // 只有当有提示文本时才创建prompt对象
+    if (!m_promptText.empty() && !m_promptObject) {
         m_promptObject = std::make_shared<nGameObject>("NPCPrompt");
         auto text = ImagePoolManager::GetInstance().GetText(
             RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", m_promptSize,
@@ -43,6 +44,8 @@ void NPCComponent::CreatePromptObject() {
 }
 
 void NPCComponent::UpdatePromptText() {
+    if (!m_promptObject) return;  // 如果没有prompt对象，直接返回
+    
     if (auto interactableComp = GetOwner<nGameObject>()->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE)) {
         if (m_isActionReady) {
             interactableComp->SetPromptText("按F確認");
@@ -150,8 +153,11 @@ void NPCComponent::Update() {
         if (animationComp->IsUsingSkillEffect()) {
             if (auto animation = std::dynamic_pointer_cast<Animation>(animationComp->GetAnimation(State::SKILL))) {
                 if (animation->IfAnimationEnds()) {
-                    // 动画播放完成，停止效果
+                    // 动画播放完成，停止效果并重置状态
                     animationComp->SetSkillEffect(false);
+                    if (auto stateComp = GetOwner<nGameObject>()->GetComponent<StateComponent>(ComponentType::STATE)) {
+                        stateComp->SetState(State::STANDING);
+                    }
                 }
             }
         }

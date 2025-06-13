@@ -182,7 +182,9 @@ enum class InteractableType
 	ENERGY_POISON,
 	NPC_MERCHANT,
 	NPC_RICH_GUY,
-	NPC_HELLO_WORLD
+	NPC_HELLO_WORLD,
+	GASHAPON_MACHINE,
+	EGG
 };
 
 enum class PotionType

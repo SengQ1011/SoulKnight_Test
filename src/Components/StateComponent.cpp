@@ -154,9 +154,9 @@ void StateComponent::SetState(State newState)
 		{
 			auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 			auto m_currentAnimation = animationComponent->GetCurrentAnimation();
-			if (character->GetCharacterName() == "Knight" && newState == State::SKILL)
+			if ((character->GetCharacterName() == "Knight") && newState == State::SKILL)
 			{
-				animationComponent->SetSkillEffect(true);
+				animationComponent->SetSkillEffect(true, glm::vec2(0.0f, 0.0f));
 			}
 			else
 			{

@@ -64,49 +64,43 @@ State stringToState(const std::string &stateStr)
 	throw std::invalid_argument("Unknown state: " + stateStr);
 }
 
-std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(const nlohmann::json &animationsJson)
-{
+std::shared_ptr<Animation> createAnimationFromConfig(const nlohmann::json& animationConfig) {
+	std::vector<std::string> frames;
+	float interval = 100.0f;
+	bool needLoop = false;
+
+	if (animationConfig.is_object() && animationConfig.contains("path")) {
+		for (const auto& frame : animationConfig["path"]) {
+			frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+		}
+
+		if (animationConfig.contains("FPS")) {
+			const auto fps = animationConfig["FPS"].get<int>();
+			interval = 1000.0f / fps;
+		}
+
+		if (animationConfig.contains("Loop")) {
+			needLoop = animationConfig["Loop"].get<bool>();
+		}
+	}
+	else if (animationConfig.is_array()) {
+		for (const auto& frame : animationConfig) {
+			frames.push_back(RESOURCE_DIR + frame.get<std::string>());
+		}
+		needLoop = true;
+	}
+	else {
+		throw std::invalid_argument("Unknown animation format");
+	}
+
+	return std::make_shared<Animation>(frames, needLoop, interval, "Animation");
+}
+
+std::unordered_map<State, std::shared_ptr<Animation>> parseCharacterAnimations(const nlohmann::json& animationsJson) {
 	std::unordered_map<State, std::shared_ptr<Animation>> animations;
-	for (const auto &[key, value] : animationsJson.items())
-	{
+	for (const auto& [key, value] : animationsJson.items()) {
 		State state = stringToState(key);
-		std::vector<std::string> frames;
-
-		if (value.is_object() && value.contains("path"))
-		{
-			float interval = 100.0f;
-			bool needLoop = false;
-
-			for (const auto &frame : value["path"])
-			{
-				frames.push_back(RESOURCE_DIR + frame.get<std::string>());
-			}
-
-			if (value.contains("FPS"))
-			{
-				const auto fps = value["FPS"].get<int>();
-				interval = 1000.0f / fps;
-			}
-
-			if (value.contains("Loop"))
-			{
-				needLoop = value["Loop"].get<bool>();
-			}
-
-			animations[state] = std::make_shared<Animation>(frames, needLoop, interval, "Character");
-		}
-		else if (value.is_array())
-		{
-			for (const auto &frame : value)
-			{
-				frames.push_back(RESOURCE_DIR + frame.get<std::string>());
-			}
-			animations[state] = std::make_shared<Animation>(frames, true, 0, "Animation");
-		}
-		else
-		{
-			throw std::invalid_argument("Unknown frames");
-		}
+		animations[state] = createAnimationFromConfig(value);
 	}
 	return animations;
 }
@@ -195,8 +189,8 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id)
 			FollowerComp->Update(); // 直接更新一次位置
 			// FollowerComp->SetTargetMouse(true);
 
-			auto weapon2 = WeaponFactory::createWeapon(5);
-			attackComponent->AddWeapon(weapon2);
+			// auto weapon2 = WeaponFactory::createWeapon(5);
+			// attackComponent->AddWeapon(weapon2);
 			LOG_DEBUG("Player created");
 			return player;
 		}
@@ -345,12 +339,14 @@ InteractableType stringToInteractableType(const std::string &stateStr)
 		return InteractableType::NPC_MERCHANT;
 	if (stateStr == "NPC_RICH_GUY")
 		return InteractableType::NPC_RICH_GUY;
+	if (stateStr == "NPC_HELLO_WORLD")
+		return InteractableType::NPC_HELLO_WORLD;
 }
 
 std::shared_ptr<Character> CharacterFactory::createNPC(const int id)
 {
 	// 在 JSON 陣列中搜尋符合名稱的角色
-	for (const auto &characterInfo : npcJsonData)
+	for (const auto& characterInfo : npcJsonData)
 	{
 		if (characterInfo["ID"] == id)
 		{
@@ -358,8 +354,6 @@ std::shared_ptr<Character> CharacterFactory::createNPC(const int id)
 			CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
 			std::shared_ptr<Character> npc = std::make_shared<Character>(name, type);
 			npc->SetZIndexType(ZIndexType::OBJECTHIGH);
-			// npc->SetZIndexType(ZIndexType::CUSTOM);
-			// npc->SetZIndex(100);
 
 			auto animation = parseCharacterAnimations(characterInfo["animations"]);
 			
@@ -376,12 +370,24 @@ std::shared_ptr<Character> CharacterFactory::createNPC(const int id)
 					npcConfig.dialogues.push_back(dialogue.get<std::string>());
 				}
 			}
-			npcConfig.promptText = characterInfo["prompt"].get<std::string>();
-			npcConfig.promptSize = characterInfo["promptSize"].get<float>();
+			// 只有当prompt不为空时才设置
+			if (!characterInfo["prompt"].get<std::string>().empty()) {
+				npcConfig.promptText = characterInfo["prompt"].get<std::string>();
+				npcConfig.promptSize = characterInfo["promptSize"].get<float>();
+			}
 
 			auto animationComp = npc->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
+			auto stateComp = npc->AddComponent<StateComponent>(ComponentType::STATE);
 			auto npcComp = npc->AddComponent<NPCComponent>(ComponentType::NPC, npcConfig);
 			auto interactableComp = npc->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE, interactable);
+
+			// 如果是NPC_HELLO_WORLD，创建提示动画
+			if (interactable.s_InteractableType == InteractableType::NPC_HELLO_WORLD) {
+				if (characterInfo.contains("promptAnimation")) {
+					auto promptAnim = createAnimationFromConfig(characterInfo["promptAnimation"]);
+					interactableComp->SetPromptAnimation(promptAnim);
+				}
+			}
 
 			return npc;
 		}
