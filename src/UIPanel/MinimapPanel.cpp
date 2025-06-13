@@ -85,10 +85,10 @@ void MinimapPanel::Update()
 	}
 
 	// 顯示 Debug 視窗
-	if (m_EnableDebug)
-	{
-		DrawDebugUI();
-	}
+	// if (m_EnableDebug)
+	// {
+	// 	DrawDebugUI();
+	// }
 }
 
 void MinimapPanel::Show()

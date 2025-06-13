@@ -2,8 +2,8 @@
 // Created by QuzzS on 2025/5/1.
 //
 
-#ifndef SETTINGPANEL_HPP
-#define SETTINGPANEL_HPP
+#ifndef KEYPANEL_HPP
+#define KEYPANEL_HPP
 
 #include <glm/glm.hpp>
 #include <memory>
@@ -12,14 +12,13 @@
 #include "Util/Timer.hpp"
 
 class UIButton;
-class UISlider;
 class nGameObject;
 
-class SettingPanel : public UIPanel
+class KeyPanel : public UIPanel
 {
 public:
-	SettingPanel() = default;
-	~SettingPanel() override = default;
+	KeyPanel() = default;
+	~KeyPanel() override = default;
 	void Start() override;
 	void Update() override;
 	void DrawDebugUI();
@@ -30,22 +29,16 @@ public:
 
 protected:
 	std::shared_ptr<nGameObject> m_OverLay; // 遮罩層
-	std::shared_ptr<nGameObject> m_PanelBackground;
-	std::shared_ptr<UISlider> m_SliderMasterVolume;
-	std::shared_ptr<UISlider> m_SliderBGMVolume;
-	std::shared_ptr<UISlider> m_SliderSFXVolume;
-	std::shared_ptr<UIButton> m_CloseButton;
+	std::shared_ptr<nGameObject> m_PanelBackground; // 按鍵說明背景
+	std::shared_ptr<UIButton> m_CloseButton; // 關閉按鈕
 
 	// 側邊按鈕
-	std::shared_ptr<UIButton> m_SideButton1; // 左上第一個 - UIButton (可點擊，切換到 KeyPanel)
-	std::shared_ptr<nGameObject> m_SideButton2; // 第二個 - nGameObject (純顯示)
+	std::shared_ptr<nGameObject> m_SideButton1; // 左上第一個 - nGameObject (純顯示)
+	std::shared_ptr<UIButton> m_SideButton2; // 第二個 - UIButton (可點擊，切換到 SettingPanel)
 
 	// 元件相對於面板背景的偏移量
 	glm::vec2 m_BackgroundOffset = glm::vec2(0.0f, 22.0f);
-	glm::vec2 m_SliderOffset1 = glm::vec2(50.0f, 70.0f);
-	glm::vec2 m_SliderOffset2 = glm::vec2(50.0f, -55.0f);
-	glm::vec2 m_SliderOffset3 = glm::vec2(50.0f, -180.0f);
-	glm::vec2 m_CloseButtonOffset = glm::vec2(335.0f, 197.0f);
+	glm::vec2 m_CloseButtonOffset = glm::vec2(335.0f, 197.0f); // 右上角位置
 
 	// 動畫相關
 	bool m_IsAnimating = false;
@@ -66,4 +59,4 @@ private:
 	void UpdateSideButtonsPosition(const glm::vec2 &panelPosition);
 };
 
-#endif // SETTINGPANEL_HPP
+#endif // KEYPANEL_HPP

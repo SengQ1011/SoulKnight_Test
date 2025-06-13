@@ -24,7 +24,8 @@ void ChestRoom::Update() { DungeonRoom::Update(); }
 void ChestRoom::LoadFromJSON()
 {
 	// 暫時使用空的JSON數據，未來可以添加特定的寶箱房間佈局
-	const nlohmann::ordered_json jsonData = m_Loader.lock()->LoadPortalRoomObjectPosition();;
+	const nlohmann::ordered_json jsonData = m_Loader.lock()->LoadPortalRoomObjectPosition();
+	;
 	InitializeRoomObjects(jsonData);
 }
 

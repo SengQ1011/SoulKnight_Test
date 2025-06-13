@@ -15,7 +15,6 @@ public:
 	explicit walletComponent(int startMoney = 0) : Component(ComponentType::WALLET), m_Money(startMoney) {}
 	void Update() override
 	{
-		DrawDebugUI();
 		if (m_Money >= MAX_LIMIT)
 		{
 			m_Money = MAX_LIMIT;

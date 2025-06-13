@@ -91,6 +91,7 @@ set(SRC_FILES
     TriggerStrategy/ReflectTriggerStrategy.cpp
     TriggerStrategy/SpeedZoneStrategy.cpp
     UIPanel/GameHUDPanel.cpp
+    UIPanel/KeyPanel.cpp
     UIPanel/MenuHUDPanel.cpp
     UIPanel/MinimapPanel.cpp
     UIPanel/PausePanel.cpp
@@ -232,6 +233,7 @@ set(INCLUDE_FILES
     TriggerStrategy/ReflectTriggerStrategy.hpp
     TriggerStrategy/SpeedZoneStrategy.hpp
     UIPanel/GameHUDPanel.hpp
+    UIPanel/KeyPanel.hpp
     UIPanel/MenuHUDPanel.hpp
     UIPanel/MinimapPanel.hpp
     UIPanel/PausePanel.hpp

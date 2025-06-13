@@ -9,6 +9,7 @@
 #include "Override/nGameObject.hpp"
 #include "Scene/SceneManager.hpp"
 #include "UIPanel/UIButton.hpp"
+#include "UIPanel/UIManager.hpp"
 #include "UIPanel/UISlider.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
@@ -110,6 +111,9 @@ void SettingPanel::Start()
 	m_CloseButton->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
 	m_GameObjects.push_back(m_CloseButton);
 
+	// 初始化側邊按鈕
+	InitializeSideButtons();
+
 	// 添加到場景渲染器
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if (scene)
@@ -127,6 +131,8 @@ void SettingPanel::Start()
 		renderer->AddChild(m_SliderMasterVolume);
 		renderer->AddChild(m_SliderBGMVolume);
 		renderer->AddChild(m_SliderSFXVolume);
+		renderer->AddChild(m_SideButton1);
+		renderer->AddChild(m_SideButton2);
 	}
 
 	// 設定初始位置為隱藏狀態
@@ -141,7 +147,7 @@ void SettingPanel::Update()
 	UpdateAnimation();
 
 	// 更新所有元件（移除動畫期間的性能優化，確保滑塊元件位置同步）
-	// DrawDebugUI();  // 注解掉 Debug UI
+	DrawDebugUI(); // 注解掉 Debug UI
 	for (const std::shared_ptr<nGameObject> &gameObject : m_GameObjects)
 	{
 		gameObject->Update();
@@ -237,6 +243,42 @@ void SettingPanel::UpdateAllElementsPosition(const glm::vec2 &panelPosition)
 	m_SliderBGMVolume->m_Transform.translation = panelPosition + m_SliderOffset2;
 	m_SliderSFXVolume->m_Transform.translation = panelPosition + m_SliderOffset3;
 	m_CloseButton->m_Transform.translation = panelPosition + m_CloseButtonOffset;
+
+	// 更新側邊按鈕位置
+	UpdateSideButtonsPosition(panelPosition);
+}
+
+void SettingPanel::InitializeSideButtons()
+{
+	// 創建側邊按鈕1 - UIButton (可點擊，切換到 KeyPanel)
+	std::function<void()> switchToKeyPanel = []()
+	{
+		UIManager::GetInstance().HidePanel("setting");
+		UIManager::GetInstance().ShowPanel("key");
+	};
+	m_SideButton1 = std::make_shared<UIButton>(switchToKeyPanel, false);
+	m_SideButton1->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/key/sideButton.png"));
+	m_SideButton1->SetZIndex(m_PanelBackground->GetZIndex() + 0.1f);
+	m_GameObjects.push_back(m_SideButton1);
+
+	// 創建側邊按鈕2 - nGameObject (純顯示)
+	m_SideButton2 = std::make_shared<nGameObject>();
+	m_SideButton2->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/key/sideButton.png"));
+	m_SideButton2->SetZIndex(m_PanelBackground->GetZIndex() - 0.05f);
+	m_GameObjects.push_back(m_SideButton2);
+}
+
+void SettingPanel::UpdateSideButtonsPosition(const glm::vec2 &panelPosition)
+{
+	// 計算第一個按鈕位置
+	glm::vec2 offset;
+	offset.x = (m_PanelBackground->GetScaledSize().x + m_SideButton1->GetScaledSize().x) / -2.0f + 7.0f;
+	offset.y = m_PanelBackground->GetScaledSize().y / 2.0f - m_SideButton1->GetScaledSize().y - 32.0f;
+	m_SideButton1->m_Transform.translation = panelPosition + offset;
+
+	// 計算第二個按鈕位置
+	float offsetY = (m_SideButton1->GetScaledSize().y + m_SideButton2->GetScaledSize().y) / 2.0f + 32.0f;
+	m_SideButton2->m_Transform.translation = m_SideButton1->m_Transform.translation - glm::vec2(0.0f, offsetY);
 }
 
 void SettingPanel::DrawDebugUI()
@@ -284,12 +326,30 @@ void SettingPanel::DrawDebugUI()
 		ImGui::LabelText("scale.y", "%.3f", m_PanelBackground->m_Transform.scale.y);
 	}
 
+	// === Side Buttons Settings ===
+	if (ImGui::CollapsingHeader("Side Buttons Settings", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text("Side Button 1 (UIButton - Switch to Key):");
+		ImGui::LabelText("Position X##side1", "%.3f", m_SideButton1->m_Transform.translation.x);
+		ImGui::LabelText("Position Y##side1", "%.3f", m_SideButton1->m_Transform.translation.y);
+
+		ImGui::Text("Side Button 2 (nGameObject - Display):");
+		ImGui::LabelText("Position X##side2", "%.3f", m_SideButton2->m_Transform.translation.x);
+		ImGui::LabelText("Position Y##side2", "%.3f", m_SideButton2->m_Transform.translation.y);
+
+		if (ImGui::Button("Test Switch to Key Panel"))
+		{
+			UIManager::GetInstance().HidePanel("setting");
+			UIManager::GetInstance().ShowPanel("key");
+		}
+	}
+
 	// === Animation Debug ===
 	if (ImGui::CollapsingHeader("Animation Debug", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("Is Animating: %s", m_IsAnimating ? "Yes" : "No");
 		ImGui::Text("Is Showing: %s", m_IsShowingAnimation ? "Yes" : "No");
-		ImGui::Text("Animation Timer: %.3f", m_AnimationTimer);
+		ImGui::Text("Animation Timer: %.3f", m_AnimationTimer.GetProgress());
 		ImGui::Text("Visible Pos: (%.1f, %.1f)", m_VisiblePosition.x, m_VisiblePosition.y);
 		ImGui::Text("Hidden Pos: (%.1f, %.1f)", m_HiddenPosition.x, m_HiddenPosition.y);
 		ImGui::Text("Current Pos: (%.1f, %.1f)", m_PanelBackground->m_Transform.translation.x,

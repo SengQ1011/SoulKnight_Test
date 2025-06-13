@@ -36,6 +36,7 @@
 #include "Room/MonsterRoomTestUI.hpp"
 #include "Structs/EventInfo.hpp"
 #include "UIPanel/GameHUDPanel.hpp"
+#include "UIPanel/KeyPanel.hpp"
 #include "UIPanel/PausePanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
 #include "UIPanel/SettingPanel.hpp"
@@ -155,7 +156,7 @@ void DungeonScene::Update()
 	}
 
 	// 調試界面
-	// DrawStageDebugUI();
+	DrawGameDebugUI();
 
 	// 更新渲染器（渲染總是需要更新）
 	m_Root->Update();
@@ -286,6 +287,11 @@ void DungeonScene::InitUIManager()
 	const auto settingPanel = std::make_shared<SettingPanel>();
 	settingPanel->Start();
 	UIManager::GetInstance().RegisterPanel("setting", std::static_pointer_cast<UIPanel>(settingPanel), 2, true);
+
+	// 創建按鍵說明面板 - 最高優先級模態面板
+	const auto keyPanel = std::make_shared<KeyPanel>();
+	keyPanel->Start();
+	UIManager::GetInstance().RegisterPanel("key", std::static_pointer_cast<UIPanel>(keyPanel), 2, true);
 
 	// 創建暫停面板 - 中等優先級模態面板
 	const auto pausePanel =
@@ -497,6 +503,140 @@ void DungeonScene::DrawStageDebugUI()
 				m_stageText->SetControlVisible(false);
 			if (m_stageIcon)
 				m_stageIcon->SetControlVisible(false);
+		}
+	}
+
+	ImGui::End();
+}
+
+void DungeonScene::DrawGameDebugUI()
+{
+	ImGui::Begin("Game Debug Console");
+
+	// === 玩家錢包調試 ===
+	if (ImGui::CollapsingHeader("Player Wallet", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (m_Player)
+		{
+			if (auto walletComp = m_Player->GetComponent<walletComponent>(ComponentType::WALLET))
+			{
+				ImGui::Text("Current Money: %d", walletComp->GetMoney());
+
+				// Money adjustment slider
+				int tempMoney = walletComp->GetMoney();
+				if (ImGui::SliderInt("Set Money", &tempMoney, 0, 9999))
+				{
+					walletComp->SetMoney(tempMoney);
+				}
+
+				// Quick adjustment buttons
+				if (ImGui::Button("+ 100"))
+				{
+					walletComp->AddMoney(100);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("+ 500"))
+				{
+					walletComp->AddMoney(500);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("+ 1000"))
+				{
+					walletComp->AddMoney(1000);
+				}
+
+				// Second row buttons
+				if (ImGui::Button("Reset"))
+				{
+					walletComp->SetMoney(0);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Max Value"))
+				{
+					walletComp->SetMoney(9999);
+				}
+
+				// Custom amount addition
+				static int addAmount = 50;
+				ImGui::InputInt("Custom Amount", &addAmount);
+				if (ImGui::Button("Add Custom Amount"))
+				{
+					walletComp->AddMoney(addAmount);
+				}
+			}
+		}
+	}
+
+	// === 玩家血量調試 ===
+	if (ImGui::CollapsingHeader("Player Health", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (m_Player)
+		{
+			if (auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH))
+			{
+				ImGui::Text("Health: %d / %d", healthComp->GetCurrentHp(), healthComp->GetMaxHp());
+
+				if (ImGui::Button("Full Health"))
+				{
+					healthComp->SetCurrentHp(healthComp->GetMaxHp());
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Half Health"))
+				{
+					healthComp->SetCurrentHp(healthComp->GetMaxHp() / 2);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Low Health"))
+				{
+					healthComp->SetCurrentHp(1);
+				}
+			}
+		}
+	}
+
+	// === MonsterRoom 調試 ===
+	if (ImGui::CollapsingHeader("Monster Room", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (m_Map)
+		{
+			auto currentRoom = m_Map->GetCurrentRoom();
+			if (auto monsterRoom = std::dynamic_pointer_cast<MonsterRoom>(currentRoom))
+			{
+				// 顯示房間基本信息
+				const char *stateNames[] = {"UNEXPLORED", "COMBAT", "EXPLORED"};
+				ImGui::Text("Room State: %s", stateNames[static_cast<int>(monsterRoom->GetState())]);
+				ImGui::Text("Grid Position: (%.0f, %.0f)", monsterRoom->GetMapGridPos().x,
+							monsterRoom->GetMapGridPos().y);
+
+				ImGui::Separator();
+
+				// 戰鬥控制按鈕
+				if (ImGui::Button("Kill All Enemies"))
+				{
+					monsterRoom->DebugKillAllEnemies();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Kill Current Wave"))
+				{
+					monsterRoom->DebugKillCurrentWave();
+				}
+
+				// 佈局更換功能
+				ImGui::Separator();
+				ImGui::Text("Layout Control:");
+				if (ImGui::Button("Change to Random Layout"))
+				{
+					monsterRoom->ChangeLayoutRuntime("RANDOM");
+				}
+			}
+			else
+			{
+				ImGui::Text("Current room is not a MonsterRoom");
+			}
+		}
+		else
+		{
+			ImGui::Text("No map available");
 		}
 	}
 

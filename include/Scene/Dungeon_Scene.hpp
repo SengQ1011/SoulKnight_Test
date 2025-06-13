@@ -12,6 +12,7 @@
 
 class DungeonMap;
 class MonsterRoomTestUI;
+class KeyPanel;
 
 class DungeonScene final : public Scene
 {
@@ -69,6 +70,7 @@ private:
 	void InitializeStageText();
 	void InitializeStageIcon();
 	void DrawStageDebugUI(); // 調試界面
+	void DrawGameDebugUI(); // 遊戲統一調試界面
 
 	// 佈局更換相關方法
 	void HandleLayoutChangeInput(); // 處理佈局更換輸入

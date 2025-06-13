@@ -13,6 +13,7 @@
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Tool/Tool.hpp"
+#include "UIPanel/KeyPanel.hpp"
 #include "UIPanel/MenuHUDPanel.hpp"
 #include "UIPanel/SettingPanel.hpp"
 #include "UIPanel/UIButton.hpp"
@@ -24,6 +25,7 @@
 #include "Util/Text.hpp"
 #include "Util/Time.hpp"
 #include "config.hpp"
+
 
 void MainMenuScene::Start()
 {
@@ -174,9 +176,13 @@ void MainMenuScene::InitUIManager()
 {
 	UIManager::GetInstance().ResetPanels();
 
-	auto panel = std::make_shared<SettingPanel>();
-	panel->Start();
-	UIManager::GetInstance().RegisterPanel("setting", panel);
+	auto settingPanel = std::make_shared<SettingPanel>();
+	settingPanel->Start();
+	UIManager::GetInstance().RegisterPanel("setting", settingPanel);
+
+	auto keyPanel = std::make_shared<KeyPanel>();
+	keyPanel->Start();
+	UIManager::GetInstance().RegisterPanel("key", keyPanel);
 }
 
 void MainMenuScene::InitSettingButton()
@@ -219,6 +225,7 @@ void MainMenuScene::InitDeleteDataButton()
 	m_DeleteDataButton->m_Transform.translation = {-550.0f, -216.0f};
 }
 
+
 void MainMenuScene::InitAudioManager()
 {
 	AudioManager::GetInstance().Reset();
@@ -228,10 +235,11 @@ void MainMenuScene::InitAudioManager()
 
 bool MainMenuScene::IsMouseClickingOnButtons() const
 {
-	// 檢查是否有設定面板顯示
-	if (UIManager::GetInstance().IsPanelVisible("setting"))
+	// 檢查是否有面板顯示
+	if (UIManager::GetInstance().IsPanelVisible("setting") ||
+		UIManager::GetInstance().IsPanelVisible("key"))
 	{
-		return true; // 如果設定面板顯示，則阻擋輸入
+		return true; // 如果有面板顯示，則阻擋輸入
 	}
 
 	// 獲取滑鼠座標

@@ -25,7 +25,6 @@ public:
 	void UnregisterNGameObject(const std::shared_ptr<nGameObject>& nGameObject);
 
 	void Update() override; // 更新碰撞情況
-	void ShowColliderBox(); // 一鍵顯示當前房間碰撞箱
 
 	//是否啓動管理員
 	void SetIsActive(const bool isActive) {m_IsActive = isActive;}
@@ -39,18 +38,10 @@ protected:
 	bool m_IsActive = true;
 
 private:
-	// 計算碰撞詳情
-	// static void CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,
-	// 									  const std::shared_ptr<nGameObject> &objectB, CollisionInfo &info);
 
 	static void CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,
 										  const std::shared_ptr<nGameObject> &objectB,
 										  CollisionEventInfo &info);
-
-	// 分發碰撞處理
-	// static void DispatchCollision(const std::shared_ptr<nGameObject>& objectA,
-	// 					  const std::shared_ptr<nGameObject>& objectB,
-	// 					  CollisionInfo& info);
 
 	static void DispatchCollision(const std::shared_ptr<nGameObject>& objectA,
 								  const std::shared_ptr<nGameObject>& objectB,

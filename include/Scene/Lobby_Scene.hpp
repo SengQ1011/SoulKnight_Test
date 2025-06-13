@@ -13,6 +13,7 @@
 
 
 class LobbyRoom;
+class KeyPanel;
 
 class LobbyScene : public Scene
 {
