@@ -53,7 +53,7 @@ void LobbyScene::Start()
 
 	// 创建玩家角色
 	CreatePlayer();
-	CreateEnemy();
+	// CreateEnemy();
 
 	// 设置相机
 	m_MapHeight = 480.0f; // 大廳場景的地圖高度 480.0f
@@ -70,7 +70,7 @@ void LobbyScene::Start()
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
-	m_LobbyRoom->CharacterEnter(m_Enemy);
+	// m_LobbyRoom->CharacterEnter(m_Enemy);
 
 	m_CurrentRoom = m_LobbyRoom;
 

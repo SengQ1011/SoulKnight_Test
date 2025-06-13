@@ -88,10 +88,6 @@ void LobbyRoom::SetupWallColliders()
 		collisionComponent->SetSize(m_WallColliderSizes[i]);
 		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
 
-		LOG_DEBUG("  Created LobbyWall_{}: worldCoord({:.1f}, {:.1f}) offset({:.1f}, {:.1f}) size({:.1f}, {:.1f})", i,
-				  wallCollider->GetWorldCoord().x, wallCollider->GetWorldCoord().y, m_WallColliderOffsets[i].x,
-				  m_WallColliderOffsets[i].y, m_WallColliderSizes[i].x, m_WallColliderSizes[i].y);
-
 		AddWallCollider(wallCollider);
 	}
 }

@@ -303,18 +303,18 @@ bool DungeonMap::GenerateBranches()
 		// 根據機率選擇房間類型
 		double typeRoll = roomTypeDist(gen);
 		RoomType branchType;
-		if (typeRoll < 0.6) // 60%
+		if (typeRoll < 0.8) // 60%
 		{
 			branchType = RoomType::MONSTER;
 		}
-		else if (typeRoll < 0.95) // 35%
+		else // if (typeRoll < 0.95) // 35%
 		{
 			branchType = RoomType::SPECIAL;
 		}
-		else // 5%
-		{
-			branchType = RoomType::CHEST;
-		}
+		// else // 5%
+		// {
+		// 	branchType = RoomType::CHEST;
+		// }
 
 		m_RoomInfo[branchIndex].m_RoomType = branchType;
 		m_RoomInfo[monsterIndex].m_Connections[static_cast<int>(dir)] = true;

@@ -26,6 +26,7 @@ void RoomLayoutManager::ScanAvailableLayouts(const std::string &roomType)
 	{
 		if (!std::filesystem::exists(roomPath))
 		{
+			if (roomType != "MonsterRoom") return;
 			LOG_ERROR("Room directory not found: {}", roomPath);
 			return;
 		}

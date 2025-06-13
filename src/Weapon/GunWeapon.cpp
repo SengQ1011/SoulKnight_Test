@@ -26,6 +26,7 @@ void GunWeapon::attack(const int damage, bool isCriticalHit)
 	switch (m_weaponType)
 	{
 	case WeaponType::PISTOL:
+	case WeaponType::RIFLE:
 		AudioManager::GetInstance().PlaySFX("gun_pistol");
 		break;
 	case WeaponType::SHOTGUN:

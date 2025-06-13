@@ -392,7 +392,7 @@ void MonsterRoom::RecalculateGridFromCollisionComponents()
 	}
 
 	// LOG_DEBUG("Grid recalculation complete: Processed {} objects, {} with CollisionComponent", processedObjects,
-			  // collisionObjects);
+	// collisionObjects);
 }
 
 // 輔助方法：計算兩個矩形的交集面積
