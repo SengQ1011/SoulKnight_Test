@@ -85,6 +85,9 @@ private:
 
 	// 遊戲幣數量快取，用於檢測變化
 	int m_LastGameCoinAmount = -1;
+
+	// Debug UI 控制
+	bool m_ShowDebugUI = false;
 };
 
 #endif // GAMERUDPANEL_HPP

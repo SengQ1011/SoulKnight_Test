@@ -155,8 +155,25 @@ void DungeonScene::Update()
 		m_Camera->Update();
 	}
 
-	// 調試界面
-	DrawGameDebugUI();
+	// 調試界面 - F1 按鍵控制
+	static bool f1KeyPressed = false;
+	if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	{
+		if (!f1KeyPressed)
+		{
+			m_ShowDebugUI = !m_ShowDebugUI;
+			f1KeyPressed = true;
+		}
+	}
+	else
+	{
+		f1KeyPressed = false;
+	}
+
+	if (m_ShowDebugUI)
+	{
+		DrawGameDebugUI();
+	}
 
 	// 更新渲染器（渲染總是需要更新）
 	m_Root->Update();

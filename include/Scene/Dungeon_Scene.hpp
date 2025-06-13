@@ -62,6 +62,9 @@ private:
 	// 玩家ShowUp控制
 	bool m_PlayerShowUpTriggered = false; // 是否已觸發玩家ShowUp
 
+	// Debug UI 控制
+	bool m_ShowDebugUI = false; // 是否顯示 debug UI
+
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();

@@ -79,12 +79,21 @@ void MinimapPanel::Update()
 	}
 
 	// Debug 功能：按 F1 切換 Debug 視窗
-	if (Util::Input::IsKeyDown(Util::Keycode::F1))
-	{
-		m_EnableDebug = !m_EnableDebug;
-	}
-
-	// 顯示 Debug 視窗
+	// static bool f1KeyPressed = false;
+	// if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	// {
+	// 	if (!f1KeyPressed)
+	// 	{
+	// 		m_EnableDebug = !m_EnableDebug;
+	// 		f1KeyPressed = true;
+	// 	}
+	// }
+	// else
+	// {
+	// 	f1KeyPressed = false;
+	// }
+	//
+	// // 顯示 Debug 視窗
 	// if (m_EnableDebug)
 	// {
 	// 	DrawDebugUI();
