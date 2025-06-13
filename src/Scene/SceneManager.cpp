@@ -177,7 +177,7 @@ void SceneManager::StartGame()
 
 void SceneManager::ForceInitializeNewGame()
 {
-	LOG_DEBUG("Resetting game progress for new game");
+	// LOG_DEBUG("Resetting game progress for new game");
 	// 只重置關卡進度，保留遊戲幣等永久數據
 	ResetGameProgress();
 }

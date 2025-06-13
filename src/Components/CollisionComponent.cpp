@@ -23,7 +23,6 @@ void CollisionComponent::Init()
 	// 创建 TriggerStrategy
 	if (m_IsTrigger && !m_TriggerStrategyType.empty())
 	{
-		LOG_DEBUG("check");
 		if (m_TriggerStrategyType == "SpeedZone")
 		{
 			try

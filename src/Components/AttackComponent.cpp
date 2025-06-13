@@ -5,6 +5,7 @@
 #include "Components/AttackComponent.hpp"
 #include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Factory/WeaponFactory.hpp"
 #include "ObserveManager/AudioManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Structs/DeathEventInfo.hpp"
@@ -100,7 +101,7 @@ bool AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
 		return false;
 	}
 
-	// 🔥 關鍵修復：先處理所有邏輯，確定成功後才取消註冊
+	// 先處理所有邏輯，確定成功後才取消註冊
 	std::shared_ptr<Weapon> weaponToDropIfAny = nullptr;
 
 	// 檢查是否需要丟棄舊武器
@@ -157,7 +158,7 @@ bool AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
 		// 播放拾取武器音效
 		AudioManager::GetInstance().PlaySFX("pick_up_weapon");
 
-		LOG_DEBUG("Successfully picked up weapon: {}", newWeapon->GetName());
+		// LOG_DEBUG("Successfully picked up weapon: {}", newWeapon->GetName());
 		return true;
 	}
 	catch (...)
@@ -278,7 +279,7 @@ void AttackComponent::TryAttack()
 
 	if (isPlayer && currentEnergy <= 0 && useEnergy != 0)
 	{
-		LOG_DEBUG("AttackComponent: Not enough energy to attack");
+		// LOG_DEBUG("AttackComponent: Not enough energy to attack");
 		return;
 	}
 
@@ -328,7 +329,7 @@ void AttackComponent::SetDualWield(bool enable)
 	m_dualWield = enable;
 	if (!m_secondWeapon)
 	{
-		LOG_DEBUG("second weapon is nullptr");
+		// LOG_DEBUG("second weapon is nullptr");
 		return;
 	}
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -443,4 +444,87 @@ void AttackComponent::HandleEvent(const EventInfo &eventInfo)
 	default:
 		break;
 	}
+}
+
+void AttackComponent::ChangeCurrentWeapon(const int id)
+{
+    auto character = GetOwner<Character>();
+    if (!character)
+    {
+        LOG_ERROR("ChangeCurrentWeapon: Character is null");
+        return;
+    }
+
+    const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+    if (!scene)
+    {
+        LOG_ERROR("ChangeCurrentWeapon: Scene is null");
+        return;
+    }
+
+    auto room = scene->GetCurrentRoom();
+    if (!room)
+    {
+        LOG_ERROR("ChangeCurrentWeapon: Room is null");
+        return;
+    }
+
+    auto interactableManager = room->GetInteractionManager();
+    if (!interactableManager)
+    {
+        LOG_ERROR("ChangeCurrentWeapon: InteractableManager is null");
+        return;
+    }
+	
+    auto newWeapon = WeaponFactory::createWeapon(id);
+    if (!newWeapon)
+    {
+        LOG_ERROR("ChangeCurrentWeapon: Failed to create weapon with ID {}", id);
+        return;
+    }
+
+    try
+    {
+        // 處理舊武器（如果存在）
+        if (m_currentWeapon)
+        {
+            interactableManager->QueueUnregister(m_currentWeapon);
+            scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
+            scene->GetCamera().lock()->SafeRemoveChild(m_currentWeapon);
+            RemoveWeapon(m_currentWeapon);
+            m_currentWeapon = nullptr; // 確保舊武器指針清空
+        }
+
+        // 添加新武器
+        m_Weapons.push_back(newWeapon);
+        m_currentWeapon = newWeapon;
+        m_currentWeapon->SetOwner(character);
+
+        // 設置 FollowerComponent
+        if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+        {
+            followerComp->SetFollower(character);
+        }
+        m_currentWeapon->SetControlVisible(true);
+
+        // 將新武器添加到場景
+        if (!m_currentWeapon->IsRegisteredToScene())
+        {
+            scene->GetRoot().lock()->AddChild(m_currentWeapon);
+            scene->GetCamera().lock()->SafeAddChild(m_currentWeapon);
+            m_currentWeapon->SetRegisteredToScene(true);
+        }
+
+        // 新武器不應作為可交互物件
+        interactableManager->QueueUnregister(newWeapon);
+
+        // 播放替換武器音效
+        AudioManager::GetInstance().PlaySFX("pick_up_weapon");
+
+        // LOG_DEBUG("Successfully changed to weapon ID: {}, Name: {}", id, newWeapon->GetName());
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR("ChangeCurrentWeapon: Exception occurred: {}", e.what());
+    }
 }

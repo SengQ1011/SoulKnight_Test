@@ -37,7 +37,7 @@ void Scene::FlushPendingObjectsToRendererAndCamera()
 		if (camera)
 			camera->AddChild(obj);
 	}
-	LOG_DEBUG("Object NUM {}", m_PendingObjects.size());
+	// LOG_DEBUG("Object NUM {}", m_PendingObjects.size());
 	m_PendingObjects.clear();
 }
 

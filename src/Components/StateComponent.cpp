@@ -199,6 +199,7 @@ void StateComponent::ApplyStatusEffect(const StatusEffect& effect)
 		healthComp->SetInvincibleMode(true);
 		movementComp->SetCurrentSpeedRatio(0.0f);
 		movementComp->SetSpeedEffectDuration(2.5f);
+		movementComp->SetFreezeMode(true);
 		SetState(State::STANDING);
 		break;
 

@@ -54,8 +54,18 @@ void DropComponent::TriggerDrop(const glm::vec2 &position)
 	if (m_hasDropped)
 		return;
 	m_hasDropped = true;
-	const auto interactionManager =
-		SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager();
+
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!scene) {
+		LOG_ERROR("Failed to get current scene");
+		return;
+	}
+
+	const auto interactionManager = scene->GetCurrentRoom()->GetInteractionManager();
+	if (!interactionManager) {
+		LOG_ERROR("Failed to get interaction manager");
+		return;
+	}
 
 	for (const auto &dropItem : m_dropItems)
 	{
@@ -96,12 +106,18 @@ void DropComponent::TriggerDrop(const glm::vec2 &position)
 		dropItem->SetActive(true);
 		dropItem->SetControlVisible(true);
 
-		interactionManager->RegisterInteractable(dropItem);
+		// 添加到场景
+		scene->GetRoot().lock()->AddChild(dropItem);
+		scene->GetCamera().lock()->SafeAddChild(dropItem);
+		dropItem->SetRegisteredToScene(true);
 
-		m_dropItems.clear();
+		// 注册到交互管理器
+		interactionManager->RegisterInteractable(dropItem);
 
 		LOG_DEBUG("Dropped item at position ({}, {})", dropPosition.x, dropPosition.y);
 	}
+
+	m_dropItems.clear();
 }
 
 void DropComponent::AddDropItems(const std::vector<std::shared_ptr<nGameObject>> &dropItems)

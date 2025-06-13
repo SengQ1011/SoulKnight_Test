@@ -67,6 +67,9 @@ public:
 	void HandleEvent(const EventInfo &eventInfo) override;
 	std::vector<EventType> SubscribedEventTypes() const override;
 
+	// debug mode
+	void ChangeCurrentWeapon(const int id);
+
 private:
 	float m_aimRange; // 自動瞄準範圍
 	float m_criticalRate; // 攻擊暴擊率(計算傷害公式=(角色+武器)暴擊率 * 武器傷害)

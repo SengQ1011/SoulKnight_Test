@@ -103,7 +103,7 @@ void Room::RemovePlayerFromList(const std::shared_ptr<Character> &player)
 		// 不調用 UnRegisterObjectToSceneAndManager，保持玩家在場景中
 		// 不調用 OnPlayerExit，避免觸發其他邏輯
 
-		LOG_DEBUG("Player removed from room list (but kept in scene)");
+		// LOG_DEBUG("Player removed from room list (but kept in scene)");
 	}
 }
 
@@ -460,6 +460,21 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 	// 加入互動manager中
 	m_InteractionManager->RegisterInteractable(chest);
 	return chest;
+}
+std::shared_ptr<nGameObject> Room::CreateEnergyBall() const
+{
+	auto factory = m_Factory.lock();
+	if (!factory)
+		return nullptr;
+
+	// 使用工廠方法創建寶箱
+	auto energyBall = factory->CreateRoomObject("object_energyBall");
+	if (!energyBall)
+		return nullptr;
+
+	// 加入互動manager中
+	m_InteractionManager->RegisterInteractable(energyBall);
+	return energyBall;
 }
 
 // 玩家位置檢測方法（基礎防漏洞機制）

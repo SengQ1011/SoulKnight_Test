@@ -28,6 +28,7 @@ void MovementComponent::Update()
 		if (m_SpeedEffectDuration <= 0.0f)
 		{
 			m_SpeedEffectDuration = 0.0f;
+			if (m_freeze) m_freeze = false;
 		}
 	}
 
@@ -41,6 +42,7 @@ void MovementComponent::Update()
 		}
 	}
 
+	if (m_freeze) return;
 
 	// ===== 移動邏輯核心 =====
 	constexpr float baseSpeed = 120.0f; // 基础速度
@@ -227,7 +229,7 @@ void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 		}
 		case EventType::KnockOff:
 		{
-			LOG_DEBUG("KnockOff");
+			// LOG_DEBUG("KnockOff");
 			const auto& knockOffInfo = dynamic_cast<const KnockOffEventInfo&>(eventInfo);
 			SetImpulseVelocity(knockOffInfo.impulseVelocity);
 			break;

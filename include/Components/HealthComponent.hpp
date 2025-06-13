@@ -70,6 +70,7 @@ public:
 
 	// 破壞相關方法
 	void OnBreak();
+	void CreateEneryBall(const glm::vec2 &pos);
 
 private:
 	int m_maxHp; // 生命上限
@@ -84,6 +85,7 @@ private:
 	bool m_breakProtection = false;		// 天賦：破甲保護
 	std::unordered_map<int, float> m_recentAttackSources;	// 用rawPointer記錄(因爲利用，可能會連續使用同樣的子彈)
 	float m_invincibleDuration = 0.5f; // 碰撞後對於同一個物件無敵時間（秒）
+	bool releaseEnergyBall = true;
 
 	// 通知 StateComponent 角色死亡
 	void OnDeath();

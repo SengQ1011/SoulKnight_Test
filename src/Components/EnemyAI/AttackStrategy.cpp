@@ -266,7 +266,7 @@ void BossAttackStrategy::SpawnLargeSnowball(const EnemyContext& ctx, const glm::
 	largeSnowBall.direction = direction;
 	largeSnowBall.size = 16.0f;
 	largeSnowBall.damage = 4;
-	largeSnowBall.elementalDamage = StatusEffect::NONE;
+	largeSnowBall.elementalDamage = StatusEffect::FROZEN;
 	largeSnowBall.chainAttack.enabled = true;
 	largeSnowBall.imagePath = std::string(RESOURCE_DIR) + "/attackUI/bullet/bullet2/bullet2_3.png";
 	largeSnowBall.speed = 120.0f;

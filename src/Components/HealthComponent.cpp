@@ -10,6 +10,7 @@
 #include "ObserveManager/AudioManager.hpp"
 #include "ObserveManager/EventManager.hpp"
 #include "ObserveManager/TrackingManager.hpp"
+#include "RandomUtil.hpp"
 #include "Room/RoomCollisionManager.hpp"
 
 
@@ -160,10 +161,11 @@ void HealthComponent::HandleCollision(const CollisionEventInfo &info)
 
 void HealthComponent::TakeDamage(int damage)
 {
+	const auto owner = GetOwner<Character>();
 	// 無敵模式
 	if (m_invincibleMode)
 		return;
-	LOG_DEBUG("take damage {}", damage);
+	// LOG_DEBUG("take damage {}", damage);
 
 	// 檢查是否為玩家受傷並播放音效
 	if (const auto character = GetOwner<Character>())
@@ -194,7 +196,52 @@ void HealthComponent::TakeDamage(int damage)
 	{
 		OnDeath();
 	}
+	else if (releaseEnergyBall && m_currentHp <= m_maxHp / 2 && owner && owner->GetType() == CharacterType::ENEMY)
+	{
+		releaseEnergyBall = false;
+		if (auto aiComp = owner->GetComponent<AIComponent>(ComponentType::AI))
+		{
+			if (aiComp->GetMonsterType() == MonsterType::BOSS)
+			{
+				CreateEneryBall(owner->GetWorldCoord());
+			}
+		}
+	}
 }
+
+void HealthComponent::CreateEneryBall(const glm::vec2 &pos)
+{
+	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!currentScene)
+	{
+		return;
+	}
+	const auto currentRoom = currentScene->GetCurrentRoom();
+	if (!currentRoom)
+	{
+		return;
+	}
+
+	auto num = RandomUtil::RandomIntInRange(20,40);
+	for (int i = 0; i < num; i++)
+	{
+		auto item = currentRoom->CreateEnergyBall();
+		if (!item)
+		{
+			LOG_ERROR("Failed to create drop item:");
+			continue;
+		}
+
+		// 設置物品屬性
+		currentScene->GetPendingObjects().emplace_back(item);
+		item->SetRegisteredToScene(true);
+		item->SetActive(true);
+		item->SetControlVisible(true);
+		item->SetWorldCoord(pos);
+	}
+	currentScene->FlushPendingObjectsToRendererAndCamera();
+}
+
 
 void HealthComponent::OnDeath()
 {
@@ -271,7 +318,7 @@ void HealthComponent::OnDeath()
 		// 播放敵人死亡音效
 		AudioManager::GetInstance().PlaySFX("enemy_die");
 
-		LOG_DEBUG("HealthComponent::Enemy died, event sent");
+		// LOG_DEBUG("HealthComponent::Enemy died, event sent");
 		if (auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
 		{
 			aiComp->HideReadyAttackIcon();
@@ -285,7 +332,7 @@ void HealthComponent::OnDeath()
 
 void HealthComponent::OnBreak()
 {
-	LOG_DEBUG("HealthComponent::OnBreak");
+	// LOG_DEBUG("HealthComponent::OnBreak");
 	const auto owner = GetOwner<nGameObject>();
 	if (!owner)
 		return;

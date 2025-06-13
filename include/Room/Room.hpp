@@ -123,6 +123,7 @@ public:
 
 	// 創建物品
 	std::shared_ptr<nGameObject> CreateChest(ChestType type) const;
+	std::shared_ptr<nGameObject> CreateEnergyBall() const;
 
 protected:
 	// 房间属性
