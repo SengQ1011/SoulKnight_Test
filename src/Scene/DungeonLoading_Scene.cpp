@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "ImagePoolManager.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "SaveManager.hpp"
 #include "Scene/Dungeon_Scene.hpp"
@@ -46,7 +47,8 @@ void DungeonLoadingScene::Start()
 	talentPanel->SetSharedSaveData(m_SceneData);
 	talentPanel->Start();
 	UIManager::GetInstance().RegisterPanel("talent_selection", talentPanel, 100, true);
-	if (talentPanel->IsVisible()) UIManager::GetInstance().ShowPanel("talent_selection");
+	if (talentPanel->IsVisible())
+		UIManager::GetInstance().ShowPanel("talent_selection");
 
 	FlushPendingObjectsToRendererAndCamera();
 }
@@ -85,3 +87,4 @@ Scene::SceneType DungeonLoadingScene::Change()
 	}
 	return Scene::SceneType::Null;
 }
+

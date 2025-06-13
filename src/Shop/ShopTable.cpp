@@ -11,6 +11,7 @@
 #include "Factory/RoomObjectFactory.hpp"
 #include "Factory/WeaponFactory.hpp"
 #include "ImagePoolManager.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Scene/Dungeon_Scene.hpp"
 #include "Scene/SceneManager.hpp"
@@ -112,6 +113,7 @@ bool ShopTable::PurchaseItem(const std::shared_ptr<Character> &player)
 		return false;
 	}
 
+	AudioManager::GetInstance().PlaySFX("buy_sound");
 	m_CurrentItem->SetActive(true);
 	// 根據商品類型處理
 	switch (m_ItemType)

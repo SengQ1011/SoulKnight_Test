@@ -222,8 +222,8 @@ void MainMenuScene::InitDeleteDataButton()
 void MainMenuScene::InitAudioManager()
 {
 	AudioManager::GetInstance().Reset();
-	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
-	AudioManager::GetInstance().PlayBGM();
+	AudioManager::GetInstance().LoadFromJson("/AudioConfig.json");
+	AudioManager::GetInstance().PlayBGM("opening");
 }
 
 bool MainMenuScene::IsMouseClickingOnButtons() const
@@ -298,16 +298,22 @@ void MainMenuScene::UpdateAnimations() { m_SlideTimer.Update(); }
 void MainMenuScene::UpdateTextBlinkEffect()
 {
 	const auto text = std::dynamic_pointer_cast<Util::Text>(m_Text->GetDrawable());
-	if (!text) return;
+	if (!text)
+		return;
 	// 累積時間
 	m_TextBlinkTime += Util::Time::GetDeltaTimeMs() / 1000.0f;
 
 	// 每10秒重置時間並更新文字內容
-	if (m_TextBlinkTime >= 10.0f) m_TextBlinkTime = 0.0f;
-	else if (m_TextBlinkTime >= 7.5f) text->SetText("點擊呼叫司令部 >wOb");
-	else if (m_TextBlinkTime >= 5.0f) text->SetText("點擊呼叫司令部 OwOb");
-	else if (m_TextBlinkTime >= 2.5f) text->SetText("點擊呼叫司令部 Ow<b");
-	else text->SetText("點擊呼叫司令部 OwOb");
+	if (m_TextBlinkTime >= 10.0f)
+		m_TextBlinkTime = 0.0f;
+	else if (m_TextBlinkTime >= 7.5f)
+		text->SetText("點擊呼叫司令部 >wOb");
+	else if (m_TextBlinkTime >= 5.0f)
+		text->SetText("點擊呼叫司令部 OwOb");
+	else if (m_TextBlinkTime >= 2.5f)
+		text->SetText("點擊呼叫司令部 Ow<b");
+	else
+		text->SetText("點擊呼叫司令部 OwOb");
 
 	// 計算閃爍週期進度
 	const float progress = fmod(m_TextBlinkTime, m_TextBlinkPeriod) / m_TextBlinkPeriod;

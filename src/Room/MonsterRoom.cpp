@@ -236,8 +236,9 @@ std::shared_ptr<Character> MonsterRoom::SpawnEnemy(int enemyType, glm::vec2 posi
 	auto enemy = CharacterFactory::GetInstance().createEnemy(enemyType);
 	// auto enemy = CharacterFactory::GetInstance().createEnemy(101);
 	enemy->m_WorldCoord = position;
+	HideEvent hideEvent;
+	enemy->OnEvent(hideEvent);
 	enemy->SetActive(false); // 默認未激活，等待波次開始
-	SetEnemyVisible(enemy, false);
 
 	// 使用新的Room API
 	SpawnEntity(enemy, EntityCategory::ENEMY);
@@ -331,10 +332,12 @@ void MonsterRoom::PreSpawnAllWaveEnemies()
 			{
 				waveEnemies.push_back(enemy);
 
-				// 顯示第一波次敵人
 				if (waveIndex == 0)
 				{
-					SetEnemyVisible(enemy, true);
+					enemy->SetActive(true);
+					ShowUpEvent showUpEvent;
+					enemy->OnEvent(showUpEvent);
+					enemy->SetActive(false);
 				}
 			}
 			else
@@ -447,7 +450,8 @@ bool MonsterRoom::IsAreaClearForEntity(const glm::ivec2 &gridPos, int entityGrid
 	return true;
 }
 
-std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositionsWithSizeAndExclusions(int count, const glm::vec2 &entitySize,
+std::vector<glm::vec2>
+MonsterRoom::GenerateSpawnPositionsWithSizeAndExclusions(int count, const glm::vec2 &entitySize,
 														 const std::vector<glm::ivec2> &occupiedPositions)
 {
 	std::vector<glm::vec2> positions;
@@ -674,18 +678,19 @@ void MonsterRoom::CombatManager::ActivateCurrentWaveEnemies()
 		return;
 	}
 
-	// 先隱藏所有波次的敵人
-	// HideAllEnemies();
-
 	const auto &currentWaveEnemies = m_AllWaveEnemies[m_CurrentWave];
 
-	// 只激活和顯示當前波次的敵人
+	// 激活當前波次的敵人並通過ShowUpEvent顯示
 	for (const auto &weakEnemy : currentWaveEnemies)
 	{
 		if (auto enemy = weakEnemy.lock())
 		{
 			enemy->SetActive(true); // 激活怪物
-			SetEnemyVisible(enemy, true);
+
+			// 使用ShowUpEvent來顯示怪物
+			ShowUpEvent showUpEvent;
+			enemy->OnEvent(showUpEvent);
+
 		}
 	}
 }
@@ -765,8 +770,8 @@ void MonsterRoom::CombatManager::HideAllEnemies()
 		{
 			if (auto enemy = weakEnemy.lock())
 			{
-				enemy->SetActive(false); // 設為非激活
-				SetEnemyVisible(enemy, false);
+				SetEnemyVisible(enemy, false); // 先觸發HideEvent
+				enemy->SetActive(false); // 然後設為非激活
 			}
 		}
 	}
@@ -777,16 +782,17 @@ void MonsterRoom::SetEnemyVisible(const std::shared_ptr<Character> &enemy, bool 
 	if (!enemy)
 		return;
 
-	// 控制敵人本身的可見性
-	enemy->SetControlVisible(visible);
-
-	// 控制敵人武器的可見性
-	if (auto attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK))
+	if (visible)
 	{
-		if (auto weapon = attackComp->GetCurrentWeapon())
-		{
-			weapon->SetControlVisible(visible);
-		}
+		// 使用ShowUpEvent來顯示敵人和武器
+		ShowUpEvent showUpEvent;
+		enemy->OnEvent(showUpEvent);
+	}
+	else
+	{
+		// 使用HideEvent來隱藏敵人和武器
+		HideEvent hideEvent;
+		enemy->OnEvent(hideEvent);
 	}
 }
 
@@ -795,16 +801,17 @@ void MonsterRoom::CombatManager::SetEnemyVisible(const std::shared_ptr<Character
 	if (!enemy)
 		return;
 
-	// 控制敵人本身的可見性
-	enemy->SetControlVisible(visible);
-
-	// 控制敵人武器的可見性
-	if (auto attackComp = enemy->GetComponent<AttackComponent>(ComponentType::ATTACK))
+	if (visible)
 	{
-		if (auto weapon = attackComp->GetCurrentWeapon())
-		{
-			weapon->SetControlVisible(visible);
-		}
+		// 使用ShowUpEvent來顯示敵人和武器
+		ShowUpEvent showUpEvent;
+		enemy->OnEvent(showUpEvent);
+	}
+	else
+	{
+		// 使用HideEvent來隱藏敵人和武器
+		HideEvent hideEvent;
+		enemy->OnEvent(hideEvent);
 	}
 }
 

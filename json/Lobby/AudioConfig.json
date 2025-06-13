@@ -1,8 +1,0 @@
-{
-    "sfx": {
-        "click": "/UI/fx_btn1.wav"
-    },
-    "bgm": {
-        "opening": "/UI/bgm_openingLow.wav"
-    }
-}

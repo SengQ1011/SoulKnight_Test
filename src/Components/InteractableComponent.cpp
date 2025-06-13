@@ -5,6 +5,7 @@
 #include "Components/InteractableComponent.hpp"
 
 #include "Components/ChestComponent.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 
@@ -24,6 +25,9 @@ void InteractableComponent::Init()
 			m_InteractionCallback =
 				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
+				// 播放傳送門互動音效
+				AudioManager::GetInstance().PlaySFX("portal");
+
 				// 根據傳送門類型決定要切換到哪個場景
 				// 這裡可以根據傳送門的配置或當前場景來決定目標場景
 
@@ -103,6 +107,8 @@ void InteractableComponent::Init()
 			{
 				if (const auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
 				{
+					// 播放金幣獲得音效
+					AudioManager::GetInstance().PlaySFX("coin");
 					walletComp->AddMoney(1);
 					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 					if (!currentScene)
@@ -121,6 +127,8 @@ void InteractableComponent::Init()
 			{
 				if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
 				{
+					// 播放能量獲得音效
+					AudioManager::GetInstance().PlaySFX("energy");
 					healthComp->AddCurrentEnergy(8);
 					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 					if (!currentScene)
@@ -250,6 +258,7 @@ void InteractableComponent::Init()
 					m_InteractionCallback =
 						[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 					{
+						AudioManager::GetInstance().PlaySFX("health_potion");
 						if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
 						{
 							healthComp->AddCurrentHp(1);
@@ -264,6 +273,7 @@ void InteractableComponent::Init()
 					m_InteractionCallback =
 						[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 					{
+						AudioManager::GetInstance().PlaySFX("health_potion");
 						if (const auto healthComp = interactor->GetComponent<HealthComponent>(ComponentType::HEALTH))
 						{
 							healthComp->AddCurrentHp(4);

@@ -11,6 +11,7 @@
 #include "Factory/RoomObjectFactory.hpp"
 #include "ImagePoolManager.hpp"
 #include "Loader.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Scene/SceneManager.hpp"
 #include "UIPanel/UISlider.hpp"
@@ -245,6 +246,10 @@ void BossRoom::CombatManager::StartCombat()
 {
 	LOG_INFO("Boss combat started!");
 	m_CombatState = CombatState::WAVE_ACTIVE;
+
+	// 切換到Boss戰BGM
+	AudioManager::GetInstance().PlayBGM("boss");
+
 	SpawnBoss();
 }
 
@@ -252,6 +257,9 @@ void BossRoom::CombatManager::EndCombat()
 {
 	LOG_INFO("Boss combat ended!");
 	m_CombatState = CombatState::COMPLETED;
+
+	// 戰鬥結束，切換回地牢BGM
+	AudioManager::GetInstance().PlayBGM("dungeon");
 }
 
 void BossRoom::CombatManager::SpawnBoss()
@@ -350,8 +358,7 @@ void BossRoom::BossHealthUIManager::Initialize()
 
 	// 創建血量滑桿
 	m_BossHealthSlider = std::make_shared<UISlider>(m_ListenBossHealth, m_HealthTrack, glm::vec2(3.0f, 4.0f), false);
-	m_BossHealthSlider->SetDrawable(
-		ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/groove_BossStatus.png"));
+	m_BossHealthSlider->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/groove_BossStatus.png"));
 	m_BossHealthSlider->SetZIndex(91.0f);
 	m_BossHealthSlider->m_Transform.scale = glm::vec2(UI_SCALE, UI_SCALE);
 

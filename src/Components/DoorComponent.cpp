@@ -5,6 +5,8 @@
 #include "Components/DoorComponent.hpp"
 
 #include <iostream>
+
+#include "ObserveManager/AudioManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Structs/EventInfo.hpp"
 #include "Util/Image.hpp"
@@ -90,6 +92,8 @@ void DoorComponent::DoorOpened()
 
 void DoorComponent::DoorClosed()
 {
+	if (m_currentState == State::CLOSED) return;
+	AudioManager::GetInstance().PlaySFX("door_close");
 	const std::shared_ptr<nGameObject> owner = GetOwner<nGameObject>();
 	if (!owner)
 		return;

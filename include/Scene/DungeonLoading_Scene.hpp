@@ -25,8 +25,8 @@ public:
 
 private:
 	// std::future<void> m_GenerationTask; // 背景生成任務
-	bool m_DungeonReady = false;        // 是否完成生成
-	std::shared_ptr<nGameObject> m_Text ;
+	bool m_DungeonReady = false; // 是否完成生成
+	std::shared_ptr<nGameObject> m_Text;
 };
 
-#endif //DUNGEONLOADING_HPP
+#endif // DUNGEONLOADING_HPP

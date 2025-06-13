@@ -12,6 +12,12 @@
 #include "Util/Logger.hpp"
 
 class Weapon;
+
+struct DamageResult
+{
+	int damage = 0;
+	bool isCriticalHit = false;
+};
 class AttackComponent final : public Component, public TrackingObserver
 {
 public:
@@ -53,7 +59,7 @@ public:
 		m_secondWeapon = weapon;
 	}
 
-	int calculateDamage();
+	DamageResult calculateDamage();
 	void TryAttack(); // 使用當前武器攻擊敵人
 	void OnTargetPositionUpdate(std::weak_ptr<Character> enemy) override;
 	void OnLostTarget() override;

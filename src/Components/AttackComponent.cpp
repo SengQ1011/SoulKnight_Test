@@ -5,8 +5,10 @@
 #include "Components/AttackComponent.hpp"
 #include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Structs/DeathEventInfo.hpp"
+#include "Structs/EventInfo.hpp"
 #include "Weapon/Weapon.hpp"
 
 
@@ -152,6 +154,9 @@ bool AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
 			interactableManager->RegisterInteractable(weaponToDropIfAny);
 		}
 
+		// 播放拾取武器音效
+		AudioManager::GetInstance().PlaySFX("pick_up_weapon");
+
 		LOG_DEBUG("Successfully picked up weapon: {}", newWeapon->GetName());
 		return true;
 	}
@@ -209,6 +214,9 @@ void AttackComponent::switchWeapon()
 	// 重置冷卻時間
 	m_switchTimeCounter = m_switchCooldown;
 
+	// 播放武器切換音效
+	AudioManager::GetInstance().PlaySFX("switch");
+
 	// OpenGL 本身是「狀態機 + 立即模式」，它不會自己管理任何物件，它只會畫你給它的東西
 	m_currentWeapon->SetControlVisible(false);
 
@@ -225,7 +233,7 @@ void AttackComponent::switchWeapon()
 	m_currentWeapon->SetControlVisible(true);
 }
 
-int AttackComponent::calculateDamage()
+DamageResult AttackComponent::calculateDamage()
 {
 	// 計算總暴擊率
 	float totalCritRate = m_criticalRate + m_currentWeapon->GetCriticalRate();
@@ -241,7 +249,7 @@ int AttackComponent::calculateDamage()
 	int finalDamage = isCrit ? baseDamage * (1.5) // 暴擊傷害==>150%
 							 : baseDamage; // 普通傷害
 
-	return finalDamage;
+	return {finalDamage, isCrit};
 }
 
 void AttackComponent::TryAttack()
@@ -279,8 +287,8 @@ void AttackComponent::TryAttack()
 	{
 		if (currentEnergy >= m_currentWeapon->GetEnergy())
 		{
-			auto damage = calculateDamage();
-			m_currentWeapon->attack(damage);
+			auto damageResult = calculateDamage();
+			m_currentWeapon->attack(damageResult.damage, damageResult.isCriticalHit);
 
 			if (isPlayer)
 			{
@@ -302,8 +310,8 @@ void AttackComponent::TryAttack()
 		{
 			if (currentEnergy >= m_secondWeapon->GetEnergy())
 			{
-				const auto damage = calculateDamage();
-				m_secondWeapon->attack(damage);
+				const auto damageResult = calculateDamage();
+				m_secondWeapon->attack(damageResult.damage, damageResult.isCriticalHit);
 
 				if (isPlayer)
 				{
@@ -379,7 +387,10 @@ void AttackComponent::OnLostTarget()
 	}
 }
 
-std::vector<EventType> AttackComponent::SubscribedEventTypes() const { return {EventType::Death}; }
+std::vector<EventType> AttackComponent::SubscribedEventTypes() const
+{
+	return {EventType::Death, EventType::ShowUp, EventType::Hide};
+}
 
 void AttackComponent::HandleEvent(const EventInfo &eventInfo)
 {
@@ -395,6 +406,36 @@ void AttackComponent::HandleEvent(const EventInfo &eventInfo)
 				for (const auto &weapon : m_Weapons)
 				{
 					weapon->SetControlVisible(false);
+				}
+			}
+			break;
+		}
+	case EventType::ShowUp:
+		{
+			if (const auto *showUpEvent = dynamic_cast<const ShowUpEvent *>(&eventInfo))
+			{
+				if (m_currentWeapon)
+					m_currentWeapon->SetControlVisible(true);
+
+				// 如果有雙持武器也顯示
+				if (m_dualWield && m_secondWeapon)
+				{
+					m_secondWeapon->SetControlVisible(true);
+				}
+			}
+			break;
+		}
+	case EventType::Hide:
+		{
+			if (const auto *hideEvent = dynamic_cast<const HideEvent *>(&eventInfo))
+			{
+				if (m_currentWeapon)
+					m_currentWeapon->SetControlVisible(false);
+
+				// 如果有雙持武器也隱藏
+				if (m_dualWield && m_secondWeapon)
+				{
+					m_secondWeapon->SetControlVisible(false);
 				}
 			}
 			break;

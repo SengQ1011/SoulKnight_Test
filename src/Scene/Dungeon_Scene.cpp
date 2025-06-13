@@ -34,6 +34,7 @@
 #include "Room/DungeonMap.hpp"
 #include "Room/MonsterRoom.hpp"
 #include "Room/MonsterRoomTestUI.hpp"
+#include "Structs/EventInfo.hpp"
 #include "UIPanel/GameHUDPanel.hpp"
 #include "UIPanel/PausePanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
@@ -42,6 +43,7 @@
 #include "UIPanel/UIManager.hpp"
 #include "UIPanel/UIPanel.hpp"
 #include "Util/Image.hpp"
+
 
 // 簡單的回調函數用於暫停按鈕
 void OpenPausePanelDungeon() { UIManager::GetInstance().ShowPanel("pause"); }
@@ -160,6 +162,13 @@ void DungeonScene::Update()
 
 	if (m_PendingObjects.size() > 0)
 		FlushPendingObjectsToRendererAndCamera();
+
+	// 在渲染完成後觸發玩家ShowUp事件（只觸發一次）
+	if (!m_PlayerShowUpTriggered && m_Player)
+	{
+		TriggerPlayerShowUp();
+		m_PlayerShowUpTriggered = true;
+	}
 }
 
 void DungeonScene::Exit()
@@ -295,8 +304,8 @@ void DungeonScene::InitUIManager()
 void DungeonScene::InitAudioManager()
 {
 	AudioManager::GetInstance().Reset();
-	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
-	AudioManager::GetInstance().PlayBGM();
+	AudioManager::GetInstance().LoadFromJson("/AudioConfig.json");
+	AudioManager::GetInstance().PlayBGM("dungeon");
 }
 
 void DungeonScene::CreatePlayer()
@@ -362,6 +371,9 @@ void DungeonScene::CreatePlayer()
 		// 将玩家添加到场景根节点和相机
 		m_PendingObjects.emplace_back(m_Player);
 		m_Player->SetRegisteredToScene(true);
+
+		// 初始設置玩家為不可見，等待ShowUp事件
+		m_Player->SetControlVisible(false);
 	}
 }
 
@@ -641,4 +653,19 @@ void DungeonScene::ChangeCurrentRoomLayout(const std::string &layoutName)
 	{
 		LOG_ERROR("Failed to change room layout: {}", e.what());
 	}
+}
+
+void DungeonScene::TriggerPlayerShowUp()
+{
+	if (!m_Player)
+	{
+		LOG_WARN("DungeonScene::TriggerPlayerShowUp: Player is null");
+		return;
+	}
+
+	// 創建ShowUp事件並發送給玩家
+	ShowUpEvent showUpEvent;
+	m_Player->OnEvent(showUpEvent);
+
+	LOG_DEBUG("Player ShowUp event triggered");
 }

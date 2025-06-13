@@ -335,7 +335,7 @@ bool TalentSelectionPanel::InitializeTalentButtons()
 						SaveTalentToSceneManager(talent.GetId());
 					}
 
-					AudioManager::GetInstance().PlaySFX("click");
+					AudioManager::GetInstance().PlaySFX("get_talent");
 
 					// 開始天賦選擇動畫
 					StartTalentSelectionAnimation(i);

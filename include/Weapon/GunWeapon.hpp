@@ -9,22 +9,22 @@
 #include "Attack/Projectile.hpp"
 #include "Weapon/Weapon.hpp"
 
-struct GunWeaponInfo : public BaseWeaponInfo {
+struct GunWeaponInfo : public BaseWeaponInfo
+{
 	int numOfBullets = 1;
 	bool bulletCanTracking = false;
 
 	ProjectileInfo defaultProjectileInfo;
 };
 
-class GunWeapon final : public Weapon {
+class GunWeapon final : public Weapon
+{
 public:
-	explicit GunWeapon(const GunWeaponInfo& gunWeaponInfo);
+	explicit GunWeapon(const GunWeaponInfo &gunWeaponInfo);
 	~GunWeapon() override = default;
 
-	void attack(int damage) override;
-	std::shared_ptr<Weapon> Clone() const override {
-		return std::make_shared<GunWeapon>(*this);
-	}
+	void attack(int damage, bool isCriticalHit = false) override;
+	std::shared_ptr<Weapon> Clone() const override { return std::make_shared<GunWeapon>(*this); }
 
 
 private:
@@ -34,4 +34,4 @@ private:
 	const ProjectileInfo m_projectileInfo;
 };
 
-#endif //GUN_HPP
+#endif // GUN_HPP

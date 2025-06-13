@@ -21,7 +21,7 @@ void AttackTriggerStrategy::OnTriggerEnter(std::shared_ptr<nGameObject> self, st
 		if (const auto healthComp = character->GetComponent<HealthComponent>(ComponentType::HEALTH); !healthComp)
 			return;
 
-		const TakeDamageEventInfo dmgEvent(ID, m_Damage, m_elementalDamage);
+		const TakeDamageEventInfo dmgEvent(ID, m_Damage, m_elementalDamage, m_isCriticalHit);
 		other->OnEvent(dmgEvent);
 		return;
 	}
@@ -34,7 +34,7 @@ void AttackTriggerStrategy::OnTriggerEnter(std::shared_ptr<nGameObject> self, st
 			!healthComp)
 			return;
 
-		const TakeDamageEventInfo dmgEvent(ID, m_Damage, m_elementalDamage);
+		const TakeDamageEventInfo dmgEvent(ID, m_Damage, m_elementalDamage, m_isCriticalHit);
 		other->OnEvent(dmgEvent);
 		return;
 	}
