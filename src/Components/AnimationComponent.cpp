@@ -40,7 +40,7 @@ void AnimationComponent::Init()
 
 void AnimationComponent::Update()
 {
-	if (m_useSkillEffect) {
+	if (m_useSkillEffect && m_effectAnimation) {
 		if (auto character = GetOwner<nGameObject>()) {
 			m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
 			m_effectAnimation->SetZIndexType(ZIndexType::CUSTOM); //可能不該在Update的，但是方便確認
@@ -87,7 +87,7 @@ void AnimationComponent::SetAnimation(State state)
 	}
 }
 
-void AnimationComponent::SetSkillEffect(bool play)
+void AnimationComponent::SetSkillEffect(const bool play, const glm::vec2 offset)
 {
 	if (play) {
 		m_useSkillEffect = true;
@@ -104,23 +104,29 @@ void AnimationComponent::SetSkillEffect(bool play)
 				m_effectAnimation->PlayAnimation(true);
 
 				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-				scene->GetRoot().lock()->AddChild(m_effectAnimation);
-				scene->GetCamera().lock()->SafeAddChild(m_effectAnimation);
-
-				m_effectAnimation->m_WorldCoord = character->m_WorldCoord;
+				if (scene) {
+					scene->GetRoot().lock()->AddChild(m_effectAnimation);
+					scene->GetCamera().lock()->SafeAddChild(m_effectAnimation);
+					m_effectAnimation->m_WorldCoord = character->m_WorldCoord + offset;
+				}
 			}
 		}
 	}
 	else
 	{
 		m_useSkillEffect = false;
-		m_effectAnimation->SetControlVisible(false);
-		m_effectAnimation->PlayAnimation(false);
-		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
-		const auto camera = scene->GetCamera().lock();
-		// camera->RemoveChild(m_effectAnimation);
-		camera->MarkForRemoval(m_effectAnimation);
+		if (m_effectAnimation) {
+			m_effectAnimation->SetControlVisible(false);
+			m_effectAnimation->PlayAnimation(false);
+			auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+			if (scene) {
+				scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
+				const auto camera = scene->GetCamera().lock();
+				if (camera) {
+					camera->MarkForRemoval(m_effectAnimation);
+				}
+			}
+		}
 	}
 }
 

@@ -74,7 +74,11 @@ inline InteractableType StringToInteractableType(const std::string& typeStr)
 				{"ENERGY_BALL", InteractableType::ENERGY_BALL},
 				{"WEAPON", InteractableType::WEAPON},
 				{"HP_POISON", InteractableType::HP_POISON},
-				{"ENERGY_POISON", InteractableType::ENERGY_POISON}
+				{"NPC_MERCHANT", InteractableType::NPC_MERCHANT},
+				{"NPC_RICH_GUY", InteractableType::NPC_RICH_GUY},
+				{"NPC_HELLO_WORLD", InteractableType::NPC_HELLO_WORLD},
+				{"GASHAPON_MACHINE", InteractableType::GASHAPON_MACHINE},
+				{"EGG", InteractableType::EGG}
 	};
 
 	auto it = strToType.find(typeStr);

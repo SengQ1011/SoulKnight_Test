@@ -74,7 +74,8 @@ void LobbyScene::Start()
 	m_CurrentRoom = m_LobbyRoom;
 
 	// 现在创建NPC，此时m_LobbyRoom已经初始化
-	CreateNPC();
+	m_NPC1 = CreateNPC(3, glm::vec2(-176.0f, -143.0f));
+	m_NPC2 = CreateNPC(2, glm::vec2(144, 14.0f));
 
 	InitUIManager();
 	InitAudioManager();
@@ -152,7 +153,7 @@ void LobbyScene::CreatePlayer()
 	std::vector<Talent> talentDatabase = CreateTalentList(); // 創建天賦資料庫
 	if (auto talentComp = m_Player->GetComponent<TalentComponent>(ComponentType::TALENT))
 	{
-		talentComp->AddTalent(talentDatabase[3]);
+		talentComp->AddTalent(talentDatabase[0]);
 	}
 
 	// 设置玩家的初始位置
@@ -189,23 +190,23 @@ void LobbyScene::CreateEnemy()
 	m_Enemy->SetRegisteredToScene(true);
 }
 
-void LobbyScene::CreateNPC()
+std::shared_ptr<Character> LobbyScene::CreateNPC(const int id, const glm::vec2 pos)
 {
-	m_NPC = CharacterFactory::GetInstance().createNPC(1);
-	m_NPC->m_WorldCoord = {64,16*2};
-	m_PendingObjects.emplace_back(m_NPC);
-	m_NPC->SetRegisteredToScene(true);
+	auto npc = CharacterFactory::GetInstance().createNPC(id);
+	npc->m_WorldCoord = pos;
+	m_PendingObjects.emplace_back(npc);
+	npc->SetRegisteredToScene(true);
 
 	if (const auto lobbyRoom = this->GetCurrentRoom())
 	{
 		if (const auto manager = lobbyRoom->GetManager<RoomInteractionManager>(ManagerTypes::ROOMINTERACTIONMANAGER))
 		{
-			manager->RegisterInteractable(m_NPC);
-			LOG_DEBUG("Start NPC Interaction");
+			manager->RegisterInteractable(npc);
+			return npc;
 		}
-		else LOG_ERROR("interaction manager");
 	}
 	else LOG_ERROR("Failed to get lobbyRoom");
+
 }
 
 void LobbyScene::SetupCamera() const

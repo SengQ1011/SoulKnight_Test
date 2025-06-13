@@ -134,7 +134,11 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 					i = RESOURCE_DIR + i;
 				std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true, 0, _class);
 				// TODO interval 間隔
-				animation->PlayAnimation(true);
+				if (jsonData.contains("willPlay"))
+				{
+					animation->PlayAnimation(jsonData["willPlay"].get<bool>());
+				}
+				else animation->PlayAnimation(true);
 				roomObject = animation;
 			}
 			else

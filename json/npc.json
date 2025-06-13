@@ -2,7 +2,7 @@
   {
     "ID": 1,
     "Type": "NPC",
-    "name": "Merchant",
+    "name": "NPC_Merchant",
     "animations": {
       "STANDING": ["/Sprite/NPC-all/npc00/npc00_0_0.png", "/Sprite/NPC-all/npc00/npc00_0_1.png",
         "/Sprite/NPC-all/npc00/npc00_0_2.png", "/Sprite/NPC-all/npc00/npc00_0_3.png",
@@ -23,19 +23,73 @@
   {
     "ID": 2,
     "Type": "NPC",
-    "name": "AutoAnimationNPC",
+    "name": "NPC_HelloWorld",
     "animations": {
-      "STANDING": ["/Sprite/NPC-all/npc00/npc00_0_0.png", "/Sprite/NPC-all/npc00/npc00_0_1.png",
-        "/Sprite/NPC-all/npc00/npc00_0_2.png", "/Sprite/NPC-all/npc00/npc00_0_3.png",
-        "/Sprite/NPC-all/npc00/npc00_0_4.png", "/Sprite/NPC-all/npc00/npc00_0_5.png",
-        "/Sprite/NPC-all/npc00/npc00_0_6.png", "/Sprite/NPC-all/npc00/npc00_0_7.png"],
-      "SKILL": ["/Sprite/UI/hello_world.png"]
+      "STANDING": ["/Sprite/NPC-all/npc/npc_elec_sheep_0.png", "/Sprite/NPC-all/npc/npc_elec_sheep_1.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_2.png", "/Sprite/NPC-all/npc/npc_elec_sheep_3.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_4.png", "/Sprite/NPC-all/npc/npc_elec_sheep_5.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_6.png", "/Sprite/NPC-all/npc/npc_elec_sheep_7.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_8.png", "/Sprite/NPC-all/npc/npc_elec_sheep_9.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_10.png", "/Sprite/NPC-all/npc/npc_elec_sheep_11.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_12.png", "/Sprite/NPC-all/npc/npc_elec_sheep_13.png",
+        "/Sprite/NPC-all/npc/npc_elec_sheep_14.png", "/Sprite/NPC-all/npc/npc_elec_sheep_15.png"]
     },
     "interactableType": "NPC_HELLO_WORLD",
     "interactionRadius": 40.0,
     "isAutoInteract": true,
     "prompt": "",
     "promptSize": 16,
+    "promptAnimation": {
+      "Loop": false,
+      "FPS": 6,
+      "path": [
+        "/Sprite/HelloWorld/helloworld_0.png", "/Sprite/HelloWorld/helloworld_1.png",
+        "/Sprite/HelloWorld/helloworld_2.png", "/Sprite/HelloWorld/helloworld_3.png",
+        "/Sprite/HelloWorld/helloworld_4.png", "/Sprite/HelloWorld/helloworld_5.png",
+        "/Sprite/HelloWorld/helloworld_6.png", "/Sprite/HelloWorld/helloworld_7.png",
+        "/Sprite/HelloWorld/helloworld_8.png", "/Sprite/HelloWorld/helloworld_9.png",
+        "/Sprite/HelloWorld/helloworld_10.png", "/Sprite/HelloWorld/helloworld_11.png",
+        "/Sprite/HelloWorld/helloworld_12.png", "/Sprite/HelloWorld/helloworld_13.png",
+        "/Sprite/HelloWorld/helloworld_14.png", "/Sprite/HelloWorld/helloworld_15.png",
+        "/Sprite/HelloWorld/helloworld_16.png", "/Sprite/HelloWorld/helloworld_17.png",
+        "/Sprite/HelloWorld/helloworld_18.png", "/Sprite/HelloWorld/helloworld_18.png",
+        "/Sprite/HelloWorld/helloworld_20.png", "/Sprite/HelloWorld/helloworld_21.png",
+        "/Sprite/HelloWorld/helloworld_22.png", "/Sprite/HelloWorld/helloworld_23.png",
+        "/Sprite/HelloWorld/helloworld_24.png", "/Sprite/HelloWorld/helloworld_25.png",
+        "/Sprite/HelloWorld/helloworld_26.png", "/Sprite/HelloWorld/helloworld_27.png",
+        "/Sprite/HelloWorld/helloworld_28.png", "/Sprite/HelloWorld/helloworld_29.png",
+        "/Sprite/HelloWorld/helloworld_30.png", "/Sprite/HelloWorld/helloworld_31.png",
+        "/Sprite/HelloWorld/helloworld_32.png", "/Sprite/HelloWorld/helloworld_33.png",
+        "/Sprite/HelloWorld/helloworld_34.png", "/Sprite/HelloWorld/helloworld_35.png",
+        "/Sprite/HelloWorld/helloworld_36.png", "/Sprite/HelloWorld/helloworld_37.png",
+        "/Sprite/HelloWorld/helloworld_38.png", "/Sprite/HelloWorld/helloworld_39.png",
+        "/Sprite/HelloWorld/helloworld_40.png", "/Sprite/HelloWorld/helloworld_41.png",
+        "/Sprite/HelloWorld/helloworld_42.png", "/Sprite/HelloWorld/helloworld_43.png",
+        "/Sprite/HelloWorld/helloworld_44.png", "/Sprite/HelloWorld/helloworld_45.png"
+      ]
+    },
     "dialogues": []
+  },
+  {
+    "ID": 3,
+    "Type": "NPC",
+    "name": "NPC_RichGuy",
+    "animations": {
+      "STANDING": ["/Sprite/NPC-all/npc/npc_promote_5_0.png", "/Sprite/NPC-all/npc/npc_promote_5_1.png",
+        "/Sprite/NPC-all/npc/npc_promote_5_2.png", "/Sprite/NPC-all/npc/npc_promote_5_3.png",
+        "/Sprite/NPC-all/npc/npc_promote_5_4.png", "/Sprite/NPC-all/npc/npc_promote_5_5.png",
+        "/Sprite/NPC-all/npc/npc_promote_5_6.png", "/Sprite/NPC-all/npc/npc_promote_5_7.png"]
+    },
+    "interactableType": "NPC_RICH_GUY",
+    "interactionRadius": 40.0,
+    "isAutoInteract": false,
+
+    "prompt": "按 F 開始對話",
+    "promptSize": 16,
+    "dialogues": [
+      "你會給我100分的吧..",
+      "看你可憐，給你10游戲幣",
+      "可以去扭蛋機抽獎"
+    ]
   }
 ]
