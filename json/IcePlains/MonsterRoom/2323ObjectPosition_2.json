@@ -1,0 +1,1846 @@
+{
+    "room_region_y": 35.0,
+    "room_region_x": 35.0,
+    "room_size_y": 23,
+    "room_size_x": 23,
+    "tile_height": 16.0,
+    "tile_width": 16.0,
+    "roomObject": [
+        {
+            "ID": "f600",
+            "Class": "Floor",
+            "Position": [
+                0.0,
+                0.0
+            ],
+            "Size": [
+                368.0,
+                368.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                128.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                96.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                64.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -160.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -32.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -16.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                16.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                32.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                160.0,
+                48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -160.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -128.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -96.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -64.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -32.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                -16.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                16.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_fastFloor",
+            "Class": "nGameObject",
+            "Position": [
+                32.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                64.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                96.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                128.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_slowFloor",
+            "Class": "nGameObject",
+            "Position": [
+                160.0,
+                -48.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -64.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -96.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "object_spike",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -128.0
+            ],
+            "Size": [
+                16.0,
+                16.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -160.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -144.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -128.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -112.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -96.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -80.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -64.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -48.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                48.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                64.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                80.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                96.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                112.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                128.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                144.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                160.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                177.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                163.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                161.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                32.0,
+                147.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                145.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                16.0,
+                131.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                128.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                129.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                115.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                113.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -16.0,
+                99.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                97.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -32.0,
+                83.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                81.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                67.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                65.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -144.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                51.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                144.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                49.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                35.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                33.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                35.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                19.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                19.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                3.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -13.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                -13.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -29.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -32.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -16.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                0.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                16.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                32.0,
+                -30.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                -29.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -144.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -112.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                -80.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                -45.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                80.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                112.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxCommon",
+            "Class": "DestructibleObject",
+            "Position": [
+                144.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -46.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                48.0,
+                -61.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -62.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                32.0,
+                -77.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -78.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                16.0,
+                -93.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -94.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                0.0,
+                -109.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -110.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_boxBlue",
+            "Class": "DestructibleObject",
+            "Position": [
+                -128.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -16.0,
+                -125.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -126.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -32.0,
+                -141.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -142.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "object_pillarIce2",
+            "Class": "nGameObject",
+            "Position": [
+                -48.0,
+                -157.0
+            ],
+            "Size": [
+                16.0,
+                32.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -158.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -176.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -160.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -144.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -128.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -112.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -96.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -80.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -64.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                -48.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                48.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                64.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                80.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                96.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                112.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                128.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                144.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                160.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        },
+        {
+            "ID": "w600",
+            "Class": "WallObject",
+            "Position": [
+                176.0,
+                -174.5
+            ],
+            "Size": [
+                16.0,
+                29.0
+            ]
+        }
+    ]
+}
