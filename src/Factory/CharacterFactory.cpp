@@ -173,7 +173,7 @@ std::shared_ptr<Character> CharacterFactory::createPlayer(const int id)
 				player->AddComponent<AttackComponent>(ComponentType::ATTACK, weapon, criticalRate, handBladeDamage, 0);
 			auto skillComponent = player->AddComponent<SkillComponent>(ComponentType::SKILL, skill);
 			auto flickerComponent = player->AddComponent<FlickerComponent>(ComponentType::FLICKER);
-			auto walletComp = player->AddComponent<WalletComponent>(ComponentType::WALLET);
+			auto walletComp = player->AddComponent<walletComponent>(ComponentType::WALLET);
 			auto talentComp = player->AddComponent<TalentComponent>(ComponentType::TALENT);
 			auto CollisionComp = player->AddComponent<CollisionComponent>(ComponentType::COLLISION);
 			CollisionComp->SetCollisionLayer(CollisionLayers_Player);

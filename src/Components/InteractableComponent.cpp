@@ -112,7 +112,7 @@ void InteractableComponent::Init()
 			m_InteractionCallback =
 				[](const std::shared_ptr<Character> &interactor, const std::shared_ptr<nGameObject> &target)
 			{
-				if (const auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
+				if (const auto walletComp = interactor->GetComponent<walletComponent>(ComponentType::WALLET))
 				{
 					// 播放金幣獲得音效
 					AudioManager::GetInstance().PlaySFX("coin");
@@ -384,7 +384,7 @@ void InteractableComponent::Init()
 				// 如果NPC处于对话完成状态，执行相应的操作
 				if (npcComp->IsActionReady())
 				{
-					if (auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
+					if (auto walletComp = interactor->GetComponent<walletComponent>(ComponentType::WALLET))
 					{
 						if (walletComp->GetMoney() >= 10)
 						{

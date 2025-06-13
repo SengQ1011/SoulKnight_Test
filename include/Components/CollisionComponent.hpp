@@ -40,8 +40,7 @@ public:
 		Component(data.m_Type), m_Size(glm::vec2(data.m_Size[0], data.m_Size[1])),
 		m_Offset(data.m_Offset[0], data.m_Offset[1]), m_CollisionLayer(data.m_CollisionLayer),
 		m_CollisionMask(data.m_CollisionMask), m_IsTrigger(data.m_IsTrigger),
-		m_TriggerStrategyType(data.m_TriggerStrategyType),
-		m_TriggerStrategyConfig(data.m_TriggerStrategyConfig)
+		m_TriggerStrategyType(data.m_TriggerStrategyType), m_TriggerStrategyConfig(data.m_TriggerStrategyConfig)
 	{
 	}
 
@@ -64,7 +63,6 @@ public:
 	[[nodiscard]] std::shared_ptr<AreaShape> GetAreaShape() const; // 新添加
 	[[nodiscard]] glm::uint8_t GetCollisionLayer() const { return m_CollisionLayer; }
 	[[nodiscard]] glm::uint8_t GetCollisionMask() const { return m_CollisionMask; }
-	[[nodiscard]] std::shared_ptr<nGameObject> GetVisibleBox() { return m_ColliderVisibleBox; }
 	[[nodiscard]] bool IsActive() const { return m_IsActive; }
 	[[nodiscard]] bool IsTrigger() const { return m_IsTrigger; }
 	[[nodiscard]] bool IsCollider() const { return m_IsCollider; }
@@ -85,12 +83,6 @@ public:
 	void ClearTriggerTargets();
 	void SetCollider(const bool isCollider) { m_IsCollider = isCollider; }
 
-	void SetColliderBoxVisible(const bool isVisible) const
-	{
-		m_ColliderVisibleBox->SetControlVisible(isVisible);
-	} //設置碰撞箱可視化
-	void SetColliderBoxColor(const std::string &color) const; //設置碰撞箱顔色
-
 private:
 	bool m_IsActive = true;
 
@@ -100,8 +92,10 @@ private:
 	std::shared_ptr<AreaShape> m_TriggerAreaShape = nullptr;
 	std::vector<std::unique_ptr<ITriggerStrategy>> m_TriggerStrategies;
 	std::unordered_set<std::shared_ptr<nGameObject>>
-		m_PreviousTriggerTargets; // 本幀（frame）裡所有經由 TryTrigger(self, other) 檢測到與這個 Trigger 物件發生交集的其他物件集合
-	std::unordered_set<std::shared_ptr<nGameObject>> m_CurrentTriggerTargets; // （上一幀）結束時，紀錄下那些「還在觸發」的物件集合
+		m_PreviousTriggerTargets; // 本幀（frame）裡所有經由 TryTrigger(self, other) 檢測到與這個 Trigger
+								  // 物件發生交集的其他物件集合
+	std::unordered_set<std::shared_ptr<nGameObject>>
+		m_CurrentTriggerTargets; // （上一幀）結束時，紀錄下那些「還在觸發」的物件集合
 
 	bool m_IsCollider = true;
 	ShapeType m_ColliderShapeType = ShapeType::Null;
@@ -110,12 +104,8 @@ private:
 	// 原本的先不動
 	glm::vec2 m_Size;
 	glm::vec2 m_Offset;
-	glm::uint8_t m_CollisionLayer; //自身碰撞層
-	glm::uint8_t m_CollisionMask; //可以和哪幾層碰撞
-	std::shared_ptr<nGameObject> m_ColliderVisibleBox = std::make_shared<nGameObject>();
-	static std::shared_ptr<Core::Drawable> s_RedColliderImage;
-	static std::shared_ptr<Core::Drawable> s_BlueColliderImage;
-	static std::shared_ptr<Core::Drawable> s_YellowColliderImage;
+	glm::uint8_t m_CollisionLayer; // 自身碰撞層
+	glm::uint8_t m_CollisionMask; // 可以和哪幾層碰撞
 
 	std::string m_TriggerStrategyType;
 	nlohmann::json m_TriggerStrategyConfig;

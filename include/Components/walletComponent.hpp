@@ -9,10 +9,10 @@
 #include "Components/Component.hpp"
 
 
-class WalletComponent final : public Component
+class walletComponent final : public Component
 {
 public:
-	explicit WalletComponent(int startMoney = 0) : Component(ComponentType::WALLET), m_Money(startMoney) {}
+	explicit walletComponent(int startMoney = 0) : Component(ComponentType::WALLET), m_Money(startMoney) {}
 	void Update() override
 	{
 		DrawDebugUI();

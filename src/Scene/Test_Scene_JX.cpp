@@ -81,9 +81,6 @@ void TestScene_JX::Start()
 		collisionComponent->SetOffset(offset[i]);
 		collisionComponent->SetSize(size[i]);
 		collisionComponent->SetCollisionLayer(CollisionLayers_Terrain);
-		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(
-			collisionComponent->GetVisibleBox());
-		m_Camera->AddChild(collisionComponent->GetVisibleBox());
 		m_WallCollider.emplace_back(wallCollider);
 	}
 
@@ -96,9 +93,6 @@ void TestScene_JX::Start()
 		if (auto collisionComponent = elem->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 		{
 			m_RoomCollisionManager->RegisterNGameObject(elem);
-			SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(
-				collisionComponent->GetVisibleBox());
-			m_Camera->AddChild(collisionComponent->GetVisibleBox());
 		}
 		m_Camera->AddChild(elem);
 		SceneManager::GetInstance().GetCurrentScene().lock()->GetRoot().lock()->AddChild(elem);
@@ -118,10 +112,6 @@ void TestScene_JX::Start()
 
 	m_Enemy->m_WorldCoord = {32, 16 * 2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if (!collision2->GetVisibleBox())
-		LOG_ERROR("collision2->GetBlackBox()");
-	m_Root->AddChild(collision2->GetVisibleBox());
-	m_Camera->AddChild(collision2->GetVisibleBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Enemy);
 	m_trackingManager->AddEnemy(m_Enemy);
 	m_Root->AddChild(m_Enemy);
@@ -129,8 +119,6 @@ void TestScene_JX::Start()
 
 	m_Player->m_WorldCoord = {0, 16 * 2}; // 騎士初始位置為右兩格，上兩格
 	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	m_Root->AddChild(collision->GetVisibleBox());
-	m_Camera->AddChild(collision->GetVisibleBox());
 	m_RoomCollisionManager->RegisterNGameObject(m_Player);
 	m_trackingManager->SetPlayer(m_Player);
 	m_Root->AddChild(m_Player);

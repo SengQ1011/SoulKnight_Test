@@ -166,8 +166,6 @@ public:
 protected:
 	// 碰撞優化輔助方法
 	void RemoveWallCollisionComponents();
-	void RemoveVisibleBoxFromPendingObjects(const std::shared_ptr<CollisionComponent> &collisionComp,
-											const std::shared_ptr<Scene> &scene);
 	std::vector<std::shared_ptr<nGameObject>> CreateOptimizedColliders(const std::vector<CollisionRect> &regions);
 
 	// 調試功能

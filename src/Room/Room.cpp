@@ -271,23 +271,16 @@ void Room::RegisterObjectToSceneAndManager(const std::shared_ptr<nGameObject> &o
 		}
 	}
 
-	RegisterCollisionManger(object);
+	RegisterCollisionManager(object);
 	RegisterInteractionManager(object);
 	RegisterTrackingManager(object);
 }
 
-void Room::RegisterCollisionManger(const std::shared_ptr<nGameObject> &object) const
+void Room::RegisterCollisionManager(const std::shared_ptr<nGameObject> &object) const
 {
 	if (const auto collComp = object->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
 		m_CollisionManager->RegisterNGameObject(object);
-		if (const std::shared_ptr<nGameObject> &colliderVisible = collComp->GetVisibleBox())
-		{
-			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
-			{
-				scene->GetPendingObjects().emplace_back(colliderVisible);
-			}
-		}
 	}
 }
 
@@ -368,6 +361,8 @@ void Room::UnregisterCollisionManager(const std::shared_ptr<nGameObject> &object
 	{
 		m_CollisionManager->UnregisterNGameObject(object);
 
+		// 碰撞箱可視化功能已移除
+		/*
 		if (const std::shared_ptr<nGameObject> &colliderVisible = collComp->GetVisibleBox())
 		{
 			const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -382,6 +377,7 @@ void Room::UnregisterCollisionManager(const std::shared_ptr<nGameObject> &object
 					camera->MarkForRemoval(colliderVisible);
 			}
 		}
+		*/
 	}
 }
 
