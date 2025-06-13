@@ -154,9 +154,9 @@ void StateComponent::SetState(State newState)
 		{
 			auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 			auto m_currentAnimation = animationComponent->GetCurrentAnimation();
-			if (character->GetCharacterName() == "Knight" && newState == State::SKILL)
+			if ((character->GetCharacterName() == "Knight") && newState == State::SKILL)
 			{
-				animationComponent->SetSkillEffect(true);
+				animationComponent->SetSkillEffect(true, glm::vec2(0.0f, 0.0f));
 			}
 			else
 			{
@@ -198,6 +198,7 @@ void StateComponent::ApplyStatusEffect(const StatusEffect& effect)
 		// 免疫伤害，无法行动
 		healthComp->SetInvincibleMode(true);
 		movementComp->SetCurrentSpeedRatio(0.0f);
+		movementComp->SetSpeedEffectDuration(2.5f);
 		SetState(State::STANDING);
 		break;
 

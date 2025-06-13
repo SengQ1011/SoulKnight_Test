@@ -37,6 +37,8 @@ add_executable(${PROJECT_NAME}
     ${INCLUDE_FILES}
     ${INLINE_FILES}
         include/Components/EffectAttackComponent.hpp
+        include/Components/NPCComponent.hpp
+        src/Components/NPCComponent.cpp
 )
 
 if(MSVC)

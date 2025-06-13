@@ -7,8 +7,10 @@
 #include <iostream>
 #include "Components/CollisionComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Factory/RoomObjectFactory.hpp"
 #include "Loader.hpp"
 #include "Util/Logger.hpp"
+#include "Scene/SceneManager.hpp"
 
 
 void LobbyRoom::Start(const std::shared_ptr<Character> &player)
@@ -117,4 +119,38 @@ void LobbyRoom::ValidatePlayerPosition()
 
 		}
 	}
+}
+
+void LobbyRoom::CreateEgg(const glm::vec2& position) {
+	const auto factory = m_Factory.lock();
+	if (!factory) {
+		LOG_ERROR("Factory is not available");
+		return;
+	}
+
+	// 使用工厂创建蛋
+	auto egg = factory->CreateRoomObject("object_egg", "");
+	if (!egg) {
+		LOG_ERROR("Failed to create egg");
+		return;
+	}
+
+	// 设置蛋的位置
+	egg->SetWorldCoord(position);
+	egg->SetActive(true);
+	egg->SetControlVisible(true);
+
+	// 添加到场景
+	if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock()) {
+		scene->GetRoot().lock()->AddChild(egg);
+		scene->GetCamera().lock()->SafeAddChild(egg);
+		egg->SetRegisteredToScene(true);
+
+		// 注册到交互管理器
+		if (const auto interactableManager = GetInteractionManager()) {
+			interactableManager->RegisterInteractable(egg);
+		}
+	}
+
+	LOG_DEBUG("Egg created at position ({}, {})", position.x, position.y);
 }

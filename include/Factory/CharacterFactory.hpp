@@ -21,14 +21,20 @@ public:
 	std::shared_ptr<Character> createPlayer(const int id);
 	std::shared_ptr<Character> createEnemy(const int id);
 	std::shared_ptr<Character> CloneEnemy(const std::shared_ptr<Character>& original);
+	std::shared_ptr<Character> createNPC(const int id);
 	void ClearCache();  // 缓存清理功能
 
 private:
 	static CharacterFactory* instance;
 	nlohmann::json enemyJsonData;  // 缓存JSON数据（只需读取一次文件）
+	nlohmann::json npcJsonData;
 
 	// 预加载JSON
-	CharacterFactory() {enemyJsonData = readJsonFile("enemy.json");}
+	CharacterFactory()
+	{
+		enemyJsonData = readJsonFile("enemy.json");
+		npcJsonData = readJsonFile("npc.json");
+	}
 	~CharacterFactory() override = default;
 	// 删除拷贝操作
 	CharacterFactory(const CharacterFactory&) = delete;

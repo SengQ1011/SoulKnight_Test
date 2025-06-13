@@ -11,6 +11,7 @@
 
 class Character;
 class nGameObject;
+class Animation;
 
 class InteractableComponent : public Component
 {
@@ -91,6 +92,8 @@ public:
 	// 更新 PromptObject 的文本內容
 	void SetPromptText(const std::string &text);
 
+	void SetPromptAnimation(const std::shared_ptr<Animation>& animation);
+
 protected:
 	InteractableType m_interactableType;
 	float m_InteractionRadius;
@@ -104,6 +107,7 @@ protected:
 	// 互動提示UI元素
 	std::shared_ptr<nGameObject> m_PromptObject = nullptr;
 	std::shared_ptr<nGameObject> m_PromptUI = nullptr;
+	std::shared_ptr<Animation> m_PromptAnimation;
 	Util::Timer m_FloatTimer;
 
 	std::array<Uint8, 3> m_Color = {0, 0, 0};
@@ -113,7 +117,7 @@ private:
 	// 更新提示UI的位置
 	void UpdatePromptPositions();
 	// 計算並設置 PromptObject 的位置，返回偏移量
-	glm::vec2 UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner);
+	glm::vec2 UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner) const;
 	// 計算並設置 PromptUI 的位置
 	void UpdatePromptUIPosition(const std::shared_ptr<nGameObject> &owner, const glm::vec2 &promptObjectOffset);
 };

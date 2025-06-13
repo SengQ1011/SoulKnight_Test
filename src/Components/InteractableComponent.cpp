@@ -5,16 +5,22 @@
 #include "Components/InteractableComponent.hpp"
 
 #include "Components/ChestComponent.hpp"
+#include "Components/NPCComponent.hpp"
 #include "ObserveManager/AudioManager.hpp"
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Scene/Lobby_Scene.hpp"
 #include "Structs/EventInfo.hpp"
 
 #include "Components/WalletComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Room/LobbyRoom.hpp"
+#include "Room/ShopRoom.hpp"
 #include "Scene/Dungeon_Scene.hpp"
 #include "Shop/ShopTable.hpp"
 #include "Weapon/Weapon.hpp"
+#include "Factory/WeaponFactory.hpp"
+#include "Components/DropComponent.hpp"
 
 
 void InteractableComponent::Init()
@@ -150,9 +156,8 @@ void InteractableComponent::Init()
 				{
 					if (const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
 					{
-						bool pickupSuccess = attackComp->PickUpWeapon(weapon);
-
-						if (pickupSuccess)
+						// 只有拾取成功時才停用 InteractableComponent
+						if (attackComp->PickUpWeapon(weapon))
 						{
 							ShowPrompt(false);
 							// 武器被拾取後停用 InteractableComponent
@@ -187,8 +192,7 @@ void InteractableComponent::Init()
 				weaponPrompt->SetInitialScale(glm::vec2(0.5f));
 				weaponPrompt->SetInitialScaleSet(true);
 
-				const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-				if (currentScene)
+				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 				{
 					currentScene->GetPendingObjects().emplace_back(weaponPrompt);
 					weaponPrompt->SetRegisteredToScene(true);
@@ -236,8 +240,7 @@ void InteractableComponent::Init()
 				pricePrompt->SetInitialScale(glm::vec2(0.5f));
 				pricePrompt->SetInitialScaleSet(true);
 
-				const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-				if (currentScene)
+				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 				{
 					currentScene->GetPendingObjects().emplace_back(pricePrompt);
 					pricePrompt->SetRegisteredToScene(true);
@@ -299,8 +302,7 @@ void InteractableComponent::Init()
 					hpPotionPromp->SetInitialScale(glm::vec2(0.5f));
 					hpPotionPromp->SetInitialScaleSet(true);
 
-					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-					if (currentScene)
+					if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 					{
 						currentScene->GetPendingObjects().emplace_back(hpPotionPromp);
 						hpPotionPromp->SetRegisteredToScene(true);
@@ -361,8 +363,7 @@ void InteractableComponent::Init()
 					energyPotionPrompt->SetInitialScale(glm::vec2(0.5f));
 					energyPotionPrompt->SetInitialScaleSet(true);
 
-					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-					if (currentScene)
+					if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 					{
 						currentScene->GetPendingObjects().emplace_back(energyPotionPrompt);
 						energyPotionPrompt->SetRegisteredToScene(true);
@@ -373,10 +374,319 @@ void InteractableComponent::Init()
 			}
 			break;
 		}
+	case InteractableType::NPC_MERCHANT:
+	{
+		m_InteractionCallback =
+			[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+		{
+			if (auto npcComp = target->GetComponent<NPCComponent>(ComponentType::NPC))
+			{
+				// 如果NPC处于对话完成状态，执行相应的操作
+				if (npcComp->IsActionReady())
+				{
+					if (auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
+					{
+						if (walletComp->GetMoney() >= 10)
+						{
+							walletComp->SpendMoney(10);
+							if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
+							{
+								if (const auto shopRoom = std::dynamic_pointer_cast<ShopRoom>(currentScene->GetCurrentRoom()))
+								{
+									shopRoom->RefreshAllItems();
+									LOG_DEBUG("NPC dialogue completed, executing action");
+									// 成功刷新后立即重置对话状态
+									npcComp->ResetDialogueState();
+									if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+									{
+										interactableComp->SetPromptText("按F對話");
+										interactableComp->ShowPrompt(true);
+									}
+								}
+							}
+						}
+						else
+						{
+							// 金钱不足时，只更改提示文本，不重置状态
+							if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+							{
+								interactableComp->SetPromptText("窮鬼，你的金幣不足");
+								interactableComp->ShowPrompt(true);
+							}
+						}
+					}
+				}
+				else
+				{
+					// 正常对话流程
+					npcComp->StartDialogue(interactor);
+				}
+			}
+		};
+
+		if (!m_PromptObject)
+		{
+			auto prompt = std::make_shared<nGameObject>("NPCPrompt");
+			auto text = ImagePoolManager::GetInstance().GetText(
+				RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f,
+				"按F對話", Util::Color(255, 255, 255), false);
+
+			prompt->SetDrawable(text);
+			prompt->SetZIndexType(ZIndexType::UI);
+			prompt->SetZIndex(10.0f);
+			prompt->SetControlVisible(false);
+			prompt->SetInitialScale(glm::vec2(0.5f));
+			prompt->SetInitialScaleSet(true);
+
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(prompt);
+				prompt->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+
+			m_PromptObject = prompt;
+		}
+		break;
+	}
+	case InteractableType::NPC_HELLO_WORLD:
+	{
+		m_PromptObject = nullptr;
+		m_InteractionCallback =
+		[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+		{
+			if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE)) {
+				if (interactableComp->m_PromptAnimation) {
+					// 检查动画是否已经在播放
+					if (interactableComp->m_PromptAnimation->IsPlaying()) {
+						return;
+					}
+
+					// 设置动画位置
+					glm::vec2 animationPos = target->GetWorldCoord() + glm::vec2(-30.0f, 25.0f);
+					interactableComp->m_PromptAnimation->m_WorldCoord = animationPos;
+
+					// 确保动画可见并播放
+					interactableComp->m_PromptAnimation->SetControlVisible(true);
+					interactableComp->m_PromptAnimation->SetActive(true);
+					interactableComp->m_PromptAnimation->SetLooping(false);
+					interactableComp->m_PromptAnimation->PlayAnimation(true);
+				} else {
+					LOG_ERROR("m_PromptAnimation is null!");
+				}
+			}
+		};
+		break;
+	}
+	case InteractableType::NPC_RICH_GUY:
+	{
+		m_InteractionCallback =
+			[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+		{
+			if (auto npcComp = target->GetComponent<NPCComponent>(ComponentType::NPC))
+			{
+				// 如果NPC处于对话完成状态，执行相应的操作
+				if (npcComp->IsActionReady())
+				{
+					if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
+					{
+						if (auto data = currentScene->GetSaveData())
+						{
+							data->gameData.gameMoney += 10;
+							LOG_DEBUG("NPC dialogue completed, executing action");
+							currentScene->Upload();
+
+							// 立即重置对话状态
+							npcComp->ResetDialogueState();
+							if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+							{
+								interactableComp->SetPromptText("按F對話");
+								interactableComp->ShowPrompt(true);
+							}
+						}
+					}
+				}
+				else
+				{
+					// 正常对话流程
+					npcComp->StartDialogue(interactor);
+				}
+			}
+		};
+
+		if (!m_PromptObject)
+		{
+			auto prompt = std::make_shared<nGameObject>("NPCPrompt");
+			auto text = ImagePoolManager::GetInstance().GetText(
+				RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f,
+				"按F對話", Util::Color(255, 255, 255), false);
+
+			prompt->SetDrawable(text);
+			prompt->SetZIndexType(ZIndexType::UI);
+			prompt->SetZIndex(10.0f);
+			prompt->SetControlVisible(false);
+			prompt->SetInitialScale(glm::vec2(0.5f));
+			prompt->SetInitialScaleSet(true);
+
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(prompt);
+				prompt->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+
+			m_PromptObject = prompt;
+		}
+		break;
+	}
+	case InteractableType::GASHAPON_MACHINE:
+	{
+		m_InteractionCallback =
+			[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+			{
+				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
+				{
+					if (auto data = currentScene->GetSaveData())
+					{
+						if (data->gameData.gameMoney >= 50)
+						{
+							data->gameData.gameMoney -= 50;
+							currentScene->Upload();
+
+							// 创建蛋
+							if (auto currentRoom = currentScene->GetCurrentRoom())
+							{
+								if (auto lobbyRoom = std::dynamic_pointer_cast<LobbyRoom>(currentRoom))
+								{
+									// 在扭蛋机上方创建蛋
+									const auto pos = target->GetWorldCoord() + glm::vec2(0.0f, -25.0f);
+									lobbyRoom->CreateEgg(pos);
+									LOG_DEBUG("Created egg at position ({}, {})", pos.x, pos.y);
+								}
+							}
+						}
+						else
+						{
+							if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+							{
+								interactableComp->SetPromptText("游戲幣不足");
+								interactableComp->ShowPrompt(true);
+							}
+						}
+					}
+				}
+			};
+
+		if (!m_PromptObject)
+		{
+			auto prompt = std::make_shared<nGameObject>("Prompt");
+			auto text = ImagePoolManager::GetInstance().GetText(
+				RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 16.0f,
+				"按 F 抽獎！", Util::Color(255, 255, 255), false);
+
+			prompt->SetDrawable(text);
+			prompt->SetZIndexType(ZIndexType::UI);
+			prompt->SetZIndex(10.0f);
+			prompt->SetControlVisible(false);
+			prompt->SetInitialScale(glm::vec2(0.5f));
+			prompt->SetInitialScaleSet(true);
+
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(prompt);
+				prompt->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+
+			m_PromptObject = prompt;
+		}
+		break;
+	}
+	case InteractableType::EGG:
+	{
+		m_InteractionCallback =
+			[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+			{
+				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
+				{
+					// 获取玩家现有武器ID列表，避免重复
+					std::vector<int> allPlayerWeaponID;
+					if (auto attackComp = interactor->GetComponent<AttackComponent>(ComponentType::ATTACK))
+					{
+						allPlayerWeaponID = attackComp->GetAllWeaponID();
+					}
+
+					// 创建随机武器
+					auto weapon = WeaponFactory::createRandomWeapon(allPlayerWeaponID);
+					if (!weapon)
+					{
+						LOG_ERROR("Failed to create random weapon from egg");
+						return;
+					}
+
+					// 设置武器位置和状态
+					weapon->SetWorldCoord(target->GetWorldCoord());
+					weapon->SetActive(true);
+					weapon->SetControlVisible(true);
+
+					// 添加到场景
+					currentScene->GetRoot().lock()->AddChild(weapon);
+					currentScene->GetCamera().lock()->SafeAddChild(weapon);
+					weapon->SetRegisteredToScene(true);
+
+					// 注册到交互管理器
+					if (const auto interactableManager = currentScene->GetCurrentRoom()->GetInteractionManager())
+					{
+						interactableManager->RegisterInteractable(weapon);
+					}
+
+					// 播放蛋的动画
+					if (auto animation = std::dynamic_pointer_cast<Animation>(target))
+					{
+						animation->SetLooping(false);
+						animation->PlayAnimation(true);
+					}
+
+					// 隐藏并停用蛋
+					target->SetControlVisible(false);
+					target->SetActive(false);
+
+					// 从交互管理器中注销
+					if (const auto interactableManager = currentScene->GetCurrentRoom()->GetInteractionManager())
+					{
+						interactableManager->UnregisterInteractable(target);
+					}
+				}
+			};
+
+		if (!m_PromptObject)
+		{
+			auto prompt = std::make_shared<nGameObject>("Prompt");
+			auto text = ImagePoolManager::GetInstance().GetText(
+				RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 16.0f,
+				"按 F 開啓！", Util::Color(255, 255, 255), false);
+
+			prompt->SetDrawable(text);
+			prompt->SetZIndexType(ZIndexType::UI);
+			prompt->SetZIndex(10.0f);
+			prompt->SetControlVisible(false);
+			prompt->SetInitialScale(glm::vec2(0.5f));
+			prompt->SetInitialScaleSet(true);
+
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(prompt);
+				prompt->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+
+			m_PromptObject = prompt;
+		}
+		break;
+	}
 	default:
 		LOG_ERROR("InteractableComponent::Init() miss m_interactableType");
 		break;
-		;
 	}
 
 	if (m_interactableType == InteractableType::COIN || m_interactableType == InteractableType::ENERGY_BALL)
@@ -388,18 +698,17 @@ void InteractableComponent::Init()
 			glm::vec2 playerPos = player->GetWorldCoord();
 			float distance = glm::distance(selfPos, playerPos);
 
-			const float attractRange = 50.0f;
-			if (distance < attractRange)
+			if (constexpr float attractRange = 50.0f; distance < attractRange)
 			{
-				glm::vec2 direction = glm::normalize(playerPos - selfPos);
-				const float speed = 100.0f;
+				const glm::vec2 direction = glm::normalize(playerPos - selfPos);
+				constexpr float speed = 100.0f;
 				self->SetWorldCoord(selfPos + (direction * speed * (Util::Time::GetDeltaTimeMs() / 1000.0f)));
 			}
 		};
 	}
 
 	m_PromptUI = std::make_shared<nGameObject>("InteractableUI");
-	if (m_PromptUI)
+	if (m_PromptUI && m_PromptObject)
 	{
 		// 設置UI的基本屬性
 		m_PromptUI->SetDrawable(ImagePoolManager::GetInstance().GetImage(RESOURCE_DIR "/UI/ui_interactablePrompt.png"));
@@ -409,8 +718,7 @@ void InteractableComponent::Init()
 		m_PromptUI->SetInitialScaleSet(true);
 		m_PromptUI->SetControlVisible(false); // 初始隱藏
 
-		const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-		if (currentScene)
+		if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 		{
 			currentScene->GetPendingObjects().emplace_back(m_PromptUI);
 			m_PromptUI->SetRegisteredToScene(true);
@@ -451,16 +759,52 @@ void InteractableComponent::Update()
 		if (player && self)
 			m_UpdateCallback(self, player);
 	}
+
+	// 更新提示动画位置和检查是否播放完成
+	if (m_PromptAnimation) {
+		const auto owner = GetOwner<nGameObject>();
+		if (owner) {
+			m_PromptAnimation->m_WorldCoord = owner->m_WorldCoord + glm::vec2(-30.0f, 25.0f);
+
+			// 如果动画播放完成，隐藏它
+			if (m_PromptAnimation->IfAnimationEnds()) {
+				m_PromptAnimation->SetControlVisible(false);
+				m_PromptAnimation->PlayAnimation(false); // 停止播放
+			}
+		}
+	}
+
+	// 检查玩家是否在范围内，如果不在范围内重置提示文本
+	if (m_interactableType == InteractableType::GASHAPON_MACHINE) {
+		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		if (scene) {
+			std::shared_ptr<Character> player = nullptr;
+			if (auto dungeon = std::dynamic_pointer_cast<DungeonScene>(scene)) {
+				player = dungeon->GetPlayer();
+			}
+			else if (auto lobby = std::dynamic_pointer_cast<LobbyScene>(scene)) {
+				player = lobby->GetPlayer();
+			}
+
+			if (player) {
+				if (!IsInRange(player)) {
+					// 玩家离开范围，重置提示文本
+					SetPromptText("按 F 抽獎！");
+					ShowPrompt(false);
+				}
+			}
+		}
+	}
+
 	// 更新位置
 	UpdatePromptPositions();
 }
 
-bool InteractableComponent::OnInteract(const std::shared_ptr<Character> &interactor)
-{
+bool InteractableComponent::OnInteract(const std::shared_ptr<Character>& interactor) {
 	auto item = GetOwner<nGameObject>();
-	if (m_InteractionCallback)
-	{
+	if (m_InteractionCallback) {
 		m_InteractionCallback(interactor, GetOwner<nGameObject>());
+
 		if (m_interactableType == InteractableType::REWARD_CHEST ||
 			m_interactableType == InteractableType::WEAPON_CHEST)
 		{
@@ -518,7 +862,7 @@ bool InteractableComponent::IsInRange(const std::shared_ptr<Character> &characte
 	return distance <= m_InteractionRadius;
 }
 
-glm::vec2 InteractableComponent::UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner)
+glm::vec2 InteractableComponent::UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner) const
 {
 	glm::vec2 promptObjectOffset = glm::vec2(4.0f, 0.0f); // 好懸 爲什麽文字會自己偏移
 
@@ -590,6 +934,29 @@ void InteractableComponent::SetPromptText(const std::string &text)
 	if (const auto drawable = std::dynamic_pointer_cast<Util::Text>(m_PromptObject->GetDrawable()))
 	{
 		drawable->SetText(text);
+	}
+}
+
+void InteractableComponent::SetPromptAnimation(const std::shared_ptr<Animation>& animation) {
+	m_PromptAnimation = animation;
+	if (m_PromptAnimation) {
+		// 初始设置
+		m_PromptAnimation->SetControlVisible(false);
+		m_PromptAnimation->SetActive(true);
+		m_PromptAnimation->SetZIndexType(ZIndexType::UI);
+		m_PromptAnimation->SetZIndex(100.0f); // 确保显示在最上层
+
+		// 添加到场景
+		if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock()) {
+			// 检查是否已经添加到场景中
+			if (!m_PromptAnimation->IsRegisteredToScene()) {
+				scene->GetPendingObjects().emplace_back(m_PromptAnimation);
+				m_PromptAnimation->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+		}
+
+		LOG_DEBUG("SetPromptAnimation completed for NPC_HELLO_WORLD");
 	}
 }
 

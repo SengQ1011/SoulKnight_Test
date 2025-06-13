@@ -4,6 +4,7 @@
 
 #include "Room/ShopRoom.hpp"
 #include "Creature/Character.hpp"
+#include "Factory/CharacterFactory.hpp"
 #include "Factory/RoomObjectFactory.hpp"
 #include "Factory/WeaponFactory.hpp"
 #include "Loader.hpp"
@@ -20,6 +21,7 @@ void ShopRoom::Start(const std::shared_ptr<Character> &player)
 
 	// 初始化商店
 	InitializeShop();
+
 
 	LOG_DEBUG("ShopRoom started at grid position ({}, {})", m_MapGridPos.x, m_MapGridPos.y);
 }
@@ -69,7 +71,7 @@ void ShopRoom::InitializeShop()
 	CreateShopTables();
 
 	// 之後會添加商人NPC
-	// CreateMerchantNPC();
+	CreateMerchantNPC();
 
 	m_ShopInitialized = true;
 	LOG_DEBUG("Shop initialized successfully");
@@ -152,10 +154,17 @@ void ShopRoom::CreateShopTables()
 
 void ShopRoom::CreateMerchantNPC()
 {
-	// TODO: 之後實作商人NPC
-	// 商人會在房間中央稍後的位置
-	// 負責發送重置商品的事件
-	LOG_DEBUG("Merchant NPC creation - to be implemented");
+	m_NPC = CharacterFactory::GetInstance().createNPC(1);
+	
+	// 使用房间中心点作为NPC位置
+	// 可以稍微向上偏移一点，让NPC站在商店中央
+	glm::vec2 npcPosition = m_RoomSpaceInfo.m_WorldCoord + glm::vec2(0.0f, 25.0f);
+	m_NPC->m_WorldCoord = npcPosition;
+
+	// 使用SpawnEntity将NPC添加到房间中
+	SpawnEntity(m_NPC, EntityCategory::NPC);
+	
+	// LOG_DEBUG("Merchant NPC created at position ({}, {})", npcPosition.x, npcPosition.y);
 }
 
 void ShopRoom::RefreshAllItems()

@@ -25,10 +25,14 @@ public:
 	void Exit() override;
 	SceneType Change() override;
 
+	[[nodiscard]] std::shared_ptr<Character> GetPlayer() const { return m_Player; }
+
 protected:
 	std::shared_ptr<LobbyRoom> m_LobbyRoom;
 
 	std::shared_ptr<Character> m_Player;
+	std::shared_ptr<Character> m_NPC1;
+	std::shared_ptr<Character> m_NPC2;
 	std::vector<std::shared_ptr<Character>> m_Enemies;
 	std::shared_ptr<Character> m_Enemy;
 
@@ -43,6 +47,7 @@ protected:
 
 	void CreatePlayer();
 	void CreateEnemy();
+	std::shared_ptr<Character> CreateNPC(int id, glm::vec2 pos);
 	void SetupCamera() const;
 	void InitializeSceneManagers();
 	void InitUIManager();

@@ -88,7 +88,7 @@ void AIComponent::SetEnemyState(const enemyState state)
 	else if (state == enemyState::SKILL5)
 		stateComp->SetState(State::SKILL5);
 	else
-		throw std::exception("Invalid state");
+		throw std::invalid_argument("AIComponent::SetEnemyState received an invalid enemyState value");
 }
 
 void AIComponent::ShowReadyAttackIcon() const {
