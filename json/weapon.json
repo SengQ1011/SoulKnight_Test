@@ -541,7 +541,7 @@
     "name": "Elite_Miner's_Rocket_Launcher",
     "attackType": "Projectile",
     "weaponType": "ROCKET_LAUNCHER",
-    "damage": 4,
+    "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,

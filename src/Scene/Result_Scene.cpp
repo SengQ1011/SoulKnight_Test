@@ -30,17 +30,17 @@ void ResultScene::Start()
 	LOG_INFO("Entering Result Scene");
 
 	// 處理遊戲數據 - 如果沒有數據就使用默認值
-	Util::ms_t endTime, startTime;
+	Util::ms_t totalTime;
 	int killCount, timeScore, dungeonMoney, killScore, totalScore, gameMoney;
 
 	if (!m_SceneData)
 	{
 		LOG_INFO("m_SceneData is null - using default test data for UI testing");
 		// 使用默認測試數據
-		endTime = 120;
+		totalTime = 1200;
 		killCount = 15;
 		dungeonMoney = 114;
-		timeScore = std::max(0, 2000 - 2 * static_cast<int>(endTime));
+		timeScore = std::max(0, 2000 - 2 * static_cast<int>(totalTime));
 		killScore = killCount * 2;
 		totalScore = timeScore + killScore;
 		gameMoney = totalScore / 100;
@@ -49,7 +49,7 @@ void ResultScene::Start()
 		m_GameProgress.currentChapter = 1;
 		m_GameProgress.currentStage = 4;
 		m_GameProgress.killCount = killCount;
-		m_GameProgress.cumulativeTime = endTime * 1000;
+		m_GameProgress.cumulativeTime = totalTime;
 
 		m_PlayerData.playerID = 1;
 		m_PlayerData.currentHp = 100;
@@ -62,14 +62,13 @@ void ResultScene::Start()
 		m_GameProgress = m_SceneData->gameProgress;
 		m_PlayerData = m_GameProgress.playerData;
 
-		endTime = m_GameProgress.cumulativeTime / 1000;
-		startTime = m_GameProgress.dungeonStartTime / 1000;
+		totalTime = m_GameProgress.cumulativeTime / 1000;
 		killCount = m_GameProgress.killCount;
 		dungeonMoney = m_PlayerData.money;
-		timeScore = std::max(0, 500 - 2 * static_cast<int>(endTime - startTime));
-		killScore = killCount * 2;
+		timeScore = std::max(0, 1000 - 2 * static_cast<int>(totalTime/10));
+		killScore = killCount * 10;
 		totalScore = timeScore + killScore;
-		gameMoney = totalScore / 100;
+		gameMoney = std::clamp(totalScore / 100, 30, 1000);
 
 		// 保存進度
 		m_SceneData->saveName = "Progress Save";
@@ -87,7 +86,7 @@ void ResultScene::Start()
 	InitStartIcon();
 	InitPlayerIcon();
 	InitLevelProgress();
-	InitResultTemplate(endTime, killCount, dungeonMoney, gameMoney);
+	InitResultTemplate(totalTime, killCount, dungeonMoney, gameMoney);
 	InitResultIcons();
 	InitContinueButton();
 	InitButtonText();

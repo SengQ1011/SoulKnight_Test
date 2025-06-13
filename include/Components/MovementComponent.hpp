@@ -34,6 +34,7 @@ public:
 	[[nodiscard]] const glm::vec2 GetLastValidDirection() const { return m_LastValidDirection; }
 
 	//----Setters----
+	void SetFreezeMode(bool freeze) { m_freeze = freeze; }
 	void SetPosition(const glm::vec2 &position) { m_Position = position; }
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
 	void SetSpeedEffectDuration(const float speedEffectDuration) { m_SpeedEffectDuration = speedEffectDuration; }
@@ -45,6 +46,7 @@ public:
 	void SetDesiredDirection(const glm::vec2 &direction) { m_DesiredDirection = direction; }
 
 private:
+	bool m_freeze = false;
 	float m_SpeedRatio; // 基本移動速度係數
 	float m_currentSpeedRatio = 1.0f; // 當前速度倍率
 	float m_SpeedEffectDuration = 0.0f; // 剩餘的加減速時間

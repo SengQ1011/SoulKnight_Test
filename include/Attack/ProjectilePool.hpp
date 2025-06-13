@@ -10,6 +10,8 @@
 
 class ProjectilePool {
 public:
+	explicit ProjectilePool();
+	~ProjectilePool() = default;
 	std::shared_ptr<Projectile> Acquire(const ProjectileInfo& projectileInfo);
 
 	void Release(const std::shared_ptr<Projectile>& bullet) {
