@@ -135,6 +135,8 @@ private:
 	void SetEnemyVisible(const std::shared_ptr<Character> &enemy, bool visible); // 同時控制敵人和武器的可見性
 	void LoadCombatConfiguration();
 	void PreSpawnAllWaveEnemies(); // 預先生成所有波次的怪物
+	void RecalculateGridFromCollisionComponents(); // 重新計算所有碰撞組件佔據的格子
+	float CalculateIntersectionArea(const Rect &a, const Rect &b) const; // 計算兩個矩形的交集面積
 	std::vector<glm::vec2> GenerateSpawnPositions(int count); // 生成隨機位置（向後兼容）
 	std::vector<glm::vec2> GenerateSpawnPositionsWithSize(int count,
 														  const glm::vec2 &entitySize); // 根據實體大小生成位置
