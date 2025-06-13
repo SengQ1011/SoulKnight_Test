@@ -242,6 +242,6 @@ void TestScene_KC::InitUIManager()
 void TestScene_KC::InitAudioManager()
 {
 	AudioManager::GetInstance().Reset();
-	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
-	AudioManager::GetInstance().PlayBGM();
+	AudioManager::GetInstance().LoadFromJson("/AudioConfig.json");
+	// AudioManager::GetInstance().PlayBGM();
 }

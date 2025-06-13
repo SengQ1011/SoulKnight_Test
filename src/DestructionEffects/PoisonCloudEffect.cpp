@@ -31,8 +31,7 @@ void PoisonCloudEffect::Execute(const glm::vec2 &position, CharacterType attacke
 			return;
 		}
 
-		// 創建毒圈特效
-		// 注意：這裡假設有 POISON_CLOUD 效果類型，如果沒有可以用 SMALL_BOOM 替代
+		// 創建毒圈特效 - 使用新的 POISON_AREA 效果類型
 		EffectAttackInfo poisonCloud;
 		poisonCloud.type = CharacterType::NEUTRAL; // 使用中性類型，不分敵我
 		poisonCloud.attackTransform.translation = position;
@@ -43,19 +42,19 @@ void PoisonCloudEffect::Execute(const glm::vec2 &position, CharacterType attacke
 		poisonCloud.damage = m_poisonDamage;
 		poisonCloud.elementalDamage = StatusEffect::POISON;
 
-		// 暫時使用 SMALL_BOOM，之後可以新增 POISON_CLOUD 類型
-		poisonCloud.effectType = EffectAttackType::SMALL_BOOM;
+		// 使用新的 POISON_AREA 效果類型
+		poisonCloud.effectType = EffectAttackType::POISON_AREA;
 		poisonCloud.canReflectBullet = false;
 		poisonCloud.canBlockingBullet = false;
 
 		// 生成毒圈特效
 		attackManager->spawnEffectAttack(poisonCloud);
 
-		LOG_DEBUG("Poison cloud effect triggered at position ({}, {}) with size {}", position.x, position.y,
-				  m_cloudSize);
+		LOG_DEBUG("POISON_AREA effect triggered at position ({}, {}) with size {} and damage {}", position.x,
+				  position.y, m_cloudSize, m_poisonDamage);
 
-		// TODO: 實現持續時間效果
-		// 可以考慮創建多個小的毒雲效果來模擬持續傷害
+		// POISON_AREA 效果會自動播放 4 秒的毒霧動畫
+		// 16 幀動畫提供豐富的視覺效果，無需額外的持續時間處理
 	}
 	catch (const std::exception &e)
 	{

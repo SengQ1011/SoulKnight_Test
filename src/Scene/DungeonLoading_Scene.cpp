@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "ImagePoolManager.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "SaveManager.hpp"
 #include "Scene/Dungeon_Scene.hpp"
@@ -35,17 +36,19 @@ void DungeonLoadingScene::Start()
 
 	m_Text = std::make_shared<nGameObject>("DungeonLoadingScene");
 	m_Text->SetDrawable(ImagePoolManager::GetInstance().GetText(RESOURCE_DIR "/Font/zpix.ttf", 20, "地牢加载中...",
-															Util::Color(255, 255, 255)));
+																Util::Color(255, 255, 255)));
 	m_Text->SetZIndex(2);
 	m_Text->m_Transform.translation = glm::vec2(0);
 	m_Root->AddChild(m_Text);
 	m_Root->Update();
 
-	// 初始化天賦選擇面板
+	// 初始化天賦選擇面板並傳遞共享數據
 	auto talentPanel = std::make_shared<TalentSelectionPanel>();
+	talentPanel->SetSharedSaveData(m_SceneData);
 	talentPanel->Start();
 	UIManager::GetInstance().RegisterPanel("talent_selection", talentPanel, 100, true);
-	UIManager::GetInstance().ShowPanel("talent_selection");
+	if (talentPanel->IsVisible())
+		UIManager::GetInstance().ShowPanel("talent_selection");
 
 	FlushPendingObjectsToRendererAndCamera();
 }
@@ -59,10 +62,12 @@ void DungeonLoadingScene::Update()
 	if (!UIManager::GetInstance().IsPanelVisible("talent_selection"))
 	{
 		// 更新場景根節點
-		m_Root->Update();
+		// m_Root->Update();
+
 		// 天賦選擇完成，設置地牢準備完成
 		m_DungeonReady = true;
 	}
+	m_Root->Update();
 }
 
 void DungeonLoadingScene::Exit()
@@ -82,3 +87,4 @@ Scene::SceneType DungeonLoadingScene::Change()
 	}
 	return Scene::SceneType::Null;
 }
+

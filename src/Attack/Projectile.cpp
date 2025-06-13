@@ -16,17 +16,19 @@
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
-Projectile::Projectile(const ProjectileInfo& projectileInfo)
-						   : Attack(projectileInfo), m_startPosition(projectileInfo.attackTransform.translation),
-								m_imagePath(projectileInfo.imagePath), m_speed(projectileInfo.speed),
-								m_numRebound(projectileInfo.numRebound), m_canReboundBySword(projectileInfo.canReboundBySword),
-								m_canTracking(projectileInfo.canTracking), m_Target(projectileInfo.target),
-								m_isBubble(projectileInfo.isBubble), m_enableBubbleTrail(projectileInfo.bubbleTrail),
-								m_bubbleImagePath(projectileInfo.bubbleImagePath), m_chainProjectionNum(projectileInfo.chainProjectionNum),
-								m_allRound(projectileInfo.AllRound){}
+Projectile::Projectile(const ProjectileInfo &projectileInfo) :
+	Attack(projectileInfo), m_startPosition(projectileInfo.attackTransform.translation),
+	m_imagePath(projectileInfo.imagePath), m_speed(projectileInfo.speed), m_numRebound(projectileInfo.numRebound),
+	m_canReboundBySword(projectileInfo.canReboundBySword), m_canTracking(projectileInfo.canTracking),
+	m_Target(projectileInfo.target), m_isBubble(projectileInfo.isBubble),
+	m_enableBubbleTrail(projectileInfo.bubbleTrail), m_bubbleImagePath(projectileInfo.bubbleImagePath),
+	m_chainProjectionNum(projectileInfo.chainProjectionNum), m_allRound(projectileInfo.AllRound)
+{
+}
 
 //=========================== (實作) ================================//
-void Projectile::Init() {
+void Projectile::Init()
+{
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
 	m_startPosition = this->m_WorldCoord;
@@ -45,26 +47,32 @@ void Projectile::Init() {
 
 	// 加入碰撞組件
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if (!CollisionComp) { CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION); }
+	if (!CollisionComp)
+	{
+		CollisionComp = this->AddComponent<CollisionComponent>(ComponentType::COLLISION);
+	}
 	CollisionComp->ResetCollisionMask();
 
-	//設置觸發器 和 觸發事件
+	// 設置觸發器 和 觸發事件
 	CollisionComp->ClearTriggerStrategies();
 	CollisionComp->SetTrigger(true);
-	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
+	CollisionComp->AddTriggerStrategy(
+		std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage, m_isCriticalHit));
 
-	if(m_type == CharacterType::PLAYER) {
+	if (m_type == CharacterType::PLAYER)
+	{
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 	}
-	else if (m_type == CharacterType::ENEMY) {
+	else if (m_type == CharacterType::ENEMY)
+	{
 		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
 	else
 	{
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
-		CollisionComp->AddCollisionLayer(CollisionLayers_Enemy_Projectile); //偷吃步
+		CollisionComp->AddCollisionLayer(CollisionLayers_Enemy_Projectile); // 偷吃步
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 	}
@@ -79,11 +87,14 @@ void Projectile::Init() {
 }
 
 
-void Projectile::UpdateObject(const float deltaTime) {
-	if (m_isBubble) {
+void Projectile::UpdateObject(const float deltaTime)
+{
+	if (m_isBubble)
+	{
 		m_bubbleStayTime -= deltaTime;
 		// 泡泡到期消失
-		if (m_bubbleStayTime <= 0.0f) {
+		if (m_bubbleStayTime <= 0.0f)
+		{
 			this->MarkForRemoval();
 			return;
 		}
@@ -97,7 +108,7 @@ void Projectile::UpdateObject(const float deltaTime) {
 		// 移動泡泡
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
 	}
-	else if(m_canTracking && !m_Target.expired())
+	else if (m_canTracking && !m_Target.expired())
 	{
 		// 方法一：追蹤導彈（貝茲曲線）
 		auto targetPosition = m_Target.lock()->GetWorldCoord();
@@ -113,8 +124,7 @@ void Projectile::UpdateObject(const float deltaTime) {
 		glm::vec2 P1 = P0 + m_direction * curveDistance;
 
 		glm::vec2 bezierPos = (1 - m_bezierTime) * (1 - m_bezierTime) * P0 +
-							  2 * (1 - m_bezierTime) * m_bezierTime * P1 +
-							  m_bezierTime * m_bezierTime * P2;
+			2 * (1 - m_bezierTime) * m_bezierTime * P1 + m_bezierTime * m_bezierTime * P2;
 
 		glm::vec2 newDir = glm::normalize(bezierPos - m_WorldCoord);
 
@@ -131,21 +141,21 @@ void Projectile::UpdateObject(const float deltaTime) {
 
 		// 移動
 		m_WorldCoord += m_direction * m_speed * deltaTime;
-
-
 	}
 	else
 		this->m_WorldCoord += m_direction * m_speed * deltaTime;
 
-	if (m_enableBubbleTrail) {
+	if (m_enableBubbleTrail)
+	{
 		m_bubbleTimer += deltaTime;
-		if (m_bubbleTimer >= m_bubbleSpawnInterval) {
+		if (m_bubbleTimer >= m_bubbleSpawnInterval)
+		{
 			m_bubbleTimer = 0.0f;
 			// 左右側相對於方向向量垂直偏移
 			glm::vec2 leftOffset = glm::normalize(glm::vec2(-m_direction.y, m_direction.x)) * 5.0f;
 			glm::vec2 rightOffset = glm::normalize(glm::vec2(m_direction.y, -m_direction.x)) * 5.0f;
 
-			glm::vec2 leftPos = m_WorldCoord+ leftOffset;
+			glm::vec2 leftPos = m_WorldCoord + leftOffset;
 			glm::vec2 rightPos = m_WorldCoord + rightOffset;
 
 			// 主子彈方向
@@ -160,7 +170,7 @@ void Projectile::UpdateObject(const float deltaTime) {
 		}
 	}
 
-	if(glm::distance(this->m_WorldCoord, m_startPosition) >= 530.0f)
+	if (glm::distance(this->m_WorldCoord, m_startPosition) >= 530.0f)
 	{
 		this->MarkForRemoval();
 	}
@@ -172,11 +182,13 @@ void Projectile::ReflectChangeAttackCharacterType(CharacterType type)
 	m_type = type;
 	auto CollisionComp = this->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	CollisionComp->ResetCollisionMask();
-	if(m_type == CharacterType::PLAYER) {
+	if (m_type == CharacterType::PLAYER)
+	{
 		CollisionComp->SetCollisionLayer(CollisionLayers_Player_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Enemy);
 	}
-	else if (m_type == CharacterType::ENEMY) {
+	else if (m_type == CharacterType::ENEMY)
+	{
 		CollisionComp->SetCollisionLayer(CollisionLayers_Enemy_Projectile);
 		CollisionComp->AddCollisionMask(CollisionLayers_Player);
 	}
@@ -184,7 +196,8 @@ void Projectile::ReflectChangeAttackCharacterType(CharacterType type)
 }
 
 
-void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
+void Projectile::ResetAll(const ProjectileInfo &projectileInfo)
+{
 	m_type = projectileInfo.type;
 	m_Transform = projectileInfo.attackTransform;
 	m_direction = projectileInfo.direction;
@@ -214,16 +227,17 @@ void Projectile::ResetAll(const ProjectileInfo& projectileInfo) {
 }
 
 
-void Projectile::SetImage(const std::string& imagePath) {
+void Projectile::SetImage(const std::string &imagePath)
+{
 	m_Drawable = ImagePoolManager::GetInstance().GetImage(imagePath);
 }
 
-void Projectile::CreateBubbleBullet(const glm::vec2& pos, const glm::vec2& bulletDirection) const
+void Projectile::CreateBubbleBullet(const glm::vec2 &pos, const glm::vec2 &bulletDirection) const
 {
 	// 建立 Transform
 	Util::Transform bulletTransform;
-	bulletTransform.translation = pos;									// 子彈的位置
-	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x);        // 子彈的角度
+	bulletTransform.translation = pos; // 子彈的位置
+	bulletTransform.rotation = glm::atan(bulletDirection.y, bulletDirection.x); // 子彈的角度
 
 	ProjectileInfo bubbleInfo;
 	bubbleInfo.type = this->m_type;

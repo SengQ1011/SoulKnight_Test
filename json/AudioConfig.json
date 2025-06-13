@@ -1,0 +1,44 @@
+{
+    "sfx": {
+        "click": "/UI/fx_btn1.wav",
+        "enemy_die": "/audio/enemy/human2 hurt2.wav",
+        "critical_hit": "/audio/hit/fx_hit.wav",
+        "player_hurt": "/audio/fx_knight/fx_hit_p1.wav",
+        "player_skill": "/audio/fx_knight/fx_skill_c1.wav",
+        "gun_pistol": "/audio/gun/fx_gun_pistol.wav",
+        "gun_shotgun": "/audio/gun/fx_gun_cannon.wav",
+        "gun_rocket": "/audio/gun/fx_gun_rocket.wav",
+        "laser_sword": "/audio/sword/fx_laser_sword.wav",
+        "hand_sword": "/audio/sword/fx_sword1.wav",
+        "hit_floor_sound": "/audio/hit/fx_hit_floor.wav",
+        "box_destroy": "/audio/fx_box_destroy.wav",
+        "buy_sound": "/audio/fx_buy.wav",
+        "chest_open": "/audio/fx_chest_open.wav",
+        "chip_update": "/audio/fx_chip_update.wav",
+        "coin": "/audio/fx_coin.wav",
+        "energy": "/audio/fx_energy.wav",
+        "door_close": "/audio/fx_door.wav",
+        "explode_big": "/audio/fx_explode_big.wav",
+        "explode_small": "/audio/fx_explode_small.wav",
+        "get_talent": "/audio/fx_get_talent.wav",
+        "health_potion": "/audio/fx_healthpot.wav",
+        "pick_up_weapon": "/audio/fx_pickup.wav",
+        "portal": "/audio/fx_portal.wav",
+        "reload": "/audio/fx_reload.wav",
+        "switch": "/audio/fx_switch.wav",
+        "rocket_fire": "/audio/fx_rocket_fire.wav",
+        "show_up": "/audio/fx_show_up.wav",
+
+        "boss_angry": "/boss/Ice_Plain/Snowman_King/fx_boss13_angry.wav",
+        "boss_atk2": "/boss/Ice_Plain/Snowman_King/fx_boss13_atk2.wav",
+        "boss_atk3": "/boss/Ice_Plain/Snowman_King/fx_boss13_atk2.wav",
+        "boss_atk5": "/boss/Ice_Plain/Snowman_King/fx_boss13_atk5.wav",
+        "boss_dead": "/boss/Ice_Plain/Snowman_King/fx_boss13_dead.wav"
+    },
+    "bgm": {
+        "opening": "/UI/bgm_openingLow.wav",
+        "lobby": "/Lobby/bgm_room.wav",
+        "dungeon": "/IcePlains/bgm_IcePlains.wav",
+        "boss": "/boss/Ice_Plain/bgm_bossFight.wav"
+    }
+}

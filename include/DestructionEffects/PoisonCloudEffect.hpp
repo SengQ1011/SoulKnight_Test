@@ -9,7 +9,8 @@
 
 /**
  * @brief 毒圈破壞效果
- * 用於綠色箱子，破壞時產生毒圈特效
+ * 用於綠色箱子，破壞時產生 POISON_AREA 效果攻擊
+ * 使用 16 幀毒霧動畫，持續 4 秒，造成毒傷害
  */
 class PoisonCloudEffect : public IDestructionEffect
 {
@@ -27,4 +28,3 @@ private:
 };
 
 #endif // POISONCLOUDEFFECT_HPP
- 

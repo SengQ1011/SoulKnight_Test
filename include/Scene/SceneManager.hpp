@@ -37,6 +37,12 @@ public:
 	void UploadGameProgress(std::shared_ptr<SaveData> &updatedProgress);
 	void receiveEnemyDeathEvent() const;
 
+	// 新增：安全的共享數據操作方法
+	std::shared_ptr<SaveData> GetSharedSaveData() const { return m_Data; }
+	void AddTalentToPlayer(int talentId);
+	void IncrementTalentSelectionCount(); // 增加天賦選擇計數
+	void SaveGameProgress();
+
 protected:
 	static std::shared_ptr<Scene> CreateScene(Scene::SceneType type);
 
