@@ -42,11 +42,11 @@ public:
 private:
 	void InitializeShop();
 	void CreateShopTables();
-	void CreateMerchantNPC(); // 之後實作
+	void CreateMerchantNPC();
 
 	// 商店相關成員
 	std::vector<std::shared_ptr<ShopTable>> m_ShopTables;
-
+	std::shared_ptr<Character> m_NPC;
 	bool m_ShopInitialized = false;
 };
 

@@ -28,6 +28,7 @@ enum class ComponentType
 	WALLET,			 // 18
 	DESTRUCTIBLE_EFFECT,
 	DROP,
+	NPC
 };
 
 enum class CharacterType
@@ -179,6 +180,9 @@ enum class InteractableType
 	WEAPON,
 	HP_POISON,
 	ENERGY_POISON,
+	NPC_MERCHANT,
+	NPC_RICH_GUY,
+	NPC_HELLO_WORLD
 };
 
 enum class PotionType

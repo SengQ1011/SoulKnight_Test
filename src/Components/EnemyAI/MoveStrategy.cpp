@@ -95,6 +95,7 @@ void IMoveStrategy::MaintainDistanceMove(const EnemyContext& ctx, float optimalD
 	} else {
 		// 在最佳距離，停止移動
 		ctx.moveComp->SetDesiredDirection(glm::vec2(0.0f));
+		ctx.stateComp->SetState(State::STANDING);
 	}
 
 	// 保持向著目標
@@ -224,7 +225,7 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 					MaintainOptimalRangeForGun(ctx, target, gun);
 				} else {
 					// 純近戰敵人正常追逐玩家
-					ChasePlayerLogic(ctx, target);
+					MaintainDistanceMove(ctx, 30.0f, 0.2f, true);
 				}
 
 				checkAttackCondition(ctx);
@@ -241,11 +242,12 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 				if (const auto target = ctx.GetAIComp()->GetTarget().lock(); target != nullptr) {
 					if (const auto attack = aiComp->GetAttackStrategy(AttackStrategies::MELEE)) {
 						// 繼續追蹤玩家
-						ChasePlayerLogic(ctx, target);
+						MaintainDistanceMove(ctx, 30.0f, 0.2f, true);
 					}
 					else if (const auto gun = aiComp->GetAttackStrategy(AttackStrategies::GUN)) {
 						// 停止並瞄準
 						ctx.moveComp->SetDesiredDirection(glm::vec2(0, 0));
+						ctx.stateComp->SetState(State::STANDING);
 						//MaintainOptimalRangeForGun(ctx, target, gun);
 					}
 				}else {
@@ -258,13 +260,6 @@ void ChaseMove::Update(const EnemyContext &ctx, const float deltaTime) {
 	}
 }
 
-
-void ChaseMove::ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const
-{
-	const float ratio = 0.2f; // 調整移動比例
-	glm::vec2 dir = glm::normalize(target->GetWorldCoord() - ctx.enemy->GetWorldCoord()) * ratio;
-	ctx.moveComp->SetDesiredDirection(dir);
-}
 
 void ChaseMove::MaintainOptimalRangeForGun(const EnemyContext &ctx, std::shared_ptr<nGameObject> target,
 										  const std::shared_ptr<IAttackStrategy>& gunStrategy) const

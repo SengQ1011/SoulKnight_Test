@@ -21,10 +21,14 @@ public:
 	void Update() override;
 	void SetAnimation(State state);
 	void SetSkillEffect(bool play);
+	bool IsUsingSkillEffect() const { return m_useSkillEffect; }
 
 	[[nodiscard]] std::shared_ptr<Animation> GetCurrentAnimation() const { return m_currentAnimation; }
 	[[nodiscard]] std::shared_ptr<Animation> GetCurrentEffect() const { return m_effectAnimation; }
-	[[nodiscard]] bool GetUseSkillEffect() const { return m_useSkillEffect; }
+	[[nodiscard]] std::shared_ptr<Animation> GetAnimation(State state) const {
+		auto it = m_Animations.find(state);
+		return it != m_Animations.end() ? it->second : nullptr;
+	}
 
 private:
 	std::unordered_map<State, std::shared_ptr<Animation>> m_Animations; // 狀態對應動畫

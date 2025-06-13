@@ -56,7 +56,6 @@ class ChaseMove final : public IMoveStrategy
 {
 public:
 	void Update(const EnemyContext &ctx, float deltaTime) override;
-	void ChasePlayerLogic(const EnemyContext &ctx, std::shared_ptr<nGameObject> target) const;
 	void MaintainOptimalRangeForGun(const EnemyContext &ctx, std::shared_ptr<nGameObject> target, const std::shared_ptr<IAttackStrategy>& gunStrategy) const;
 	void checkAttackCondition(const EnemyContext &ctx) const;
 

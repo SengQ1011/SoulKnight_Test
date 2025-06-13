@@ -170,7 +170,7 @@ void Projectile::UpdateObject(const float deltaTime)
 		}
 	}
 
-	if (glm::distance(this->m_WorldCoord, m_startPosition) >= 1000.0f)
+	if (glm::distance(this->m_WorldCoord, m_startPosition) >= 530.0f)
 	{
 		this->MarkForRemoval();
 	}

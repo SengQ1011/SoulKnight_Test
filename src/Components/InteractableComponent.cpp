@@ -5,12 +5,14 @@
 #include "Components/InteractableComponent.hpp"
 
 #include "Components/ChestComponent.hpp"
+#include "Components/NPCComponent.hpp"
 #include "ObserveManager/AudioManager.hpp"
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 
 #include "Components/WalletComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Room/ShopRoom.hpp"
 #include "Scene/Dungeon_Scene.hpp"
 #include "Shop/ShopTable.hpp"
 #include "Weapon/Weapon.hpp"
@@ -149,9 +151,8 @@ void InteractableComponent::Init()
 				{
 					if (const auto weapon = std::dynamic_pointer_cast<Weapon>(target))
 					{
-						bool pickupSuccess = attackComp->PickUpWeapon(weapon);
-
-						if (pickupSuccess)
+						// 只有拾取成功時才停用 InteractableComponent
+						if (attackComp->PickUpWeapon(weapon))
 						{
 							ShowPrompt(false);
 							// 武器被拾取後停用 InteractableComponent
@@ -186,8 +187,7 @@ void InteractableComponent::Init()
 				weaponPrompt->SetInitialScale(glm::vec2(0.5f));
 				weaponPrompt->SetInitialScaleSet(true);
 
-				const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-				if (currentScene)
+				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 				{
 					currentScene->GetPendingObjects().emplace_back(weaponPrompt);
 					weaponPrompt->SetRegisteredToScene(true);
@@ -235,8 +235,7 @@ void InteractableComponent::Init()
 				pricePrompt->SetInitialScale(glm::vec2(0.5f));
 				pricePrompt->SetInitialScaleSet(true);
 
-				const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-				if (currentScene)
+				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 				{
 					currentScene->GetPendingObjects().emplace_back(pricePrompt);
 					pricePrompt->SetRegisteredToScene(true);
@@ -298,8 +297,7 @@ void InteractableComponent::Init()
 					hpPotionPromp->SetInitialScale(glm::vec2(0.5f));
 					hpPotionPromp->SetInitialScaleSet(true);
 
-					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-					if (currentScene)
+					if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 					{
 						currentScene->GetPendingObjects().emplace_back(hpPotionPromp);
 						hpPotionPromp->SetRegisteredToScene(true);
@@ -360,8 +358,7 @@ void InteractableComponent::Init()
 					energyPotionPrompt->SetInitialScale(glm::vec2(0.5f));
 					energyPotionPrompt->SetInitialScaleSet(true);
 
-					const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-					if (currentScene)
+					if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 					{
 						currentScene->GetPendingObjects().emplace_back(energyPotionPrompt);
 						energyPotionPrompt->SetRegisteredToScene(true);
@@ -372,10 +369,122 @@ void InteractableComponent::Init()
 			}
 			break;
 		}
+	case InteractableType::NPC_MERCHANT:
+	{
+		m_InteractionCallback =
+			[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+		{
+			if (auto npcComp = target->GetComponent<NPCComponent>(ComponentType::NPC))
+			{
+				// 如果NPC处于对话完成状态，执行相应的操作
+				if (npcComp->IsActionReady())
+				{
+					if (auto walletComp = interactor->GetComponent<WalletComponent>(ComponentType::WALLET))
+					{
+						if (walletComp->GetMoney() >= 10)
+						{
+							walletComp->SpendMoney(10);
+							if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
+							{
+								if (const auto shopRoom = std::dynamic_pointer_cast<ShopRoom>(currentScene->GetCurrentRoom()))
+								{
+									shopRoom->RefreshAllItems();
+									LOG_DEBUG("NPC dialogue completed, executing action");
+									// 成功刷新后立即重置对话状态
+									npcComp->ResetDialogueState();
+									if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+									{
+										interactableComp->SetPromptText("按F對話");
+										interactableComp->ShowPrompt(true);
+									}
+								}
+							}
+						}
+						else
+						{
+							// 金钱不足时，只更改提示文本，不重置状态
+							if (auto interactableComp = target->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+							{
+								interactableComp->SetPromptText("窮鬼，你的金幣不足");
+								interactableComp->ShowPrompt(true);
+							}
+						}
+					}
+				}
+				else
+				{
+					// 正常对话流程
+					npcComp->StartDialogue(interactor);
+				}
+			}
+		};
+
+		if (!m_PromptObject)
+		{
+			auto prompt = std::make_shared<nGameObject>("NPCPrompt");
+			auto text = ImagePoolManager::GetInstance().GetText(
+				RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f,
+				"按F對話", Util::Color(255, 255, 255), false);
+
+			prompt->SetDrawable(text);
+			prompt->SetZIndexType(ZIndexType::UI);
+			prompt->SetZIndex(10.0f);
+			prompt->SetControlVisible(false);
+			prompt->SetInitialScale(glm::vec2(0.5f));
+			prompt->SetInitialScaleSet(true);
+
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(prompt);
+				prompt->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+
+			m_PromptObject = prompt;
+		}
+		break;
+	}
+	case InteractableType::NPC_HELLO_WORLD:
+	{
+		m_InteractionCallback =
+			[](const std::shared_ptr<Character>& interactor, const std::shared_ptr<nGameObject>& target)
+		{
+			if (auto animationComp = target->GetComponent<AnimationComponent>(ComponentType::ANIMATION))
+			{
+				// 使用AnimationComponent的SetSkillEffect来显示对话框
+				animationComp->SetSkillEffect(true);
+			}
+		};
+
+		// 创建动画提示对象
+		if (!m_PromptObject)
+		{
+			auto prompt = std::make_shared<nGameObject>("NPCPrompt");
+			auto text = ImagePoolManager::GetInstance().GetText(
+				RESOURCE_DIR "/Font/jf-openhuninn-2.1.ttf", 24.0f,
+				"", Util::Color(255, 255, 255), false);
+
+			prompt->SetDrawable(text);
+			prompt->SetZIndexType(ZIndexType::UI);
+			prompt->SetZIndex(10.0f);
+			prompt->SetControlVisible(false);
+			prompt->SetInitialScale(glm::vec2(0.5f));
+			prompt->SetInitialScaleSet(true);
+
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				scene->GetPendingObjects().emplace_back(prompt);
+				prompt->SetRegisteredToScene(true);
+				scene->FlushPendingObjectsToRendererAndCamera();
+			}
+
+			m_PromptObject = prompt;
+		}
+		break;
+	}
 	default:
 		LOG_ERROR("InteractableComponent::Init() miss m_interactableType");
 		break;
-		;
 	}
 
 	if (m_interactableType == InteractableType::COIN || m_interactableType == InteractableType::ENERGY_BALL)
@@ -387,11 +496,10 @@ void InteractableComponent::Init()
 			glm::vec2 playerPos = player->GetWorldCoord();
 			float distance = glm::distance(selfPos, playerPos);
 
-			const float attractRange = 50.0f;
-			if (distance < attractRange)
+			if (constexpr float attractRange = 50.0f; distance < attractRange)
 			{
-				glm::vec2 direction = glm::normalize(playerPos - selfPos);
-				const float speed = 100.0f;
+				const glm::vec2 direction = glm::normalize(playerPos - selfPos);
+				constexpr float speed = 100.0f;
 				self->SetWorldCoord(selfPos + (direction * speed * (Util::Time::GetDeltaTimeMs() / 1000.0f)));
 			}
 		};
@@ -408,8 +516,7 @@ void InteractableComponent::Init()
 		m_PromptUI->SetInitialScaleSet(true);
 		m_PromptUI->SetControlVisible(false); // 初始隱藏
 
-		const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
-		if (currentScene)
+		if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 		{
 			currentScene->GetPendingObjects().emplace_back(m_PromptUI);
 			m_PromptUI->SetRegisteredToScene(true);
@@ -500,7 +607,7 @@ bool InteractableComponent::IsInRange(const std::shared_ptr<Character> &characte
 	return distance <= m_InteractionRadius;
 }
 
-glm::vec2 InteractableComponent::UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner)
+glm::vec2 InteractableComponent::UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner) const
 {
 	glm::vec2 promptObjectOffset = glm::vec2(4.0f, 0.0f); // 好懸 爲什麽文字會自己偏移
 

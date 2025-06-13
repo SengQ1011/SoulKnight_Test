@@ -16,6 +16,7 @@
 #include "Components/FollowerComponent.hpp"
 #include "Components/HealthComponent.hpp"
 #include "Components/InputComponent.hpp"
+#include "Components/NPCComponent.hpp"
 #include "Components/SkillComponent.hpp"
 #include "Components/TalentComponet.hpp"
 #include "Components/WalletComponent.hpp"
@@ -329,6 +330,60 @@ std::shared_ptr<Character> CharacterFactory::createEnemy(const int id)
 			collisionComp->SetOffset(glm::vec2(0.0f, -6.0f));
 
 			return enemy;
+		}
+	}
+
+	LOG_ERROR("{}'s ID not found: {}", id);
+	return nullptr;
+}
+
+
+// ================================== (Monster) ========================================= //
+InteractableType stringToInteractableType(const std::string &stateStr)
+{
+	if (stateStr == "NPC_MERCHANT")
+		return InteractableType::NPC_MERCHANT;
+	if (stateStr == "NPC_RICH_GUY")
+		return InteractableType::NPC_RICH_GUY;
+}
+
+std::shared_ptr<Character> CharacterFactory::createNPC(const int id)
+{
+	// 在 JSON 陣列中搜尋符合名稱的角色
+	for (const auto &characterInfo : npcJsonData)
+	{
+		if (characterInfo["ID"] == id)
+		{
+			std::string name = characterInfo["name"].get<std::string>();
+			CharacterType type = stringToCharacterType(characterInfo["Type"].get<std::string>());
+			std::shared_ptr<Character> npc = std::make_shared<Character>(name, type);
+			npc->SetZIndexType(ZIndexType::OBJECTHIGH);
+			// npc->SetZIndexType(ZIndexType::CUSTOM);
+			// npc->SetZIndex(100);
+
+			auto animation = parseCharacterAnimations(characterInfo["animations"]);
+			
+			// 設置 InteractableComponent
+			StructInteractableComponent interactable;
+			interactable.s_InteractableType = stringToInteractableType(characterInfo["interactableType"].get<std::string>());
+			interactable.s_InteractionRadius = characterInfo["interactionRadius"].get<float>();
+			interactable.s_IsAutoInteract = characterInfo["isAutoInteract"].get<bool>();
+			
+			// 設置 NPCComponent
+			StructNPCComponent npcConfig;
+			if (characterInfo.contains("dialogues") && characterInfo["dialogues"].is_array()) {
+				for (const auto& dialogue : characterInfo["dialogues"]) {
+					npcConfig.dialogues.push_back(dialogue.get<std::string>());
+				}
+			}
+			npcConfig.promptText = characterInfo["prompt"].get<std::string>();
+			npcConfig.promptSize = characterInfo["promptSize"].get<float>();
+
+			auto animationComp = npc->AddComponent<AnimationComponent>(ComponentType::ANIMATION, animation);
+			auto npcComp = npc->AddComponent<NPCComponent>(ComponentType::NPC, npcConfig);
+			auto interactableComp = npc->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE, interactable);
+
+			return npc;
 		}
 	}
 

@@ -1,0 +1,41 @@
+[
+  {
+    "ID": 1,
+    "Type": "NPC",
+    "name": "Merchant",
+    "animations": {
+      "STANDING": ["/Sprite/NPC-all/npc00/npc00_0_0.png", "/Sprite/NPC-all/npc00/npc00_0_1.png",
+        "/Sprite/NPC-all/npc00/npc00_0_2.png", "/Sprite/NPC-all/npc00/npc00_0_3.png",
+        "/Sprite/NPC-all/npc00/npc00_0_4.png", "/Sprite/NPC-all/npc00/npc00_0_5.png",
+        "/Sprite/NPC-all/npc00/npc00_0_6.png", "/Sprite/NPC-all/npc00/npc00_0_7.png"]
+    },
+    "interactableType": "NPC_MERCHANT",
+    "interactionRadius": 40.0,
+    "isAutoInteract": false,
+
+    "prompt": "按 F 開始對話",
+    "promptSize": 16,
+    "dialogues": [
+      "歡迎光臨！",
+      "要花費 10 金幣刷新商品嗎？"
+    ]
+  },
+  {
+    "ID": 2,
+    "Type": "NPC",
+    "name": "AutoAnimationNPC",
+    "animations": {
+      "STANDING": ["/Sprite/NPC-all/npc00/npc00_0_0.png", "/Sprite/NPC-all/npc00/npc00_0_1.png",
+        "/Sprite/NPC-all/npc00/npc00_0_2.png", "/Sprite/NPC-all/npc00/npc00_0_3.png",
+        "/Sprite/NPC-all/npc00/npc00_0_4.png", "/Sprite/NPC-all/npc00/npc00_0_5.png",
+        "/Sprite/NPC-all/npc00/npc00_0_6.png", "/Sprite/NPC-all/npc00/npc00_0_7.png"],
+      "SKILL": ["/Sprite/UI/hello_world.png"]
+    },
+    "interactableType": "NPC_HELLO_WORLD",
+    "interactionRadius": 40.0,
+    "isAutoInteract": true,
+    "prompt": "",
+    "promptSize": 16,
+    "dialogues": []
+  }
+]

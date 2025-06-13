@@ -198,6 +198,7 @@ void StateComponent::ApplyStatusEffect(const StatusEffect& effect)
 		// 免疫伤害，无法行动
 		healthComp->SetInvincibleMode(true);
 		movementComp->SetCurrentSpeedRatio(0.0f);
+		movementComp->SetSpeedEffectDuration(2.5f);
 		SetState(State::STANDING);
 		break;
 
