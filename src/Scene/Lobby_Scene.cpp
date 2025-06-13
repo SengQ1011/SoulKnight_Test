@@ -123,8 +123,6 @@ void LobbyScene::Update()
 void LobbyScene::Exit()
 {
 	LOG_DEBUG("Lobby Scene exited");
-	// 退出场景时的清理工作
-	m_BGM->Pause();
 	if (m_LobbyRoom)
 	{
 		m_LobbyRoom->CharacterExit(std::dynamic_pointer_cast<Character>(m_Player));
@@ -175,7 +173,7 @@ void LobbyScene::CreatePlayer()
 void LobbyScene::CreateEnemy()
 {
 	m_Enemy = CharacterFactory::GetInstance().createEnemy(21);
-	m_Enemy->m_WorldCoord = {32,16*2};
+	m_Enemy->m_WorldCoord = {32, 16 * 2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
 	if (!collision2->GetVisibleBox())
 		LOG_ERROR("collision2->GetBlackBox()");
@@ -232,6 +230,6 @@ void LobbyScene::InitUIManager()
 void LobbyScene::InitAudioManager()
 {
 	AudioManager::GetInstance().Reset();
-	AudioManager::GetInstance().LoadFromJson("/Lobby/AudioConfig.json");
-	AudioManager::GetInstance().PlayBGM();
+	AudioManager::GetInstance().LoadFromJson("/AudioConfig.json");
+	AudioManager::GetInstance().PlayBGM("lobby");
 }

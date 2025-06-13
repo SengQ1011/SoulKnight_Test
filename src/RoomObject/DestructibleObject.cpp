@@ -4,6 +4,7 @@
 
 #include "RoomObject/DestructibleObject.hpp"
 #include "ImagePoolManager.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "Structs/EventInfo.hpp"
 #include "Util/Logger.hpp"
 
@@ -61,6 +62,11 @@ void DestructibleObject::OnDestroyed()
 		SetActive(false);
 		SetControlVisible(false);
 		LOG_DEBUG("No destroyed image available, hiding object: {}", GetName());
+	}
+
+	if (GetName().find("box") != std::string::npos)
+	{
+		AudioManager::GetInstance().PlaySFX("box_destroy");
 	}
 
 	// 可以在這裡添加其他破壞效果：

@@ -8,6 +8,7 @@
 
 #include "Factory/RoomObjectFactory.hpp"
 #include "ImagePoolManager.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "ObserveManager/EventManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "RandomUtil.hpp"
@@ -15,8 +16,10 @@
 #include "Structs/EventInfo.hpp"
 #include "Util/Image.hpp"
 
-ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths)
-								: Component(ComponentType::CHEST), m_chestType(chestType), m_imagePaths(std::move(imagePaths)){}
+ChestComponent::ChestComponent(ChestType chestType, std::vector<std::string> imagePaths) :
+	Component(ComponentType::CHEST), m_chestType(chestType), m_imagePaths(std::move(imagePaths))
+{
+}
 
 
 void ChestComponent::Init()
@@ -73,6 +76,10 @@ void ChestComponent::ChestOpened()
 	if (m_currentState == ChestState::OPENED)
 		return;
 	m_currentState = ChestState::OPENED;
+
+	// 播放寶箱開啟音效
+	AudioManager::GetInstance().PlaySFX("chest_open");
+
 	LOG_INFO("Chest opened");
 
 	auto chest = GetOwner<nGameObject>();

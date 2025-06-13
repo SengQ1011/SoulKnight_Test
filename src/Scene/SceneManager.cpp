@@ -203,6 +203,7 @@ void SceneManager::ResetGameProgress()
 	progress.dungeonStartTime = 0;
 	progress.cumulativeTime = 0;
 	progress.killCount = 0;
+	progress.talentSelectionCount = 0; // 重置天賦選擇計數
 
 	// 重置玩家數據
 	auto &playerData = progress.playerData;
@@ -247,6 +248,7 @@ void SceneManager::InitializeNewGameData()
 	progress.dungeonStartTime = 0; // 進入地牢再更新
 	progress.cumulativeTime = 0;
 	progress.killCount = 0;
+	progress.talentSelectionCount = 0; // 初始化天賦選擇計數
 
 	// 初始化玩家數據
 	auto &playerData = progress.playerData;
@@ -258,6 +260,58 @@ void SceneManager::InitializeNewGameData()
 	playerData.talentID.clear();
 
 	UploadGameProgress(newData);
+}
+
+void SceneManager::AddTalentToPlayer(int talentId)
+{
+	if (!m_Data)
+	{
+		LOG_ERROR("No save data available to add talent");
+		return;
+	}
+
+	// 檢查天賦是否已存在
+	auto &talentIDs = m_Data->gameProgress.playerData.talentID;
+	if (std::find(talentIDs.begin(), talentIDs.end(), talentId) != talentIDs.end())
+	{
+		LOG_DEBUG("Talent {} already exists, skipping", talentId);
+		return;
+	}
+
+	// 直接在共享數據上操作，無需創建副本
+	talentIDs.push_back(talentId);
+	LOG_DEBUG("Added talent {} to player. Total talents: {}", talentId, talentIDs.size());
+
+	// 立即保存到磁盤
+	SaveGameProgress();
+}
+
+void SceneManager::IncrementTalentSelectionCount()
+{
+	if (!m_Data)
+	{
+		LOG_ERROR("No save data available to increment talent selection count");
+		return;
+	}
+
+	m_Data->gameProgress.talentSelectionCount++;
+	LOG_DEBUG("Incremented talent selection count to: {}", m_Data->gameProgress.talentSelectionCount);
+
+	// 立即保存到磁盤
+	SaveGameProgress();
+}
+
+void SceneManager::SaveGameProgress()
+{
+	if (m_Data)
+	{
+		SaveManager::GetInstance().SaveGame(m_Data);
+		LOG_DEBUG("Game progress saved to disk");
+	}
+	else
+	{
+		LOG_ERROR("No save data to save");
+	}
 }
 
 void SceneManager::receiveEnemyDeathEvent() const { m_CurrentScene->GetSaveData()->gameProgress.killCount++; }

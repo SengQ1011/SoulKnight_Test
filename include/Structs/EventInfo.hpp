@@ -51,11 +51,14 @@ enum class EventType
 	BoxBreak,
 
 	// 寶箱相關
-	ChestOpen
+	ChestOpen,
+
+	// 角色顯示相關
+	ShowUp,
+	Hide
 	// HealthChanged,
 	// EnergyChanged,
 	// ArmorBroken,
-
 
 
 	// PlayerDeath,
@@ -145,6 +148,18 @@ struct BoxBreakEvent : TypedEventInfo<BoxBreakEvent>
 struct ChestOpenEvent : TypedEventInfo<ChestOpenEvent>
 {
 	ChestOpenEvent() : TypedEventInfo(EventType::ChestOpen) {}
+};
+
+// 角色顯示事件
+struct ShowUpEvent : TypedEventInfo<ShowUpEvent>
+{
+	ShowUpEvent() : TypedEventInfo(EventType::ShowUp) {}
+};
+
+// 角色隱藏事件
+struct HideEvent : TypedEventInfo<HideEvent>
+{
+	HideEvent() : TypedEventInfo(EventType::Hide) {}
 };
 
 #endif // EVENTINFO_HPP

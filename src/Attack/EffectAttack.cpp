@@ -6,6 +6,7 @@
 #include "Animation.hpp"
 #include "Components/CollisionComponent.hpp"
 #include "Components/EffectAttackComponent.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "ObserveManager/EventManager.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "Scene/SceneManager.hpp"
@@ -28,17 +29,39 @@ void EffectAttack::Init()
 	// 明確設定世界坐標（從傳入的 Transform 取得）
 	this->m_WorldCoord = m_Transform.translation;
 
+	// 播放對應的音效
+	switch (m_effectType)
+	{
+	// case EffectAttackType::SLASH:
+	// 	AudioManager::GetInstance().PlaySFX("laser_sword");
+	// 	break;
+	case EffectAttackType::SHOCKWAVE:
+	case EffectAttackType::LARGE_SHOCKWAVE:
+		AudioManager::GetInstance().PlaySFX("hit_floor_sound");
+		break;
+	case EffectAttackType::LARGE_BOOM:
+	case EffectAttackType::MEDIUM_BOOM:
+		AudioManager::GetInstance().PlaySFX("explode_big");
+		break;
+	case EffectAttackType::SMALL_BOOM:
+		AudioManager::GetInstance().PlaySFX("explode_small");
+		break;
+	default:
+		// 其他效果類型暫時不播放音效
+		break;
+	}
+
 	// Animation
 	const auto &imagePaths = EffectAssets::EFFECT_IMAGE_PATHS.at(m_effectType);
 	float interval = 400 / imagePaths.size();
 	if (m_effectType == EffectAttackType::LARGE_SHOCKWAVE)
 		interval *= 2.0f;
-	else if(m_effectType == EffectAttackType::POISON_AREA)
+	else if (m_effectType == EffectAttackType::POISON_AREA)
 		interval = 4000 / imagePaths.size();
 
- 	m_animation = std::make_shared<Animation>(imagePaths, false, interval, "Animation");
- 	this->SetDrawable(m_animation->GetDrawable());
- 	m_animation->PlayAnimation(true);
+	m_animation = std::make_shared<Animation>(imagePaths, false, interval, "Animation");
+	this->SetDrawable(m_animation->GetDrawable());
+	m_animation->PlayAnimation(true);
 
 	// TODO: 這裏可以work，但是 @錦鑫你看一下怎麽放比較舒服
 	if (m_effectType == EffectAttackType::MEDIUM_BOOM)
@@ -59,7 +82,8 @@ void EffectAttack::Init()
 	CollisionComp->ClearTriggerTargets();
 	CollisionComp->SetTrigger(true);
 	CollisionComp->SetCollider(false);
-	CollisionComp->AddTriggerStrategy(std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage));
+	CollisionComp->AddTriggerStrategy(
+		std::make_unique<AttackTriggerStrategy>(m_damage, m_elementalDamage, m_isCriticalHit));
 	if (m_effectType == EffectAttackType::SHOCKWAVE || m_effectType == EffectAttackType::LARGE_SHOCKWAVE)
 		CollisionComp->AddTriggerStrategy(std::make_unique<KnockOffTriggerStrategy>(m_shockwaveForce));
 	if (m_type == CharacterType::PLAYER)

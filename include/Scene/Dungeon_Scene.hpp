@@ -58,6 +58,9 @@ private:
 	std::shared_ptr<MonsterRoomTestUI> m_MonsterRoomTestUI;
 	float m_LayoutChangeCooldown = 0.0f; // 佈局更換冷卻時間
 
+	// 玩家ShowUp控制
+	bool m_PlayerShowUpTriggered = false; // 是否已觸發玩家ShowUp
+
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
@@ -72,6 +75,9 @@ private:
 	void ProcessLayoutChangeRequest(); // 處理佈局更換請求
 	void ChangeCurrentRoomLayout(const std::string &layoutName); // 更換當前房間佈局
 	void InitializeMonsterRoomTestUI(); // 初始化測試UI
+
+	// 玩家ShowUp相關
+	void TriggerPlayerShowUp(); // 觸發玩家顯示事件
 
 	// 以下為你原本地牢生成的函數
 	void BuildDungeon(); // 房間生成與初始化邏輯

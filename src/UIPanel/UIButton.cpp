@@ -12,9 +12,18 @@
 void UIButton::Update()
 {
 	nGameObject::Update();
-	if (!m_Active) return; // 不活躍不執行互動
+	if (!m_Active)
+		return; // 不活躍不執行互動
 
 	// DrawDebugUI(); // 顯示調整用 ImGui 視窗
+
+	// 處理懸停回調
+	bool isMouseInside = IsMouseInside();
+	if (onHoverCallback && isMouseInside != m_WasMouseInside)
+	{
+		onHoverCallback(isMouseInside);
+		m_WasMouseInside = isMouseInside;
+	}
 
 	// -----------------------
 	// 支援可長按的按鈕邏輯
@@ -31,7 +40,8 @@ void UIButton::Update()
 		}
 
 		// 若未點擊則不執行 callback
-		if (!m_IsClicking) return;
+		if (!m_IsClicking)
+			return;
 
 		if (onClickCallback)
 			onClickCallback();
@@ -41,7 +51,8 @@ void UIButton::Update()
 	// -----------------------
 	else
 	{
-		if (!Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB) || !IsMouseInside()) return;
+		if (!Util::Input::IsKeyDown(Util::Keycode::MOUSE_LB) || !IsMouseInside())
+			return;
 
 		if (onClickCallback)
 		{
@@ -60,8 +71,8 @@ bool UIButton::IsMouseInside() const
 	const Rect bound(m_Transform.translation, GetScaledSize());
 
 	// 判斷是否超出邊界
-	return !(cursor.x < bound.left() || cursor.x > bound.right() ||
-			 cursor.y > bound.top() || cursor.y < bound.bottom());
+	return !(cursor.x < bound.left() || cursor.x > bound.right() || cursor.y > bound.top() ||
+			 cursor.y < bound.bottom());
 }
 
 // ==========================
@@ -72,10 +83,11 @@ void UIButton::OnEventReceived(const EventInfo &eventInfo)
 	switch (eventInfo.GetEventType())
 	{
 	case EventType::Click:
-	{
-		if (onClickCallback) onClickCallback();
-		break;
-	}
+		{
+			if (onClickCallback)
+				onClickCallback();
+			break;
+		}
 	default:
 		break;
 	}
@@ -112,17 +124,21 @@ void UIButton::DrawDebugUI()
 
 	// 大小調整
 	ImGui::InputFloat("Setting Width", &m_DebugSize.x, 1.0f);
-	if (ImGui::IsItemDeactivatedAfterEdit()) m_SizeChangedByInput = true;
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		m_SizeChangedByInput = true;
 
 	ImGui::InputFloat("Setting Height", &m_DebugSize.y, 1.0f);
-	if (ImGui::IsItemDeactivatedAfterEdit()) m_SizeChangedByInput = true;
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		m_SizeChangedByInput = true;
 
 	// 位置調整
 	ImGui::InputFloat("Setting x", &m_DebugPos.x, 1.0f);
-	if (ImGui::IsItemDeactivatedAfterEdit()) m_PosChangedByInput = true;
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		m_PosChangedByInput = true;
 
 	ImGui::InputFloat("Setting y", &m_DebugPos.y, 1.0f);
-	if (ImGui::IsItemDeactivatedAfterEdit()) m_PosChangedByInput = true;
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		m_PosChangedByInput = true;
 
 	// 不要每幀覆蓋 m_DebugSize/m_DebugPos，否則用戶輸入會被吃掉
 	if (!m_SizeChangedByInput && !ImGui::IsAnyItemActive())

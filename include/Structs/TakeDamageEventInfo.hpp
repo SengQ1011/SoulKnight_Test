@@ -11,9 +11,14 @@ struct TakeDamageEventInfo final : TypedEventInfo<TakeDamageEventInfo>
 	int m_Id = 0;
 	int damage = 0;
 	StatusEffect elementalDamage;
+	bool isCriticalHit = false;
 
-	explicit TakeDamageEventInfo(const int id, const int dmg, const StatusEffect &elementalDamage) :
-		TypedEventInfo(EventType::TakeDamage),m_Id(id), damage(dmg), elementalDamage(elementalDamage) {}
+	explicit TakeDamageEventInfo(const int id, const int dmg, const StatusEffect &elementalDamage,
+								 const bool isCrit = false) :
+		TypedEventInfo(EventType::TakeDamage), m_Id(id), damage(dmg), elementalDamage(elementalDamage),
+		isCriticalHit(isCrit)
+	{
+	}
 };
 
-#endif //TAKEDAMAGEEVENTINFO_HPP
+#endif // TAKEDAMAGEEVENTINFO_HPP

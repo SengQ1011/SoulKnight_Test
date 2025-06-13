@@ -7,6 +7,7 @@
 #include "Components/AttackComponent.hpp"
 #include "Components/MovementComponent.hpp"
 #include "Components/StateComponent.hpp"
+#include "ObserveManager/AudioManager.hpp"
 #include "ObserveManager/EventManager.hpp"
 #include "ObserveManager/TrackingManager.hpp"
 #include "Room/RoomCollisionManager.hpp"
@@ -80,6 +81,13 @@ void HealthComponent::HandleEvent(const EventInfo &eventInfo)
 			if (m_recentAttackSources.count(ObjectID) > 0)
 				break;
 			m_recentAttackSources[ObjectID] = m_invincibleDuration;
+
+			// 如果是暴擊，播放暴擊音效
+			if (dmgInfo.isCriticalHit)
+			{
+				AudioManager::GetInstance().PlaySFX("critical_hit");
+			}
+
 			TakeDamage(dmgInfo.damage);
 
 			const auto owner = GetOwner<nGameObject>();
@@ -157,6 +165,15 @@ void HealthComponent::TakeDamage(int damage)
 		return;
 	LOG_DEBUG("take damage {}", damage);
 
+	// 檢查是否為玩家受傷並播放音效
+	if (const auto character = GetOwner<Character>())
+	{
+		if (character->GetType() == CharacterType::PLAYER)
+		{
+			AudioManager::GetInstance().PlaySFX("player_hurt");
+		}
+	}
+
 	if (const auto owner = GetOwner<nGameObject>())
 	{
 		// 觸發閃爍特效 - 使用OnEvent進行組件間通信
@@ -208,12 +225,39 @@ void HealthComponent::OnDeath()
 
 	if (movementComp)
 		movementComp->SetDesiredDirection(glm::vec2(0.0f, 0.0f)); // 移動向量設爲0
-	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-	scene->GetCurrentRoom()
-		->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION)
-		->UnregisterNGameObject(character);
 
-	auto trackingManager = scene->GetCurrentRoom()->GetManager<TrackingManager>(ManagerTypes::TRACKING);
+	// 安全檢查：確保場景和房間存在
+	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!scene)
+	{
+		LOG_ERROR("HealthComponent::OnDeath - Scene is null");
+		return;
+	}
+
+	auto currentRoom = scene->GetCurrentRoom();
+	if (!currentRoom)
+	{
+		LOG_ERROR("HealthComponent::OnDeath - CurrentRoom is null");
+		return;
+	}
+
+	// 安全檢查：確保管理器存在
+	auto roomCollisionManager = currentRoom->GetManager<RoomCollisionManager>(ManagerTypes::ROOMCOLLISION);
+	if (roomCollisionManager)
+	{
+		roomCollisionManager->UnregisterNGameObject(character);
+	}
+	else
+	{
+		LOG_WARN("HealthComponent::OnDeath - RoomCollisionManager is null");
+	}
+
+	auto trackingManager = currentRoom->GetManager<TrackingManager>(ManagerTypes::TRACKING);
+	if (!trackingManager)
+	{
+		LOG_ERROR("HealthComponent::OnDeath - TrackingManager is null");
+		return;
+	}
 	if (character->GetType() == CharacterType::ENEMY)
 	{
 		trackingManager->RemoveEnemy(character);
@@ -223,6 +267,9 @@ void HealthComponent::OnDeath()
 		EventManager::GetInstance().Emit(enemyDeathEvent);
 		// 通知場景纍加killCount
 		EventManager::enemyDeathEvent();
+
+		// 播放敵人死亡音效
+		AudioManager::GetInstance().PlaySFX("enemy_die");
 
 		LOG_DEBUG("HealthComponent::Enemy died, event sent");
 		if (auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
