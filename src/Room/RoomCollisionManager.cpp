@@ -66,11 +66,6 @@ void RoomCollisionManager::Update()
 	std::vector<std::pair<std::shared_ptr<nGameObject>, std::shared_ptr<nGameObject>>> collisionPairs;
 	std::mutex mutex;
 
-	if (Util::Input::IsKeyUp(Util::Keycode::O))
-	{
-		ShowColliderBox();
-	}
-
 	m_SpatialGrid.Clear();
 
 	for (const auto &weakObj : m_NGameObjects)
@@ -150,21 +145,6 @@ void RoomCollisionManager::Update()
 			}
 		}
 	}
-}
-
-void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
-{
-	m_IsVisible = m_IsVisible ^ true; // XOR bool 實現開關
-	// 碰撞箱可視化功能已移除
-	/*
-	for (const std::weak_ptr<nGameObject> &object : m_NGameObjects)
-	{
-		if (const auto sharedPtr = object.lock())
-			sharedPtr->GetComponent<CollisionComponent>(ComponentType::COLLISION)
-				->GetVisibleBox()
-				->SetControlVisible(m_IsVisible);
-	}
-	*/
 }
 
 void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,

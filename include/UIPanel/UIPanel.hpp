@@ -22,6 +22,7 @@ public:
 
 	virtual void Show();
 	virtual void Hide();
+
 	virtual bool IsVisible() const { return m_IsVisible; }
 
 	// 設置和獲取面板名稱（用於輸入阻擋檢查）

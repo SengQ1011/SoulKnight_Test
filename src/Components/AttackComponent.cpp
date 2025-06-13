@@ -3,13 +3,17 @@
 //
 
 #include "Components/AttackComponent.hpp"
+#include <imgui.h>
+#include <nlohmann/json.hpp>
 #include "Components/HealthComponent.hpp"
 #include "Creature/Character.hpp"
+#include "Factory/Factory.hpp"
 #include "Factory/WeaponFactory.hpp"
 #include "ObserveManager/AudioManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Structs/DeathEventInfo.hpp"
 #include "Structs/EventInfo.hpp"
+#include "Util/Input.hpp"
 #include "Weapon/Weapon.hpp"
 
 
@@ -70,6 +74,14 @@ void AttackComponent::Update()
 		m_switchTimeCounter -= deltaTime;
 	if (m_pickUpWeaponTimeCounter >= 0)
 		m_pickUpWeaponTimeCounter -= deltaTime;
+
+	static bool debug = false;
+	if (Util::Input::IsKeyDown(Util::Keycode::F1))
+		debug = !debug;
+	if (debug)
+	{
+		DrawDebug();
+	}
 }
 
 std::vector<int> AttackComponent::GetAllWeaponID() const
@@ -448,83 +460,202 @@ void AttackComponent::HandleEvent(const EventInfo &eventInfo)
 
 void AttackComponent::ChangeCurrentWeapon(const int id)
 {
-    auto character = GetOwner<Character>();
-    if (!character)
-    {
-        LOG_ERROR("ChangeCurrentWeapon: Character is null");
-        return;
-    }
+	auto character = GetOwner<Character>();
+	if (!character)
+	{
+		LOG_ERROR("ChangeCurrentWeapon: Character is null");
+		return;
+	}
 
-    const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
-    if (!scene)
-    {
-        LOG_ERROR("ChangeCurrentWeapon: Scene is null");
-        return;
-    }
+	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+	if (!scene)
+	{
+		LOG_ERROR("ChangeCurrentWeapon: Scene is null");
+		return;
+	}
 
-    auto room = scene->GetCurrentRoom();
-    if (!room)
-    {
-        LOG_ERROR("ChangeCurrentWeapon: Room is null");
-        return;
-    }
+	auto room = scene->GetCurrentRoom();
+	if (!room)
+	{
+		LOG_ERROR("ChangeCurrentWeapon: Room is null");
+		return;
+	}
 
-    auto interactableManager = room->GetInteractionManager();
-    if (!interactableManager)
-    {
-        LOG_ERROR("ChangeCurrentWeapon: InteractableManager is null");
-        return;
-    }
-	
-    auto newWeapon = WeaponFactory::createWeapon(id);
-    if (!newWeapon)
-    {
-        LOG_ERROR("ChangeCurrentWeapon: Failed to create weapon with ID {}", id);
-        return;
-    }
+	auto interactableManager = room->GetInteractionManager();
+	if (!interactableManager)
+	{
+		LOG_ERROR("ChangeCurrentWeapon: InteractableManager is null");
+		return;
+	}
 
-    try
-    {
-        // 處理舊武器（如果存在）
-        if (m_currentWeapon)
-        {
-            interactableManager->QueueUnregister(m_currentWeapon);
-            scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
-            scene->GetCamera().lock()->SafeRemoveChild(m_currentWeapon);
-            RemoveWeapon(m_currentWeapon);
-            m_currentWeapon = nullptr; // 確保舊武器指針清空
-        }
+	auto newWeapon = WeaponFactory::createWeapon(id);
+	if (!newWeapon)
+	{
+		LOG_ERROR("ChangeCurrentWeapon: Failed to create weapon with ID {}", id);
+		return;
+	}
 
-        // 添加新武器
-        m_Weapons.push_back(newWeapon);
-        m_currentWeapon = newWeapon;
-        m_currentWeapon->SetOwner(character);
+	try
+	{
+		// 處理舊武器（如果存在）
+		if (m_currentWeapon)
+		{
+			interactableManager->QueueUnregister(m_currentWeapon);
+			scene->GetRoot().lock()->RemoveChild(m_currentWeapon);
+			scene->GetCamera().lock()->SafeRemoveChild(m_currentWeapon);
+			RemoveWeapon(m_currentWeapon);
+			m_currentWeapon = nullptr; // 確保舊武器指針清空
+		}
 
-        // 設置 FollowerComponent
-        if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
-        {
-            followerComp->SetFollower(character);
-        }
-        m_currentWeapon->SetControlVisible(true);
+		// 添加新武器
+		m_Weapons.push_back(newWeapon);
+		m_currentWeapon = newWeapon;
+		m_currentWeapon->SetOwner(character);
 
-        // 將新武器添加到場景
-        if (!m_currentWeapon->IsRegisteredToScene())
-        {
-            scene->GetRoot().lock()->AddChild(m_currentWeapon);
-            scene->GetCamera().lock()->SafeAddChild(m_currentWeapon);
-            m_currentWeapon->SetRegisteredToScene(true);
-        }
+		// 設置 FollowerComponent
+		if (auto followerComp = m_currentWeapon->GetComponent<FollowerComponent>(ComponentType::FOLLOWER))
+		{
+			followerComp->SetFollower(character);
+		}
+		m_currentWeapon->SetControlVisible(true);
 
-        // 新武器不應作為可交互物件
-        interactableManager->QueueUnregister(newWeapon);
+		// 將新武器添加到場景
+		if (!m_currentWeapon->IsRegisteredToScene())
+		{
+			scene->GetRoot().lock()->AddChild(m_currentWeapon);
+			scene->GetCamera().lock()->SafeAddChild(m_currentWeapon);
+			m_currentWeapon->SetRegisteredToScene(true);
+		}
 
-        // 播放替換武器音效
-        AudioManager::GetInstance().PlaySFX("pick_up_weapon");
+		// 新武器不應作為可交互物件
+		interactableManager->QueueUnregister(newWeapon);
 
-        // LOG_DEBUG("Successfully changed to weapon ID: {}, Name: {}", id, newWeapon->GetName());
-    }
-    catch (const std::exception& e)
-    {
-        LOG_ERROR("ChangeCurrentWeapon: Exception occurred: {}", e.what());
-    }
+		// 播放替換武器音效
+		AudioManager::GetInstance().PlaySFX("pick_up_weapon");
+
+		// LOG_DEBUG("Successfully changed to weapon ID: {}, Name: {}", id, newWeapon->GetName());
+	}
+	catch (const std::exception &e)
+	{
+		LOG_ERROR("ChangeCurrentWeapon: Exception occurred: {}", e.what());
+	}
+}
+
+void AttackComponent::DrawDebug()
+{
+	ImGui::Begin("Weapon Debugger");
+
+	// Display current weapon information
+	if (ImGui::CollapsingHeader("Current Weapon Info", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (m_currentWeapon)
+		{
+			ImGui::Text("Current Weapon: %s (ID: %d)", m_currentWeapon->GetName().c_str(),
+						m_currentWeapon->GetWeaponID());
+			ImGui::Text("Damage: %d", m_currentWeapon->GetDamage());
+			ImGui::Text("Attack Interval: %.2f sec", m_currentWeapon->GetAttackInterval());
+		}
+		else
+		{
+			ImGui::Text("Current Weapon: None");
+		}
+	}
+
+	// Weapon switching panel
+	if (ImGui::CollapsingHeader("Weapon Switching", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		try
+		{
+			// Read weapon configuration from JSON file
+			nlohmann::json weaponData = Factory::readJsonFile("weapon.json");
+
+			// Calculate button layout
+			float buttonWidth = 200.0f;
+			float windowWidth = ImGui::GetContentRegionAvail().x;
+			int buttonsPerRow =
+				std::max(1, static_cast<int>(windowWidth / (buttonWidth + ImGui::GetStyle().ItemSpacing.x)));
+
+			int currentButtonIndex = 0;
+
+			// Iterate through all weapons and create buttons
+			for (const auto &weapon : weaponData)
+			{
+				if (weapon.contains("ID") && weapon.contains("name"))
+				{
+					int weaponID = weapon["ID"].get<int>();
+					std::string weaponName = weapon["name"].get<std::string>();
+
+					// Only show droppable weapons (dropLevel > 0)
+					if (weapon.contains("dropLevel") && weapon["dropLevel"].get<int>() > 0)
+					{
+						// Create button label with ID and name
+						std::string buttonLabel = fmt::format("{} (ID: {})", weaponName, weaponID);
+
+						// Check if it's the current weapon
+						bool isCurrentWeapon = m_currentWeapon && m_currentWeapon->GetWeaponID() == weaponID;
+
+						// Change button color if it's the current weapon
+						if (isCurrentWeapon)
+						{
+							ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f)); // Green
+						}
+
+						// Create button
+						if (ImGui::Button(buttonLabel.c_str(), ImVec2(buttonWidth, 0)))
+						{
+							ChangeCurrentWeapon(weaponID);
+						}
+
+						// Restore button color
+						if (isCurrentWeapon)
+						{
+							ImGui::PopStyleColor();
+						}
+
+						// Add tooltip
+						if (ImGui::IsItemHovered())
+						{
+							ImGui::BeginTooltip();
+							ImGui::Text("Weapon Name: %s", weaponName.c_str());
+							ImGui::Text("Weapon ID: %d", weaponID);
+							if (weapon.contains("damage"))
+								ImGui::Text("Damage: %d", weapon["damage"].get<int>());
+							if (weapon.contains("weaponType"))
+								ImGui::Text("Type: %s", weapon["weaponType"].get<std::string>().c_str());
+							ImGui::EndTooltip();
+						}
+
+						// Line break logic
+						currentButtonIndex++;
+						if (currentButtonIndex % buttonsPerRow != 0)
+						{
+							ImGui::SameLine();
+						}
+					}
+				}
+			}
+		}
+		catch (const std::exception &e)
+		{
+			ImGui::Text("Error: Cannot read weapon config file");
+			ImGui::Text("Details: %s", e.what());
+		}
+	}
+
+	// Player weapon inventory
+	if (ImGui::CollapsingHeader("Weapon Inventory", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text("Weapon Count: %zu / %d", m_Weapons.size(), m_maxWeapon);
+
+		for (size_t i = 0; i < m_Weapons.size(); ++i)
+		{
+			const auto &weapon = m_Weapons[i];
+			bool isCurrent = (weapon == m_currentWeapon);
+
+			ImGui::Text("%zu. %s (ID: %d) %s", i + 1, weapon->GetName().c_str(), weapon->GetWeaponID(),
+						isCurrent ? "[Current]" : "");
+		}
+	}
+
+	ImGui::End();
 }

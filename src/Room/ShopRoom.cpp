@@ -155,15 +155,15 @@ void ShopRoom::CreateShopTables()
 void ShopRoom::CreateMerchantNPC()
 {
 	m_NPC = CharacterFactory::GetInstance().createNPC(1);
-	
+
 	// 使用房间中心点作为NPC位置
 	// 可以稍微向上偏移一点，让NPC站在商店中央
-	glm::vec2 npcPosition = m_RoomSpaceInfo.m_WorldCoord + glm::vec2(0.0f, 9.4f);
+	glm::vec2 npcPosition = m_RoomSpaceInfo.m_WorldCoord + glm::vec2(0.0f, 25.0f);
 	m_NPC->m_WorldCoord = npcPosition;
 
 	// 使用SpawnEntity将NPC添加到房间中
 	SpawnEntity(m_NPC, EntityCategory::NPC);
-	
+
 	// LOG_DEBUG("Merchant NPC created at position ({}, {})", npcPosition.x, npcPosition.y);
 }
 
@@ -172,9 +172,9 @@ void ShopRoom::RefreshAllItems()
 	LOG_DEBUG("Refreshing all shop items");
 
 	// 先清理所有未購買的商品
-	for (auto& shopTable : m_ShopTables)
+	for (auto &shopTable : m_ShopTables)
 	{
-		if (shopTable)// && shopTable->HasItem())
+		if (shopTable) // && shopTable->HasItem())
 		{
 			shopTable->ClearCurrentItem();
 		}
@@ -193,8 +193,9 @@ void ShopRoom::RefreshAllItems()
 
 	for (size_t i = 0; i < m_ShopTables.size() && i < tablePositions.size(); ++i)
 	{
-		auto& shopTable = m_ShopTables[i];
-		if (!shopTable) continue;
+		auto &shopTable = m_ShopTables[i];
+		if (!shopTable)
+			continue;
 
 		ShopItemType itemType;
 		int price;
@@ -279,10 +280,10 @@ void ShopRoom::RefreshAllItems()
 			// 對於藥水，停用 InteractableComponent（購買前不能直接拾取）
 			// if (itemType != ShopItemType::WEAPON)
 			// {
-				if (auto itemInteractable = newItem->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
-				{
-					itemInteractable->SetComponentActive(false);
-				}
+			if (auto itemInteractable = newItem->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+			{
+				itemInteractable->SetComponentActive(false);
+			}
 			// }
 
 			// 更新商店桌子的價格提示

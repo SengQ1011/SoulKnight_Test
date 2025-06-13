@@ -392,7 +392,7 @@ void MonsterRoom::RecalculateGridFromCollisionComponents()
 	}
 
 	// LOG_DEBUG("Grid recalculation complete: Processed {} objects, {} with CollisionComponent", processedObjects,
-			  // collisionObjects);
+	// collisionObjects);
 }
 
 // 輔助方法：計算兩個矩形的交集面積
@@ -1154,6 +1154,10 @@ void MonsterRoom::RepositionPlayerIfNeeded()
 // ===== MonsterRoom Debug UI 實現 =====
 void MonsterRoom::DrawDebugUI()
 {
+	// 這個方法現在被整合到 Dungeon_Scene 的統一 debug 窗口中
+	// 如果需要獨立的 debug 窗口，可以取消註釋以下代碼
+
+	/*
 	ImGui::Begin("MonsterRoom Debug UI");
 
 	// === 房間基本信息 ===
@@ -1193,7 +1197,13 @@ void MonsterRoom::DrawDebugUI()
 	}
 
 	ImGui::End();
+	*/
 }
+
+// === 公共 Debug 方法實現 ===
+void MonsterRoom::DebugKillAllEnemies() { m_CombatManager.DebugKillAllEnemies(); }
+
+void MonsterRoom::DebugKillCurrentWave() { m_CombatManager.DebugKillCurrentWaveEnemies(); }
 
 // ===== CombatManager Debug UI 實現 =====
 void MonsterRoom::CombatManager::DrawDebugUI()

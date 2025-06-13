@@ -292,9 +292,11 @@ void ShopTable::RemoveCurrentItem()
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if (scene)
 	{
-		scene->GetRoot().lock()->RemoveChild(m_CurrentItem);
-		scene->GetCamera().lock()->MarkForRemoval(m_CurrentItem);
+		// scene->GetRoot().lock()->RemoveChild(m_CurrentItem);
+		// scene->GetCamera().lock()->MarkForRemoval(m_CurrentItem);
 		auto room = scene->GetCurrentRoom();
+		// m_CurrentItem->SetControlVisible(false);
+		// m_CurrentItem->SetVisible(false);
 		room->RemoveRoomObject(m_CurrentItem);
 	}
 
@@ -307,6 +309,7 @@ void ShopTable::ClearCurrentItem()
 	// 移除當前商品（如果存在）
 	RemoveCurrentItem();
 
+	// m_CurrentItem = nullptr;
 	// 重新啟用商店桌子的 InteractableComponent（如果之前被停用）
 	if (auto interactableComp = GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
 	{

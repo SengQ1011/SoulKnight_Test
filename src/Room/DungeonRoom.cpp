@@ -219,7 +219,7 @@ void DungeonRoom::Update()
 {
 	Room::Update();
 
-	DebugDungeonRoom();
+	// DebugDungeonRoom();
 }
 
 void DungeonRoom::LoadFromJSON()

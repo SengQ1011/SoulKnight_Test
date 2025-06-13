@@ -17,16 +17,26 @@
 
 MonsterRoomTestUI::MonsterRoomTestUI(std::shared_ptr<MonsterRoom> monsterRoom) : m_MonsterRoom(monsterRoom)
 {
-	if (monsterRoom->GetRoomType() != RoomType::MONSTER) return;
+	if (monsterRoom->GetRoomType() != RoomType::MONSTER)
+		return;
 	RefreshAvailableLayouts();
 }
 
 void MonsterRoomTestUI::RenderUI()
 {
 	// 檢查快捷鍵開啟/關閉 UI
+	static bool f1KeyPressed = false;
 	if (Util::Input::IsKeyDown(Util::Keycode::F1))
 	{
-		m_ShowUI = !m_ShowUI;
+		if (!f1KeyPressed)
+		{
+			m_ShowUI = !m_ShowUI;
+			f1KeyPressed = true;
+		}
+	}
+	else
+	{
+		f1KeyPressed = false;
 	}
 
 	if (!m_ShowUI)

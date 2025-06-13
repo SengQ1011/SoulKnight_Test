@@ -64,6 +64,10 @@ public:
 	// === Debug UI 功能 ===
 	void DrawDebugUI(); // 繪製房間Debug UI（包含CombatManager的Debug UI）
 
+	// === 公共 Debug 方法 ===
+	void DebugKillAllEnemies(); // 殺死所有敵人（公共接口）
+	void DebugKillCurrentWave(); // 殺死當前波次敵人（公共接口）
+
 private:
 	// === 戰鬥配置結構 ===
 	struct WaveConfig

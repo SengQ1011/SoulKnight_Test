@@ -12,6 +12,7 @@
 
 class DungeonMap;
 class MonsterRoomTestUI;
+class KeyPanel;
 
 class DungeonScene final : public Scene
 {
@@ -61,6 +62,9 @@ private:
 	// 玩家ShowUp控制
 	bool m_PlayerShowUpTriggered = false; // 是否已觸發玩家ShowUp
 
+	// Debug UI 控制
+	bool m_ShowDebugUI = false; // 是否顯示 debug UI
+
 	void CreatePlayer();
 	void SetupCamera() const;
 	void InitializeSceneManagers();
@@ -69,6 +73,7 @@ private:
 	void InitializeStageText();
 	void InitializeStageIcon();
 	void DrawStageDebugUI(); // 調試界面
+	void DrawGameDebugUI(); // 遊戲統一調試界面
 
 	// 佈局更換相關方法
 	void HandleLayoutChangeInput(); // 處理佈局更換輸入

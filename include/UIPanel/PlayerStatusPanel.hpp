@@ -15,13 +15,17 @@ class UIButton;
 class UISlider;
 class nGameObject;
 
-class PlayerStatusPanel : public UIPanel {
+class PlayerStatusPanel : public UIPanel
+{
 public:
-	explicit PlayerStatusPanel(const std::shared_ptr<HealthComponent>& healthComp) : m_PlayerHealthComponent(healthComp) {}
+	explicit PlayerStatusPanel(const std::shared_ptr<HealthComponent> &healthComp) : m_PlayerHealthComponent(healthComp)
+	{
+	}
 	~PlayerStatusPanel() override = default;
 	void Start() override;
 	void Update() override;
 	void DrawDebugUI();
+
 protected:
 	std::weak_ptr<HealthComponent> m_PlayerHealthComponent;
 	std::shared_ptr<nGameObject> m_PanelBackground;
@@ -31,6 +35,9 @@ protected:
 	std::shared_ptr<nGameObject> m_TextPlayerHP;
 	std::shared_ptr<nGameObject> m_TextPlayerArmor;
 	std::shared_ptr<nGameObject> m_TextPlayerEnergy;
+
+	// Debug UI 控制
+	bool m_ShowDebugUI = false;
 };
 
-#endif //PLAYERSTATUSPANEL_HPP
+#endif // PLAYERSTATUSPANEL_HPP

@@ -69,6 +69,7 @@ public:
 
 	// debug mode
 	void ChangeCurrentWeapon(const int id);
+	void DrawDebug(); // ImGui武器調試界面
 
 private:
 	float m_aimRange; // 自動瞄準範圍

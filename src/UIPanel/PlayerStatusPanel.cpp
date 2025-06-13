@@ -12,9 +12,9 @@
 #include "Util/Color.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
-#include "Util/Text.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
+#include "Util/Text.hpp"
 #include "config.hpp"
 
 
@@ -221,288 +221,304 @@ void PlayerStatusPanel::Update()
 		}
 	}
 
-	if (Util::Input::IsKeyDown(Util::Keycode::F1))
-	{
-		DrawDebugUI();
-	}
 	for (const std::shared_ptr<nGameObject> &gameObject : m_GameObjects)
 	{
 		gameObject->Update();
 	}
+
+	// 調試界面 - F1 按鍵控制
+	// static bool f1KeyPressed = false;
+	// if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	// {
+	// 	if (!f1KeyPressed)
+	// 	{
+	// 		m_ShowDebugUI = !m_ShowDebugUI;
+	// 		f1KeyPressed = true;
+	// 	}
+	// }
+	// else
+	// {
+	// 	f1KeyPressed = false;
+	// }
+	//
+	// if (m_ShowDebugUI)
+	// {
+	// 	DrawDebugUI();
+	// }
 }
 
 void PlayerStatusPanel::DrawDebugUI()
 {
-	ImGui::Begin("Player Status Panel Debug");
-
-	// === Background Settings ===
-	if (ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_PanelBackground->m_Transform.scale * m_PanelBackground->GetImageSize();
-		static glm::vec2 pos = m_PanelBackground->m_Transform.translation;
-		static bool sizeChanged = false, posChanged = false;
-
-		ImGui::InputFloat("Width##bg", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Height##bg", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Pos X##bg", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##bg", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-
-		if (sizeChanged)
-		{
-			m_PanelBackground->m_Transform.scale = size / m_PanelBackground->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_PanelBackground->m_Transform.translation = pos;
-			posChanged = false;
-		}
-	}
-
-	// === HP Slider Settings ===
-	if (ImGui::CollapsingHeader("HP Slider", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_SliderPlayerHP->m_Transform.scale * m_SliderPlayerHP->GetImageSize();
-		static glm::vec2 pos = m_SliderPlayerHP->m_Transform.translation;
-		static glm::vec2 pivot = m_SliderPlayerHP->GetPivot();
-		static bool sizeChanged = false, posChanged = false, pivotChanged = false;
-
-		ImGui::InputFloat("Width##hp", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Height##hp", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Pos X##hp", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##hp", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pivot X##hp", &pivot.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			pivotChanged = true;
-		ImGui::InputFloat("Pivot Y##hp", &pivot.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			pivotChanged = true;
-
-		if (sizeChanged)
-		{
-			m_SliderPlayerHP->m_Transform.scale = size / m_SliderPlayerHP->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_SliderPlayerHP->m_Transform.translation = pos;
-			posChanged = false;
-		}
-		if (pivotChanged)
-		{
-			m_SliderPlayerHP->SetPivot(pivot);
-			pivotChanged = false;
-		}
-
-		ImGui::LabelText("scale.x", "%.3f", m_SliderPlayerHP->m_Transform.scale.x);
-		ImGui::LabelText("scale.y", "%.3f", m_SliderPlayerHP->m_Transform.scale.y);
-	}
-
-	// === Armor Slider Settings ===
-	if (ImGui::CollapsingHeader("Armor Slider", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_SliderPlayerArmor->m_Transform.scale * m_SliderPlayerArmor->GetImageSize();
-		static glm::vec2 pos = m_SliderPlayerArmor->m_Transform.translation;
-		static glm::vec2 pivot = m_SliderPlayerArmor->GetPivot();
-		static bool sizeChanged = false, posChanged = false, pivotChanged = false;
-
-		ImGui::InputFloat("Width##armor", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Height##armor", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Pos X##armor", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##armor", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pivot X##armor", &pivot.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			pivotChanged = true;
-		ImGui::InputFloat("Pivot Y##armor", &pivot.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			pivotChanged = true;
-
-		if (sizeChanged)
-		{
-			m_SliderPlayerArmor->m_Transform.scale = size / m_SliderPlayerArmor->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_SliderPlayerArmor->m_Transform.translation = pos;
-			posChanged = false;
-		}
-		if (pivotChanged)
-		{
-			m_SliderPlayerArmor->SetPivot(pivot);
-			pivotChanged = false;
-		}
-
-		ImGui::LabelText("scale.x", "%.3f", m_SliderPlayerArmor->m_Transform.scale.x);
-		ImGui::LabelText("scale.y", "%.3f", m_SliderPlayerArmor->m_Transform.scale.y);
-	}
-
-	// === Energy Slider Settings ===
-	if (ImGui::CollapsingHeader("Energy Slider", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 size = m_SliderPlayerEnergy->m_Transform.scale * m_SliderPlayerEnergy->GetImageSize();
-		static glm::vec2 pos = m_SliderPlayerEnergy->m_Transform.translation;
-		static glm::vec2 pivot = m_SliderPlayerEnergy->GetPivot();
-		static bool sizeChanged = false, posChanged = false, pivotChanged = false;
-
-		ImGui::InputFloat("Width##energy", &size.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Height##energy", &size.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			sizeChanged = true;
-		ImGui::InputFloat("Pos X##energy", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##energy", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pivot X##energy", &pivot.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			pivotChanged = true;
-		ImGui::InputFloat("Pivot Y##energy", &pivot.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			pivotChanged = true;
-
-		if (sizeChanged)
-		{
-			m_SliderPlayerEnergy->m_Transform.scale = size / m_SliderPlayerEnergy->GetImageSize();
-			sizeChanged = false;
-		}
-		if (posChanged)
-		{
-			m_SliderPlayerEnergy->m_Transform.translation = pos;
-			posChanged = false;
-		}
-		if (pivotChanged)
-		{
-			m_SliderPlayerEnergy->SetPivot(pivot);
-			pivotChanged = false;
-		}
-
-		ImGui::LabelText("scale.x", "%.3f", m_SliderPlayerEnergy->m_Transform.scale.x);
-		ImGui::LabelText("scale.y", "%.3f", m_SliderPlayerEnergy->m_Transform.scale.y);
-	}
-
-	// === HP Text Settings ===
-	if (ImGui::CollapsingHeader("HP Text", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 pos = m_TextPlayerHP->m_Transform.translation;
-		static glm::vec2 scale = m_TextPlayerHP->m_Transform.scale;
-		static bool posChanged = false, scaleChanged = false;
-
-		ImGui::InputFloat("Pos X##hptext", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##hptext", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Scale X##hptext", &scale.x, 0.1f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			scaleChanged = true;
-		ImGui::InputFloat("Scale Y##hptext", &scale.y, 0.1f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			scaleChanged = true;
-
-		if (posChanged)
-		{
-			m_TextPlayerHP->m_Transform.translation = pos;
-			posChanged = false;
-		}
-		if (scaleChanged)
-		{
-			m_TextPlayerHP->m_Transform.scale = scale;
-			scaleChanged = false;
-		}
-	}
-
-	// === Armor Text Settings ===
-	if (ImGui::CollapsingHeader("Armor Text", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 pos = m_TextPlayerArmor->m_Transform.translation;
-		static glm::vec2 scale = m_TextPlayerArmor->m_Transform.scale;
-		static bool posChanged = false, scaleChanged = false;
-
-		ImGui::InputFloat("Pos X##armortext", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##armortext", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Scale X##armortext", &scale.x, 0.1f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			scaleChanged = true;
-		ImGui::InputFloat("Scale Y##armortext", &scale.y, 0.1f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			scaleChanged = true;
-
-		if (posChanged)
-		{
-			m_TextPlayerArmor->m_Transform.translation = pos;
-			posChanged = false;
-		}
-		if (scaleChanged)
-		{
-			m_TextPlayerArmor->m_Transform.scale = scale;
-			scaleChanged = false;
-		}
-	}
-
-	// === Energy Text Settings ===
-	if (ImGui::CollapsingHeader("Energy Text", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static glm::vec2 pos = m_TextPlayerEnergy->m_Transform.translation;
-		static glm::vec2 scale = m_TextPlayerEnergy->m_Transform.scale;
-		static bool posChanged = false, scaleChanged = false;
-
-		ImGui::InputFloat("Pos X##energytext", &pos.x, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Pos Y##energytext", &pos.y, 1.0f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			posChanged = true;
-		ImGui::InputFloat("Scale X##energytext", &scale.x, 0.1f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			scaleChanged = true;
-		ImGui::InputFloat("Scale Y##energytext", &scale.y, 0.1f);
-		if (ImGui::IsItemDeactivatedAfterEdit())
-			scaleChanged = true;
-
-		if (posChanged)
-		{
-			m_TextPlayerEnergy->m_Transform.translation = pos;
-			posChanged = false;
-		}
-		if (scaleChanged)
-		{
-			m_TextPlayerEnergy->m_Transform.scale = scale;
-			scaleChanged = false;
-		}
-	}
-
-	ImGui::End();
+	// ImGui::Begin("Player Status Panel Debug");
+	//
+	// // === Background Settings ===
+	// if (ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 size = m_PanelBackground->m_Transform.scale * m_PanelBackground->GetImageSize();
+	// 	static glm::vec2 pos = m_PanelBackground->m_Transform.translation;
+	// 	static bool sizeChanged = false, posChanged = false;
+	//
+	// 	ImGui::InputFloat("Width##bg", &size.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Height##bg", &size.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Pos X##bg", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##bg", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	//
+	// 	if (sizeChanged)
+	// 	{
+	// 		m_PanelBackground->m_Transform.scale = size / m_PanelBackground->GetImageSize();
+	// 		sizeChanged = false;
+	// 	}
+	// 	if (posChanged)
+	// 	{
+	// 		m_PanelBackground->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// }
+	//
+	// // === HP Slider Settings ===
+	// if (ImGui::CollapsingHeader("HP Slider", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 size = m_SliderPlayerHP->m_Transform.scale * m_SliderPlayerHP->GetImageSize();
+	// 	static glm::vec2 pos = m_SliderPlayerHP->m_Transform.translation;
+	// 	static glm::vec2 pivot = m_SliderPlayerHP->GetPivot();
+	// 	static bool sizeChanged = false, posChanged = false, pivotChanged = false;
+	//
+	// 	ImGui::InputFloat("Width##hp", &size.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Height##hp", &size.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Pos X##hp", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##hp", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pivot X##hp", &pivot.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		pivotChanged = true;
+	// 	ImGui::InputFloat("Pivot Y##hp", &pivot.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		pivotChanged = true;
+	//
+	// 	if (sizeChanged)
+	// 	{
+	// 		m_SliderPlayerHP->m_Transform.scale = size / m_SliderPlayerHP->GetImageSize();
+	// 		sizeChanged = false;
+	// 	}
+	// 	if (posChanged)
+	// 	{
+	// 		m_SliderPlayerHP->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// 	if (pivotChanged)
+	// 	{
+	// 		m_SliderPlayerHP->SetPivot(pivot);
+	// 		pivotChanged = false;
+	// 	}
+	//
+	// 	ImGui::LabelText("scale.x", "%.3f", m_SliderPlayerHP->m_Transform.scale.x);
+	// 	ImGui::LabelText("scale.y", "%.3f", m_SliderPlayerHP->m_Transform.scale.y);
+	// }
+	//
+	// // === Armor Slider Settings ===
+	// if (ImGui::CollapsingHeader("Armor Slider", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 size = m_SliderPlayerArmor->m_Transform.scale * m_SliderPlayerArmor->GetImageSize();
+	// 	static glm::vec2 pos = m_SliderPlayerArmor->m_Transform.translation;
+	// 	static glm::vec2 pivot = m_SliderPlayerArmor->GetPivot();
+	// 	static bool sizeChanged = false, posChanged = false, pivotChanged = false;
+	//
+	// 	ImGui::InputFloat("Width##armor", &size.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Height##armor", &size.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Pos X##armor", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##armor", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pivot X##armor", &pivot.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		pivotChanged = true;
+	// 	ImGui::InputFloat("Pivot Y##armor", &pivot.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		pivotChanged = true;
+	//
+	// 	if (sizeChanged)
+	// 	{
+	// 		m_SliderPlayerArmor->m_Transform.scale = size / m_SliderPlayerArmor->GetImageSize();
+	// 		sizeChanged = false;
+	// 	}
+	// 	if (posChanged)
+	// 	{
+	// 		m_SliderPlayerArmor->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// 	if (pivotChanged)
+	// 	{
+	// 		m_SliderPlayerArmor->SetPivot(pivot);
+	// 		pivotChanged = false;
+	// 	}
+	//
+	// 	ImGui::LabelText("scale.x", "%.3f", m_SliderPlayerArmor->m_Transform.scale.x);
+	// 	ImGui::LabelText("scale.y", "%.3f", m_SliderPlayerArmor->m_Transform.scale.y);
+	// }
+	//
+	// // === Energy Slider Settings ===
+	// if (ImGui::CollapsingHeader("Energy Slider", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 size = m_SliderPlayerEnergy->m_Transform.scale * m_SliderPlayerEnergy->GetImageSize();
+	// 	static glm::vec2 pos = m_SliderPlayerEnergy->m_Transform.translation;
+	// 	static glm::vec2 pivot = m_SliderPlayerEnergy->GetPivot();
+	// 	static bool sizeChanged = false, posChanged = false, pivotChanged = false;
+	//
+	// 	ImGui::InputFloat("Width##energy", &size.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Height##energy", &size.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		sizeChanged = true;
+	// 	ImGui::InputFloat("Pos X##energy", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##energy", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pivot X##energy", &pivot.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		pivotChanged = true;
+	// 	ImGui::InputFloat("Pivot Y##energy", &pivot.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		pivotChanged = true;
+	//
+	// 	if (sizeChanged)
+	// 	{
+	// 		m_SliderPlayerEnergy->m_Transform.scale = size / m_SliderPlayerEnergy->GetImageSize();
+	// 		sizeChanged = false;
+	// 	}
+	// 	if (posChanged)
+	// 	{
+	// 		m_SliderPlayerEnergy->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// 	if (pivotChanged)
+	// 	{
+	// 		m_SliderPlayerEnergy->SetPivot(pivot);
+	// 		pivotChanged = false;
+	// 	}
+	//
+	// 	ImGui::LabelText("scale.x", "%.3f", m_SliderPlayerEnergy->m_Transform.scale.x);
+	// 	ImGui::LabelText("scale.y", "%.3f", m_SliderPlayerEnergy->m_Transform.scale.y);
+	// }
+	//
+	// // === HP Text Settings ===
+	// if (ImGui::CollapsingHeader("HP Text", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 pos = m_TextPlayerHP->m_Transform.translation;
+	// 	static glm::vec2 scale = m_TextPlayerHP->m_Transform.scale;
+	// 	static bool posChanged = false, scaleChanged = false;
+	//
+	// 	ImGui::InputFloat("Pos X##hptext", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##hptext", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Scale X##hptext", &scale.x, 0.1f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		scaleChanged = true;
+	// 	ImGui::InputFloat("Scale Y##hptext", &scale.y, 0.1f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		scaleChanged = true;
+	//
+	// 	if (posChanged)
+	// 	{
+	// 		m_TextPlayerHP->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// 	if (scaleChanged)
+	// 	{
+	// 		m_TextPlayerHP->m_Transform.scale = scale;
+	// 		scaleChanged = false;
+	// 	}
+	// }
+	//
+	// // === Armor Text Settings ===
+	// if (ImGui::CollapsingHeader("Armor Text", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 pos = m_TextPlayerArmor->m_Transform.translation;
+	// 	static glm::vec2 scale = m_TextPlayerArmor->m_Transform.scale;
+	// 	static bool posChanged = false, scaleChanged = false;
+	//
+	// 	ImGui::InputFloat("Pos X##armortext", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##armortext", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Scale X##armortext", &scale.x, 0.1f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		scaleChanged = true;
+	// 	ImGui::InputFloat("Scale Y##armortext", &scale.y, 0.1f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		scaleChanged = true;
+	//
+	// 	if (posChanged)
+	// 	{
+	// 		m_TextPlayerArmor->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// 	if (scaleChanged)
+	// 	{
+	// 		m_TextPlayerArmor->m_Transform.scale = scale;
+	// 		scaleChanged = false;
+	// 	}
+	// }
+	//
+	// // === Energy Text Settings ===
+	// if (ImGui::CollapsingHeader("Energy Text", ImGuiTreeNodeFlags_DefaultOpen))
+	// {
+	// 	static glm::vec2 pos = m_TextPlayerEnergy->m_Transform.translation;
+	// 	static glm::vec2 scale = m_TextPlayerEnergy->m_Transform.scale;
+	// 	static bool posChanged = false, scaleChanged = false;
+	//
+	// 	ImGui::InputFloat("Pos X##energytext", &pos.x, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Pos Y##energytext", &pos.y, 1.0f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		posChanged = true;
+	// 	ImGui::InputFloat("Scale X##energytext", &scale.x, 0.1f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		scaleChanged = true;
+	// 	ImGui::InputFloat("Scale Y##energytext", &scale.y, 0.1f);
+	// 	if (ImGui::IsItemDeactivatedAfterEdit())
+	// 		scaleChanged = true;
+	//
+	// 	if (posChanged)
+	// 	{
+	// 		m_TextPlayerEnergy->m_Transform.translation = pos;
+	// 		posChanged = false;
+	// 	}
+	// 	if (scaleChanged)
+	// 	{
+	// 		m_TextPlayerEnergy->m_Transform.scale = scale;
+	// 		scaleChanged = false;
+	// 	}
+	// }
+	//
+	// ImGui::End();
 }

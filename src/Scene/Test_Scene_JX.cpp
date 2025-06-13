@@ -135,8 +135,6 @@ void TestScene_JX::Update()
 {
 	// Input：
 	inputManager->Update();
-	if (Util::Input::IsKeyDown(Util::Keycode::O))
-		m_RoomCollisionManager->ShowColliderBox(); // 按鍵O可以顯示關閉colliderBox
 
 	auto healthComp = m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH);
 	auto healthEnemy = m_Enemy->GetComponent<HealthComponent>(ComponentType::HEALTH);

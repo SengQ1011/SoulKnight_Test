@@ -23,6 +23,7 @@
 #include "Room/LobbyRoom.hpp"
 #include "Room/RoomCollisionManager.hpp"
 #include "UIPanel/GameHUDPanel.hpp"
+#include "UIPanel/KeyPanel.hpp"
 #include "UIPanel/PausePanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
 #include "UIPanel/SettingPanel.hpp"
@@ -52,7 +53,7 @@ void LobbyScene::Start()
 
 	// 创建玩家角色
 	CreatePlayer();
-	CreateEnemy();
+	// CreateEnemy();
 
 	// 设置相机
 	m_MapHeight = 480.0f; // 大廳場景的地圖高度 480.0f
@@ -69,7 +70,7 @@ void LobbyScene::Start()
 	m_LobbyRoom->GetCollisionManager()->RegisterNGameObject(m_Player);
 	// 将玩家添加到房间
 	m_LobbyRoom->CharacterEnter(m_Player);
-	m_LobbyRoom->CharacterEnter(m_Enemy);
+	// m_LobbyRoom->CharacterEnter(m_Enemy);
 
 	m_CurrentRoom = m_LobbyRoom;
 
@@ -178,16 +179,16 @@ void LobbyScene::CreatePlayer()
 	// m_NPC->SetWorldCoord(glm::vec2(100, 0));
 	// if (const auto collision2 = m_NPC->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	// {
-		// 碰撞箱可視化功能已移除
-		/*
-		if (!collision2->GetVisibleBox())
-			return;
-		const auto visibleBox = collision2->GetVisibleBox();
-		if (!visibleBox)
-			return;
-		m_PendingObjects.emplace_back(visibleBox);
-		visibleBox->SetRegisteredToScene(true);
-		*/
+	// 碰撞箱可視化功能已移除
+	/*
+	if (!collision2->GetVisibleBox())
+		return;
+	const auto visibleBox = collision2->GetVisibleBox();
+	if (!visibleBox)
+		return;
+	m_PendingObjects.emplace_back(visibleBox);
+	visibleBox->SetRegisteredToScene(true);
+	*/
 	// }
 }
 
@@ -245,6 +246,11 @@ void LobbyScene::InitUIManager()
 	const auto settingPanel = std::make_shared<SettingPanel>();
 	settingPanel->Start();
 	UIManager::GetInstance().RegisterPanel("setting", std::static_pointer_cast<UIPanel>(settingPanel), 2, true);
+
+	// 創建按鍵說明面板 - 最高優先級模態面板
+	const auto keyPanel = std::make_shared<KeyPanel>();
+	keyPanel->Start();
+	UIManager::GetInstance().RegisterPanel("key", std::static_pointer_cast<UIPanel>(keyPanel), 2, true);
 
 	// 創建暫停面板 - 中等優先級模態面板
 	const auto pausePanel =

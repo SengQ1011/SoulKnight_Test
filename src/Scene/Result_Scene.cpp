@@ -139,9 +139,18 @@ void ResultScene::Update()
 	UpdatePlayerIconMovement();
 
 	// 顯示調試UI (按F1切換)
+	static bool f1KeyPressed = false;
 	if (Util::Input::IsKeyDown(Util::Keycode::F1))
 	{
-		m_ShowDebugUI = !m_ShowDebugUI;
+		if (!f1KeyPressed)
+		{
+			m_ShowDebugUI = !m_ShowDebugUI;
+			f1KeyPressed = true;
+		}
+	}
+	else
+	{
+		f1KeyPressed = false;
 	}
 
 	if (m_ShowDebugUI)

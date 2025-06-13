@@ -111,11 +111,25 @@ void GameHUDPanel::Update()
 			gameObject->Update();
 	}
 
-	// 調試界面
-	if (Util::Input::IsKeyDown(Util::Keycode::F1))
-	{
-		DrawDebugUI();
-	}
+	// 調試界面 - F1 按鍵控制
+	// static bool f1KeyPressed = false;
+	// if (Util::Input::IsKeyDown(Util::Keycode::F1))
+	// {
+	// 	if (!f1KeyPressed)
+	// 	{
+	// 		m_ShowDebugUI = !m_ShowDebugUI;
+	// 		f1KeyPressed = true;
+	// 	}
+	// }
+	// else
+	// {
+	// 	f1KeyPressed = false;
+	// }
+	//
+	// if (m_ShowDebugUI)
+	// {
+	// 	DrawDebugUI();
+	// }
 }
 
 void GameHUDPanel::Show()
