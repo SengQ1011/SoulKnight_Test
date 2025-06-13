@@ -124,6 +124,33 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 		{
 			roomObject = std::make_shared<ShopTable>(_id, _class);
 		}
+		else if (_class == "egg")
+		{
+			// 特殊处理鸡蛋对象
+			if (isAnimated)
+			{
+				std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
+				for (auto &i : path)
+					i = RESOURCE_DIR + i;
+				std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true, 0, _class);
+				animation->PlayAnimation(false); // 初始不播放动画
+				roomObject = animation;
+
+				// 为鸡蛋添加 InteractableComponent
+				StructInteractableComponent interactableConfig;
+				interactableConfig.s_InteractableType = InteractableType::EGG;
+				interactableConfig.s_InteractionRadius = 32.0f;
+				interactableConfig.s_IsAutoInteract = false;
+				roomObject->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE, interactableConfig);
+
+				LOG_DEBUG("Created egg object with InteractableComponent");
+			}
+			else
+			{
+				LOG_ERROR("Egg object must be animated!");
+				return nullptr;
+			}
+		}
 		else
 		{
 			// 對於其他類型，使用原有邏輯
@@ -136,6 +163,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 				// TODO interval 間隔
 				if (jsonData.contains("willPlay"))
 				{
+					LOG_INFO("RoomObjectFactory::createRoomObject willPlay");
 					animation->PlayAnimation(jsonData["willPlay"].get<bool>());
 				}
 				else animation->PlayAnimation(true);

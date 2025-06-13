@@ -105,8 +105,8 @@ void AnimationComponent::SetSkillEffect(const bool play, const glm::vec2 offset)
 
 				auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 				if (scene) {
-					scene->GetRoot().lock()->AddChild(m_effectAnimation);
-					scene->GetCamera().lock()->SafeAddChild(m_effectAnimation);
+				scene->GetRoot().lock()->AddChild(m_effectAnimation);
+				scene->GetCamera().lock()->SafeAddChild(m_effectAnimation);
 					m_effectAnimation->m_WorldCoord = character->m_WorldCoord + offset;
 				}
 			}
@@ -116,14 +116,14 @@ void AnimationComponent::SetSkillEffect(const bool play, const glm::vec2 offset)
 	{
 		m_useSkillEffect = false;
 		if (m_effectAnimation) {
-			m_effectAnimation->SetControlVisible(false);
-			m_effectAnimation->PlayAnimation(false);
-			auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
+		m_effectAnimation->SetControlVisible(false);
+		m_effectAnimation->PlayAnimation(false);
+		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 			if (scene) {
-				scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
-				const auto camera = scene->GetCamera().lock();
+		scene->GetRoot().lock()->RemoveChild(m_effectAnimation);
+		const auto camera = scene->GetCamera().lock();
 				if (camera) {
-					camera->MarkForRemoval(m_effectAnimation);
+		camera->MarkForRemoval(m_effectAnimation);
 				}
 			}
 		}

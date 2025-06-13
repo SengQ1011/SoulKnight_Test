@@ -11,6 +11,8 @@
 #include "Loader.hpp"
 #include "Util/Logger.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Components/InteractableComponent.hpp"
+#include "Components/DropComponent.hpp"
 
 
 void LobbyRoom::Start(const std::shared_ptr<Character> &player)
@@ -121,7 +123,7 @@ void LobbyRoom::ValidatePlayerPosition()
 	}
 }
 
-void LobbyRoom::CreateEgg(const glm::vec2& position) {
+void LobbyRoom::CreateEgg(const glm::vec2& position, const std::vector<std::shared_ptr<nGameObject>>& dropItems) {
 	const auto factory = m_Factory.lock();
 	if (!factory) {
 		LOG_ERROR("Factory is not available");
@@ -129,7 +131,7 @@ void LobbyRoom::CreateEgg(const glm::vec2& position) {
 	}
 
 	// 使用工厂创建蛋
-	auto egg = factory->CreateRoomObject("object_egg", "");
+	auto egg = factory->CreateRoomObject("object_egg", "egg");
 	if (!egg) {
 		LOG_ERROR("Failed to create egg");
 		return;
@@ -140,6 +142,15 @@ void LobbyRoom::CreateEgg(const glm::vec2& position) {
 	egg->SetActive(true);
 	egg->SetControlVisible(true);
 
+	// 添加 DropComponent
+	auto dropComp = egg->AddComponent<DropComponent>(
+		ComponentType::DROP, DropComponent::ScatterMode::FIXED);
+
+	// 如果有掉落物品，添加到 DropComponent
+	if (!dropItems.empty()) {
+		dropComp->AddDropItems(dropItems);
+	}
+
 	// 添加到场景
 	if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock()) {
 		scene->GetRoot().lock()->AddChild(egg);
@@ -147,10 +158,11 @@ void LobbyRoom::CreateEgg(const glm::vec2& position) {
 		egg->SetRegisteredToScene(true);
 
 		// 注册到交互管理器
-		if (const auto interactableManager = GetInteractionManager()) {
+		if (const auto interactableManager = GetInteractionManager())
+		{
 			interactableManager->RegisterInteractable(egg);
 		}
+	} else {
+		LOG_ERROR("Scene is not available!");
 	}
-
-	LOG_DEBUG("Egg created at position ({}, {})", position.x, position.y);
 }

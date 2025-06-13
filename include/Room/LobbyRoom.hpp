@@ -6,6 +6,11 @@
 #define LOBBYROOM_HPP
 
 #include "Room/Room.hpp"
+#include <vector>
+#include <memory>
+#include "glm/glm.hpp"
+
+class nGameObject;
 
 class LobbyRoom : public Room
 {
@@ -23,7 +28,7 @@ public:
 
 	void AddWallCollider(const std::shared_ptr<nGameObject> &collider);
 	std::vector<std::shared_ptr<nGameObject>> GetWallColliders() { return m_WallColliders; };
-	void CreateEgg(const glm::vec2 &position);
+	void CreateEgg(const glm::vec2 &position, const std::vector<std::shared_ptr<nGameObject>>& dropItems = {});
 
 protected:
 	// 实现抽象方法

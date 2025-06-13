@@ -551,16 +551,15 @@ void InteractableComponent::Init()
 						{
 							data->gameData.gameMoney -= 50;
 							currentScene->Upload();
-							
+
 							// 创建蛋
 							if (auto currentRoom = currentScene->GetCurrentRoom())
 							{
 								if (auto lobbyRoom = std::dynamic_pointer_cast<LobbyRoom>(currentRoom))
 								{
 									// 在扭蛋机上方创建蛋
-									const auto pos = target->GetWorldCoord() + glm::vec2(0.0f, -25.0f);
+									const auto pos = target->GetWorldCoord() + glm::vec2(0.0f, -40.0f);
 									lobbyRoom->CreateEgg(pos);
-									LOG_DEBUG("Created egg at position ({}, {})", pos.x, pos.y);
 								}
 							}
 						}
@@ -608,9 +607,48 @@ void InteractableComponent::Init()
 			{
 				if (const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
 				{
+					// 播放蛋的动画
+					if (auto drawable = target->GetDrawable())
+					{
+						if (auto animation = std::dynamic_pointer_cast<Util::Animation>(drawable))
+						{
+							animation->SetLooping(false);
+							animation->Play();
+						}
+					}
+
+					// 从交互管理器中注销
+					if (const auto interactableManager = currentScene->GetCurrentRoom()->GetInteractionManager())
+					{
+						interactableManager->UnregisterInteractable(target);
+					}
+				}
+			};
+		m_UpdateCallback =
+		[](const std::shared_ptr<nGameObject>& self, const std::shared_ptr<Character>& player)
+		{
+			if (!self)
+				return;
+
+			// 確保有動畫物件
+			auto drawable = self->GetDrawable();
+			if (!drawable)
+				return;
+
+			auto animation = std::dynamic_pointer_cast<Util::Animation>(drawable);
+			if (!animation)
+				return;
+
+			// 播放中且結束後才隱藏
+			if (animation && !animation->GetLooping() &&animation->GetState() == Util::Animation::State::ENDED)
+			{
+				self->SetControlVisible(false);
+				self->SetActive(false);
+				if (auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock())
+				{
 					// 获取玩家现有武器ID列表，避免重复
 					std::vector<int> allPlayerWeaponID;
-					if (auto attackComp = interactor->GetComponent<AttackComponent>(ComponentType::ATTACK))
+					if (auto attackComp = player->GetComponent<AttackComponent>(ComponentType::ATTACK))
 					{
 						allPlayerWeaponID = attackComp->GetAllWeaponID();
 					}
@@ -624,7 +662,7 @@ void InteractableComponent::Init()
 					}
 
 					// 设置武器位置和状态
-					weapon->SetWorldCoord(target->GetWorldCoord());
+					weapon->SetWorldCoord(self->GetWorldCoord());
 					weapon->SetActive(true);
 					weapon->SetControlVisible(true);
 
@@ -638,26 +676,9 @@ void InteractableComponent::Init()
 					{
 						interactableManager->RegisterInteractable(weapon);
 					}
-
-					// 播放蛋的动画
-					if (auto animation = std::dynamic_pointer_cast<Animation>(target))
-					{
-						animation->SetLooping(false);
-						animation->PlayAnimation(true);
-					}
-
-					// 隐藏并停用蛋
-					target->SetControlVisible(false);
-					target->SetActive(false);
-
-					// 从交互管理器中注销
-					if (const auto interactableManager = currentScene->GetCurrentRoom()->GetInteractionManager())
-					{
-						interactableManager->UnregisterInteractable(target);
-					}
 				}
-			};
-
+			}
+		};
 		if (!m_PromptObject)
 		{
 			auto prompt = std::make_shared<nGameObject>("Prompt");
@@ -737,12 +758,17 @@ void InteractableComponent::Update()
 
 	if (m_UpdateCallback)
 	{
+
 		auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 		if (!scene)
 			return;
 
 		std::shared_ptr<Character> player = nullptr;
 		if (std::shared_ptr<DungeonScene> currentScene = std::dynamic_pointer_cast<DungeonScene>(scene))
+		{
+			player = currentScene->GetPlayer();
+		}
+		else if (std::shared_ptr<LobbyScene> currentScene = std::dynamic_pointer_cast<LobbyScene>(scene))
 		{
 			player = currentScene->GetPlayer();
 		}
@@ -757,7 +783,7 @@ void InteractableComponent::Update()
 		const auto owner = GetOwner<nGameObject>();
 		if (owner) {
 			m_PromptAnimation->m_WorldCoord = owner->m_WorldCoord + glm::vec2(-30.0f, 25.0f);
-			
+
 			// 如果动画播放完成，隐藏它
 			if (m_PromptAnimation->IfAnimationEnds()) {
 				m_PromptAnimation->SetControlVisible(false);
