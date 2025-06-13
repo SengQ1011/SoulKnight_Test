@@ -39,6 +39,8 @@ public:
 
 	void Init() override;
 	void Update() override;
+	void HandleEvent(const EventInfo &eventInfo) override;
+	std::vector<EventType> SubscribedEventTypes() const override;
 
 	// 主要功能：處理互動事件
 	virtual bool OnInteract(const std::shared_ptr<Character> &interactor);
@@ -68,7 +70,22 @@ public:
 	{
 		m_IsComponentActive = active;
 		if (!active)
+		{
+			// 立即隱藏所有提示UI
 			ShowPrompt(false);
+
+			// 當停用組件時，將UI移到屏幕外並確保隱藏，避免意外顯示
+			if (m_PromptUI)
+			{
+				m_PromptUI->SetWorldCoord(glm::vec2(-10000.0f, -10000.0f));
+				m_PromptUI->SetControlVisible(false);
+			}
+			if (m_PromptObject)
+			{
+				m_PromptObject->SetWorldCoord(glm::vec2(-10000.0f, -10000.0f));
+				m_PromptObject->SetControlVisible(false);
+			}
+		}
 	}
 
 	// 更新 PromptObject 的文本內容

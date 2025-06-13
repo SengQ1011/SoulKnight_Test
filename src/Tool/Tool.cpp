@@ -33,7 +33,7 @@ namespace Tool
 	glm::vec2 GetMouseCoord()
 	{
 		glm::vec2 mouse_coord = Util::Input::GetCursorPosition();
-		mouse_coord *= glm::vec2(1,-1);
+		// mouse_coord *= glm::vec2(1,1);
 		return mouse_coord;
 	}
 

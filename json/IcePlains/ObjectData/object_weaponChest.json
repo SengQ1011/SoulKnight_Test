@@ -2,7 +2,7 @@
     "id": "object_weaponChest",
     "isAnimated": false,
     "path": "/allChest/object_weaponChest_0.png",
-    "ZIndex": "OBJECTHIGH",
+    "ZIndex": "OBJECTLOW",
     "posOffset": [
         0.0,
         0.0

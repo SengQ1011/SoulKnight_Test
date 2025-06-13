@@ -421,11 +421,10 @@ std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositionsWithSize(int count, co
 	for (int i = 0; i < count && i < static_cast<int>(availablePositions.size()); ++i)
 	{
 		const glm::ivec2 &gridPos = availablePositions[i];
-		// 獲取格子左上角的世界座標
-		glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
 
-		// 計算實體中心的世界座標
-		glm::vec2 entityCenter = gridTopLeft + glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+		// 計算實體中心的正確位置
+		glm::vec2 entityCenter = CalculateEntityCenterPosition(gridPos, entitySize, entityGridWidth, entityGridHeight,
+															   tileSize, roomCoord, region);
 
 		positions.push_back(entityCenter);
 	}
@@ -512,8 +511,11 @@ MonsterRoom::GenerateSpawnPositionsWithSizeAndExclusions(int count, const glm::v
 	for (int i = 0; i < actualCount; ++i)
 	{
 		const glm::ivec2 &gridPos = availablePositions[i];
-		glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
-		glm::vec2 entityCenter = gridTopLeft + glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+
+		// 計算實體中心的正確位置
+		glm::vec2 entityCenter = CalculateEntityCenterPosition(gridPos, entitySize, entityGridWidth, entityGridHeight,
+															   tileSize, roomCoord, region);
+
 		positions.push_back(entityCenter);
 	}
 
@@ -559,6 +561,31 @@ void MonsterRoom::RecordOccupiedPositions(const glm::vec2 &worldPos, const glm::
 			occupiedPositions.push_back({col, row});
 		}
 	}
+}
+
+glm::vec2 MonsterRoom::CalculateEntityCenterPosition(const glm::ivec2 &gridPos, const glm::vec2 &entitySize,
+													 int entityGridWidth, int entityGridHeight,
+													 const glm::vec2 &tileSize, const glm::vec2 &roomCoord,
+													 const glm::vec2 &region) const
+{
+	// 根據碰撞優化文檔的正確邏輯：
+	// 1. 奇數格子實體：放在格子中心
+	// 2. 偶數格子實體：放在格子之間
+
+	// 獲取左上角格子的左上角世界座標
+	glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
+
+	// 計算實體佔用區域的中心偏移
+	// 對於 width×height 的矩形區域，從左上角格子到中心的偏移
+	glm::vec2 centerOffset = {(entityGridWidth - 1) * tileSize.x / 2.0f, -(entityGridHeight - 1) * tileSize.y / 2.0f};
+
+	// 格子左上角 → 格子中心座標
+	glm::vec2 firstCellCenter = gridTopLeft + glm::vec2(tileSize.x / 2.0f, -tileSize.y / 2.0f);
+
+	// 實體中心 = 第一個格子中心 + 中心偏移
+	glm::vec2 entityCenter = firstCellCenter + centerOffset;
+
+	return entityCenter;
 }
 
 void MonsterRoom::CloseDoors()
@@ -690,7 +717,6 @@ void MonsterRoom::CombatManager::ActivateCurrentWaveEnemies()
 			// 使用ShowUpEvent來顯示怪物
 			ShowUpEvent showUpEvent;
 			enemy->OnEvent(showUpEvent);
-
 		}
 	}
 }

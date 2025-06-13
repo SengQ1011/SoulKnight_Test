@@ -8,6 +8,7 @@
 #include "ObserveManager/AudioManager.hpp"
 #include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
+#include "Structs/EventInfo.hpp"
 
 #include "Components/WalletComponent.hpp"
 #include "Creature/Character.hpp"
@@ -423,9 +424,16 @@ void InteractableComponent::Init()
 
 void InteractableComponent::Update()
 {
-	// 如果組件非激活狀態，停止更新
+	// 如果組件非激活狀態，確保UI被隱藏並停止更新
 	if (!m_IsComponentActive)
+	{
+		// 確保UI在非激活狀態下保持隱藏
+		if (m_IsPromptVisible)
+		{
+			ShowPrompt(false);
+		}
 		return;
+	}
 
 	if (m_UpdateCallback)
 	{
@@ -458,6 +466,16 @@ bool InteractableComponent::OnInteract(const std::shared_ptr<Character> &interac
 		{
 			// 立即隱藏提示詞，避免在移除前還會顯示
 			ShowPrompt(false);
+
+			// 重置UI位置到安全位置，避免顯示在(0,0)
+			if (m_PromptUI)
+			{
+				m_PromptUI->SetWorldCoord(glm::vec2(-10000.0f, -10000.0f)); // 移到屏幕外
+			}
+			if (m_PromptObject)
+			{
+				m_PromptObject->SetWorldCoord(glm::vec2(-10000.0f, -10000.0f)); // 移到屏幕外
+			}
 
 			// 寶箱被開啟後停用 InteractableComponent
 			SetComponentActive(false);
@@ -573,4 +591,53 @@ void InteractableComponent::SetPromptText(const std::string &text)
 	{
 		drawable->SetText(text);
 	}
+}
+
+void InteractableComponent::HandleEvent(const EventInfo &eventInfo)
+{
+	// 處理寶箱開啟事件
+	if (eventInfo.GetEventType() == EventType::ChestOpen)
+	{
+		// 檢查是否為寶箱類型的互動組件
+		if (m_interactableType == InteractableType::REWARD_CHEST ||
+			m_interactableType == InteractableType::WEAPON_CHEST)
+		{
+			// 立即隱藏提示詞，避免在移除前還會顯示
+			ShowPrompt(false);
+
+			// 重置UI位置到安全位置，避免顯示在(0,0)
+			if (m_PromptUI)
+			{
+				m_PromptUI->SetWorldCoord(glm::vec2(-10000.0f, -10000.0f)); // 移到屏幕外
+				m_PromptUI->SetControlVisible(false);
+			}
+			if (m_PromptObject)
+			{
+				m_PromptObject->SetWorldCoord(glm::vec2(-10000.0f, -10000.0f)); // 移到屏幕外
+				m_PromptObject->SetControlVisible(false);
+			}
+
+			// 寶箱被開啟後停用 InteractableComponent
+			SetComponentActive(false);
+
+			// 從互動管理器中移除
+			auto item = GetOwner<nGameObject>();
+			if (const auto interactableManager =
+					SceneManager::GetInstance().GetCurrentScene().lock()->GetCurrentRoom()->GetInteractionManager())
+			{
+				LOG_DEBUG("InteractableComponent::Remove from ChestOpenEvent");
+				interactableManager->QueueUnregister(item);
+			}
+		}
+	}
+}
+
+std::vector<EventType> InteractableComponent::SubscribedEventTypes() const
+{
+	// 只有寶箱類型的互動組件才訂閱 ChestOpen 事件
+	if (m_interactableType == InteractableType::REWARD_CHEST || m_interactableType == InteractableType::WEAPON_CHEST)
+	{
+		return {EventType::ChestOpen};
+	}
+	return {};
 }

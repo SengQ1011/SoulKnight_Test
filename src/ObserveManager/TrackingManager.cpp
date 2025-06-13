@@ -86,18 +86,30 @@ bool TrackingManager::RayIntersectsRect(const glm::vec2 &rayStart, const glm::ve
 
 	for (int i = 0; i < 2; ++i)
 	{
+		// 正確獲取矩形的邊界
+		float minBound, maxBound;
+		if (i == 0)
+		{ // X軸
+			minBound = rect.left();
+			maxBound = rect.right();
+		}
+		else
+		{ // Y軸
+			minBound = rect.bottom();
+			maxBound = rect.top();
+		}
+
 		if (std::abs(delta[i]) < 1e-6f)
 		{ // 1e-6f = 0.000001f 代表幾乎等於0
-			if (rayStart[i] < rect.m_Position[i] || rayStart[i] > rect.m_Position[i] + rect.m_Size[i])
+			if (rayStart[i] < minBound || rayStart[i] > maxBound)
 				return false;
 		}
 		else
 		{
-			// t1 = 線段穿過矩形「左/下邊界」的時候t的值
-			// t2 = 穿過矩形「右上邊界」的時候t的值
+			// t1 = 線段穿過矩形邊界的時候t的值
 			const float ood = 1.0f / delta[i];
-			float t1 = (rect.m_Position[i] - rayStart[i]) * ood;
-			float t2 = (rect.m_Position[i] + rect.m_Size[i] - rayStart[i]) * ood;
+			float t1 = (minBound - rayStart[i]) * ood;
+			float t2 = (maxBound - rayStart[i]) * ood;
 			if (t1 > t2)
 				std::swap(t1, t2);
 			tmin = std::max(tmin, t1);
@@ -120,7 +132,6 @@ bool TrackingManager::HasLineOfSight(const glm::vec2 &from, const glm::vec2 &to)
 		Rect bounds = collisionComp->GetBounds();
 		if (RayIntersectsRect(from, to, bounds))
 		{
-			// LOG_DEBUG("TrackingManager::HasLineOfSight==>have terrain block");
 			return false; // 有擋住
 		}
 	}
@@ -146,7 +157,6 @@ void TrackingManager::FindNearestVisibleEnemy()
 			if (HasLineOfSight(m_playerPos, enemyPos))
 			{
 				m_visibleEnemies.push_back(enemy);
-				// LOG_DEBUG("have target");
 				if (dist < minDist)
 				{
 					minDist = dist;

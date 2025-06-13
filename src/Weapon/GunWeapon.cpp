@@ -57,7 +57,12 @@ void GunWeapon::attack(const int damage, bool isCriticalHit)
 	const auto characterType = m_currentOwner->GetType();
 	int numRebound = 0;
 	if (m_projectileInfo.canReboundBySword)
-		numRebound = m_currentOwner->GetComponent<AttackComponent>(ComponentType::ATTACK)->GetNumRebound();
+	{
+		if (auto attackComp = m_currentOwner->GetComponent<AttackComponent>(ComponentType::ATTACK))
+		{
+			numRebound = attackComp->GetNumRebound();
+		}
+	}
 
 	const auto currentScene = SceneManager::GetInstance().GetCurrentScene().lock();
 
@@ -100,6 +105,7 @@ void GunWeapon::attack(const int damage, bool isCriticalHit)
 		projectileInfo.direction = newDirection;
 		projectileInfo.damage = damage;
 		projectileInfo.isCriticalHit = isCriticalHit;
+		projectileInfo.numRebound = numRebound;
 		if (m_bulletCanTracking)
 		{
 			projectileInfo.target = target;

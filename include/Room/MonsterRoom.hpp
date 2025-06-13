@@ -147,6 +147,9 @@ private:
 								   const std::vector<glm::ivec2> &occupiedPositions) const; // 檢查是否與已佔用位置重疊
 	void RecordOccupiedPositions(const glm::vec2 &worldPos, const glm::vec2 &entitySize,
 								 std::vector<glm::ivec2> &occupiedPositions); // 記錄實體佔用的網格位置
+	glm::vec2 CalculateEntityCenterPosition(const glm::ivec2 &gridPos, const glm::vec2 &entitySize, int entityGridWidth,
+											int entityGridHeight, const glm::vec2 &tileSize, const glm::vec2 &roomCoord,
+											const glm::vec2 &region) const; // 計算實體中心的正確位置
 	void CloseDoors();
 	void OpenDoors();
 	void SpawnRewardChest();
