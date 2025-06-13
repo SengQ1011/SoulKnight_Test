@@ -135,6 +135,8 @@ private:
 	void SetEnemyVisible(const std::shared_ptr<Character> &enemy, bool visible); // 同時控制敵人和武器的可見性
 	void LoadCombatConfiguration();
 	void PreSpawnAllWaveEnemies(); // 預先生成所有波次的怪物
+	void RecalculateGridFromCollisionComponents(); // 重新計算所有碰撞組件佔據的格子
+	float CalculateIntersectionArea(const Rect &a, const Rect &b) const; // 計算兩個矩形的交集面積
 	std::vector<glm::vec2> GenerateSpawnPositions(int count); // 生成隨機位置（向後兼容）
 	std::vector<glm::vec2> GenerateSpawnPositionsWithSize(int count,
 														  const glm::vec2 &entitySize); // 根據實體大小生成位置
@@ -147,6 +149,9 @@ private:
 								   const std::vector<glm::ivec2> &occupiedPositions) const; // 檢查是否與已佔用位置重疊
 	void RecordOccupiedPositions(const glm::vec2 &worldPos, const glm::vec2 &entitySize,
 								 std::vector<glm::ivec2> &occupiedPositions); // 記錄實體佔用的網格位置
+	glm::vec2 CalculateEntityCenterPosition(const glm::ivec2 &gridPos, const glm::vec2 &entitySize, int entityGridWidth,
+											int entityGridHeight, const glm::vec2 &tileSize, const glm::vec2 &roomCoord,
+											const glm::vec2 &region) const; // 計算實體中心的正確位置
 	void CloseDoors();
 	void OpenDoors();
 	void SpawnRewardChest();

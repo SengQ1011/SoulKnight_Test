@@ -188,7 +188,7 @@ protected:
 	/// @}
 
 	// 嘗試注冊到管理員
-	void RegisterCollisionManger(const std::shared_ptr<nGameObject> &object) const;
+	void RegisterCollisionManager(const std::shared_ptr<nGameObject> &object) const;
 	void RegisterInteractionManager(const std::shared_ptr<nGameObject> &object) const;
 	void RegisterTrackingManager(const std::shared_ptr<nGameObject> &object) const;
 

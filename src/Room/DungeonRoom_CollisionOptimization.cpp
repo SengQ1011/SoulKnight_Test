@@ -48,38 +48,17 @@ void DungeonRoom::RemoveWallCollisionComponents()
 		if (!collisionComp)
 			continue;
 
-		// 從 PendingObjects 中移除 visibleBox
+		// 移除碰撞組件
 		auto check = obj->RemoveComponent<CollisionComponent>(ComponentType::COLLISION);
-		RemoveVisibleBoxFromPendingObjects(collisionComp, scene);
+		// VisibleBox 功能已移除，不需要處理
+		// RemoveVisibleBoxFromPendingObjects(collisionComp, scene);
 
 		// 從碰撞管理器中註銷物件
 		m_CollisionManager->UnregisterNGameObject(obj);
 	}
 }
 
-void DungeonRoom::RemoveVisibleBoxFromPendingObjects(const std::shared_ptr<CollisionComponent> &collisionComp,
-													 const std::shared_ptr<Scene> &scene)
-{
-	const auto visibleBox = collisionComp->GetVisibleBox();
-	if (!visibleBox)
-		return;
-
-	auto &pendingObjects = scene->GetPendingObjects();
-	auto it = std::remove_if(pendingObjects.begin(), pendingObjects.end(),
-							 [&visibleBox](const std::weak_ptr<nGameObject> &weakPtr)
-							 {
-								 if (auto sharedPtr = weakPtr.lock())
-								 {
-									 return sharedPtr.get() == visibleBox.get();
-								 }
-								 return false; // 移除過期的 weak_ptr
-							 });
-
-	if (it != pendingObjects.end())
-	{
-		pendingObjects.erase(it, pendingObjects.end());
-	}
-}
+// RemoveVisibleBoxFromPendingObjects 方法已刪除，因為 VisibleBox 功能已被移除
 
 std::vector<std::shared_ptr<nGameObject>>
 DungeonRoom::CreateOptimizedColliders(const std::vector<CollisionRect> &regions)

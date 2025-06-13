@@ -2,7 +2,7 @@
 // Created by tjx20 on 3/25/2025.
 //
 
-//TODO:refactor include
+// TODO:refactor include
 #include "Components/InputComponent.hpp"
 
 #include "Animation.hpp"
@@ -32,7 +32,8 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 	auto animationComponent = character->GetComponent<AnimationComponent>(ComponentType::ANIMATION);
 	auto m_currentAnimation = animationComponent->GetCurrentAnimation();
 	auto animation = std::dynamic_pointer_cast<Util::Animation>(m_currentAnimation->GetDrawable());
-	if(keys.count('M')) LOG_DEBUG("interval=>{} & deltaTime=>{}", animation->GetInterval(), Util::Time::GetDeltaTimeMs());
+	if (keys.count('M'))
+		LOG_DEBUG("interval=>{} & deltaTime=>{}", animation->GetInterval(), Util::Time::GetDeltaTimeMs());
 	// movement移動
 	glm::vec2 movement(0.0f, 0.0f);
 	if (keys.count('W'))
@@ -63,7 +64,7 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 	// 武器/攻擊attackComponent
 	if (attackComponent)
 	{
-		if(auto currentWeapon = attackComponent->GetCurrentWeapon())
+		if (auto currentWeapon = attackComponent->GetCurrentWeapon())
 		{
 			if (keys.count('J'))
 			{
@@ -72,8 +73,8 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 			if (keys.count('L'))
 			{
 				attackComponent->switchWeapon();
-				if (skillComponent) skillComponent->GetSkill()->SetRemainingDuration(0);
-
+				if (skillComponent)
+					skillComponent->GetSkill()->SetRemainingDuration(0);
 			}
 		}
 	}
@@ -88,12 +89,9 @@ void InputComponent::onInputReceived(const std::set<char> &keys)
 	}
 	if (keys.count('Z'))
 	{
-		if(auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH))
+		if (auto healthComponent = character->GetComponent<HealthComponent>(ComponentType::HEALTH))
 		{
 			LOG_DEBUG("HP= {}, armor = {}", healthComponent->GetCurrentHp(), healthComponent->GetCurrentArmor());
 		}
 	}
-
 }
-
-

@@ -59,7 +59,7 @@ void Scene::SavePlayerInformation(std::shared_ptr<Character> player) const
 			hp = healthComp->GetCurrentHp();
 			energy = healthComp->GetCurrentEnergy();
 		}
-		if (auto walletComp = player->GetComponent<WalletComponent>(ComponentType::WALLET))
+		if (auto walletComp = player->GetComponent<walletComponent>(ComponentType::WALLET))
 		{
 			money = walletComp->GetMoney();
 		}

@@ -280,16 +280,171 @@ void MonsterRoom::LoadCombatConfiguration()
 	}
 }
 
+void MonsterRoom::RecalculateGridFromCollisionComponents()
+{
+	LOG_DEBUG("Starting grid recalculation from CollisionComponents");
+
+	// 1. 清空當前網格
+	m_GridSystem->Initialize(); // 重置網格為全空狀態
+
+	// 2. 重新標記牆壁和門（這些是地形，需要保留）
+	const glm::vec2 &region = m_RoomSpaceInfo.m_RoomRegion;
+	const glm::vec2 &roomSize = m_RoomSpaceInfo.m_RoomSize;
+	const int regionWidth = static_cast<int>(region.x);
+	const int regionHeight = static_cast<int>(region.y);
+	const int roomWidth = static_cast<int>(roomSize.x);
+	const int roomHeight = static_cast<int>(roomSize.y);
+	const int centerX = regionWidth / 2;
+	const int centerY = regionHeight / 2;
+
+	// 標記房間邊界牆壁
+	const int roomStartX = centerX - roomWidth / 2;
+	const int roomEndX = centerX + roomWidth / 2;
+	const int roomStartY = centerY - roomHeight / 2;
+	const int roomEndY = centerY + roomHeight / 2;
+
+	// 標記房間邊界為阻擋
+	for (int row = roomStartY; row <= roomEndY; ++row)
+	{
+		for (int col = roomStartX; col <= roomEndX; ++col)
+		{
+			// 邊界牆壁
+			if (row == roomStartY || row == roomEndY || col == roomStartX || col == roomEndX)
+			{
+				m_GridSystem->MarkPosition(row, col, 1);
+			}
+		}
+	}
+
+	// 3. 遍歷所有房間物件，重新計算具有 CollisionComponent 的物件
+	int processedObjects = 0;
+	int collisionObjects = 0;
+
+	for (const auto &obj : m_RoomObjects)
+	{
+		if (!obj)
+			continue;
+
+		processedObjects++;
+
+		// 檢查是否有 CollisionComponent
+		auto collisionComp = obj->GetComponent<CollisionComponent>(ComponentType::COLLISION);
+		if (!collisionComp)
+		{
+			continue;
+		}
+
+		collisionObjects++;
+
+		// 獲取物件的碰撞邊界
+		Rect bounds = collisionComp->GetBounds();
+		glm::vec2 objSize = collisionComp->GetSize();
+
+		LOG_DEBUG(
+			"Processing object with CollisionComponent: Size=({:.1f}, {:.1f}), Bounds=[{:.1f}, {:.1f}, {:.1f}, {:.1f}]",
+			objSize.x, objSize.y, bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
+
+		// 使用與 GridSystem::UpdateGridFromObjects 相同的邏輯
+		const float gridSize = m_RoomSpaceInfo.m_RoomRegion.x;
+		const float tileSize = m_RoomSpaceInfo.m_TileSize.x;
+
+		// 計算左上角格子世界坐標軸
+		auto startPos = glm::vec2(gridSize * tileSize / 2) - glm::vec2(tileSize / 2);
+		startPos *= glm::vec2(-1, 1);
+		startPos += m_RoomSpaceInfo.m_WorldCoord;
+
+		// 計算物件佔據的網格範圍
+		glm::ivec2 startGrid = glm::vec2(std::floor((bounds.left() - startPos.x) / tileSize),
+										 std::ceil((startPos.y - bounds.top()) / tileSize));
+		glm::ivec2 endGrid = glm::vec2(std::ceil((bounds.right() - startPos.x) / tileSize),
+									   std::floor((startPos.y - bounds.bottom()) / tileSize));
+
+		// 標記佔據的網格
+		int markedCells = 0;
+		for (int row = startGrid.y; row <= endGrid.y; row++)
+		{
+			for (int col = startGrid.x; col <= endGrid.x; col++)
+			{
+				// 檢查網格是否在有效範圍內
+				if (row >= 0 && row < RoomConstants::GRID_SIZE && col >= 0 && col < RoomConstants::GRID_SIZE)
+				{
+					// 計算網格中心位置
+					glm::vec2 posGridCell =
+						startPos + glm::vec2(static_cast<float>(col) * tileSize, -static_cast<float>(row) * tileSize);
+					glm::vec2 sizeGridCell(tileSize);
+					Rect gridCell(posGridCell, sizeGridCell);
+
+					// 計算交集面積
+					float intersect = CalculateIntersectionArea(bounds, gridCell);
+					float cellArea = tileSize * tileSize;
+
+					// 如果交集面積超過閾值，標記為佔據
+					if (intersect >= RoomConstants::INTERSECTION_THRESHOLD * cellArea)
+					{
+						m_GridSystem->MarkPosition(row, col, 1);
+						markedCells++;
+					}
+				}
+			}
+		}
+
+		LOG_DEBUG("Object marked {} grid cells", markedCells);
+	}
+
+	LOG_DEBUG("Grid recalculation complete: Processed {} objects, {} with CollisionComponent", processedObjects,
+			  collisionObjects);
+}
+
+// 輔助方法：計算兩個矩形的交集面積
+float MonsterRoom::CalculateIntersectionArea(const Rect &a, const Rect &b) const
+{
+	const float left = std::max(a.left(), b.left());
+	const float right = std::min(a.right(), b.right());
+	const float top = std::max(a.top(), b.top());
+	const float bottom = std::min(a.bottom(), b.bottom());
+
+	if (right <= left || top <= bottom)
+		return 0.0f;
+
+	return (right - left) * (top - bottom);
+}
+
 void MonsterRoom::PreSpawnAllWaveEnemies()
 {
+	// ===== 重新計算所有碰撞物件佔據的格子 =====
+	RecalculateGridFromCollisionComponents();
+
 	// 改進的算法：為每個怪物單獨生成適合其體型的位置
 	std::vector<glm::ivec2> occupiedPositions; // 追蹤已佔用的網格位置
+
+	// ===== 調試：輸出當前網格狀態 =====
+	LOG_DEBUG("=== PreSpawnAllWaveEnemies Debug Info ===");
+	LOG_DEBUG("Room World Coord: ({:.1f}, {:.1f})", m_RoomSpaceInfo.m_WorldCoord.x, m_RoomSpaceInfo.m_WorldCoord.y);
+	LOG_DEBUG("Room Size: ({:.1f}, {:.1f})", m_RoomSpaceInfo.m_RoomSize.x, m_RoomSpaceInfo.m_RoomSize.y);
+	LOG_DEBUG("Tile Size: ({:.1f}, {:.1f})", m_RoomSpaceInfo.m_TileSize.x, m_RoomSpaceInfo.m_TileSize.y);
+
+	// 統計被阻擋的網格數量
+	const auto &gridData = GetGridData();
+	int blockedCount = 0;
+	int totalCount = gridData.size() * gridData[0].size();
+	for (const auto &row : gridData)
+	{
+		for (int cell : row)
+		{
+			if (cell != 0)
+				blockedCount++;
+		}
+	}
+	LOG_DEBUG("Grid Status: {}/{} positions blocked ({:.1f}%)", blockedCount, totalCount,
+			  (float)blockedCount / totalCount * 100.0f);
 
 	// 為每個波次生成怪物
 	for (size_t waveIndex = 0; waveIndex < m_WaveConfigs.size(); ++waveIndex)
 	{
 		const WaveConfig &config = m_WaveConfigs[waveIndex];
 		std::vector<std::shared_ptr<Character>> waveEnemies;
+
+		LOG_DEBUG("=== Wave {} Generation ===", waveIndex + 1);
 
 		// 生成當前波次的怪物
 		for (int enemyIndex = 0; enemyIndex < config.enemyCount; ++enemyIndex)
@@ -311,6 +466,9 @@ void MonsterRoom::PreSpawnAllWaveEnemies()
 				enemySize = collisionComp->GetSize();
 			}
 
+			LOG_DEBUG("Enemy {} (Type {}): Size = ({:.1f}, {:.1f})", enemyIndex + 1, enemyType, enemySize.x,
+					  enemySize.y);
+
 			// 生成適合該體型的位置（避開已佔用位置）
 			auto availablePositions = GenerateSpawnPositionsWithSizeAndExclusions(1, enemySize, occupiedPositions);
 
@@ -318,10 +476,64 @@ void MonsterRoom::PreSpawnAllWaveEnemies()
 			{
 				LOG_WARN("No available position for enemy type {} with size {}x{}", enemyType, enemySize.x,
 						 enemySize.y);
+
+				// ===== 詳細調試：檢查為什麼沒有可用位置 =====
+				LOG_DEBUG("Debug: Checking available positions for enemy type {}", enemyType);
+				const glm::vec2 &tileSize = m_RoomSpaceInfo.m_TileSize;
+				const glm::vec2 &roomSize = m_RoomSpaceInfo.m_RoomSize;
+				const glm::vec2 &region = m_RoomSpaceInfo.m_RoomRegion;
+
+				const int regionWidth = static_cast<int>(region.x);
+				const int regionHeight = static_cast<int>(region.y);
+				const int roomWidth = static_cast<int>(roomSize.x);
+				const int roomHeight = static_cast<int>(roomSize.y);
+
+				const int entityGridWidth = static_cast<int>(std::ceil(enemySize.x / tileSize.x));
+				const int entityGridHeight = static_cast<int>(std::ceil(enemySize.y / tileSize.y));
+
+				const int centerX = regionWidth / 2;
+				const int centerY = regionHeight / 2;
+				const int startX = centerX - roomWidth / 2 + 1;
+				const int startY = centerY - roomHeight / 2 + 1;
+				const int endX = centerX + roomWidth / 2 - 1 - (entityGridWidth - 1);
+				const int endY = centerY + roomHeight / 2 - 1 - (entityGridHeight - 1);
+
+				LOG_DEBUG("Search area: X=[{}, {}), Y=[{}, {})", startX, endX, startY, endY);
+				LOG_DEBUG("Entity grid size: {}x{}", entityGridWidth, entityGridHeight);
+
+				// 檢查前幾個位置為什麼被阻擋
+				int checkedPositions = 0;
+				for (int row = startY; row < endY && checkedPositions < 5; ++row)
+				{
+					for (int col = startX; col < endX && checkedPositions < 5; ++col)
+					{
+						checkedPositions++;
+						bool isClear = IsAreaClearForEntity({col, row}, entityGridWidth, entityGridHeight);
+						LOG_DEBUG("Position ({}, {}) -> {}", col, row, isClear ? "CLEAR" : "BLOCKED");
+
+						if (!isClear)
+						{
+							// 詳細檢查哪個網格被阻擋
+							for (int r = row; r < row + entityGridHeight; ++r)
+							{
+								for (int c = col; c < col + entityGridWidth; ++c)
+								{
+									bool blocked = IsGridPositionBlocked(r, c);
+									if (blocked)
+									{
+										LOG_DEBUG("  -> Grid ({}, {}) is BLOCKED", c, r);
+									}
+								}
+							}
+						}
+					}
+				}
+
 				continue;
 			}
 
 			glm::vec2 position = availablePositions[0];
+			LOG_DEBUG("Enemy {} positioned at ({:.1f}, {:.1f})", enemyIndex + 1, position.x, position.y);
 
 			// 記錄此怪物佔用的網格位置
 			RecordOccupiedPositions(position, enemySize, occupiedPositions);
@@ -348,7 +560,10 @@ void MonsterRoom::PreSpawnAllWaveEnemies()
 
 		// 將當前波次的怪物添加到戰鬥管理器
 		m_CombatManager.AddWaveEnemies(static_cast<int>(waveIndex), waveEnemies);
+		LOG_DEBUG("Wave {} complete: {} enemies spawned", waveIndex + 1, waveEnemies.size());
 	}
+
+	LOG_DEBUG("=== PreSpawnAllWaveEnemies Complete ===");
 }
 
 std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositions(int count)
@@ -421,11 +636,10 @@ std::vector<glm::vec2> MonsterRoom::GenerateSpawnPositionsWithSize(int count, co
 	for (int i = 0; i < count && i < static_cast<int>(availablePositions.size()); ++i)
 	{
 		const glm::ivec2 &gridPos = availablePositions[i];
-		// 獲取格子左上角的世界座標
-		glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
 
-		// 計算實體中心的世界座標
-		glm::vec2 entityCenter = gridTopLeft + glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+		// 計算實體中心的正確位置
+		glm::vec2 entityCenter = CalculateEntityCenterPosition(gridPos, entitySize, entityGridWidth, entityGridHeight,
+															   tileSize, roomCoord, region);
 
 		positions.push_back(entityCenter);
 	}
@@ -512,8 +726,11 @@ MonsterRoom::GenerateSpawnPositionsWithSizeAndExclusions(int count, const glm::v
 	for (int i = 0; i < actualCount; ++i)
 	{
 		const glm::ivec2 &gridPos = availablePositions[i];
-		glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
-		glm::vec2 entityCenter = gridTopLeft + glm::vec2(entitySize.x / 2.0f, -entitySize.y / 2.0f);
+
+		// 計算實體中心的正確位置
+		glm::vec2 entityCenter = CalculateEntityCenterPosition(gridPos, entitySize, entityGridWidth, entityGridHeight,
+															   tileSize, roomCoord, region);
+
 		positions.push_back(entityCenter);
 	}
 
@@ -559,6 +776,31 @@ void MonsterRoom::RecordOccupiedPositions(const glm::vec2 &worldPos, const glm::
 			occupiedPositions.push_back({col, row});
 		}
 	}
+}
+
+glm::vec2 MonsterRoom::CalculateEntityCenterPosition(const glm::ivec2 &gridPos, const glm::vec2 &entitySize,
+													 int entityGridWidth, int entityGridHeight,
+													 const glm::vec2 &tileSize, const glm::vec2 &roomCoord,
+													 const glm::vec2 &region) const
+{
+	// 根據碰撞優化文檔的正確邏輯：
+	// 1. 奇數格子實體：放在格子中心
+	// 2. 偶數格子實體：放在格子之間
+
+	// 獲取左上角格子的左上角世界座標
+	glm::vec2 gridTopLeft = Tool::RoomGridToWorld(gridPos, tileSize, roomCoord, region);
+
+	// 計算實體佔用區域的中心偏移
+	// 對於 width×height 的矩形區域，從左上角格子到中心的偏移
+	glm::vec2 centerOffset = {(entityGridWidth - 1) * tileSize.x / 2.0f, -(entityGridHeight - 1) * tileSize.y / 2.0f};
+
+	// 格子左上角 → 格子中心座標
+	glm::vec2 firstCellCenter = gridTopLeft + glm::vec2(tileSize.x / 2.0f, -tileSize.y / 2.0f);
+
+	// 實體中心 = 第一個格子中心 + 中心偏移
+	glm::vec2 entityCenter = firstCellCenter + centerOffset;
+
+	return entityCenter;
 }
 
 void MonsterRoom::CloseDoors()
@@ -690,7 +932,6 @@ void MonsterRoom::CombatManager::ActivateCurrentWaveEnemies()
 			// 使用ShowUpEvent來顯示怪物
 			ShowUpEvent showUpEvent;
 			enemy->OnEvent(showUpEvent);
-
 		}
 	}
 }

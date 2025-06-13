@@ -32,9 +32,6 @@ void EffectAttack::Init()
 	// 播放對應的音效
 	switch (m_effectType)
 	{
-	// case EffectAttackType::SLASH:
-	// 	AudioManager::GetInstance().PlaySFX("laser_sword");
-	// 	break;
 	case EffectAttackType::SHOCKWAVE:
 	case EffectAttackType::LARGE_SHOCKWAVE:
 		AudioManager::GetInstance().PlaySFX("hit_floor_sound");
@@ -47,7 +44,6 @@ void EffectAttack::Init()
 		AudioManager::GetInstance().PlaySFX("explode_small");
 		break;
 	default:
-		// 其他效果類型暫時不播放音效
 		break;
 	}
 

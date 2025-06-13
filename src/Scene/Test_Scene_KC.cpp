@@ -166,13 +166,14 @@ void TestScene_KC::CreatePlayer()
 	m_Player->SetWorldCoord(glm::vec2(-16 * 2, 16 * 2)); // 初始位置为右两格，上两格
 
 	// 获取碰撞组件并添加到场景和相机
-	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if (collision)
+	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
-		// 将碰撞盒添加到场景根节点和相机
+		// 碰撞箱可視化功能已移除
+		/*
 		const auto visibleBox = collision->GetVisibleBox();
 		m_PendingObjects.emplace_back(visibleBox);
 		visibleBox->SetRegisteredToScene(true);
+		*/
 	}
 
 	// 将玩家添加到场景根节点和相机
@@ -234,7 +235,7 @@ void TestScene_KC::InitUIManager()
 	// 創建遊戲 HUD 面板 - 低優先級非模態面板
 	const auto gameHUDPanel =
 		std::make_shared<GameHUDPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH),
-									   m_Player->GetComponent<WalletComponent>(ComponentType::WALLET));
+									   m_Player->GetComponent<walletComponent>(ComponentType::WALLET));
 	gameHUDPanel->Start();
 	UIManager::GetInstance().RegisterPanel("gameHUD", std::static_pointer_cast<UIPanel>(gameHUDPanel), 0, false);
 }

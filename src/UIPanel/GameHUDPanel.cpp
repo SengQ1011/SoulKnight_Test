@@ -4,6 +4,7 @@
 #include "ImagePoolManager.hpp"
 #include "Override/nGameObject.hpp"
 #include "Room/DungeonMap.hpp"
+#include "SaveManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "UIPanel/MinimapPanel.hpp"
 #include "UIPanel/PlayerStatusPanel.hpp"
@@ -15,12 +16,11 @@
 #include "config.hpp"
 
 
-
 // 暫停按鈕回調函數
 void OpenPausePanelFromHUD() { UIManager::GetInstance().ShowPanel("pause"); }
 
 GameHUDPanel::GameHUDPanel(const std::shared_ptr<HealthComponent> &healthComp,
-						   const std::shared_ptr<WalletComponent> &walletComp,
+						   const std::shared_ptr<walletComponent> &walletComp,
 						   const std::shared_ptr<DungeonMap> &dungeonMap) :
 	m_PlayerHealthComponent(healthComp), m_PlayerWalletComponent(walletComp), m_DungeonMap(dungeonMap)
 {
@@ -48,6 +48,9 @@ void GameHUDPanel::Start()
 	// 初始化金幣顯示
 	InitializeCoinDisplay();
 
+	// 初始化遊戲幣顯示
+	InitializeGameCoinDisplay();
+
 	// 將所有元素添加到場景
 	const auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
 	if (scene)
@@ -56,6 +59,8 @@ void GameHUDPanel::Start()
 		renderer->AddChild(std::static_pointer_cast<nGameObject>(m_PauseButton));
 		renderer->AddChild(m_CoinBackground);
 		renderer->AddChild(m_CoinText);
+		renderer->AddChild(m_GameCoinBackground);
+		renderer->AddChild(m_GameCoinText);
 	}
 
 	// 默認顯示
@@ -72,6 +77,9 @@ void GameHUDPanel::Update()
 
 	// 更新金幣顯示
 	UpdateCoinDisplay();
+
+	// 更新遊戲幣顯示
+	UpdateGameCoinDisplay();
 
 	// 更新子面板
 	if (m_PlayerStatusPanel)
@@ -179,6 +187,32 @@ void GameHUDPanel::InitializeCoinDisplay()
 	m_GameObjects.push_back(m_CoinText);
 }
 
+void GameHUDPanel::InitializeGameCoinDisplay()
+{
+	auto &img = ImagePoolManager::GetInstance();
+
+	// 創建遊戲幣背景
+	m_GameCoinBackground = std::make_shared<nGameObject>();
+	m_GameCoinBackground->SetDrawable(img.GetImage(RESOURCE_DIR "/UI/ui_HUD/show_gameCoin.png"));
+	m_GameCoinBackground->SetZIndex(85.0f);
+
+	// 計算遊戲幣背景位置（在金幣背景左側）
+	float offset = (m_CoinBackground->GetScaledSize().x + m_GameCoinBackground->GetScaledSize().x) / 2.0f + 16.0f;
+	m_GameCoinBackground->m_Transform.translation = m_CoinBackground->m_Transform.translation - glm::vec2(offset, 0.0f);
+
+	m_GameObjects.push_back(m_GameCoinBackground);
+
+	// 創建遊戲幣文字
+	m_GameCoinText = std::make_shared<nGameObject>();
+	m_GameCoinText->SetZIndex(m_GameCoinBackground->GetZIndex() + 0.1f); // 比背景高一層
+	m_GameCoinText->SetZIndexType(CUSTOM);
+
+	// 初始化文字內容
+	UpdateGameCoinDisplay();
+
+	m_GameObjects.push_back(m_GameCoinText);
+}
+
 void GameHUDPanel::UpdateCoinDisplay()
 {
 	if (!m_PlayerWalletComponent || !m_CoinText)
@@ -198,6 +232,36 @@ void GameHUDPanel::UpdateCoinDisplay()
 
 		// 更新文字位置（相對於背景位置 + 偏移）
 		m_CoinText->m_Transform.translation = m_CoinBackgroundPos + m_CoinTextOffset;
+	}
+}
+
+void GameHUDPanel::UpdateGameCoinDisplay()
+{
+	if (!m_GameCoinText)
+		return;
+
+	// 從場景數據中獲取遊戲幣數量
+	int currentGameCoins = 0;
+	if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+	{
+		if (auto saveData = scene->GetSaveData())
+		{
+			currentGameCoins = saveData->gameData.gameMoney;
+		}
+	}
+
+	// 只有遊戲幣數量改變時才更新文字（性能優化）
+	if (currentGameCoins != m_LastGameCoinAmount)
+	{
+		m_LastGameCoinAmount = currentGameCoins;
+
+		// 更新文字內容
+		std::string gameCoinText = std::to_string(currentGameCoins);
+		m_GameCoinText->SetDrawable(ImagePoolManager::GetInstance().GetText(
+			RESOURCE_DIR "/Font/zpix.TTF", 24, gameCoinText, Util::Color(255, 255, 255), false));
+
+		// 更新文字位置（相對於背景位置 + 偏移）
+		m_GameCoinText->m_Transform.translation = m_GameCoinBackground->m_Transform.translation + m_GameCoinTextOffset;
 	}
 }
 
@@ -314,6 +378,78 @@ void GameHUDPanel::DrawDebugUI()
 		{
 			if (m_PlayerWalletComponent)
 				m_PlayerWalletComponent->SpendMoney(50);
+		}
+	}
+
+	// === 遊戲幣顯示設定 ===
+	if (ImGui::CollapsingHeader("Game Coin Display Settings", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		static bool gameCoinPosChanged = false;
+		static bool gameCoinOffsetChanged = false;
+
+		// 背景位置設定
+		ImGui::Text("Game Coin Background Position:");
+		ImGui::InputFloat("Background X", &m_GameCoinBackgroundPos.x, 1.0f);
+		if (ImGui::IsItemDeactivatedAfterEdit())
+			gameCoinPosChanged = true;
+		ImGui::InputFloat("Background Y", &m_GameCoinBackgroundPos.y, 1.0f);
+		if (ImGui::IsItemDeactivatedAfterEdit())
+			gameCoinPosChanged = true;
+
+		// 文字偏移設定
+		ImGui::Text("Text Offset (relative to background):");
+		ImGui::InputFloat("Text Offset X", &m_GameCoinTextOffset.x, 1.0f);
+		if (ImGui::IsItemDeactivatedAfterEdit())
+			gameCoinOffsetChanged = true;
+		ImGui::InputFloat("Text Offset Y", &m_GameCoinTextOffset.y, 1.0f);
+		if (ImGui::IsItemDeactivatedAfterEdit())
+			gameCoinOffsetChanged = true;
+
+		// 即時更新位置
+		if (gameCoinPosChanged || gameCoinOffsetChanged)
+		{
+			if (m_GameCoinBackground)
+				m_GameCoinBackground->m_Transform.translation = m_GameCoinBackgroundPos;
+			if (m_GameCoinText)
+				m_GameCoinText->m_Transform.translation = m_GameCoinBackgroundPos + m_GameCoinTextOffset;
+			gameCoinPosChanged = false;
+			gameCoinOffsetChanged = false;
+		}
+
+		// 顯示當前遊戲幣數量
+		int currentGameCoins = 0;
+		if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+		{
+			if (auto saveData = scene->GetSaveData())
+			{
+				currentGameCoins = saveData->gameData.gameMoney;
+			}
+		}
+		ImGui::Text("Current Game Coins: %d", currentGameCoins);
+
+		// 測試按鈕：增加/減少遊戲幣
+		if (ImGui::Button("Add 100 Game Coins"))
+		{
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				if (auto saveData = scene->GetSaveData())
+				{
+					saveData->gameData.gameMoney += 100;
+					scene->Upload();
+				}
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Spend 50 Game Coins"))
+		{
+			if (const auto scene = SceneManager::GetInstance().GetCurrentScene().lock())
+			{
+				if (auto saveData = scene->GetSaveData())
+				{
+					saveData->gameData.gameMoney = std::max(0, saveData->gameData.gameMoney - 50);
+					scene->Upload();
+				}
+			}
 		}
 	}
 
