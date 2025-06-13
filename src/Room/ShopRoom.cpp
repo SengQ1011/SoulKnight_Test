@@ -158,7 +158,7 @@ void ShopRoom::CreateMerchantNPC()
 	
 	// 使用房间中心点作为NPC位置
 	// 可以稍微向上偏移一点，让NPC站在商店中央
-	glm::vec2 npcPosition = m_RoomSpaceInfo.m_WorldCoord + glm::vec2(0.0f, 25.0f);
+	glm::vec2 npcPosition = m_RoomSpaceInfo.m_WorldCoord + glm::vec2(0.0f, 9.4f);
 	m_NPC->m_WorldCoord = npcPosition;
 
 	// 使用SpawnEntity将NPC添加到房间中

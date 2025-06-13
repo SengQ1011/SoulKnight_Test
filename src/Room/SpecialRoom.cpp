@@ -28,34 +28,52 @@ void SpecialRoom::LoadFromJSON()
 
 void SpecialRoom::SpawnSpecialObjects()
 {
-	// 隨機選擇礦物類型
+	// 隨機選擇生成類型：礦物或武器寶箱
 	const float randomValue = RandomUtil::RandomFloatInRange(0.0f, 1.0f);
-	MineType mineType;
-	std::string mineTypeName;
 
-	if (randomValue < 0.5f) // 50% 機率
+	if (randomValue < 0.3f) // 40% 機率生成金礦
 	{
-		mineType = MineType::GOLD;
-		mineTypeName = "Gold Mine";
+		const auto specialObject = m_Factory.lock()->CreateMine(MineType::GOLD);
+		if (!specialObject)
+		{
+			LOG_ERROR("Failed to create Gold Mine");
+			return;
+		}
+
+		// 設置位置在房間中央
+		specialObject->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		AddRoomObject(specialObject);
+
+		LOG_DEBUG("SpecialRoom: Spawned Gold Mine at center");
 	}
-	else
+	else if (randomValue < 0.6f) // 30% 機率生成能量礦
 	{
-		mineType = MineType::ENERGY;
-		mineTypeName = "Energy Mine";
-	}
+		const auto specialObject = m_Factory.lock()->CreateMine(MineType::ENERGY);
+		if (!specialObject)
+		{
+			LOG_ERROR("Failed to create Energy Mine");
+			return;
+		}
 
-	// 創建隨機選擇的礦物
-	const auto specialObject = m_Factory.lock()->CreateMine(mineType);
-	if (!specialObject)
+		// 設置位置在房間中央
+		specialObject->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		AddRoomObject(specialObject);
+
+		LOG_DEBUG("SpecialRoom: Spawned Energy Mine at center");
+	}
+	else // 30% 機率生成武器寶箱
 	{
-		LOG_ERROR("Failed to create special object: {}", mineTypeName);
-		return;
+		const auto weaponChest = CreateChest(ChestType::WEAPON);
+		if (!weaponChest)
+		{
+			LOG_ERROR("Failed to create Weapon Chest");
+			return;
+		}
+
+		// 設置位置在房間中央
+		weaponChest->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
+		AddRoomObject(weaponChest);
+
+		LOG_DEBUG("SpecialRoom: Spawned Weapon Chest at center");
 	}
-
-	// 設置位置在房間中央
-	specialObject->SetWorldCoord(m_RoomSpaceInfo.m_WorldCoord);
-
-	AddRoomObject(specialObject);
-
-	LOG_DEBUG("SpecialRoom: Spawned {} at center", mineTypeName);
 }

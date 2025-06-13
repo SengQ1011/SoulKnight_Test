@@ -88,7 +88,7 @@ bool ShopTable::CanPurchase(const std::shared_ptr<Character> &player) const
 	if (!player || !m_CurrentItem)
 		return false;
 
-	auto walletComp = player->GetComponent<WalletComponent>(ComponentType::WALLET);
+	auto walletComp = player->GetComponent<walletComponent>(ComponentType::WALLET);
 	if (!walletComp)
 		return false;
 
@@ -104,7 +104,7 @@ bool ShopTable::PurchaseItem(const std::shared_ptr<Character> &player)
 	}
 
 	// TODO: OnEvent Player
-	auto walletComp = player->GetComponent<WalletComponent>(ComponentType::WALLET);
+	auto walletComp = player->GetComponent<walletComponent>(ComponentType::WALLET);
 
 	// 扣除金錢
 	if (!walletComp->SpendMoney(m_Price))

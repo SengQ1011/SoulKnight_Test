@@ -159,19 +159,36 @@ void LobbyScene::CreatePlayer()
 	// 设置玩家的初始位置
 	m_Player->SetWorldCoord(glm::vec2(-16 * 2, 16 * 2)); // 初始位置为右两格，上两格
 
-	// 获取碰撞组件并添加到场景和相机
-	auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if (collision)
+	if (const auto collision = m_Player->GetComponent<CollisionComponent>(ComponentType::COLLISION))
 	{
-		// 将碰撞盒添加到场景根节点和相机
+		// 碰撞箱可視化功能已移除
+		/*
 		const auto visibleBox = collision->GetVisibleBox();
 		m_PendingObjects.emplace_back(visibleBox);
 		visibleBox->SetRegisteredToScene(true);
+		*/
 	}
 
 	// 将玩家添加到场景根节点和相机
 	m_PendingObjects.emplace_back(m_Player);
 	m_Player->SetRegisteredToScene(true);
+
+	// 添加NPC
+	// m_NPC = CharacterFactory::GetInstance().createNPC(1);
+	// m_NPC->SetWorldCoord(glm::vec2(100, 0));
+	// if (const auto collision2 = m_NPC->GetComponent<CollisionComponent>(ComponentType::COLLISION))
+	// {
+		// 碰撞箱可視化功能已移除
+		/*
+		if (!collision2->GetVisibleBox())
+			return;
+		const auto visibleBox = collision2->GetVisibleBox();
+		if (!visibleBox)
+			return;
+		m_PendingObjects.emplace_back(visibleBox);
+		visibleBox->SetRegisteredToScene(true);
+		*/
+	// }
 }
 
 void LobbyScene::CreateEnemy()
@@ -179,13 +196,6 @@ void LobbyScene::CreateEnemy()
 	m_Enemy = CharacterFactory::GetInstance().createEnemy(21);
 	m_Enemy->m_WorldCoord = {32, 16 * 2};
 	auto collision2 = m_Enemy->GetComponent<CollisionComponent>(ComponentType::COLLISION);
-	if (!collision2->GetVisibleBox())
-		LOG_ERROR("collision2->GetBlackBox()");
-	const auto visibleBox = collision2->GetVisibleBox();
-	if (!visibleBox)
-		LOG_ERROR("collision2->GetBlackBox()");
-	m_PendingObjects.emplace_back(visibleBox);
-	visibleBox->SetRegisteredToScene(true);
 	m_PendingObjects.emplace_back(m_Enemy);
 	m_Enemy->SetRegisteredToScene(true);
 }
@@ -205,8 +215,8 @@ std::shared_ptr<Character> LobbyScene::CreateNPC(const int id, const glm::vec2 p
 			return npc;
 		}
 	}
-	else LOG_ERROR("Failed to get lobbyRoom");
-
+	else
+		LOG_ERROR("Failed to get lobbyRoom");
 }
 
 void LobbyScene::SetupCamera() const
@@ -245,7 +255,7 @@ void LobbyScene::InitUIManager()
 	// 創建遊戲 HUD 面板 - 低優先級非模態面板
 	const auto gameHUDPanel =
 		std::make_shared<GameHUDPanel>(m_Player->GetComponent<HealthComponent>(ComponentType::HEALTH),
-									   m_Player->GetComponent<WalletComponent>(ComponentType::WALLET));
+									   m_Player->GetComponent<walletComponent>(ComponentType::WALLET));
 	gameHUDPanel->Start();
 	UIManager::GetInstance().RegisterPanel("gameHUD", std::static_pointer_cast<UIPanel>(gameHUDPanel), 0, false);
 }

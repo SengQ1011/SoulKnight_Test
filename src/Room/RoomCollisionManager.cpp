@@ -155,6 +155,8 @@ void RoomCollisionManager::Update()
 void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 {
 	m_IsVisible = m_IsVisible ^ true; // XOR bool 實現開關
+	// 碰撞箱可視化功能已移除
+	/*
 	for (const std::weak_ptr<nGameObject> &object : m_NGameObjects)
 	{
 		if (const auto sharedPtr = object.lock())
@@ -162,6 +164,7 @@ void RoomCollisionManager::ShowColliderBox() // 房間内碰撞箱可視化
 				->GetVisibleBox()
 				->SetControlVisible(m_IsVisible);
 	}
+	*/
 }
 
 void RoomCollisionManager::CalculateCollisionDetails(const std::shared_ptr<nGameObject> &objectA,
