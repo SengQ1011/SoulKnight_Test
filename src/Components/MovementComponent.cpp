@@ -229,7 +229,7 @@ void MovementComponent::HandleEvent(const EventInfo &eventInfo)
 		}
 		case EventType::KnockOff:
 		{
-			LOG_DEBUG("KnockOff");
+			// LOG_DEBUG("KnockOff");
 			const auto& knockOffInfo = dynamic_cast<const KnockOffEventInfo&>(eventInfo);
 			SetImpulseVelocity(knockOffInfo.impulseVelocity);
 			break;

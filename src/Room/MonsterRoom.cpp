@@ -128,7 +128,7 @@ void MonsterRoom::ClearNonEssentialObjects()
 	// 清理門列表
 	m_Doors.clear();
 
-	LOG_DEBUG("Cleared {} non-essential objects", objectsCopy.size() - m_RoomObjects.size());
+	// LOG_DEBUG("Cleared {} non-essential objects", objectsCopy.size() - m_RoomObjects.size());
 }
 
 void MonsterRoom::RebuildConnectionsAndWalls()
@@ -388,11 +388,11 @@ void MonsterRoom::RecalculateGridFromCollisionComponents()
 			}
 		}
 
-		LOG_DEBUG("Object marked {} grid cells", markedCells);
+		// LOG_DEBUG("Object marked {} grid cells", markedCells);
 	}
 
-	LOG_DEBUG("Grid recalculation complete: Processed {} objects, {} with CollisionComponent", processedObjects,
-			  collisionObjects);
+	// LOG_DEBUG("Grid recalculation complete: Processed {} objects, {} with CollisionComponent", processedObjects,
+			  // collisionObjects);
 }
 
 // 輔助方法：計算兩個矩形的交集面積

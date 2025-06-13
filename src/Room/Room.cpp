@@ -103,7 +103,7 @@ void Room::RemovePlayerFromList(const std::shared_ptr<Character> &player)
 		// 不調用 UnRegisterObjectToSceneAndManager，保持玩家在場景中
 		// 不調用 OnPlayerExit，避免觸發其他邏輯
 
-		LOG_DEBUG("Player removed from room list (but kept in scene)");
+		// LOG_DEBUG("Player removed from room list (but kept in scene)");
 	}
 }
 

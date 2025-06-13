@@ -165,7 +165,7 @@ void HealthComponent::TakeDamage(int damage)
 	// 無敵模式
 	if (m_invincibleMode)
 		return;
-	LOG_DEBUG("take damage {}", damage);
+	// LOG_DEBUG("take damage {}", damage);
 
 	// 檢查是否為玩家受傷並播放音效
 	if (const auto character = GetOwner<Character>())
@@ -318,7 +318,7 @@ void HealthComponent::OnDeath()
 		// 播放敵人死亡音效
 		AudioManager::GetInstance().PlaySFX("enemy_die");
 
-		LOG_DEBUG("HealthComponent::Enemy died, event sent");
+		// LOG_DEBUG("HealthComponent::Enemy died, event sent");
 		if (auto aiComp = character->GetComponent<AIComponent>(ComponentType::AI))
 		{
 			aiComp->HideReadyAttackIcon();
@@ -332,7 +332,7 @@ void HealthComponent::OnDeath()
 
 void HealthComponent::OnBreak()
 {
-	LOG_DEBUG("HealthComponent::OnBreak");
+	// LOG_DEBUG("HealthComponent::OnBreak");
 	const auto owner = GetOwner<nGameObject>();
 	if (!owner)
 		return;

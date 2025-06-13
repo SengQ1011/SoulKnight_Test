@@ -25,7 +25,7 @@ void RoomInteractionManager::RegisterInteractable(const std::shared_ptr<nGameObj
 			auto obj = entry.obj.lock();
 			if (obj && obj.get() == interactable.get())
 			{
-				LOG_DEBUG("Interactable already registered, skipping: {}", interactable->GetName());
+				// LOG_DEBUG("Interactable already registered, skipping: {}", interactable->GetName());
 				return;
 			}
 		}

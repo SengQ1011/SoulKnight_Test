@@ -158,7 +158,7 @@ bool AttackComponent::PickUpWeapon(const std::shared_ptr<Weapon> &newWeapon)
 		// 播放拾取武器音效
 		AudioManager::GetInstance().PlaySFX("pick_up_weapon");
 
-		LOG_DEBUG("Successfully picked up weapon: {}", newWeapon->GetName());
+		// LOG_DEBUG("Successfully picked up weapon: {}", newWeapon->GetName());
 		return true;
 	}
 	catch (...)
@@ -279,7 +279,7 @@ void AttackComponent::TryAttack()
 
 	if (isPlayer && currentEnergy <= 0 && useEnergy != 0)
 	{
-		LOG_DEBUG("AttackComponent: Not enough energy to attack");
+		// LOG_DEBUG("AttackComponent: Not enough energy to attack");
 		return;
 	}
 
@@ -329,7 +329,7 @@ void AttackComponent::SetDualWield(bool enable)
 	m_dualWield = enable;
 	if (!m_secondWeapon)
 	{
-		LOG_DEBUG("second weapon is nullptr");
+		// LOG_DEBUG("second weapon is nullptr");
 		return;
 	}
 	auto scene = SceneManager::GetInstance().GetCurrentScene().lock();
@@ -521,7 +521,7 @@ void AttackComponent::ChangeCurrentWeapon(const int id)
         // 播放替換武器音效
         AudioManager::GetInstance().PlaySFX("pick_up_weapon");
 
-        LOG_DEBUG("Successfully changed to weapon ID: {}, Name: {}", id, newWeapon->GetName());
+        // LOG_DEBUG("Successfully changed to weapon ID: {}, Name: {}", id, newWeapon->GetName());
     }
     catch (const std::exception& e)
     {

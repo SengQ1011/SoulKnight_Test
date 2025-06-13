@@ -261,8 +261,8 @@ bool DungeonMap::GenerateBranches()
 		chestGenerated = true;
 		directionsUsed++;
 
-		LOG_DEBUG("Generated guaranteed CHEST at ({}, {}) from MONSTER at ({}, {})", branchPos.x, branchPos.y,
-				  monsterPos.x, monsterPos.y);
+		// LOG_DEBUG("Generated guaranteed CHEST at ({}, {}) from MONSTER at ({}, {})", branchPos.x, branchPos.y,
+				  // monsterPos.x, monsterPos.y);
 	}
 
 	// 然後生成 SPECIAL
