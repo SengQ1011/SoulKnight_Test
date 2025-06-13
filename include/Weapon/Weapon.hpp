@@ -44,6 +44,7 @@ public:
 	[[nodiscard]] float GetAttackInterval() const { return m_attackInterval; }
 	[[nodiscard]] int GetOffset() const { return m_offset; }
 	[[nodiscard]] std::shared_ptr<Character> GetWeaponOwner() const { return m_currentOwner; }
+	[[nodiscard]] int GetBasicPrice() const { return m_basicPrice; }
 	[[nodiscard]] static bool weaponHasOffset(const AttackType attackType, const WeaponType weaponType)
 	{
 		return attackType == AttackType::EFFECT_ATTACK && weaponType != WeaponType::SPEAR;

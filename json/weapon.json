@@ -154,7 +154,200 @@
         "elementalDamage": "BURNS",
         "effectType": "MEDIUM_BOOM"
     }
-  }, {
+  },{
+    "ID": 6,
+    "weaponImagePath": "/weapon/weapons/weapons_21.png",
+    "name": "AK-47",
+    "attackType": "Projectile",
+    "weaponType": "PISTOL",
+    "damage": 3,
+    "energy": 1,
+    "criticalRate": 0.12,
+    "offset": 10,
+    "attackInterval": 0.167,
+    "attackPositionOffset": 24.5,
+    "dropLevel": 1,
+    "basicPrice": 21,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "numOfBullets": 1,
+    "bulletSize": 8.0,
+    "bulletImagePath": "/attackUI/bullet/bullet_34.png",
+    "bulletSpeed": 400.0,
+    "bulletCanRebound": true,
+    "bulletCanTracking": false,
+    "bulletIsBubble": false,
+    "bubbleTrail": false
+  },{
+    "ID": 7,
+    "weaponImagePath": "/weapon/weapons/weapons_12.png",
+    "name": "Snow Fox L",
+    "attackType": "Projectile",
+    "weaponType": "PISTOL",
+    "damage": 2,
+    "energy": 0,
+    "criticalRate": 0.05,
+    "offset": 10,
+    "attackInterval": 0.167,
+    "attackPositionOffset": 23.5,
+    "dropLevel": 1,
+    "basicPrice": 21,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "numOfBullets": 1,
+    "bulletSize": 8.0,
+    "bulletImagePath": "/attackUI/bullet/bullet_34.png",
+    "bulletSpeed": 400.0,
+    "bulletCanRebound": true,
+    "bulletCanTracking": false,
+    "bulletIsBubble": false,
+    "bubbleTrail": false
+  },
+  {
+    "ID": 8,
+    "weaponImagePath": "/weapon/weapons/weapons_61.png",
+    "name": "Broadsword",
+    "attackType": "EffectAttack",
+    "weaponType": "SWORD",
+    "damage": 12,
+    "energy": 0,
+    "criticalRate": 0.03,
+    "offset": 0,
+    "attackInterval": 0.66,
+    "attackPositionOffset": 16,
+    "dropLevel": 4,
+    "basicPrice": 25,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SLASH"
+  },
+  {
+    "ID": 9,
+    "weaponImagePath": "/weapon/weapons3/weapons3_93.png",
+    "name": "Light_saber_RED",
+    "attackType": "EffectAttack",
+    "weaponType": "SWORD",
+    "damage": 8,
+    "energy": 0,
+    "criticalRate": 0.03,
+    "offset": 0,
+    "attackInterval": 0.416,
+    "attackPositionOffset": 16,
+    "dropLevel": 4,
+    "basicPrice": 28,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SLASH"
+  },
+  {
+    "ID": 10,
+    "weaponImagePath": "/weapon/weapons3/weapons3_94.png",
+    "name": "Light_saber_Green",
+    "attackType": "EffectAttack",
+    "weaponType": "SWORD",
+    "damage": 8,
+    "energy": 0,
+    "criticalRate": 0.03,
+    "offset": 0,
+    "attackInterval": 0.416,
+    "attackPositionOffset": 16,
+    "dropLevel": 4,
+    "basicPrice": 28,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SLASH"
+  },
+  {
+    "ID": 11,
+    "weaponImagePath": "/weapon/weapons2/weapons2_120.png",
+    "name": "Hammer",
+    "attackType": "EffectAttack",
+    "weaponType": "HAMMER",
+    "damage": 8,
+    "energy": 0,
+    "criticalRate": 0.02,
+    "offset": 0,
+    "attackInterval": 0.9,
+    "attackPositionOffset": 25.0,
+    "dropLevel": 1,
+    "basicPrice": 14,
+    "handOffset": {
+      "x": 4.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 32.0,
+    "EffectAttackType": "SHOCKWAVE"
+  },
+  {
+    "ID": 12,
+    "weaponImagePath": "/weapon/weapons2/weapons2_25.png",
+    "name": "Retro Spear",
+    "attackType": "EffectAttack",
+    "weaponType": "SPEAR",
+    "damage": 10,
+    "energy": 0,
+    "criticalRate": 0.2,
+    "offset": 0,
+    "attackInterval": 1.0,
+    "attackPositionOffset": 50.0,
+    "dropLevel": -1,
+    "basicPrice": 0,
+    "handOffset": {
+      "x": 10.3,
+      "y": -6.25
+    },
+    "holdingPosition": {
+      "x":15.0,
+      "y": 0.0
+    },
+    "elementalDamage": "NONE",
+    "attackRange": 24.0,
+    "EffectAttackType": "LUNGE"
+  },
+  {
     "ID": 501,
     "weaponImagePath": "/weapon/enemyWeapon/enemyWeapon_501.png",
     "name": "Pickaxe",
@@ -348,7 +541,7 @@
     "name": "Elite_Miner's_Rocket_Launcher",
     "attackType": "Projectile",
     "weaponType": "ROCKET_LAUNCHER",
-    "damage": 4,
+    "damage": 3,
     "energy": 0,
     "criticalRate": 0.0,
     "offset": 0,

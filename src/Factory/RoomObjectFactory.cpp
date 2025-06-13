@@ -124,6 +124,33 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 		{
 			roomObject = std::make_shared<ShopTable>(_id, _class);
 		}
+		else if (_class == "egg")
+		{
+			// 特殊处理鸡蛋对象
+			if (isAnimated)
+			{
+				std::vector<std::string> path = jsonData["path"].get<std::vector<std::string>>();
+				for (auto &i : path)
+					i = RESOURCE_DIR + i;
+				std::shared_ptr<Animation> animation = std::make_shared<Animation>(path, true, 0, _class);
+				animation->PlayAnimation(false); // 初始不播放动画
+				roomObject = animation;
+
+				// 为鸡蛋添加 InteractableComponent
+				StructInteractableComponent interactableConfig;
+				interactableConfig.s_InteractableType = InteractableType::EGG;
+				interactableConfig.s_InteractionRadius = 32.0f;
+				interactableConfig.s_IsAutoInteract = false;
+				roomObject->AddComponent<InteractableComponent>(ComponentType::INTERACTABLE, interactableConfig);
+
+				LOG_DEBUG("Created egg object with InteractableComponent");
+			}
+			else
+			{
+				LOG_ERROR("Egg object must be animated!");
+				return nullptr;
+			}
+		}
 		else
 		{
 			// 對於其他類型，使用原有邏輯
@@ -136,6 +163,7 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateRoomObject(const std::stri
 				// TODO interval 間隔
 				if (jsonData.contains("willPlay"))
 				{
+					LOG_INFO("RoomObjectFactory::createRoomObject willPlay");
 					animation->PlayAnimation(jsonData["willPlay"].get<bool>());
 				}
 				else animation->PlayAnimation(true);
@@ -435,14 +463,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 	if (!shopTable)
 		return nullptr;
 
-	std::string tableName = "ShopTable_" + std::to_string(static_cast<int>(itemType));
-	shopTable->Initialize(tableName, itemType, price, potionSize);
-	if (const auto interactableComp = shopTable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
-	{
-		std::string priceText = std::to_string(price) + " 金幣";
-		interactableComp->SetPromptText(priceText);
-	}
-
 	// 創建商品並設置在桌子上方
 	std::shared_ptr<nGameObject> currentItem = nullptr;
 	glm::vec2 itemOffset = glm::vec2(0, -20); // 商品在桌子上方20像素
@@ -474,6 +494,10 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 			{
 				LOG_ERROR("Failed to create random weapon for shop");
 				return shopTable;
+			}
+			if (auto weapon = std::dynamic_pointer_cast<Weapon>(currentItem))
+			{
+				price = weapon->GetBasicPrice();
 			}
 			break;
 		}
@@ -507,6 +531,13 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 		{
 			itemInteractable->SetComponentActive(false);
 		}
+	}
+	std::string tableName = "ShopTable_" + std::to_string(static_cast<int>(itemType));
+	shopTable->Initialize(tableName, itemType, price, potionSize);
+	if (const auto interactableComp = shopTable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+	{
+		std::string priceText = std::to_string(price) + " 金幣";
+		interactableComp->SetPromptText(priceText);
 	}
 
 	return shopTable;

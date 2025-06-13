@@ -170,3 +170,4 @@ void NPCComponent::ResetDialogueState() {
     m_currentLineIndex = 0;
     UpdatePromptText();
 }
+ 

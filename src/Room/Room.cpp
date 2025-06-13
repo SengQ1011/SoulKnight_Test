@@ -461,6 +461,21 @@ std::shared_ptr<nGameObject> Room::CreateChest(ChestType type) const
 	m_InteractionManager->RegisterInteractable(chest);
 	return chest;
 }
+std::shared_ptr<nGameObject> Room::CreateEnergyBall() const
+{
+	auto factory = m_Factory.lock();
+	if (!factory)
+		return nullptr;
+
+	// 使用工廠方法創建寶箱
+	auto energyBall = factory->CreateRoomObject("object_energyBall");
+	if (!energyBall)
+		return nullptr;
+
+	// 加入互動manager中
+	m_InteractionManager->RegisterInteractable(energyBall);
+	return energyBall;
+}
 
 // 玩家位置檢測方法（基礎防漏洞機制）
 bool Room::IsPlayerInsideRegion() const

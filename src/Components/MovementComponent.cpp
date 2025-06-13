@@ -28,6 +28,7 @@ void MovementComponent::Update()
 		if (m_SpeedEffectDuration <= 0.0f)
 		{
 			m_SpeedEffectDuration = 0.0f;
+			if (m_freeze) m_freeze = false;
 		}
 	}
 
@@ -41,6 +42,7 @@ void MovementComponent::Update()
 		}
 	}
 
+	if (m_freeze) return;
 
 	// ===== 移動邏輯核心 =====
 	constexpr float baseSpeed = 120.0f; // 基础速度

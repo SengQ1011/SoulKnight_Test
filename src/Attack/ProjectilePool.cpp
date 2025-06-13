@@ -5,6 +5,31 @@
 #include "Attack/ProjectilePool.hpp"
 #include "Util/Logger.hpp"
 
+ ProjectilePool::ProjectilePool()
+ {
+	 {
+	 	for (int i=0; i < 100; i++)
+	 	{
+	 		ProjectileInfo projectile;
+	 		projectile.type = CharacterType::ENEMY;
+	 		projectile.size = 20.0f;
+	 		projectile.damage = 0;
+	 		projectile.elementalDamage = StatusEffect::NONE;
+	 		projectile.chainAttack.enabled = false;
+	 		projectile.speed = 50.0;
+	 		projectile.numRebound = 0;
+	 		projectile.canReboundBySword  = true;
+	 		projectile.canTracking = false;
+	 		projectile.isBubble = false;
+	 		projectile.bubbleTrail = false;
+	 		projectile.bubbleImagePath = "";
+	 		auto bullet = std::make_shared<Projectile>(projectile);
+	 		pool.push_back(bullet);
+	 	}
+	 }
+ }
+
+
 std::deque<std::shared_ptr<Projectile>> ProjectilePool::pool;
 
 std::shared_ptr<Projectile> ProjectilePool::Acquire(const ProjectileInfo& projectileInfo) {
