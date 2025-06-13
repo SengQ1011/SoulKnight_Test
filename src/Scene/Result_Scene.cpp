@@ -65,10 +65,10 @@ void ResultScene::Start()
 		totalTime = m_GameProgress.cumulativeTime / 1000;
 		killCount = m_GameProgress.killCount;
 		dungeonMoney = m_PlayerData.money;
-		timeScore = std::max(0, 1000 - 2 * static_cast<int>(totalTime/10));
-		killScore = killCount * 10;
+		timeScore = std::max(0, 2000 - 2 * static_cast<int>(totalTime/10));
+		killScore = killCount * 15;
 		totalScore = timeScore + killScore;
-		gameMoney = std::clamp(totalScore / 100, 30, 1000);
+		gameMoney = std::clamp(totalScore / 10, 50, 1000);
 
 		// 保存進度
 		m_SceneData->saveName = "Progress Save";

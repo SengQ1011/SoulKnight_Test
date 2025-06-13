@@ -463,14 +463,6 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 	if (!shopTable)
 		return nullptr;
 
-	std::string tableName = "ShopTable_" + std::to_string(static_cast<int>(itemType));
-	shopTable->Initialize(tableName, itemType, price, potionSize);
-	if (const auto interactableComp = shopTable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
-	{
-		std::string priceText = std::to_string(price) + " 金幣";
-		interactableComp->SetPromptText(priceText);
-	}
-
 	// 創建商品並設置在桌子上方
 	std::shared_ptr<nGameObject> currentItem = nullptr;
 	glm::vec2 itemOffset = glm::vec2(0, -20); // 商品在桌子上方20像素
@@ -502,6 +494,10 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 			{
 				LOG_ERROR("Failed to create random weapon for shop");
 				return shopTable;
+			}
+			if (auto weapon = std::dynamic_pointer_cast<Weapon>(currentItem))
+			{
+				price = weapon->GetBasicPrice();
 			}
 			break;
 		}
@@ -535,6 +531,13 @@ std::shared_ptr<nGameObject> RoomObjectFactory::CreateShopTable(ShopItemType ite
 		{
 			itemInteractable->SetComponentActive(false);
 		}
+	}
+	std::string tableName = "ShopTable_" + std::to_string(static_cast<int>(itemType));
+	shopTable->Initialize(tableName, itemType, price, potionSize);
+	if (const auto interactableComp = shopTable->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
+	{
+		std::string priceText = std::to_string(price) + " 金幣";
+		interactableComp->SetPromptText(priceText);
 	}
 
 	return shopTable;
