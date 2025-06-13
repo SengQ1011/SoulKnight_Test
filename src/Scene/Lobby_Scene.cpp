@@ -73,6 +73,9 @@ void LobbyScene::Start()
 
 	m_CurrentRoom = m_LobbyRoom;
 
+	// 现在创建NPC，此时m_LobbyRoom已经初始化
+	CreateNPC();
+
 	InitUIManager();
 	InitAudioManager();
 
@@ -186,6 +189,25 @@ void LobbyScene::CreateEnemy()
 	visibleBox->SetRegisteredToScene(true);
 	m_PendingObjects.emplace_back(m_Enemy);
 	m_Enemy->SetRegisteredToScene(true);
+}
+
+void LobbyScene::CreateNPC()
+{
+	m_NPC = CharacterFactory::GetInstance().createNPC(1);
+	m_NPC->m_WorldCoord = {64,16*2};
+	m_PendingObjects.emplace_back(m_NPC);
+	m_NPC->SetRegisteredToScene(true);
+
+	if (const auto lobbyRoom = this->GetCurrentRoom())
+	{
+		if (const auto manager = lobbyRoom->GetManager<RoomInteractionManager>(ManagerTypes::ROOMINTERACTIONMANAGER))
+		{
+			manager->RegisterInteractable(m_NPC);
+			LOG_DEBUG("Start NPC Interaction");
+		}
+		else LOG_ERROR("interaction manager");
+	}
+	else LOG_ERROR("Failed to get lobbyRoom");
 }
 
 void LobbyScene::SetupCamera() const

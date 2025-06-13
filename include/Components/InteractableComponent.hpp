@@ -96,7 +96,7 @@ private:
 	// 更新提示UI的位置
 	void UpdatePromptPositions();
 	// 計算並設置 PromptObject 的位置，返回偏移量
-	glm::vec2 UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner);
+	glm::vec2 UpdatePromptObjectPosition(const std::shared_ptr<nGameObject> &owner) const;
 	// 計算並設置 PromptUI 的位置
 	void UpdatePromptUIPosition(const std::shared_ptr<nGameObject> &owner, const glm::vec2 &promptObjectOffset);
 };

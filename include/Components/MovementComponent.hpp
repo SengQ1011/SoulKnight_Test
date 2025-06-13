@@ -36,6 +36,7 @@ public:
 	//----Setters----
 	void SetPosition(const glm::vec2 &position) { m_Position = position; }
 	void SetSpeedRatio(const float speedRatio) { m_SpeedRatio = speedRatio; }
+	void SetSpeedEffectDuration(const float speedEffectDuration) { m_SpeedEffectDuration = speedEffectDuration; }
 	void SetCurrentSpeedRatio(const float speedRatio) { m_currentSpeedRatio = speedRatio; }
 	void SetVelocity(const glm::vec2 &velocity) { m_Velocity = velocity; }
 	void SetImpulseVelocity(const glm::vec2 &velocity) { m_ImpulseVelocity = velocity; }

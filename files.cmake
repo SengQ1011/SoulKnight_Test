@@ -26,6 +26,7 @@ set(SRC_FILES
     Components/InputComponent.cpp
     Components/InteractableComponent.cpp
     Components/MovementComponent.cpp
+    Components/NPCComponent.cpp
     Components/ProjectileComponent.cpp
     Components/SkillComponent.cpp
     Components/SpikeComponent.cpp
@@ -140,6 +141,7 @@ set(INCLUDE_FILES
     Components/InputComponent.hpp
     Components/InteractableComponent.hpp
     Components/MovementComponent.hpp
+    Components/NPCComponent.hpp
     Components/ProjectileComponent.hpp
     Components/SkillComponent.hpp
     Components/SpikeComponent.hpp
@@ -215,6 +217,7 @@ set(INCLUDE_FILES
     Structs/EventInfo.hpp
     Structs/InteractionComponentStruct.hpp
     Structs/KnockOffEventInfo.hpp
+    Structs/NPCComponentStruct.hpp
     Structs/PositionChangedEvent.hpp
     Structs/RectShape.hpp
     Structs/ReflectProjectileEventInfo.hpp
