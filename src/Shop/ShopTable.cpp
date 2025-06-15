@@ -71,7 +71,7 @@ void ShopTable::CreateItem(const std::shared_ptr<Character> &player)
 		if (auto itemInteractable = m_CurrentItem->GetComponent<InteractableComponent>(ComponentType::INTERACTABLE))
 		{
 			itemInteractable->SetComponentActive(false);
-		}
+		}\
 
 		LOG_DEBUG("Created item on shop table: {}", m_CurrentItem->GetName());
 	}
