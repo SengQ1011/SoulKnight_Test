@@ -62,8 +62,7 @@ void IceSpikeEffect::Execute(const glm::vec2 &position, CharacterType attackerTy
 			attackManager->spawnProjectile(iceSpike);
 		}
 
-		LOG_DEBUG("Ice spike effect triggered at position ({}, {}) with {} spikes", position.x, position.y,
-				  m_spikeCount);
+		//LOG_DEBUG("Ice spike effect triggered at position ({}, {}) with {} spikes", position.x, position.y,m_spikeCount);
 	}
 	catch (const std::exception &e)
 	{
